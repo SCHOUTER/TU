@@ -1,0 +1,83 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 1}
+\author{Niclas Kusenbach, 360227}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Aufgabe 1a) Definitionen}
+
+\textbf{Intelligenz}\\
+Folgt man dem Turing-Test, so ist ein intelligentes Etwas bzw. eine Entität intelligent, wenn sie sich nicht von anderen intelligenten Wesen unterscheidet. Der Turing-Test ist jedoch hauptsächlich auf gesprochene und geschriebene Sprache ausgelegt. Ein System, das diesem zufolge als intelligent gilt, unterscheidet sich im tatsächlichen Verhalten teils deutlich von einem Menschen. Ein System, das sprachlich nicht von einem Menschen unterscheidbar ist, kann beispielsweise dennoch kein Rührei in der Küche braten. Laut dem Turing-Test wäre es trotzdem intelligent. Demnach kann man auch sagen, dass ein System im Allgemeinen menschenähnlich sein muss, um als intelligent zu gelten.\\
+
+\textbf{Künstliche Intelligenz (KI)}\\
+John McCarthy definiert KI als die Wissenschaft, die intelligente Maschinen entwickelt, welche Aufgaben erledigen, für die zuvor menschliche Intelligenz erforderlich war (vgl. Marvin Minsky). KI muss sich dabei nicht auf biologisch beobachtbare Methoden beschränken.\\
+
+\textbf{Agent}\\
+Ein Agent kann seine Umgebung wahrnehmen, eigene Entscheidungen treffen und auf Basis dieser Entscheidungen eine Handlung ausführen.
+
+\section*{Aufgabe 1b) Evan's Analogy Program}
+
+Das Programm wäre im Allgemeinen nicht intelligenter als ein Mensch, da es ausschließlich Fragen eines IQ-Tests beantworten könnte. Es könnte jedoch nicht erklären, wie man beispielsweise ein Rührei zubereitet, einkaufen geht oder was eine Universität ist.\\
+Zwar zeigt das Programm in dieser einen Aufgabe überdurchschnittliches Verhalten, versagt jedoch in allen anderen Aufgaben vollständig.
+
+\section*{Aufgabe 1c) Was kann KI?}
+
+\subsection{Eine anständige Partie Tischtennis spielen (Ping-Pong)}
+DeepMind hat 2024 einen Roboter entwickelt, der bis zu einem Amateurniveau Tischtennis spielen kann. Auch das MIT hat einen Tischtennisarm entwickelt, der unterschiedliche Schlagarten und Ballspins ausführen kann.\\
+\texttt{https://www.arxiv.org/pdf/2505.01617}\\
+\texttt{https://arxiv.org/pdf/2408.03906}
+
+\subsection*{Autofahren im Zentrum von Darmstadt}
+In Darmstadt wurden fahrerlose Pkw für den Einsatz im ÖPNV getestet.\\
+\texttt{https://www.ffh.de/nachrichten/hessen/suedhessen/433683-pilotprojekt-in-langen-selbstfahrende-autos-im-test.html}
+
+\subsection*{Einkaufen von Lebensmitteln für eine Woche auf dem Markt}
+Eine KI, die direkt auf einem Wochenmarkt einkaufen geht, konnte ich nicht finden. Die größte Schwierigkeit hierbei liegt in der Unregelmäßigkeit eines Wochenmarkts. Die KI müsste selbstständig über diesen manövrieren und die wechselnde Produktpalette der Verkäufer erkennen können.
+
+\subsection*{Einkaufen von Lebensmitteln für eine Woche im Internet}
+Der Online-Supermarkt „Alfies“ bietet einen KI-Einkaufsassistenten, der beim Wocheneinkauf unterstützt.\\
+\texttt{https://www.alfies.at/}
+
+\subsection*{Eine anständige Partie Poker (Kartenspiel) auf wettbewerbsfähigem Niveau spielen}
+Die Poker-KI \textit{DeepStack} besiegte 2017 professionelle Pokerspieler in einem Heads-up No-Limit Texas Hold’em mit statistischer Signifikanz.\\
+\texttt{https://arxiv.org/pdf/1701.01724}
+
+\subsection*{Das Entdecken und Beweisen neuer mathematischer Theoreme}
+DeepMind hat mithilfe von KI Muster und Zusammenhänge in der Knoten- und Darstellungstheorie erkannt. Die KI konnte neue Zusammenhänge vorschlagen, die anschließend von Mathematikern untersucht und teilweise bewiesen wurden.\\
+\texttt{https://www.nature.com/articles/s41586-021-04086-x}
+
+\subsection*{Eine lustige Geschichte schreiben}
+Eine lustige Geschichte kann ich mithilfe von ChatGPT jederzeit ohne Probleme schreiben. Ob diese jedoch für jeden lustig ist, bezweifle ich, da Humor subjektiv ist.\\
+\texttt{https://chatgpt.com/share/690885c2-49a4-800d-be7b-e0a212f52034}
+
+\section*{KI Systeme}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccccccc}
+\toprule
+\textbf{Szenario} & \textbf{Observable} & \textbf{Deterministic} & \textbf{Episodic} & \textbf{Static} & \textbf{Discrete} & \textbf{Agent} & \textbf{Accessible} \\
+\midrule
+Robot Soccer Agent & Ja & Nein & Nein & Ja & Continous & Multi-Agent & Accessible \\
+\bottomrule
+\end{tabular}
+\caption{Eigenschaften des Robot Soccer Agent Szenarios}
+\label{tab:robot_soccer_agent}
+\end{table}
+
+\end{document}
