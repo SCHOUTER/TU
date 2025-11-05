@@ -1,0 +1,28 @@
+% !TEX root = ./css_summary.tex
+\documentclass[
+    ngerman,
+    color=3b,
+    boxarc,
+    main,
+    tikz,
+    border=3mm
+]{article}
+
+\input{css_preamble.tex}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+\begin{multicols*}{2}[
+\section*{Table of Contents}
+]
+\tableofcontents
+\end{multicols*}
+\newpage
+
+\subfile{sections/2/2_kryptografie.tex}
+\newpage
+
+\end{document}

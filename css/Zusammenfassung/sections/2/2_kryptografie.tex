@@ -1,0 +1,221 @@
+\documentclass[
+../../css_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../css_summary.tex}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../}}
+
+\begin{document}
+\section{Kryptografie}
+Die Kryptografie wird in drei Hauptkategorien unterteilt:
+\begin{enumerate}
+  \item Symmetrische Kryptografie
+  \item Hashfunktionen
+  \item Asymmetrische Kryptografie
+\end{enumerate}
+
+\subsection{Symmetrische Kryptografie}
+Symmetrische Kryptografie ist eine Menge von kryptografischen Protokollen, bei der derselbe geheime Schlüssel für die Ver- und Entschlüsselung von Daten verwendet wird.
+
+\begin{defbox}[Symmetrische Kryptosysteme]
+Ein symmetrisches Kryptosystem ist ein 5-Tupel $(M, K, C, e, d)$ bestehend aus:
+\begin{itemize}
+  \item einer Menge $M$ von Klartexten,
+  \item einer Menge $K$ von Schlüsseln,
+  \item einer Menge $C$ von Chiffretexten,
+  \item einer Verschlüsselungsfunktion $e: M \times K \to C$,
+  \item einer Entschlüsselungsfunktion $d: C \times K \to M$,
+\end{itemize}
+so dass für alle Klartexte $m \in M$ und alle Schlüssel $k \in K$ gilt, dass $d(e(m,k),k) = m$.
+\end{defbox}
+
+\subsubsection{Blockchiffren}
+\begin{defbox}[Definition]
+  Blockchiffren sind Kryptosysteme, die nur Blöcke fester Länge verschlüsseln können.
+\end{defbox}
+\begin{center}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_5_1.png}
+\end{center}
+\begin{itemize}
+  \item Ein Blockchiffre arbeitet auf einem Klartextblock der Länge $b$, um einen Chiffretextblock der Länge $b$ zu erzeugen.
+  \item Der gleiche Schlüssel kann mehrmals auf unterschiedliche Blöcke verwendet werden.
+  \item Beispiele von Blockchiffren: AES, DES, 3DES, Serpent, Twofish, Blowfish, etc.
+\end{itemize}
+\paragraph{Electronic Code Book (ECB) Modus}
+\begin{center}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_6_1.png}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_7_1.png}
+\end{center}
+Wenn die Blöcke nicht die Länge $n$ haben, können trotzdem beliebige Nachrichten verschlüsselt werden, da eine \textbf{Auffüllfunktion} (Padding function) benutzt wird.
+
+Bei vielen Padding-Verfahren wird \textit{immer} ein Padding hinzugefügt, auch wenn die Nachricht bereits ein Vielfaches der Blocklänge $n$ hat. Dies ist notwendig, damit die $unpad()$-Funktion eindeutig feststellen kann, wie viele Bytes entfernt werden müssen.
+Eine gute Auffüllfunktion sollte umkehrbar sein, d.h. es muss eine $unpad()$-Funktion geben mit $unpad(pad(x)) = x \quad \forall x \in M*$.
+
+\defc{Vorteile:}
+\begin{itemize}
+  \item Unkomplizierte Bedienung. Jeder Block wird unabhängig bearbeitet.
+  \item Parallelisierbarkeit von Ver- und Entschlüsselungsverfahren.
+  \item Beschädigte Datenblöcke beeinflussen keine anderen Blöcke (Fehlertoleranz).
+\end{itemize}
+\defc{Nachteile:}
+\begin{itemize}
+  \item \textit{Deterministisch:} Muster im Klartext sind sichtbar. Identische Klartextblöcke ergeben immer identische Chiffretextblöcke.
+  \item \textit{Keine Diffusion:} Kleine Änderungen im Klartext führen zu lokalisierten Änderungen im Geheimtext.
+\end{itemize}
+
+\paragraph{Cipher Block Chaining (CBC) Modus}
+\begin{center}
+    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_13_1.png}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_14_1.png}
+\end{center}
+
+Zur Formalisierung von CBC benötigen wir randomisierte Kryptosysteme. Der Zufallswert $r$ wird hier als Initialisierungsvektor (IV) bezeichnet.
+
+\begin{defbox}[Randomisierte symmetrische Kryptosysteme]
+Ein randomisiertes symmetrisches Kryptosystem ist ein 5-Tupel $(M, K, C, e, d)$ bestehend aus:
+\begin{itemize}
+  \item einer Menge $M$ von Klartexten,
+  \item einer Menge $K$ von Schlüsseln,
+  \item einer Menge $C$ von Chiffretexten,
+  \item einer Menge $R$ von Zufallswerten (z.B. IVs),
+  \item einer Verschlüsselungsfunktion $e: M \times K \times R \to C$,
+  \item einer Entschlüsselungsfunktion $d: C \times K \to M$,
+\end{itemize}
+(Anmerkung: Die Entschlüsselung $d$ benötigt den IV $r$, dieser wird aber typischerweise als Teil des Chiffretextes $C$ übermittelt und nicht als separater Zufallseingang für $d$ selbst.)
+\end{defbox}
+
+Sei $r \in R$ der Initialisierungsvektor (IV).
+\textbf{Verschlüsselung}
+\[ e^*(x_0 x_1 \dots x_n, k, r) = y_0 y_1 \dots y_n \text{ mit } y_0 = e(x_0 \oplus r, k) \quad \text{und} \quad y_i = e(x_i \oplus y_{i-1}, k) \quad \text{für } i \ge 1 \]
+\textbf{Entschlüsselung}
+\[ d^*(y_0 y_1 \dots y_n, k, r) = x_0 x_1 \dots x_n \text{ mit } x_0 = d(y_0, k) \oplus r \quad \text{und} \quad x_i = d(y_i, k) \oplus y_{i-1} \quad \text{für } i \ge 1
+\]
+
+\begin{itemize}
+  \item Zur Verschlüsselung muss ein Wert $r \in R$ (der IV) gewählt werden.
+  \item Zufallswerte aus $R$ (IVs) sind nicht geheim, sie können unverschlüsselt mit dem Chiffrat gespeichert und verschickt werden (meist als erster Block).
+  \item Wir wollen $e(x, k, r^1) \neq e(x, k, r^2) $ für $r^1 \neq r^2$.
+  \item Wichtig für die Sicherheit ist, dass der IV (Zufallswert $r$) **eindeutig** (nie doppelt für denselben Schlüssel) und **unvorhersagbar** ist.
+  \item Muster im Klartext sind im Chiffrat nicht mehr erkennbar.
+  \item Gleiche Klartextblöcke werden unterschiedlich verschlüsselt.
+  \item Ein fehlerhafter Chiffreblock $y_i$ führt nur zur fehlerhaften Entschlüsselung des aktuellen Blocks $x_i$ und des unmittelbar nachfolgenden Blocks $x_{i+1}$.
+  \item Verschlüsselung ist \textbf{nicht} parallelisierbar (sequenziell), Entschlüsselung ist parallelisierbar.
+\end{itemize}
+
+\paragraph{CBC Padding Oracle Attack}
+
+
+\defc{CBC ist anfällig für Padding-Oracle-Angriffe}
+
+Ein solcher Angriff ermöglicht es, einen Geheimtext Schritt für Schritt zu entschlüsseln, ohne den Verschlüsselungsschlüssel zu kennen. Der Angreifer nutzt aus, wie ein Server auf fehlerhaftes Padding reagiert.
+
+Der Angreifer:
+\begin{itemize}
+  \item hat keinen Zugriff auf den geheimen Schlüssel.
+  \item ist in der Lage, gültige Chiffretexte abzufangen.
+  \item ist in der Lage, modifizierte Versionen des Chiffretextes an das Orakel/Server zu senden und dessen Antworten zu beobachten.
+\end{itemize}
+Das Orakel (Server):
+\begin{itemize}
+  \item muss ein überprüfbares Padding-Schema verwenden.
+  \item muss dem Angreifer verraten, ob ein entschlüsselter Text ein gültiges (oder nicht) Padding hat. Dies kann geschehen durch:
+    \begin{itemize}
+        \item[1.] direkte Fehlermeldungen (z.B. HTTP 500) oder
+        \item[2.] Side-Channel-Messungen (z.B. Unterschiede im Antwortverhalten).
+    \end{itemize}
+\end{itemize}
+\begin{center}
+    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_21_1.png}
+\end{center}
+
+\textbf{Counter Mode (CTR) Modus}
+\begin{center}
+    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_22_1.png}
+    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_23_1.png}
+\end{center}
+Um diesen Modus zu formalisieren, benötigen wir eine randomisierte Zählfunktion, die einen "Nonce" (Number used once) $r$ verwendet.
+\begin{itemize}
+  \item Ein randomisierter Zähler (Funktion $ctr(r, i)$) bildet einen Zufallswert (Nonce $r$) und eine natürliche Zahl $i$ (Zähler) auf eine Bitkette fester Länge ab.
+  \item Eine einfache Implementierung benutzt die Binärdarstellung der natürlichen Zahl (LSB- oder MSB-Kodierung) mit 0-Padding, konkateniert mit der Nonce.
+  \item Ein randomisierter Zähler $\operatorname{ctr}(r, \cdot)$ sollte injektiv sein (für ein festes $r$). Man sollte die Periode (Wiederholung) so lang wie möglich wählen.
+  \item Die Nonce $r$ muss für denselben Schlüssel \textbf{nie} wiederverwendet werden.
+\end{itemize}
+
+
+\textbf{Verschlüsselung:}
+\[
+e^*(x_0 x_1 \dots x_n, k, r) = y_0 y_1 \dots y_n \text{ mit } y_i = e(\operatorname{ctr}(r, i), k) \oplus x_i
+\]
+
+\textbf{Entschlüsselung:}
+\[
+d^*(y_0 y_1 \dots y_n, k, r) = x_0 x_1 \dots x_n \text{ mit } x_i = e(\operatorname{ctr}(r, i), k) \oplus y_i
+\]
+
+Der CTR Modus unterscheidet sich stark von den vorher betrachteten Betriebsmodi:
+\begin{itemize}
+  \item Ver- und Entschlüsselung nutzen beide die Verschlüsselungsfunktion $e$ der Blockchiffre; die Entschlüsselungs-funktion $d$ selbst wird nicht benötigt.
+  \item Ver- und Entschlüsselung sind identisch (XOR mit dem Keystream).
+  \item Die Berechnung des Keystreams $e(\operatorname{ctr}(r,i),k)$ ist unabhängig vom zu verschlüsselnden Text.
+  \item Ver- und Entschlüsselung können vollständig parallelisiert werden.
+  \item CTR ist eine One-Time-Pad-Konstruktion, bei der die Blockchiffre als Pseudozufallsgenerator (Keystream-Generator) dient.
+\end{itemize}
+\paragraph{Advanced Encryption Standard (AES)}
+\begin{itemize}
+  \item Blocklänge ist $128$ bereits
+  \item AES-Schlüssel können $128, 192, \text{oder} 256$ bits lang sein
+\end{itemize}
+
+\textbf{Sicherheit}
+\begin{itemize}
+  \item AES ist sicher solange die Implementierung und dazugehörige Systeme richtig konfiguriert sind (s. CBC Padding Attack)
+  \item Schwache Schlüssel und IV-Generierung kann die Sicherheit von AES gefährden
+  \item Side-channel Angriffe wie cache-timing und power analysis können verwendet werden, um den Schlüssel abzuleiten
+\end{itemize}
+
+\textbf{Gegenmaßnahmen}
+\begin{itemize}
+  \item Konstantzeit-Implementierung (gegen Timing Angriffe): Ausführungszeit von Code soll unabhängig von den verarbeiteten geheimen Daten sein
+  \item 
+\end{itemize}
+
+\paragraph{Stromchiffren}
+Stromchiffren können beliebig lange Bitketten verschlüsseln. Dabei sind Klar- und Chiffretexte beliebiger Länge, nur der Schlüssel hat eine feste Länge. Aus dem Schlüssel wird ein pseudozufälliger Schlüsselstrom erzeugt. Pseudozufallszahlen hängen von ihren Startparametern ab (seed) ab - gleiche Parameter liefern gleiche Zufallszahlen Ver- und Entschlüsselung ist ein bitweise exklusives oder (XOR) mit dem Schlüsselstrom.
+Ein Kryptosystem heißt Stromchiffre, wenn es eine Funktion $keystream(x,z) = \lvert x \rvert$ gibt, so dass $e(x,y) = d(x,z) = x \oplus keystream(x,y)$.
+Die Funktion keystream nenn wir Schlüsselstromgenerator und ihren Funktionswert Schlüsselstrom.
+\begin{itemize}
+  \item Keystream sollte ein Pseudozufallszahlengenerator sein
+  \item Keystream kann unabhängig vom INhalt der ersten Variable sein, also $keystream(x_1,k) = keystream(x_2,k)$ für beliebige $x_1$ und $x_2$ mit $\lvert x_1 \rvert = \lvert x_2 \rvert$
+  \item Falls der Schlüsselstrom sich wieder, ist die Stromchiffre nicht mehr sicher
+\end{itemize}
+ChaCha20 ist eine moderne Stromchiffre, die als Alternative zu AES entwickelt wurde.
+
+\subsection{Kryptografische Hashfunktionen}
+Eine Hashfunktion ist ein Algorithmus, der eine Eingabe beliebiger Größe in einen Hashwert mit einer festen Länge umwandelt. Hashfunktionen sind deterministisch, erlauben eine schnelle Berechnung und bieten Integritätsschutz (Änderung der Eingabe ändert den Hash)
+Eigenschaften einer Hashfunktion:
+\begin{enumerate}
+  \item \textbf{Pre-Image Resistance} \\
+  Bei gegebenem Hashwert $h$ ist es rechnerisch unmöglich, die ursprüngliche Nachricht $m$ zu finden, so dass $H(m) = h$.
+  \item \textbf{Second-Image Resistance}\\
+  Bei gegebener Nachricht $m_1$ ist es rechnerisch unmöglich, eine andere Nachricht $m_2$ zu finden, die denselben Hashwert erzeugt, so dass $H(m_1) = H(m_2)$
+  \item \textbf{Collision Resistance}\\
+  Es ist rechnerisch unmöglich irgendwelche zwei unterschiedlichen Nachrichten $m_1$ und $m_2$ zu finden, die denselben Hashwert erzeugen, so dass $H(m_1) = H(m_2)$
+\end{enumerate}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|l|l|p{5cm}|}
+\hline
+\textbf{Hashfunktion} & \textbf{Output} & \textbf{Sicherheit} & \textbf{Anwendung} \\ \hline
+MD5 & 128 Bits & Unsicher & X \\ \hline
+SHA-1 & 160 Bits & Unsicher seit 2017 & X \\ \hline
+SHA-256 & 256 Bits & Sicher & TLS/SSL, hashing, Blockchain \\ \hline
+SHA-3/Keccak & 224/256/384/512 Bits & Sicher & Ähnlich wie SHA-2 (aber langsamer ohne Hardware Unterstützung) \\ \hline
+\end{tabular}
+\caption{Vergleich von Hashfunktionen}
+\label{tab:hashfunktionen}
+\end{table}
+
+
+\end{document}
