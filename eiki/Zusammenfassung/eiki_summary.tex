@@ -1,0 +1,29 @@
+% !TEX root = ./eiki_summary.tex
+\documentclass[
+    ngerman,
+    color=3b,
+    boxarc,
+    main,
+    tikz,
+    border=3mm
+]{article}
+
+\input{eiki_preamble.tex}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+\begin{multicols*}{2}[
+\section*{Table of Contents}
+]
+\tableofcontents
+\end{multicols*}
+\newpage
+\subfile{sections/1/1_Einfuerung.tex}
+\newpage
+\subfile{sections/2/2_AISystems.tex}
+\newpage
+
+\end{document}

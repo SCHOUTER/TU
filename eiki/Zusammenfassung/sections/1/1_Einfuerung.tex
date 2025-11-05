@@ -1,0 +1,127 @@
+% !TEX root = ./eiki_summary.tex
+\section{Introduction}
+\subsection{What is AI?}
+\label{sec:what_is_ai}
+
+\textbf{Literature:}
+\begin{itemize}
+    \item Empfohlenes Begleitbuch: Russel and Norvig, Artificial Intelligence: A Modern Approach, 4. Edition 2020.
+\end{itemize}
+
+\subsubsection{Definitionen (Definitions)}
+\subsubsection{Definitions}
+\label{ssec:definitions_ai}
+There is no easy, official definition for AI. Two classic definitions are:
+\begin{itemize}
+    \item \textbf{John McCarthy (1971):} "The science and engineering of making intelligent machines, especially intelligent computer programs." AI does not have to confine itself to methods that are biologically observable.
+    \item \textbf{Marvin Minsky (1969):} "The science of making machines do things that would require intelligence if done by men".
+\end{itemize}
+
+\subsubsection{Categories of AI}
+\label{ssec:categories_ai}
+AI definitions can be classified along two dimensions
+\begin{enumerate}
+    \item Thought processes/reasoning vs. behavior/action 
+    \item Success according to human standards vs. success according to an ideal concept of intelligence (rationality)
+\end{enumerate}
+
+
+\begin{itemize}
+    \item \textbf{Systems that think like humans:}
+    \begin{itemize}
+        \item Cognitive Science.
+        \item Builds on cognitive models validated by psychological experiments and neurological data.
+    \end{itemize}
+    \item \textbf{Systems that act like humans:}
+    \begin{itemize}
+        \item The \textbf{Turing Test}
+    \end{itemize}
+    \item \textbf{Systems that think rationally:}
+    \begin{itemize}
+        \item Focus on "Laws of Thoughts," correct argument processes.
+    \end{itemize}
+    \item \textbf{Systems that act rationally:}
+    \begin{itemize}
+        \item Focus on "doing the right thing" (\textbf{Rational Behavior}).
+        \item A rationally acting system maximizes the achievement of its goals based on the available information.
+        \item This is more general than rational thinking (as a provably correct action often does not exist) and more amenable to analysis.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{General vs. Narrow AI}
+\label{ssec:general_narrow_ai}
+\begin{itemize}
+    \item \textbf{General (Strong) AI:} Can handle \textit{any} intellectual task that a human can. This is a research goal.
+    \item \textbf{Narrow (Weak) AI:} Is specified to deal with a \textit{concrete} or a set of specified tasks. This is what we currently use primarily.
+\end{itemize}
+
+\subsection{What is Intelligence?}
+\label{sec:what_is_intelligence}
+
+\subsubsection{The Turing Test}
+\label{ssec:turing_test}
+\begin{itemize}
+    \item \textbf{Question:} When does a system behave intelligently? 
+    \item \textbf{Assumption:} An entity is intelligent if it cannot be distinguished from another intelligent entity by observing its behavior.
+    \item \textbf{Test:} A human interrogator interacts "blind" (e.g., via text) with two players (A and B), one of whom is a human and one a computer.
+    \item \textbf{Goal:} If the interrogator cannot determine which player... is a computer... the computer is said to pass the test.
+    \item \textbf{Relevance:} The test is still relevant, requires major components of AI (knowledge, reasoning, language, learning), but is hard/not reproducible and not amenable to mathematical analysis.
+\end{itemize}
+
+\subsubsection{The Chinese Room Argument}
+\label{ssec:chinese_room}
+\begin{itemize}
+    \item \textbf{Question:} Is intelligence the same as intelligent behavior? 
+    \item \textbf{Assumption:} Even if a machine behaves in an intelligent manner, it does not have to be intelligent at all (i.e., without understanding).
+    \item \textbf{Thought Experiment:} A person who doesn't know Chinese is locked in a room. They receive Chinese notes (questions) and have a detailed instruction book telling them which Chinese symbols (answers) to output based on the input symbols, without understanding it at all.
+    \item \textbf{Result:} From the outside, the room "understands" Chinese (it behaves intelligently), but the person inside understands nothing.
+    \item \textbf{Follow-up Question:} Is a self-driving car intelligent?
+\end{itemize}
+
+\subsection{Foundations, Taxonomy \& Limits}
+\label{sec:foundations_limits}
+
+\subsubsection{Foundations of AI}
+\label{ssec:foundations}
+AI is an interdisciplinary field built on contributions from many areas:
+\begin{itemize}
+    \item \textbf{Philosophy:} Logic, reasoning, rationality, mind as a physical system.
+    \item \textbf{Mathematics:} Formal representation and proof, computation, probability.
+    \item \textbf{Psychology:} adaptation, phenomena of perception and motor control.
+    \item \textbf{Economics:} formal theory of rational decisions, game theory.
+    \item \textbf{Linguistics:} knowledge representation, grammar.
+    \item \textbf{Neuroscience:} physical substrate for mental activities.
+    \item \textbf{Control theory:} ...optimal agent design.
+\end{itemize}
+
+\subsubsection{Taxonomy and History}
+\label{ssec:taxonomy_history}
+\begin{itemize}
+    \item \textbf{Taxonomy:} \textbf{Artificial Intelligence} is the broadest field. \textbf{Machine Learning (ML)} is a subfield of AI. \textbf{Deep Learning} is a subfield of ML.
+
+    
+    \item \textbf{Subdisciplines of AI:} Include Machine Learning, Deep Learning, Search and Optimization, Robotics, Natural Language Processing (NLP), Computer Vision (CV), and Cognitive Science.
+    \item \textbf{History:} The development of AI occurred in cycles, often called "AI Winters". Hype phases ("Peaks of Inflated Expectations") existed for "neural networks", "expert systems", and "machine learning".
+  \begin{center}
+    \includegraphics[width=250px]{pics/eiki_1_AI101-01_page_18_1.png}
+  \end{center}
+\end{itemize}
+
+\subsubsection{Limits of Current AI}
+\label{ssec:limits_ai}
+\begin{itemize}
+    \item \textbf{"A.I. is harder than you think":} 
+    \begin{itemize}
+        \item Current AI is often isolated to single problems.
+        \item AI models are \textbf{not without bias}.
+        \item There are \textbf{fundamental differences} in how AI perceives the world/environment.
+    \end{itemize}
+    \item \textbf{AI can be tricked (Adversarial Examples):} 
+    \begin{itemize}
+        \item AI systems can be manipulated by perturbations (noise) often invisible to humans.
+        \item Example: An image of a "panda" is classified as a "gibbon" with high confidence after adding noise.
+    \end{itemize}
+\end{itemize}
+  \begin{center}
+    \includegraphics[width=250px]{pics/eiki_1_AI101-01_page_32_1.png}
+  \end{center}

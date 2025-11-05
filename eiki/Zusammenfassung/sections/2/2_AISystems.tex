@@ -1,0 +1,171 @@
+% !TEX root = ./eiki_summary.tex
+
+\section{AI Systems: Agents and Environments}
+
+\begin{defbox}[Definition: AI System]
+    An AI system is defined as the study of (rational) \defc{agents} and their \defc{environments}. The system has two main parts:
+    \begin{enumerate}[noitemsep]
+        \item \textbf{Agent:} Anything that can be viewed as perceiving its environment through \defc{sensors} and acting upon that environment through \defc{actuators}.
+        \item \textbf{Environment:} The surroundings or conditions in which the agent lives or operates. This can be real (e.g., streets for a self-driving car) or artificial (e.g., a chessboard).
+    \end{enumerate}
+\end{defbox}
+The agent follows a continuous \defc{Sense $\rightarrow$ Think $\rightarrow$ Act} loop.
+
+\begin{center}
+    \vcentered{\includegraphics[width=0.9\textwidth]{pics/eiki_1_AI101-02_page_15_1.png}}
+\end{center}
+
+\subsection{Rationality}
+
+\begin{defbox}[Rationality]
+    \begin{itemize}[leftmargin=*, noitemsep]
+        \item A \defc{rational agent} is one that "does the right thing".
+        \item A \defc{rational action} is one that maximizes the agent's performance and yields the best positive outcome.
+        \item \textbf{Key Point:} Rationality maximizes \defc{expected} performance, not necessarily the \textit{optimal} outcome. E.g., not playing the lottery is rational (positive expected outcome), even if playing could lead to the optimal outcome (winning).
+        \item Rationality is \textbf{not} omniscient. An omniscient agent would know the \textit{actual} outcome of its actions, which is impossible in reality.
+    \end{itemize}
+\end{defbox}
+
+A \defc{performance measure} is a function that evaluates a sequence of actions.\\
+\begin{tcolorbox}[definitionbox, title={General Rule for Design}]
+    Design the performance measure based on the \defc{desired outcome}, not the desired agent behaviour.
+\end{tcolorbox}
+
+\subsection{Characteristics of Environments}
+
+The design of an agent heavily depends on the type of environment it operates in. Environments are characterized along several key dimensions.
+
+\begin{defbox}[Environment Dimensions]
+    \begin{itemize}[leftmargin=*, noitemsep]
+        \item \defc{Discrete vs. Continuous:} Does the environment have a limited, countable number of distinct states (e.g., chess) or is it continuous (e.g., position and speed of a self-driving car)?
+        
+        \item \defc{Observable vs. Partially/Unobservable:} Can the agent's sensors determine the \textit{complete} state of the environment at each time point? If not, it is \defc{partially observable} (e.g., a taxi cannot know pedestrian intentions, poker agent cannot see opponent's cards).
+        
+        \item \defc{Static vs. Dynamic:} Does the environment change while the agent is acting/deliberating? A crossword puzzle is \defc{static}; taxi driving is \defc{dynamic} (other cars move).
+        
+        \item \defc{Single Agent vs. Multiple Agents:} Is the agent operating by itself? Or does the environment contain other agents (e.g., other drivers, poker players)?
+        
+        \item \defc{Accessible vs. Inaccessible:} Can the agent obtain \textit{complete and accurate} information about the environment's state?
+        
+        \item \defc{Deterministic vs. Non-deterministic (Stochastic):} Is the next state of the environment completely determined by the current state and the agent's action? Chess is \defc{deterministic}. A self-driving car is \defc{non-deterministic} (turning the wheel can have slightly different effects due to road friction, wind, etc.).
+        
+        \item \defc{Episodic vs. Sequential:} In an \defc{episodic} environment, the agent's experience is divided into "episodes". The quality of its action depends only on the current episode (perceive $\rightarrow$ act). In a \defc{sequential} environment, the agent requires memory of past actions to make the best decision.
+    \end{itemize}
+\end{defbox}
+
+\begin{tcolorbox}[definitionbox, title={Key Distinction: Observable vs. Accessible}]
+    \begin{itemize}[leftmargin=*, noitemsep]
+        \item \defc{Accessibility} concerns the environment itself: whether the information exists and can \textit{in principle} be obtained.
+        \item \defc{Observability} concerns the agent's \textit{sensors}: whether they can actually perceive that information.
+    \end{itemize}
+\end{tcolorbox}
+
+\begin{center}
+\begin{table}[h!]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccc}
+\hline
+\textbf{Environment} & \textbf{Discrete?} & \textbf{Observable?} & \textbf{Static?} & \textbf{Single Agent?} & \textbf{Accessible?} & \textbf{Deterministic?} & \textbf{Episodic?} \\ \hline
+Chess & Discrete & Observable & Static & Multi-Agent & Accessible & Deterministic & Sequential \\
+Solitaire & Discrete & Observable & Static & Single Agent & Accessible & Deterministic & Sequential \\
+Poker & Discrete & Partially Observable & Static & Multi-Agent & Partially Accessible & Stochastic & Sequential \\
+Self-Driving & Continuous & Partially Observable & Dynamic & Single Agent & Inaccessible & Stochastic & Sequential \\
+Medical Diagnosis & Discrete & Partially Observable & Static & Single Agent & Inaccessible & Stochastic & Episodic \\ \hline
+\end{tabular}
+}
+\caption{Characteristics of various environments}
+\end{table}
+
+\end{center}
+
+\subsection{Types of Agents}
+
+Agents are categorized based on their perceived intelligence and complexity.
+
+\subsubsection{Reflex Agent}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Selects actions based \textbf{only on the current percept}, ignoring the percept history.
+    \item Implemented with simple \defc{condition-action rules}.
+    \item Example: A thermostat (IF temp $<$ 20$^{\circ}$C $\rightarrow$ turn on heater).
+    \item \textbf{Problem:} Very limited. No knowledge of anything it cannot actively perceive.
+\end{itemize}
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_20_1.png}} 
+\end{center}
+
+\subsubsection{Model-based Agent}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item These agents \defc{keep track of the world state}.
+    \item They maintain an \defc{internal state (a world model)} that describes how the world evolves and how the agent's actions affect it.
+    \item This allows the agent to handle partially observable environments.
+    \item Example: A warehouse robot tracking inventory positions.
+\end{itemize}
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_22_1.png}} 
+\end{center}
+
+\subsubsection{Goal-based Agent}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Builds on a model-based agent, but also knows what states are \defc{desirable} (i.e., it has \defc{goals}).
+    \item This allows the agent to make decisions by considering the future, asking "What will happen if I do action A?" and "Will that action achieve my goal?".
+    \item Example: A chess agent whose goal is to checkmate the opponent.
+\end{itemize}
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_24_1.png}} 
+\end{center}
+
+\subsubsection{Utility-based Agent}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Goals provide a binary distinction (achieved / not-achieved). A \defc{utility function} provides a continuous scale, rating each state based on the desired result ("how happy" the agent is).
+    \item This is crucial for resolving \defc{conflicting goals} (e.g., is speed or safety more important for a self-driving car?).
+    \item Allows the agent to choose the action that maximizes its \defc{expected utility}.
+\end{itemize}
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_26_1.png}}
+\end{center}
+
+\subsubsection{Learning Agent}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item Employs a \defc{learning element} to gradually improve and become more knowledgeable over time.
+    \item Can learn from its past experiences and adapt automatically.
+    \item More robust in unknown environments.
+\end{itemize}
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_28_1.png}} 
+\end{center}
+
+\begin{defbox}[Four Components of a Learning Agent]
+    \begin{enumerate}[noitemsep]
+        \item \defc{Learning Element:} Responsible for making improvements by learning from the environment.
+        \item \defc{Critic:} Gives feedback on how well the agent is doing with respect to a fixed performance standard.
+        \item \defc{Performance Element:} Responsible for selecting actions (this is the "agent" part).
+        \item \defc{Problem Generator:} Responsible for suggesting actions that will lead to new (and potentially informative) experiences.
+    \end{enumerate}
+\end{defbox}
+
+\begin{tcolorbox}[definitionbox, title={Agent Types Summary}]
+    \begin{itemize}[leftmargin=*, noitemsep]
+        \item \textbf{Reflex agent:} reacts.
+        \item \textbf{Model-based agent:} remembers.
+        \item \textbf{Goal-based agent:} plans.
+        \item \textbf{Utility-based agent:} optimizes.
+        \item \textbf{Learning agent:} improves itself over time.
+    \end{itemize}
+\end{tcolorbox}
+
+\subsection{How to Make Agents Intelligent}
+
+There are several high-level approaches to selecting intelligent actions:
+
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item \defc{Search Algorithms:} Understand "finding a good action" as a search problem and use tree-based algorithms to find a solution (path to a goal).
+    
+    \item \defc{Reinforcement Learning (RL):} Based on trial and error, similar to animal conditioning. The agent receives \defc{rewards} (positive) or \defc{pain/punishments} (negative) from the environment and learns to choose actions that maximize its cumulative reward.
+    \begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_33_1.png}}
+    \end{center}
+    
+    \item \defc{Genetic Algorithms (GAs):} Inspired by Darwinian evolution ("survival of the fittest"). A \defc{population} of agents is generated, evaluated by a \defc{performance function}, and the best ones are "bred" (using \defc{crossover} and \defc{mutation}) to create a new, potentially better, generation.
+
+\end{itemize}
