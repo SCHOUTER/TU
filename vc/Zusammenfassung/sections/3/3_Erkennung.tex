@@ -1,0 +1,156 @@
+% !TEX root = ./vc_summary.tex
+
+\section{Erkennung}
+
+\subsection{Das Problem der Objekterkennung}
+
+\subsubsection{Herausforderungen der Erkennung}
+Menschliche Wahrnehmung ist Computern weit überlegen. Die Erkennung ist schwierig aufgrund von:
+\begin{itemize}
+    \item \textbf{Mehrdeutigkeit \& Illusionen:} (z.B. Don Quixote-Gesicht, Mona Lisa-Mosaik, ambivalente Elefantenbeine).
+    \item \textbf{Tarnung \& Verdeckung:} (z.B. Bev Doolittles Pferde im Schnee).
+    \item \textbf{Kontext:} Die Interpretation von Teilen hängt stark vom Gesamtkontext ab (z.B. verschwommene Straßenszene, Punktewolken-Wörter).
+    \item \textbf{Fehler im Kontext:} M.C. Escher-Bilder sind \emph{lokal} konsistent, aber \emph{global} unmöglich.
+\end{itemize}
+
+\subsubsection{Intuition: Wie funktioniert Erkennung?}
+Objekterkennung basiert auf zwei Hauptkomponenten:
+\begin{enumerate}
+    \item \defc{Lokale Beschreibung / Merkmale:} (z.B. Augen, Nase, Mund bei einem Gesicht).
+    \item \defc{Globale Anordnung der Merkmale:} (z.B. relative Positionen und Größen der Merkmale zueinander).
+\end{enumerate}
+Weitere wichtige Aspekte sind Segmentierung und Szenenkontext.
+
+\begin{defbox}{Pictorial Structure (Fischler \& Elschlager, 1973)}
+Ein klassisches Modell zur Objekterkennung, das diese Intuition formalisiert.
+\begin{itemize}
+    \item \textbf{Teile (Parts):} 2D-Bildfragmente (lokale Merkmale).
+    \item \textbf{Aufbau (Structure):} Die Anordnung der Teile, oft modelliert durch "Federn", die die relative Position und Deformation beschränken.
+\end{itemize}
+Herausforderungen für dieses Modell sind \defc{Deformationen} (Teile ändern ihre Position) und \defc{Durcheinander} (Clutter, irrelevante Merkmale im Hintergrund).
+\end{defbox}
+
+\subsection{Bayes Decision Theory (BDT)}
+Die BDT bietet ein mathematisches Framework, um Klassifikationsentscheidungen zu treffen, die die \defc{Wahrscheinlichkeit einer Fehlklassifikation minimieren}.
+
+\begin{defbox}{Die drei Kernkonzepte der BDT}
+\begin{enumerate}
+    \item \textbf{A Priori (Prior) $P(C_k)$:}
+    Die Wahrscheinlichkeit einer Klasse $C_k$ \emph{bevor} wir irgendwelche Daten (Merkmale) gesehen haben. Dies ist unser "Vorwissen". (Bsp: $P(a) = 0.75$, $P(b) = 0.25$).
+
+    \item \textbf{Bedingte W'keit (Likelihood) $p(x|C_k)$:}
+    Die Wahrscheinlichkeitsdichte, das Merkmal $x$ zu beobachten, \emph{gegeben} dass es zur Klasse $C_k$ gehört. (Bsp: Wie ist die Verteilung der "Anzahl schwarzer Pixel" für den Buchstaben 'a'?).
+
+    \item \textbf{A Posteriori (Posterior) $P(C_k|x)$:}
+    Die (aktualisierte) Wahrscheinlichkeit, dass es sich um Klasse $C_k$ handelt, \emph{nachdem} wir das Merkmal $x$ beobachtet haben. Dies ist, was wir für die Entscheidung wissen wollen.
+\end{enumerate}
+\end{defbox}
+
+\begin{defbox}{Bayes' Theorem (Verbindung der Konzepte)}
+Das Theorem verknüpft Prior, Likelihood und Posterior:
+$$ P(C_k|x) = \frac{p(x|C_k) P(C_k)}{p(x)} $$
+Wobei $p(x) = \sum_j p(x|C_j)P(C_j)$ ein Normalisierungsfaktor ist (Summe über alle Klassen).
+
+Merke: \quad $\text{Posterior} = \frac{\defc{\text{Likelihood}} \times \defc{\text{Prior}}}{\text{Normalization (Evidence)}}$
+\end{defbox}
+
+\subsubsection{Bayes-Entscheidungsregel}
+Um den Fehler zu minimieren, wählen wir die Klasse $C_k$, die die \defc{höchste A-Posteriori-Wahrscheinlichkeit} hat:
+\begin{itemize}
+    \item Entscheide $C_k$ wenn: $P(C_k|x) > P(C_j|x)$ für alle $j \neq k$.
+    \item Da der Nenner $p(x)$ für alle Klassen gleich ist, ist dies äquivalent zu:
+    \item Entscheide $C_k$ wenn: \defc{$p(x|C_k) P(C_k)$} $> p(x|C_j) P(C_j)$ für alle $j \neq k$.
+\end{itemize}
+Wir vergleichen also nicht die reinen Likelihoods, sondern die mit dem Prior \defc{skalierten Likelihoods}. Der Punkt, an dem diese skalierten Kurven sich schneiden, ist die \defc{Entscheidungsgrenze}.
+
+\subsubsection{Likelihood Ratio Test (für 2 Klassen)}
+Eine äquivalente Formulierung ist der Likelihood-Ratio-Test:
+$$ \text{Entscheide } C_1 \text{ wenn: } \quad \frac{p(x|C_1)}{p(x|C_2)} > \frac{P(C_2)}{P(C_1)} = \lambda $$
+
+\subsubsection{Bedeutung von Prior und Likelihood in der Praxis}
+Die Trennung von $p(x|C_k)$ und $P(C_k)$ ist extrem nützlich:
+\begin{itemize}
+    \item \textbf{Beispiel Spracherkennung:}
+    \begin{itemize}
+        \item $x$ = Audiosignal
+        \item $C_k$ = Satz (z.B. "This machine can recognize speech")
+        \item $p(x|C_k)$ = \defc{Akustisches Modell} (Wie wahrscheinlich klingt das Audio $x$, wenn Satz $C_k$ gesagt wurde?)
+        \item $P(C_k)$ = \defc{Sprachmodell (Language Model)} (Wie wahrscheinlich ist der Satz $C_k$ in der Sprache?)
+    \end{itemize}
+    Zwei Sätze ("recognize speech" vs. "wreck a nice beach") klingen evtl. ähnlich (ähnliches Likelihood), aber das Sprachmodell (Prior) wird dem unwahrscheinlichen Satz eine viel geringere Wahrscheinlichkeit zuweisen.
+
+    \item \textbf{Beispiel Bildverarbeitung:}
+    \begin{itemize}
+        \item $p(x|C_k)$ = \defc{Low-Level Image Measurements} (Likelihood)
+        \item $P(C_k)$ = \defc{High-Level Model Knowledge} (Prior)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Naive Bayes Klassifikator}
+
+\subsubsection{Das Problem mit vielen Merkmalen}
+Bei $d$ Merkmalen ($x_1, ..., x_d$) müssten wir die $d$-dimensionale Verteilung $p(x_1, ..., x_d|C_k)$ schätzen. Dies ist extrem datenaufwändig und oft unmöglich (\defc{Fluch der Dimensionalität}).
+
+\begin{defbox}{Die "Naive" Annahme}
+Der Naive Bayes Klassifikator trifft eine vereinfachende (naive) Annahme:
+\begin{itemize}
+    \item Alle Merkmale $x_i$ sind \defc{statistisch unabhängig} voneinander, \emph{gegeben die Klasse $C_k$}.
+    \item Dies erlaubt es, die gemeinsame Wahrscheinlichkeit zu faktorisieren:
+    $$ p(x_1, ..., x_d|C_k) = \prod_{i=1}^{d} p(x_i|C_k) $$
+\end{itemize}
+Diese Annahme ist oft \emph{falsch}, aber der resultierende Klassifikator funktioniert in der Praxis überraschend gut.
+\end{defbox}
+
+\paragraph{Naive Bayes Entscheidungsregel}
+Die Entscheidungsregel (maximiere Posterior) vereinfacht sich zu:
+$$ \text{Entscheide } C_k \text{ wenn: } \quad P(C_k) \prod_{i=1}^{d} p(x_i|C_k) \text{ maximal ist.} $$
+Für den 2-Klassen-Fall wird der Likelihood Ratio Test zu:
+$$ \prod_{i=1}^{d} \frac{p(x_i|C_1)}{p(x_i|C_2)} > \frac{P(C_2)}{P(C_1)} $$
+"Lernen" bedeutet hier \defc{Density Estimation}: Man muss die 1D-Wahrscheinlichkeitsdichten $p(x_i|C_k)$ für jedes Merkmal $i$ und jede Klasse $k$ aus den Trainingsdaten schätzen (z.B. durch Histogramme).
+
+\subsection{Fallstudie: Gesichtsdetektion}
+Ein Beispiel für \defc{Appearance-Based Methods}: Modelle werden direkt aus (großen) Bilddatensammlungen gelernt.
+
+\subsubsection{Sliding Window Ansatz}
+\begin{itemize}
+    \item Ein Fenster (z.B. $19 \times 19$ Pixel) wird über das gesamte Bild geschoben.
+    \item Bei jeder Position wird entschieden: "Gesicht" ($C_1$) oder "Kein Gesicht" ($C_2$).
+    \item Das Bild wird skaliert (z.B. Faktor 1.2 verkleinert) und der Vorgang wiederholt sich, um Gesichter aller Größen zu finden.
+\end{itemize}
+
+\begin{defbox}{Fallstudie: Schneiderman \& Kanade (1998)}
+Ein sehr erfolgreicher Gesichtdetektor, der auf Naive Bayes basiert.
+\begin{itemize}
+    \item \textbf{1. Repräsentation (Merkmale $x_i$):}
+    \defc{Wavelet-Koeffizienten} an bestimmten Frequenzen, Orientierungen und \defc{Positionen} $(f_i, u_i, v_i)$. Dies kodiert sowohl lokale Merkmale (Kanten) als auch deren globale Anordnung (Position).
+
+    \item \textbf{2. Trainingsdaten:}
+    \begin{itemize}
+        \item \emph{Positive Beispiele ($C_1$):} Tausende von Bildern, die Gesichter enthalten (normalisiert).
+        \item \emph{Negative Beispiele ($C_2$):} Tausende von Bildern, die \emph{keine} Gesichter enthalten.
+    \end{itemize}
+
+    \item \textbf{3. Klassifikator \& Lernen:}
+    Naive Bayes. Das "Lernen" besteht darin, die Wahrscheinlichkeiten $P(x_i|C_{\text{face}})$ und $P(x_i|C_{\text{non-face}})$ für jedes Merkmal $x_i$ zu schätzen. Dies geschieht durch \defc{Zählen (Erstellen von Histogrammen)} in den positiven und negativen Trainingsdatensätzen.
+    
+    \item \textbf{Multi-View:} Um Gesichter aus verschiedenen Winkeln zu erkennen, werden separate Detektoren trainiert (z.B. Frontal, Linksprofil, Rechtsprofil) und die Ergebnisse kombiniert.
+\end{itemize}
+\end{defbox}
+
+\subsection{Erkennungsarten (Biometrie)}
+Gesichtserkennung ist ein biometrisches Verfahren. Man muss zwischen verschiedenen Aufgaben unterscheiden:
+\begin{itemize}
+    \item \textbf{Detektion:} (Face vs. Non-Face) Ist überhaupt ein Objekt (Gesicht) vorhanden?
+    \item \textbf{Verifikation (1:1):} "Bin ich das?" (z.B. Smartphone entsperren).
+    \begin{itemize}
+        \item Eine Person gibt ihre Identität an (z.B. Nutzer-ID).
+        \item Das System vergleicht die aktuelle Probe \defc{nur mit dem einen} gespeicherten Template dieser ID.
+        \item Ausgabe: Ja / Nein.
+    \end{itemize}
+    \item \textbf{Identifikation (1:n):} "Wer ist das?" (z.B. Überwachung).
+    \begin{itemize}
+        \item Eine Person zeigt nur ihr Merkmal (Gesicht).
+        \item Das System vergleicht die Probe mit \defc{allen $n$} Templates in der Datenbank.
+        \item Ausgabe: Eine Kandidatenliste (die $m$ besten Treffer, $m \ll n$).
+    \end{itemize}
+\end{itemize}
