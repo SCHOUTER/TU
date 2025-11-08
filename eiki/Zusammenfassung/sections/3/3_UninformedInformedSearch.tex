@@ -1,0 +1,305 @@
+% !TEX root = ./eiki_summary.tex
+
+\section{Uninformed and Informed Search}
+
+\subsection{How to Solve a Problem}
+
+Problem-solving agents are result driven. They always focus on satisfying its foals, i.e., solving the problem. While Problems are often given in a human-understandable way we need to reformulate the problem for our agent. Those agents employ algorithms to develop/find solutions.\\
+Steps to formulate a solvable problem:
+\begin{enumerate}
+  \item Formulate the goal
+  \item Formulate the problem given the goal
+\end{enumerate}
+
+\begin{defbox}[The State Space/States]
+  A state describes a possible situation in our environment. The state space is a set of all possible situations (states).
+\end{defbox}
+\begin{defbox}[Transition/Action]
+  Transitions describe possible actions to take between one state and another. We only count direct transitions between two states (single actions).
+\end{defbox}
+\begin{defbox}[Costs]
+  Often transitions aren't alike and differ. We express this by adding a "cost" to each action. Often the goal in search algorithms is to minimize the coast to reach the goal.
+\end{defbox}
+\begin{defbox}[Planning Problem]
+  A planning problem is one in which we have an initial state and want to transform it into a desired goal considering future actions and outcomes of them.
+\end{defbox}
+\begin{defbox}[Search]
+  The process of finding the (optimal) solution for such a problem in form of a sequence of actions.
+\end{defbox}
+
+A single state problem is defined in 4 items:
+\begin{enumerate}
+  \item State space and initial state\\
+  Description of all possible states and the initial environment as state
+  \item Description of actions\\
+  Typically a function that maps a state to a set of possible actions in this state
+  \item Goal test\\
+  Typically a function to test if the current state fulfills the goal definition
+  \item Costs\\
+  A cost function that maps actions to its cost 
+\end{enumerate}
+
+\subsubsection{The State Space of a Problem}
+\begin{itemize}
+  \item The set of all states reachable form the initial state
+  \item Implicitly defined by the initial state and the successor function, so we have a graph, the state-space graph
+\end{itemize}
+\begin{center}
+  \vcentered{\includegraphics[width=0.9\textwidth]{pics/eiki_1_AI101-03_page_8_2.png}}
+\end{center}
+\textbf{State Space:} The set of all states reachable from the initial state. Implicitly defined by the initial state and the successor function, so we have a graph, the state-space graph.\\
+\textbf{Path:} A sequence of states connected by a sequence of actions.\\
+\textbf{Solution:} A path that leads from the initial state to a goal state.\\
+\textbf{Optimal Solution:} Solution with the minimum path cost.\\
+
+\defc{Example}\\
+\textbf{Problem:} You are currently in Arad and need to find the fastest way to Bucharest for your flight tomorrow.\\
+\textbf{Environment:} See next slides.\\
+\textbf{Initial State:} Arad\\
+\textbf{Description of Actions:} A function defining the cities that can be reached from the given city.\\
+\textbf{Goal:} Be in Bucharest.\\
+\textbf{Costs:} A function that gives you the costs of traveling from one city to another, based on Speed and/or other criteria.\\
+\textbf{Solution:} Sequence of cities/actions to get to Bucharest from Arad.\\
+
+\subsection{Tree Search Algorithmus}
+
+When you treat the state-space graph as a tree you can use simulated iterative exploration of the state space. But this needs a strategy to determine which node is expanded next.
+\begin{center}
+  \vcentered{\includegraphics[width=0.9\textwidth]{pics/eiki_1_AI101-03_page_19_2.png}}
+\end{center}
+\defc{Example: Romania}
+\begin{enumerate}
+  \item Initial State: start with node Arad
+  \item Expand node Arad
+  \item Expand node Sibiu
+\end{enumerate}
+\begin{center}
+  \includegraphics[width=0.45\textwidth]{pics/eiki_1_AI101-03_page_12_1.png}
+  \includegraphics[width=0.45\textwidth]{pics/eiki_1_AI101-03_page_23_2.png}
+\end{center}
+\begin{defbox}[Fringe]
+  The set of all nodes at the end of all visited paths is called fringe. (other naems are frontier or border)
+\end{defbox}
+\begin{defbox}[Depth]
+  Number of levels in the search tree.
+\end{defbox}
+\begin{defbox}[State]
+  Representation of a physical configuration. Describes a specific situation in our environment.
+\end{defbox}
+\begin{defbox}[Node]
+  A data structure to present a part of a search tree. it includes a state, a parent node, the taken action, the path costs and the current depth of the tree.
+  Expanding a node, creates new nodes (leaf/successor nodes) and updates the tree.
+\end{defbox}
+\begin{center}
+  \vcentered{\includegraphics[width=0.5\textwidth]{pics/eiki_1_AI101-03_page_24_1.png}}
+\end{center}
+
+\subsection{Search Strategy}
+\begin{defbox}[Uninformed Search]
+  Do not have any information except the problem definition.
+\end{defbox}
+Breadth-first search (BFS)\\
+Uniform-cost search\\
+Depth-first search (DFS)\\
+Depth-limited search\\
+Iterative deepening\\
+\begin{defbox}[Informed Search]
+  Have additional knowledge about the problem and an idea where to "look" for solutions.
+\end{defbox}
+Greedy Best-first Search\\
+A* Search\\
+Memory-Bounded Heuristic Search\\
+
+\subsubsection{Uninformed Tree Search Strategies}
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Criterion} & \textbf{Breadth-First} & \textbf{Uniform-Cost} & \textbf{Depth-First} & \textbf{Depth-Limited} & \textbf{Iterative Deepening} \\
+\hline
+Complete? & Yes$^*$ & Yes$^*$ & No & Yes, if $l \ge d$ & Yes \\
+Time & $b^{d+1}$ & $b^{\lceil C^*/\epsilon \rceil}$ & $b^m$ & $b^l$ & $b^d$ \\
+Space & $b^{d+1}$ & $b^{\lceil C^*/\epsilon \rceil}$ & $bm$ & $bl$ & $bd$ \\
+Optimal? & Yes$^*$ & Yes & No & No & Yes$^*$ \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{defbox}[Uniform-Cost Search (UCS)]
+  Each node is associated with a fixed cost (nodes can have different costs) and they accumulate over the path within the search. Uniform-Cost Search uses the lowest cumulative cost to find a path, i.e., Next node expanded is the one with the lowest accumulated path cost.
+\end{defbox}
+\begin{defbox}[Breadth-First Search {BFS}]
+  A special case of the UCS, when all costs are equal. It starts at the tree root and explores the tree level by level. Actually, BFS stops as soon as it generates a goal, whereas UCS examines all the nodes at the goal's depth to see if one has a lower cost.
+\end{defbox}
+\textbf{Completeness:} Yes, if each step has a positive cost, otherwise infinite loops are possible. Hence, BFS is also complete.\\
+\textbf{Complexity:} $O(b^d)$ for BFS, $O(b^(1+floor(OptCost/eps)))$ for UCS, which can be much greater than $O(b^d)$\\
+\textbf{Optimality:} Yes, since nodes expand in increasing order of path costs. In turn BFS is optimal.\\
+BFS and uniform-cost search are often implemented using a priority que ordered by costs.\\
+While conceptually simple, BFS \textbf{memory consumption} can be too costly (as it has exponential complexity bound)!\\
+In general, exponential-complexity search problems cannot be solved by uninformed methods for any but the smallest instances.
+
+\begin{defbox}[Depth-First Search (DFS)]
+  It starts at the tree root and explores the tree as far as possible along one branch before going step-wise back and explore alternative branches.
+\end{defbox}
+
+\textbf{Completeness:} No, fails in infinite-depth search spaces and spaces with loops. Can be modified to be complete by avoiding repeated states and limit depth.
+\textbf{Time Complexity:} Explores each branch until max depth m (where m is the longest possible path length), i.e., $O(b^m)$. Terrible if $m > d$ (depth of goal node), but may be good in dense settings.
+\textbf{Space Complexity:} Only a branch and their unexpanded siblings has to be stored. Therefore linear complexity, i.e., $O(B*m)$
+\textbf{Optimality:} No, longer solutions may be found before shorter solutions. Solution could be more expensive then the optimal one.
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.9\textwidth]{pics/eiki_1_AI101-03_page_31_1.png}}
+\end{center}
+\begin{table}[h!]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|p{6cm}|p{6cm}|}
+\hline
+\textbf{Criteria} & \textbf{BFS} & \textbf{DFS} \\ \hline
+\textbf{Concept} & Traversing tree level by level & Traversing tree sub-tree by sub-tree \\ \hline
+\textbf{Data Structure (Queue)} & First In First Out (FIFO) & Last In First Out (LIFO) \\ \hline
+\textbf{Time Complexity} & O(Vertices + Edges) & O(Vertices + Edges) \\ \hline
+\textbf{Backtracking} & No & Yes \\ \hline
+\textbf{Memory} & Requires more memory & Less nodes are stored normally (less memory) \\ \hline
+\textbf{Optimality} & Yes & Not without modification \\ \hline
+\textbf{Speed} & In most cases slower compared to DFS & In most cases faster compared to BFS \\ \hline
+\textbf{When to use} & If the target is relatively close to the root node & If the goal state is relatively deep in the tree \\ \hline
+\end{tabular}%
+}
+\caption{Comparison between BFS and DFS algorithms}
+\label{tab:bfs_vs_dfs}
+\end{table}
+
+\begin{defbox}[Depth-limited Search]
+  The depth within the search is limited to $l$. Nodes with depth $d > l$ are not considered.
+\end{defbox}
+\textbf{Completeness:} No\\
+\textbf{Time Complexity:} $O(b^l)$\\
+\textbf{Space Complexity:} $O(b \times l)$\\
+\textbf{Optimality:} No, see DFS
+
+\begin{defbox}[Iterative Deepening Search]
+  Increase $l$ after each failed search, i.e. $l = 1, 2, 3, \dots$
+\end{defbox}
+\textbf{Completeness:} Yes\\
+\textbf{Time Complexity:} first levels has to be search $d$ times $\Rightarrow d \cdot b + (d - 1)b^2 + \dots + 1 \cdot b^d = \sum_{i = 1}^{d} (d - i + 1) \cdot b^i $\\
+\textbf{Space Complexity:} $O(b \cdot d)$\\
+\textbf{Optimality:} Yes, the shortest path is found.
+
+\begin{defbox}[Bidirectional Search]
+  Perform two search simultaneosly, starting with the root and goal state. Stop if node occurs in both searches.
+\end{defbox}
+\begin{itemize}
+  \item Reduction in complexity $b^(d/2) + b^(d/2) << b^d$
+  \item Only possible if actions can be reversed
+  \item Search paths may not meet for depth-first bidirectional search
+\end{itemize}
+
+\subsubsection{Informed Tree Search Strategies}
+
+The Problem is: Uninformed search algorithms are inefficient.
+
+\begin{defbox}[Greedy Best-first Search]
+  \begin{itemize}
+    \item Using the evaluation function $f(n) = h(n)$ to estimate the cost from node n to goal
+    \item e.g. $h(n)=hSLD(n)$ = straight-line distance from n to Bucharest
+    \item Expand the tree with smallest cost according to $f(n)$, i.e., here the heuristic
+  \end{itemize}
+\end{defbox}
+
+\textbf{Completeness:} No, we can get stuck in loops. It is complete in finite state space when we make sure to avoid repeating states.\\
+\textbf{Time Complexity:} Worst case $O(b^m)$, same as DFS but can be improved using good heuristics\\
+\textbf{Space Complexity:} has to keep all nodes in memory, worst case $O(b^m)$\\
+\textbf{Optimality:} No, solution depends on heuristic.\\
+
+\begin{defbox}[A* Search]
+  An informed tree search algorithm, build on best-first search. Tries to minimize not only the estimated cost $h(n)$ but also the true costs so far $g(n)$.
+\end{defbox}
+
+Best-known form of Best-First Search. The idea behind it is to avoid expanding paths that are already expensive. The goal is to evaluate the complete path cost and not only the remaining costs.\\
+$g(n)$ = cost so far to reach node $n$\\
+$h(n)$ = estimated cost to get from $n$ to goal\\
+$f(n)$ = estimated cost of path to goal via $n$\\
+$f(n) = g(n) + h(n)$\\
+\textbf{Completeness:} Yes; Exception: if there are infinitely many nodes with $f(n) \leq f(G)$\\
+\textbf{Time Complexity:} It can be shown that the number of nodes grows exponentially unless the error of the heuristic $h(n)$ is bounded by the logarithm of the value of the actual path cost $h*(n)$, i.e., $ \left\lvert h(n) - h*(n) \right\rvert \leq O(\log h*(n))$\\
+\textbf{Space Complexity:} Has to keep all nodes in memory.\\
+\textbf{Optimality:} Depends on the heuristic.\\
+
+\subsubsection{Heuristics}
+
+\begin{defbox}[Heuristics h]
+  Informally denotes a "rule of thumb", i.e. a rule that may be helpful in solving the problem. In tree-search, a heuristic denotes a function h that estimates the remaining costs to reach the goal.
+\end{defbox}
+\begin{defbox}
+  A heuristic is admissible if it never overestimates the cost to reach a goal.
+\end{defbox}
+\textbf{Formally:} $h(n) \leq h*(n)$ if $h*(n)$ are the true cost from $n$ to goal\\
+
+\begin{defbox}[Consistent Heuristics (kind of triangle inequality)]
+  A heuristic is consistent if for every node $n$ and every successor $n'$ generated by any action $a$ it holds that $h(n) \leq c(n, a, an') + h(n')$. Thus, a heuristic is consistent if, when going from neighboring nodes a to b, the heuristic difference/step cost never overestimates the actual step cost.
+\end{defbox}
+If there were a route from $n$ to the goal that was cheaper than $h(n)$, that would violate the property that $h(n)$ is a lower bound on the cost to reach the goal (kind of triangle inequality).\\
+\textbf{Lemma 1:} Every consistent heuristic is admissible.\\
+\textbf{Lemma 2:} If $h(n)$ is consistent, then the values of $f(n)$ along any path are non decreasing.\\
+\begin{defbox}[Relaxed Problems]
+  A problem with fewer restrictions on the actions is called a relaxed problem.
+\end{defbox}
+\defc{The cost of an optimal solution to a relaxed problem is an admissible heuristic for the original problem.}\\
+Looking for relaxed problems is a good strategy for inventing admissible heuristics.
+
+\begin{defbox}[Dominance]
+  If h1 and h2 are both admissible heuristics and $h2(n) \leq h1(n)$ for all $n$, then $h2$ dominates $h1$.
+\end{defbox}
+If $h2$ dominates $h1$ it will perform better as it will always be closer to the optimal heuristic $h*$.\\
+\textbf{Why is this important?}
+Search algorithms expand every node with $f(n) < C* \text{vs. } h(n) < C* - g(n)$ Thus, dominant heuristics result in less expansion.\\
+\paragraph{Combining Heuristics}
+Suppose we have a collection of admissible heuristics $h1(n), h2(n), \dots, hm(n)$, but none of them dominates the others.\\
+\defc{Theorem (Combining admissible heuristics):}
+If $h1$ and $h2$ are two admissible heuristics than $h(n) = max{h1(n), h2(n), \dots, hm(n)}$ is also admissible and dominates $h1$ and $h2$.\\\\
+\textbf{Optimality of A* for Admissible Heuristics}\\
+Let $C^*$ be the cost of an optimal solution (an optimal goal $G$). Assume $h$ is admissible, i.e. $h(n) \le h^*(n)$ for every node $n$, where $h^*(n)$ is the true cost from $n$ to a goal.
+
+Proof (tree-search style).
+Assume for contradiction that A* returns a suboptimal goal $G_2$ with cost $g(G_2) > C^*$. Consider any node $n$ on an optimal path from the start to the optimal goal $G$ that is currently in the fringe and has not yet been expanded. For that node
+\begin{align*}
+f(n) &= g(n) + h(n) \\
+  &\le g(n) + h^*(n) \quad\text{(since $h$ is admissible)}\\
+  &= C^* .
+\end{align*}
+But
+\[
+f(G_2) = g(G_2) > C^* .
+\]
+Hence $f(n) \le C^* < f(G_2)$, so A* would expand $n$ (or another node with $f\le C^*$) before selecting $G_2$. Therefore A* cannot return a suboptimal goal before expanding all nodes with $f \le C^*$, contradicting the assumption that it returns $G_2$. Thus A* with an admissible heuristic is optimal.
+
+Proof (informal, written form).
+Assume for contradiction that A* selects a path $p$ to a goal but some other path $p'$ is actually the shortest path. Just before A* chooses $p$ from the fringe, some prefix $p''$ of $p'$ must be on the fringe. Since A* chose $p$ before $p''$, we have $f(p) \le f(p'')$. Because $p$ is a goal and $h$ is admissible, $h(p)=0$, so $f(p)=\text{cost}(p)$. Also, admissibility implies $\text{cost}(p'')+h(p'') \le \text{cost}(p')$. Combining these gives $\text{cost}(p) \le \text{cost}(p')$, contradicting that $p'$ is the shorter path. Hence A* is optimal.
+
+\paragraph{Three alternatives to A*: Memory-Bounded Heuristic Search}
+\textbf{Problem:} A* (and Best-First search) has a space problem
+\begin{enumerate}
+  \item Iterative Deepening A* (IDA*)
+  \begin{itemize}
+    \item like iterative deepening
+    \item cutoff information is the f-cost $(g + h)$ instead of depth
+  \end{itemize}
+  \item Recursive best-first search (RBFS)
+  \begin{itemize}
+    \item recursive algorithm that attempts to mimic standard best-first search with linear space.
+    \item keeps track of the $f$-value to the best alternative
+    \item patch available from any ancestor of current node and heuristic evaluations are upated with results of successors
+  \end{itemize}
+  \item(Simple Memory-Bounded A* ((S)MA)*)
+  \begin{itemize}
+    \item drop the worst leaf node when memory is full
+    \item its value will be updated to its parent
+    \item may need to be researched later
+  \end{itemize}
+\end{enumerate}
+The failure to detect repeated states can turn a linear problem into an exponential one.
+
+\end{document}
