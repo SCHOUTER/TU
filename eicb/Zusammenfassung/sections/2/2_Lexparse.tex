@@ -1,0 +1,165 @@
+% !TEX root = ./eicb_summary.tex
+
+\section{Syntaktische Analyse/Lexparse}
+
+\begin{defbox}[Übersetzung und Phasen]
+\begin{itemize}
+  \item \defc{Syntaxanalyse} → Struktur des Programms (AST)
+  \item \defc{Kontextanalyse} → Bedeutungsprüfung (Typen, Gültigkeit)
+  \item \defc{Codegenerierung} → Übersetzung in Zielcode
+\end{itemize}
+\end{defbox}
+
+\subsection{Compilerstruktur}
+\textbf{Ein-Pass-Compiler:}
+\begin{itemize}
+  \item Führt alle Phasen gleichzeitig aus
+  \item Keine echte Zwischendarstellung (IR)
+  \item Typisch für kleine Sprachen (z. B. Pascal)
+\end{itemize}
+
+\textbf{Multi-Pass-Compiler:}
+\begin{itemize}
+  \item Arbeitet mit mehreren Durchgängen über Quelltext/IR
+  \item Datenweitergabe über IR (AST)
+  \item Bessere Modularität und Optimierung
+\end{itemize}
+
+\subsection{Syntaxanalyse – Überblick}
+\begin{itemize}
+  \item \textbf{Scanner (Lexer)}: Wandelt Zeichenfolge → Tokenfolge
+  \item \textbf{Parser}: Wandelt Tokenfolge → Abstract Syntax Tree (AST)
+  \item Token = atomares Symbol des Quellprogramms
+\end{itemize}
+
+\begin{defbox}[Kontextfreie Grammatik (CFG)]
+Eine CFG ist ein 4-Tupel $(N, T, P, S)$ mit:
+\begin{itemize}
+  \item $N$: Nichtterminale
+  \item $T$: Terminale
+  \item $P$: Produktionen
+  \item $S$: Startsymbol
+\end{itemize}
+\end{defbox}
+
+\subsection{BNF und EBNF}
+\begin{itemize}
+  \item \textbf{BNF:} Grundform zur Definition von Grammatiken
+  \item \textbf{EBNF:} Erweiterung mit regulären Ausdrücken, optionalen und wiederholten Konstrukten
+  \item Beispiel:
+  \[
+  \text{Expression} ::= \text{primary-Expression (operator primary-Expression)*}
+  \]
+\end{itemize}
+
+\subsection{Grammatiktransformationen}
+\begin{itemize}
+  \item \defc{Gruppierung}: Zusammenfassen gleicher LHS
+  \item \defc{Linksausklammern}: Gemeinsame Präfixe auslagern
+  \item \defc{Linksrekursion beseitigen}: $N ::= X | N Y \Rightarrow N ::= X (Y)^*$
+  \item \defc{Ersetzung von Nicht-Terminalen}: falls nur eine Regel existiert
+\end{itemize}
+
+\subsection{Parsing-Grundlagen}
+\begin{defbox}[Parsing]
+Entscheidung, ob Eingabe zur Grammatik gehört und Aufbau des Syntaxbaumes.
+\end{defbox}
+\begin{itemize}
+  \item \textbf{Top-Down (z. B. rekursiver Abstieg):} Von Startsymbol zu Terminalen
+  \item \textbf{Bottom-Up (z. B. Shift/Reduce):} Von Terminalen zur Wurzel
+\end{itemize}
+
+\subsection{Top-Down Parsing}
+\begin{itemize}
+  \item Aufbau des Syntaxbaums von oben nach unten
+  \item Expandiere jeweils das linke Nichtterminal
+  \item LL(k): Grammatik, bei der mit $k$ Lookahead-Tokens eindeutig entschieden werden kann
+  \item \defc{LL(1)} → wichtigster Fall für rekursiven Abstieg
+\end{itemize}
+
+\subsection{Rekursiver Abstieg}
+\begin{defbox}[Rekursiver Abstieg]
+Jedes Nichtterminal erhält eine Prozedur \texttt{parseN()}, deren Aufrufstruktur dem Parsebaum entspricht.
+\end{defbox}
+\begin{itemize}
+  \item \textbf{accept(t)} prüft aktuelles Token
+  \item \textbf{acceptIt()} akzeptiert aktuelles Token ohne Prüfung
+  \item \textbf{currentToken}: vom Scanner geliefert
+\end{itemize}
+
+\subsection{Starter- und Folgemengen}
+\begin{defbox}[starters[[X]]]
+Menge aller Tokens, die am Anfang einer aus $X$ ableitbaren Zeichenkette stehen können.
+\end{defbox}
+
+\begin{defbox}[follow[[X]]]
+Menge aller Tokens, die in der Grammatik direkt nach $X$ folgen können.
+\end{defbox}
+
+\textbf{LL(1)-Bedingungen:}
+\begin{itemize}
+  \item Für jede Alternative $X|Y$: \\
+  $starters[[X]] \cap starters[[Y]] = \emptyset$
+  \item Wenn $\varepsilon$-Produktionen vorkommen: \\
+  $starters[[X]] \cap (starters[[Y]] \cup follow[[X|Y]]) = \emptyset$
+\end{itemize}
+
+\subsection{AST (Abstract Syntax Tree)}
+\begin{itemize}
+  \item Strukturierte Repräsentation des Programms
+  \item Parser erzeugt AST-Knoten beim rekursiven Abstieg
+  \item Jede Grammatikregel entspricht einer AST-Unterklasse
+\end{itemize}
+
+\begin{defbox}[AST-Aufbau]
+\begin{itemize}
+  \item \textbf{Abstrakte Basisklasse:} \texttt{AST}
+  \item \textbf{Subklassen:} \texttt{Command}, \texttt{Expression}, \texttt{Declaration}, \texttt{TypeDenoter}
+  \item Terminalknoten (z. B. Identifier, Operator) speichern tatsächlichen Text
+\end{itemize}
+\end{defbox}
+
+\subsection{Scanner (Lexikalische Analyse)}
+\begin{defbox}[Scanner]
+Wandelt Zeichen → Tokens anhand regulärer Ausdrücke (REs).
+\end{defbox}
+
+\textbf{Aufgaben:}
+\begin{itemize}
+  \item Entfernt Whitespace, Kommentare
+  \item Liefert \texttt{Token(kind, spelling, position)}
+  \item Nutzt endlichen Automaten oder rekursiven Abstieg
+\end{itemize}
+
+\textbf{Beispiel EBNF Mini-Triangle:}
+\[
+\begin{aligned}
+\text{Identifier} &::= \text{Letter (Letter | Digit)*} \\
+\text{Integer-Literal} &::= \text{Digit Digit*} \\
+\text{Operator} &::= + | - | * | / | < | > | = \\
+\end{aligned}
+\]
+
+\subsection{Automatisierung}
+\begin{itemize}
+  \item Scanner-Generatoren: \textbf{JLex}, \textbf{JFlex}
+  \item Parser-Generatoren: \textbf{ANTLR (LL*)}, \textbf{JavaCC (LL(k))}
+\end{itemize}
+
+\subsection{Typische Fehler}
+\begin{itemize}
+  \item Linksrekursion nicht entfernt
+  \item Linksausklammern vergessen
+  \item Anfangs-/Folgemengen überschneiden sich → nicht LL(1)
+  \item Schlüsselwörter nicht vom Identifier getrennt
+\end{itemize}
+
+\subsection{Zusammenfassung – Wichtigste Punkte}
+\begin{itemize}
+  \item CFG-Grundlagen (BNF/EBNF)
+  \item Transformationen: Gruppierung, Linksausklammern, Rekursionsbeseitigung
+  \item LL(1)-Parsing und Bedingungen
+  \item Rekursiver Abstieg: Struktur und Methoden
+  \item AST-Struktur: Klassenhierarchie, Terminal- und Nichtterminalknoten
+  \item Scanner: REs, endliche Automaten, Schlüsselworterkennung
+\end{itemize}
