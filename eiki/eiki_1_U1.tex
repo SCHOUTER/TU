@@ -13,6 +13,7 @@
 \usepackage{physics}
 \usepackage{xcolor}
 \usepackage{enumitem}
+\usepackage{tabularx}
 \setlist{nosep}
 
 \begin{document}
@@ -28,12 +29,13 @@ Folgt man dem Turing-Test, so ist ein intelligentes Etwas bzw. eine Entität int
 John McCarthy definiert KI als die Wissenschaft, die intelligente Maschinen entwickelt, welche Aufgaben erledigen, für die zuvor menschliche Intelligenz erforderlich war (vgl. Marvin Minsky). KI muss sich dabei nicht auf biologisch beobachtbare Methoden beschränken.\\
 
 \textbf{Agent}\\
-Ein Agent kann seine Umgebung wahrnehmen, eigene Entscheidungen treffen und auf Basis dieser Entscheidungen eine Handlung ausführen.
+Ein Agent kann seine Umgebung wahrnehmen, eigene Entscheidungen treffen und auf Basis dieser Entscheidungen eine Handlung ausführen. Kommt aus dem lateinischen und bedeutet "handeln".
 
 \section*{Aufgabe 1b) Evan's Analogy Program}
 
 Das Programm wäre im Allgemeinen nicht intelligenter als ein Mensch, da es ausschließlich Fragen eines IQ-Tests beantworten könnte. Es könnte jedoch nicht erklären, wie man beispielsweise ein Rührei zubereitet, einkaufen geht oder was eine Universität ist.\\
-Zwar zeigt das Programm in dieser einen Aufgabe überdurchschnittliches Verhalten, versagt jedoch in allen anderen Aufgaben vollständig.
+Zwar zeigt das Programm in dieser einen Aufgabe überdurchschnittliches Verhalten, versagt jedoch in allen anderen Aufgaben vollständig.\\
+Intelligenz bedeutet, adaptiv zu sein, lernen zu können.
 
 \section*{Aufgabe 1c) Was kann KI?}
 
@@ -69,15 +71,28 @@ Eine lustige Geschichte kann ich mithilfe von ChatGPT jederzeit ohne Probleme sc
 
 \begin{table}[h!]
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{lccccccc}
 \toprule
 \textbf{Szenario} & \textbf{Observable} & \textbf{Deterministic} & \textbf{Episodic} & \textbf{Static} & \textbf{Discrete} & \textbf{Agent} & \textbf{Accessible} \\
 \midrule
-Robot Soccer Agent & Ja & Nein & Nein & Ja & Continous & Multi-Agent & Accessible \\
+Robot Soccer Agent & Partially-Observable & Nein & Sequentiell & Statisch & Continuous & Multi-Agent & Accessible \\
 \bottomrule
 \end{tabular}
+}
 \caption{Eigenschaften des Robot Soccer Agent Szenarios}
 \label{tab:robot_soccer_agent}
 \end{table}
+
+\noindent
+\textbf{Begründung:} \\
+Das \textit{Robot Soccer Agent}-Szenario (z.\,B. das Team der TU Darmstadt „Dribblers“, aktiv von 2004 bis 2012) ist ein typisches Beispiel für ein komplexes Multi-Agenten-System. 
+Der Agent kann seine Umgebung durch Kameras und Sensoren weitgehend vollständig beobachten, daher gilt das Szenario als \textbf{observable} und \textbf{accessible}. 
+Es ist jedoch \textbf{nicht deterministisch}, da Bewegungen, Sensorrauschen und gegnerische Aktionen Unsicherheiten erzeugen. 
+Auch ist es \textbf{nicht episodisch}, weil jede Aktion zukünftige Spielsituationen beeinflusst (z.\,B. Positionierung oder Ballbesitz). 
+Während einzelner Entscheidungszyklen kann die Umgebung als \textbf{statisch} betrachtet werden, da sich während der kurzen Wahrnehmungszeit kaum etwas ändert. 
+Die Zustände und Aktionen sind \textbf{kontinuierlich}, etwa Position, Geschwindigkeit und Orientierung der Roboter. 
+Schließlich handelt es sich um ein \textbf{Multi-Agenten}-Szenario, da mehrere Roboter (Mitspieler und Gegner) gleichzeitig agieren und interagieren.
+
 
 \end{document}
