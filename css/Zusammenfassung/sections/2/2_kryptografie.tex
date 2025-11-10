@@ -250,22 +250,77 @@ so dass für alle Klartexte $m \in M$ und alle Schlüsselpaare $(s, p) \in K$ gi
 
 \subsection{RSA-Kryptosystem}
 
-\begin{defbox}[RSA Schlüsselgenerierung]
-\begin{enumerate}
-\item Wähle große Primzahlen $p$, $q$ mit $p \neq q$
-\item Berechne $n = pq$ und $\varphi(n) = (p-1)(q-1)$
-\item Wähle $e \in \mathbb{Z}_{\varphi(n)}^\times$ mit $1 \neq e$ und $ggT(e, \varphi(n)) = 1$
-\item Berechne $d$ als multiplikativ Inverses zu $e$ modulo $\varphi(n)$: $ed \equiv 1 \pmod{\varphi(n)}$
-\end{enumerate}
-Öffentlicher Schlüssel: $(e, n)$ \\
-Privater Schlüssel: $(d, n)$ \\
-$p$, $q$, $\varphi(n)$ sollten nach Generierung gelöscht werden.
+\begin{defbox}[Idee]
+Das RSA-Kryptosystem (nach \textbf{Rivest, Shamir, Adleman}, 1977) ist das bekannteste Verfahren der asymmetrischen Kryptographie.  
+Es basiert auf der Schwierigkeit, eine große Zahl $n = p \cdot q$ in ihre Primfaktoren zu zerlegen.
 \end{defbox}
 
-\noindent\textbf{Ver- und Entschlüsselung:}
+\subsubsection{Schlüsselerzeugung}
+
+\begin{enumerate}
+  \item \textbf{Wähle zwei große Primzahlen} $p, q$ mit $p \neq q$.
+  \item Berechne das \textbf{RSA-Modul}:
+  \[
+  n = p \cdot q
+  \]
+  \item Berechne die \textbf{Eulersche Totientfunktion}:
+  \[
+  \varphi(n) = (p-1)(q-1)
+  \]
+  Diese gibt die Anzahl der zu $n$ teilerfremden Zahlen an.
+  \item Wähle den \textbf{Verschlüsselungsexponenten} $e$ mit
+  \[
+  1 < e < \varphi(n), \quad \gcd(e, \varphi(n)) = 1
+  \]
+  (d.\,h. $e$ und $\varphi(n)$ sind teilerfremd).
+  \item Berechne den \textbf{Entschlüsselungsexponenten} $d$ als \textbf{modulares Inverses} von $e$:
+  \[
+  d \cdot e \equiv 1 \pmod{\varphi(n)}
+  \]
+  Dies geschieht mit dem \defc{erweiterten Euklidischen Algorithmus}.
+\end{enumerate}
+
+\begin{defbox}[Beispiel: Erweiterter Euklidischer Algorithmus]
+Gegeben $e = 17$ und $\varphi(n) = 3120$:
+
+Wir suchen $d$ mit $17d \equiv 1 \pmod{3120}$.
+
+\begin{align*}
+3120 &= 17 \cdot 183 + 9 \\
+17 &= 9 \cdot 1 + 8 \\
+9 &= 8 \cdot 1 + 1 \\
+8 &= 1 \cdot 8 + 0
+\end{align*}
+
+Rückwärtseinsetzen:
+\[
+1 = 9 - 8 = 9 - (17 - 9) = 2 \cdot 9 - 17 = 2(3120 - 17 \cdot 183) - 17 = 2\cdot3120 - 367 \cdot 17
+\]
+
+Daraus folgt:
+\[
+d \equiv -367 \equiv 2753 \pmod{3120}
+\]
+
+\textbf{Ergebnis:} $d = 2753$.
+\end{defbox}
+
+\noindent Damit gilt:
+\[
+\text{Öffentlicher Schlüssel: } (e, n), \quad \text{Privater Schlüssel: } (d, n)
+\]
+
+\subsubsection{Verschlüsselung und Entschlüsselung}
+
 \begin{itemize}
-\item Verschlüsselung: $c = m^e \mod n$
-\item Entschlüsselung: $m = c^d \mod n$
+  \item \textbf{Verschlüsselung:}
+  \[
+  c = m^e \bmod n
+  \]
+  \item \textbf{Entschlüsselung:}
+  \[
+  m = c^d \bmod n
+  \]
 \end{itemize}
 
 \noindent\textbf{Sicherheit von RSA:}
