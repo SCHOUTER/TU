@@ -281,28 +281,37 @@ $p$, $q$, $\varphi(n)$ sollten nach Generierung gelöscht werden.
 
 \begin{defbox}[ElGamal Schlüsselerzeugung (Alice)]
 \begin{itemize}
-\item Wähle zyklische Gruppe $G = (G, \circ, e)$ mit Erzeuger $g$
-\item Wähle $a \in \{2, \dots, \text{ord}(g)-1\}$, berechne $A = g^a$
-\item Privater Schlüssel: $(G, g, a)$
-\item Öffentlicher Schlüssel: $(G, g, A)$
+  \item Wähle eine \textbf{zyklische Gruppe} $G = (\mathbb{G}, \circ, e)$ mit großem Primzahlmodulus (z.\,B. $\mathbb{Z}_p^\times$) und einem \textbf{Erzeuger} $g$
+  \item Wähle einen privaten Exponenten $a \in \{1, \dots, \text{ord}(g)-1\}$ und berechne $A = g^a \bmod p$
+  \item \textbf{Privater Schlüssel:} $a$
+  \item \textbf{Öffentlicher Schlüssel:} $(G, g, A)$
 \end{itemize}
 \end{defbox}
 
-\noindent\textbf{Ver- und Entschlüsselung:}
+\noindent\textbf{Verschlüsselung (an Alice):}
 \begin{itemize}
-\item Verschlüsselung (an Alice): Wähle zufällig $r$, berechne $R = g^r$, $K = A^r = g^{ar}$, $C = m \circ K$, sende $(R, C)$
-\item Entschlüsselung (Alice): Berechne $K = R^a = g^{ra}$, bestimme $K^{-1}$, $m = C \circ K^{-1}$
+  \item Wähle zufällig $r \in \{1, \dots, \text{ord}(g)-1\}$ 
+  \item Berechne $R = g^r \bmod p$
+  \item Berechne gemeinsamen Schlüssel $K = A^r = (g^a)^r = g^{ar} \bmod p$
+  \item Berechne $C = (R,\, m \cdot K \bmod p)$ und sende $C$
+\end{itemize}
+
+\noindent\textbf{Entschlüsselung (Alice):}
+\begin{itemize}
+  \item Berechne $K = R^a = (g^r)^a = g^{ra} \bmod p$
+  \item Berechne das Inverse $K^{-1} \bmod p$
+  \item Entschlüssele $m = C_2 \cdot K^{-1} \bmod p$
 \end{itemize}
 
 \noindent\textbf{Sicherheit von ElGamal:}
 \begin{itemize}
-\item Basierend auf \defc{diskretem Logarithmusproblem} (DLP)
-\item Durch Quantencomputer (Shor) brüchbar
-\item \defc{Probabilistische Verschlüsselung} $\rightarrow$ semantisch sicher wenn DDH-Problem schwer
-\item Aus Chiffrat $(c_1, c_2)$ lässt sich $(c_1, g c_2)$ für alle $g \in G$ erzeugen
+  \item Sicherheit basiert auf dem \defc{Diskreten Logarithmusproblem (DLP)}: gegeben $(g, g^a)$ ist $a$ schwer zu bestimmen
+  \item Angreifbar durch Quantencomputer (Shor-Algorithmus)
+  \item \defc{Probabilistisches Verfahren} durch Zufallswert $r$ $\rightarrow$ semantisch sicher, wenn das \textbf{Decisional Diffie-Hellman-Problem (DDH)} schwer ist
+  \item Aus einem gültigen Chiffrat $(c_1, c_2)$ lässt sich leicht $(c_1,\, g \cdot c_2)$ für beliebiges $g \in G$ konstruieren — \textbf{nicht deterministisch}, daher keine Wiederverwendung von $r$
 \end{itemize}
 
-\subsection{Hybride Verschlüsselung}
+\noindent\textbf{Hinweis:} Bei allen Potenzoperationen und Multiplikationen muss stets das \textbf{Modulus $p$} angewendet werden. Der in der Vorlesung gezeigte Fehler (fehlendes $\bmod p$ bei $K$) wurde hier korrigiert.
 
 \begin{itemize}
 \item Kombination von asymmetrischer und symmetrischer Kryptographie
@@ -409,6 +418,12 @@ $p$, $q$, $\varphi(n)$ sollten nach Generierung gelöscht werden.
 \item Kann \defc{nicht}: Kryptographische Primitive brechen (perfekte Kryptographie angenommen)
 \end{itemize}
 \end{defbox}
+
+\paragraph{Needham–Schroeder}
+\begin{itemize}
+  \item Symmetrische Version anfällig für Replay-Angriffe (veraltete Schlüssel)
+  \item Asymmetrische Version sicherer, aber anfällig gegen aktive Angreifer ohne Authentifizierung
+\end{itemize}
 
 \subsubsection{Diffie-Hellman-Schlüsselaustausch}
 
