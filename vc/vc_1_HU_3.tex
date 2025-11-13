@@ -1,0 +1,176 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 3: Gruppe 28}
+\author{Niclas Kusenbach, 360227 \and Alicia Bayerl, 2633336 \and Mohamed Naceur Hedhili \and Selma Naz Öner}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Aufgabe 3.1}
+\subsection*{a) Skizze einer Lochkamera}
+
+\includegraphics[width=\linewidth]{vc_1_HU_3_Lochkamera.png}
+
+\subsection*{b) Unterschiede und Gemeinsamkeiten einer Lochkamera mit dem Prozess der digitalen Bildverarbeitung}
+
+\begin{center}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Gemeinsamkeiten} & \textbf{Unterschiede} \\
+\midrule
+\begin{itemize}[leftmargin=*]
+  \item Beide wandeln Licht in ein Bild um
+  \item Es entsteht ein zweidimensionales Abbild der Realität
+  \item Schärfe und Helligkeit hängen von der Lichtmenge und der Belichtung ab
+\end{itemize}
+&
+\begin{itemize}[leftmargin=*]
+  \item Die Lochkamera bildet das Bild optisch durch ein kleines Loch auf einer Fläche ab
+  \item Die digitale Bildverarbeitung erfasst das Bild elektronisch mit einem Sensor und verarbeitet es anschließend rechnerisch
+  \item Die Lochkamera liefert ein direktes, aber umgekehrtes Bild; die digitale Bildverarbeitung kann das Bild nachträglich verändern
+\end{itemize} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section*{Aufgabe 3.2: Anwendung des Bayes'schen Theorems}
+
+Gegeben:
+\begin{align*}
+P(C_k) &= 0{,}003 \\
+P(\bar{C}_k) &= 0{,}997 \\
+P(x \mid C_k) &= 0{,}98 \\
+P(x \mid \bar{C}_k) &= 0{,}015
+\end{align*}
+
+\begin{itemize}
+\item $P(C_k)$: Gepäck enthält verbotene Gegenstände  
+\item $P(\bar{C}_k)$: Gepäck enthält keine verbotenen Gegenstände  
+\item $P(x \mid C_k)$: Scanner schlägt korrekt Alarm  
+\item $P(x \mid \bar{C}_k)$: Scanner schlägt fälschlich Alarm  
+\end{itemize}
+
+Gesucht ist die A-posteriori-Wahrscheinlichkeit
+\[
+P(C_k \mid x),
+\]
+also die Wahrscheinlichkeit, dass verbotene Gegenstände im Gepäck sind, wenn ein Alarm ausgelöst wurde.
+
+Nach dem Satz von Bayes gilt:
+\[
+P(C_k \mid x) = \frac{P(x \mid C_k) \cdot P(C_k)}{P(x)}.
+\]
+
+Die totale Wahrscheinlichkeit berechnet sich zu:
+\[
+P(x) = P(x \mid C_k) \cdot P(C_k) + P(x \mid \bar{C}_k) \cdot P(\bar{C}_k),
+\]
+also
+\begin{align*}
+P(x) &= 0{,}98 \cdot 0{,}003 + 0{,}015 \cdot 0{,}997 \\[4pt]
+&= 0{,}00294 + 0{,}014955 \\[4pt]
+&= 0{,}017895.
+\end{align*}
+
+Damit ergibt sich:
+\begin{align*}
+P(C_k \mid x) &= \frac{P(x \mid C_k) \cdot P(C_k)}{P(x)} \\[4pt]
+&= \frac{0{,}98 \cdot 0{,}003}{0{,}017895} \\[4pt]
+&\approx 0{,}1643
+\end{align*}
+
+\[
+\boxed{P(C_k \mid x) \approx 16{,}4\%}
+\]
+
+Die Wahrscheinlichkeit, dass ein Gepäckstück tatsächlich gefährlich ist, wenn der Scanner ausschlägt, liegt bei gerade einmal $16{,}4\%$.
+
+\section*{Aufgabe 3.3: Klassifikation}
+
+\subsection*{a) Klassifikationsentscheidung}
+
+Die Entscheidung für eine Klasse $C$ an einer Stelle $x$ basiert auf der Bayes-Entscheidungsregel (Maximum A-Posteriori). Wir vergleichen die Werte der Diskriminanzfunktionen $g_i(x)$:
+\[
+g_i(x) = p(x | C_k) \cdot P(C_k)
+\]
+
+Gegeben sind die A-priori-Wahrscheinlichkeiten:
+\begin{itemize}
+    \item $P(a) = 0{,}33$
+    \item $P(b) = 0{,}67$
+\end{itemize}
+
+\paragraph{Für $x = 7$:}
+Aus der Abbildung lesen wir ab:
+\begin{itemize}
+    \item $p(x=7 | a) \approx 0{,}4$ (orange Kurve)
+    \item $p(x=7 | b) \approx 0{,}1$ (blaue Kurve)
+\end{itemize}
+
+Wir berechnen die Entscheidungswerte:
+\begin{align*}
+\text{Score}_a &= 0{,}4 \cdot 0{,}33 = 0{,}132 \\
+\text{Score}_b &= 0{,}1 \cdot 0{,}67 = 0{,}067
+\end{align*}
+Da $\text{Score}_a > \text{Score}_b$, wird an der Stelle $x=7$ die Klasse a ausgewählt.
+
+\paragraph{Für $x = 14$:}
+Aus der Abbildung lesen wir ab:
+\begin{itemize}
+    \item $p(x=14 | a) \approx 0{,}3$
+    \item $p(x=14 | b) \approx 0{,}2$
+\end{itemize}
+Wir berechnen die Entscheidungswerte:
+\begin{align*}
+\text{Score}_a &= 0{,}3 \cdot 0{,}33 = 0{,}099 \\
+\text{Score}_b &= 0{,}2 \cdot 0{,}67 = 0{,}134
+\end{align*}
+Da $\text{Score}_b > \text{Score}_a$, wird an der Stelle $x=14$ die Klasse b ausgewählt.
+
+\subsection*{b)}
+\paragraph{Welche Schwierigkeit gibt es?}
+Das Hauptproblem bei der Anwendung der Bayes Decision Theory auf hochdimensionale Daten (viele Merkmale) ist der sogenannte \textbf{,,Fluch der Dimensionalität``} (Curse of Dimensionality). 
+Um die gemeinsame Wahrscheinlichkeitsdichte $p(x_1, x_2, \dots, x_d | C_k)$ für einen $d$-dimensionalen Merkmalsraum akkurat zu schätzen, wird eine exponentiell wachsende Menge an Trainingsdaten benötigt. In der Praxis stehen oft nicht genügend Daten zur Verfügung, um die Abhängigkeiten zwischen den Merkmalen korrekt zu modellieren.
+
+\paragraph{Wie geht ein Naiver Bayes Klassifikator damit um?}
+Der Naive Bayes Klassifikator umgeht dieses Problem durch eine starke Vereinfachung: die \textbf{Unabhängigkeitsannahme}.
+Er nimmt an, dass alle Merkmale $x_1, \dots, x_d$ gegeben die Klasse statistisch unabhängig voneinander sind. 
+
+Statt die komplexe gemeinsame Verteilung zu schätzen, berechnet er die Gesamtwahrscheinlichkeit als Produkt der eindimensionalen Wahrscheinlichkeiten:
+\[
+p(x_1, \dots, x_d | C_k) \approx \prod_{i=1}^{d} p(x_i | C_k)
+\]
+Dies reduziert die Komplexität des Problems drastisch, da nur die Verteilungen für jedes Merkmal einzeln gelernt werden müssen.
+
+\section*{Aufgabe 3.4: Gesichtsdetektion}
+
+\subsection*{a) Repräsentation des Objekts}
+
+Zuordnung der Begriffe:
+\begin{itemize}
+    \item \textbf{Lokale Beschreibung}: Augen, Nase
+    \item \textbf{Globale Anordnung}: relative Position von Augen und Mund, Symmetrie des Gesichts
+\end{itemize}
+
+\subsection*{b) Trainingsdaten}
+
+Virtuelle (künstlich erzeugte) Beispiele werden verwendet, um die Varianz möglicher Gesichtssituationen künstlich zu erhöhen. Dadurch können unterschiedliche Posen, Beleuchtungen und Skalierungen abgedeckt werden, ohne dass große reale Datensammlungen notwendig sind. Dies verbessert die Generalisierung des Detektors.
+
+\subsection*{c) Klassifikator und Lernmethode}
+Schneiderman \& Kanade verwenden mehrere Detektoren, weil jeder Detektor auf eine spezifische Ansicht (z.\,B. frontal, Profil) oder bestimmte Variationen spezialisiert ist. Durch Kombination mehrerer spezialisierter Modelle wird die Detektionsleistung robuster und deckt mehr Variationen ab.
+
+\end{document}
