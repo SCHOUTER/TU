@@ -31,82 +31,120 @@ Herausforderungen für dieses Modell sind \defc{Deformationen} (Teile ändern ih
 \end{defbox}
 
 \subsection{Bayes Decision Theory (BDT)}
-Die BDT bietet ein mathematisches Framework, um Klassifikationsentscheidungen zu treffen, die die \defc{Wahrscheinlichkeit einer Fehlklassifikation minimieren}.
+Die BDT ist ein mathematisches Framework zur optimalen Entscheidungsfindung unter Unsicherheit. Ihr Ziel ist es, Klassifikationsentscheidungen so zu treffen, dass die \defc{erwartete Fehlklassifikationsrate minimiert} wird.  
+Sie nutzt dazu Wahrscheinlichkeiten als formale Beschreibung von Unsicherheit.
 
 \begin{defbox}{Die drei Kernkonzepte der BDT}
 \begin{enumerate}
-    \item \textbf{A Priori (Prior) $P(C_k)$:}
-    Die Wahrscheinlichkeit einer Klasse $C_k$ \emph{bevor} wir irgendwelche Daten (Merkmale) gesehen haben. Dies ist unser "Vorwissen". (Bsp: $P(a) = 0.75$, $P(b) = 0.25$).
+    \item \textbf{A Priori (Prior) $P(C_k)$:}  
+    Die Wahrscheinlichkeit einer Klasse $C_k$, \emph{bevor} wir Daten $x$ beobachtet haben.  
+    Der Prior kodiert unser Vorwissen oder unsere Erwartungen über die Häufigkeit von Klassen.  
+    Wichtig: Priors wirken wie ein "Bias" zugunsten bestimmter Klassen.
 
-    \item \textbf{Bedingte W'keit (Likelihood) $p(x|C_k)$:}
-    Die Wahrscheinlichkeitsdichte, das Merkmal $x$ zu beobachten, \emph{gegeben} dass es zur Klasse $C_k$ gehört. (Bsp: Wie ist die Verteilung der "Anzahl schwarzer Pixel" für den Buchstaben 'a'?).
+    \item \textbf{Klassenspezifische Dichte (Likelihood) $p(x|C_k)$:}  
+    Die Wahrscheinlichkeit (genauer: Wahrscheinlichkeitsdichte), die Merkmalsausprägung $x$ zu beobachten, \emph{unter der Annahme}, dass die wahre Klasse $C_k$ ist.  
+    Sie beschreibt also, wie typisch ein bestimmtes Datenmuster $x$ für eine Klasse ist.  
+    Hinweis: Likelihood ist eine Funktion in $x$, nicht in der Klasse.
 
-    \item \textbf{A Posteriori (Posterior) $P(C_k|x)$:}
-    Die (aktualisierte) Wahrscheinlichkeit, dass es sich um Klasse $C_k$ handelt, \emph{nachdem} wir das Merkmal $x$ beobachtet haben. Dies ist, was wir für die Entscheidung wissen wollen.
+    \item \textbf{A Posteriori (Posterior) $P(C_k|x)$:}  
+    Nachbeobachtete Wahrscheinlichkeit einer Klasse, \emph{nachdem} wir $x$ kennen.  
+    Dies ist genau die Größe, die wir für die eigentliche Entscheidung benötigen.
 \end{enumerate}
 \end{defbox}
 
 \begin{defbox}{Bayes' Theorem (Verbindung der Konzepte)}
-Das Theorem verknüpft Prior, Likelihood und Posterior:
-$$ P(C_k|x) = \frac{p(x|C_k) P(C_k)}{p(x)} $$
-Wobei $p(x) = \sum_j p(x|C_j)P(C_j)$ ein Normalisierungsfaktor ist (Summe über alle Klassen).
+\[
+    P(C_k|x) = \frac{p(x|C_k)\,P(C_k)}{p(x)}
+\]
+Die Evidenz
+\[
+    p(x) = \sum_j p(x|C_j)\,P(C_j)
+\]
+stellt sicher, dass die Posterior-Wahrscheinlichkeiten normiert sind.  
+Wichtig: Für die Entscheidung ist $p(x)$ oft irrelevant, da es für alle Klassen gleich ist.
 
-Merke: \quad $\text{Posterior} = \frac{\defc{\text{Likelihood}} \times \defc{\text{Prior}}}{\text{Normalization (Evidence)}}$
+\[
+\text{Posterior} = \frac{\defc{\text{Likelihood}}\;\times\;\defc{\text{Prior}}}{\text{Evidenz}}
+\]
 \end{defbox}
 
-\subsubsection{Bayes-Entscheidungsregel}
-Um den Fehler zu minimieren, wählen wir die Klasse $C_k$, die die \defc{höchste A-Posteriori-Wahrscheinlichkeit} hat:
+\subsubsection{Bayes-Entscheidungsregel (Fehlerminimierung)}
+Wir wählen die Klasse mit der größten posterioren Wahrscheinlichkeit:
+\[
+    C^*(x) = \arg\max_k P(C_k|x).
+\]
+Da der Nenner $p(x)$ konstant ist, genügt:
+\[
+    C^*(x) = \arg\max_k p(x|C_k)\,P(C_k).
+\]
+
+\textbf{Intuition:}  
+Die Likelihood misst, wie gut die Daten zu einer Klasse passen; der Prior berücksichtigt, wie plausibel diese Klasse im Voraus ist. Der Schnittpunkt der Produkte $p(x|C_k)P(C_k)$ bildet die \defc{Entscheidungsgrenze}.
+
+\subsubsection{Likelihood Ratio Test (Spezialfall 2 Klassen)}
+Für zwei Klassen $C_1$ und $C_2$:
+\[
+    \text{Entscheide } C_1 \text{ wenn: } 
+    \frac{p(x|C_1)}{p(x|C_2)} > \frac{P(C_2)}{P(C_1)}.
+\]
+Links: datengetriebene Evidenz, Rechts: Schwellwert aus Vorwissen.  
+So sieht man explizit, wie ein starker Prior eine Entscheidung "umkippen" kann.
+
+\subsubsection{Prior und Likelihood in der Praxis}
+Die Trennung zwischen Datenmodell (Likelihood) und Vorwissen (Prior) ermöglicht robuste Modelle:
+
 \begin{itemize}
-    \item Entscheide $C_k$ wenn: $P(C_k|x) > P(C_j|x)$ für alle $j \neq k$.
-    \item Da der Nenner $p(x)$ für alle Klassen gleich ist, ist dies äquivalent zu:
-    \item Entscheide $C_k$ wenn: \defc{$p(x|C_k) P(C_k)$} $> p(x|C_j) P(C_j)$ für alle $j \neq k$.
-\end{itemize}
-Wir vergleichen also nicht die reinen Likelihoods, sondern die mit dem Prior \defc{skalierten Likelihoods}. Der Punkt, an dem diese skalierten Kurven sich schneiden, ist die \defc{Entscheidungsgrenze}.
+    \item \textbf{Spracherkennung:}  
+    Likelihood = akustisches Modell; Prior = Sprachmodell.  
+    Das Sprachmodell zieht uns aus akustischen Mehrdeutigkeiten heraus.
 
-\subsubsection{Likelihood Ratio Test (für 2 Klassen)}
-Eine äquivalente Formulierung ist der Likelihood-Ratio-Test:
-$$ \text{Entscheide } C_1 \text{ wenn: } \quad \frac{p(x|C_1)}{p(x|C_2)} > \frac{P(C_2)}{P(C_1)} = \lambda $$
-
-\subsubsection{Bedeutung von Prior und Likelihood in der Praxis}
-Die Trennung von $p(x|C_k)$ und $P(C_k)$ ist extrem nützlich:
-\begin{itemize}
-    \item \textbf{Beispiel Spracherkennung:}
-    \begin{itemize}
-        \item $x$ = Audiosignal
-        \item $C_k$ = Satz (z.B. "This machine can recognize speech")
-        \item $p(x|C_k)$ = \defc{Akustisches Modell} (Wie wahrscheinlich klingt das Audio $x$, wenn Satz $C_k$ gesagt wurde?)
-        \item $P(C_k)$ = \defc{Sprachmodell (Language Model)} (Wie wahrscheinlich ist der Satz $C_k$ in der Sprache?)
-    \end{itemize}
-    Zwei Sätze ("recognize speech" vs. "wreck a nice beach") klingen evtl. ähnlich (ähnliches Likelihood), aber das Sprachmodell (Prior) wird dem unwahrscheinlichen Satz eine viel geringere Wahrscheinlichkeit zuweisen.
-
-    \item \textbf{Beispiel Bildverarbeitung:}
-    \begin{itemize}
-        \item $p(x|C_k)$ = \defc{Low-Level Image Measurements} (Likelihood)
-        \item $P(C_k)$ = \defc{High-Level Model Knowledge} (Prior)
-    \end{itemize}
+    \item \textbf{Bildverarbeitung:}  
+    Likelihood = Appearance Model; Prior = Kontextwissen über sinnvolle Objekte am Ort.
 \end{itemize}
 
 \subsection{Naive Bayes Klassifikator}
 
-\subsubsection{Das Problem mit vielen Merkmalen}
-Bei $d$ Merkmalen ($x_1, ..., x_d$) müssten wir die $d$-dimensionale Verteilung $p(x_1, ..., x_d|C_k)$ schätzen. Dies ist extrem datenaufwändig und oft unmöglich (\defc{Fluch der Dimensionalität}).
+\subsubsection{Das Problem hoher Dimensionen}
+Für $d$ Merkmale:
+\[
+    x = (x_1,\ldots,x_d)
+\]
+müssten wir die gemeinsame Dichte $p(x|C_k)$ im $d$-dimensionalen Raum schätzen.  
+Dies benötigt exponentiell viele Daten: \defc{Fluch der Dimensionalität}.  
+Schon wenige Dutzend Dimensionen machen klassische Dichteschätzung praktisch unmöglich.
 
-\begin{defbox}{Die "Naive" Annahme}
-Der Naive Bayes Klassifikator trifft eine vereinfachende (naive) Annahme:
+\begin{defbox}{Die Naive-Unabhängigkeitsannahme}
+Um das Problem zu umgehen, wird angenommen:
+\[
+    p(x|C_k) = p(x_1,\ldots,x_d|C_k) \approx \prod_{i=1}^d p(x_i|C_k).
+\]
+Das heißt: Die Merkmale sind \emph{bedingt unabhängig} gegeben die Klasse.  
+Diese Annahme ist oft falsch, aber in vielen Anwendungen erstaunlich effektiv, weil:
+
 \begin{itemize}
-    \item Alle Merkmale $x_i$ sind \defc{statistisch unabhängig} voneinander, \emph{gegeben die Klasse $C_k$}.
-    \item Dies erlaubt es, die gemeinsame Wahrscheinlichkeit zu faktorisieren:
-    $$ p(x_1, ..., x_d|C_k) = \prod_{i=1}^{d} p(x_i|C_k) $$
+    \item Abhängigkeiten zwischen Merkmalen sich teilweise gegenseitig ausgleichen,
+    \item Die Entscheidung meist nur eine Rangordnung braucht (MAP), nicht exakte Wahrscheinlichkeiten.
 \end{itemize}
-Diese Annahme ist oft \emph{falsch}, aber der resultierende Klassifikator funktioniert in der Praxis überraschend gut.
 \end{defbox}
 
-\paragraph{Naive Bayes Entscheidungsregel}
-Die Entscheidungsregel (maximiere Posterior) vereinfacht sich zu:
-$$ \text{Entscheide } C_k \text{ wenn: } \quad P(C_k) \prod_{i=1}^{d} p(x_i|C_k) \text{ maximal ist.} $$
-Für den 2-Klassen-Fall wird der Likelihood Ratio Test zu:
-$$ \prod_{i=1}^{d} \frac{p(x_i|C_1)}{p(x_i|C_2)} > \frac{P(C_2)}{P(C_1)} $$
-"Lernen" bedeutet hier \defc{Density Estimation}: Man muss die 1D-Wahrscheinlichkeitsdichten $p(x_i|C_k)$ für jedes Merkmal $i$ und jede Klasse $k$ aus den Trainingsdaten schätzen (z.B. durch Histogramme).
+\subsubsection{Naive Bayes Entscheidungsregel}
+Durch Einsetzen der Zerlegung:
+\[
+    C^*(x) = \arg\max_k P(C_k)\prod_{i=1}^d p(x_i|C_k).
+\]
+
+\textbf{Lernen bedeutet:}
+\begin{enumerate}
+    \item Schätzen der Priors $P(C_k)$ (Häufigkeiten).
+    \item Schätzen der eindimensionalen Dichten $p(x_i|C_k)$ für alle Merkmale und Klassen.
+\end{enumerate}
+
+\paragraph{Log-Space (Numerische Stabilität)}
+Da Produkte kleiner Wahrscheinlichkeiten numerisch instabil sind:
+\[
+    C^*(x) = \arg\max_k \left[ \log P(C_k) + \sum_{i=1}^d \log p(x_i|C_k) \right].
+\]
+Logarithmen ersetzen Multiplikationen durch Additionen, ohne die Entscheidung zu verändern.
 
 \subsection{Fallstudie: Gesichtsdetektion}
 Ein Beispiel für \defc{Appearance-Based Methods}: Modelle werden direkt aus (großen) Bilddatensammlungen gelernt.
