@@ -1,0 +1,195 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 4: Gruppe 28}
+\author{Niclas Kusenbach, 360227 \and Alicia Bayerl, 2633336 \and Mohamed Naceur Hedhili, 2957151 \and Selma Naz Öner, 2662640}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{tikz}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Aufgabe 4.1: Quiz}
+
+\subsection*{a) (vgl. Slide 23)}
+\begin{itemize}
+  \item \textbf{Falsch:} Die Anzahl der Unstetigkeiten innerhalb einer Periode ist unendlich. \par
+        $\rightarrow$ Es gibt eine endliche Anzahl von Unstetigkeiten innerhalb einer Periode.
+  \item \textbf{Richtig:} Die Anzahl der Maxima und Minima innerhalb einer Periode ist endlich.
+  \item \textbf{Falsch:} Die Funktion ist nicht in jeder Periode integrierbar.\par
+        $\rightarrow$ Die Funktion ist in jeder Periode integrierbar (d.h., die Fläche unter dem Betrag der Funktion ist in jeder Periode endlich)
+\end{itemize}
+\subsection*{b) Fourier Darstellung (vgl. Slide 61)}
+Die Fourier Darstellung ist die Zerlegung einer Funktion in ihre Frequenzbestandteile.
+
+\subsection*{c) (vgl. Slide 70)}
+Einer Faltung im \textbf{Ortsraum} entspricht einer \textbf{Multiplikation} im Frequenzraum.
+
+\section*{4.2: Fourier Reihen}
+
+\subsection*{a) Theoretischer Teil: Symmetrieeigenschaften}
+
+\subsubsection*{Bestimmten Sie, wann eine Funktion gerade und ungerade ist. (vgl. Slide 44)}
+Gerade Funktion: $f(-t) = f(t)$\\
+Ungerade Funktion: $f(-t) = -f(t)$
+
+\subsubsection*{Geben Sie an, wie sich die Koeffizienten $a_n$ (für $n \geq 0$) und $b_n$ (für $n \geq 1$) für gerade Funktionen vereinfachen. (vgl. Slide 35, 37, 45)}
+Für gerade Funktionen sind alle $b_n = 0 \text{ und } a_n = \frac{2}{\pi}\int_0^\pi f(x)\cos(nx)\,dx \qquad n \ge 0 $
+
+\subsubsection*{Geben Sie an, wie sich die Koeffizienten $a_n$ (für $n \geq 0$) und $b_n$ (für $n \geq 1$) für ungerade Funktionen vereinfachen. (vgl. Slide 35, 37, 45)}
+Für ungerade Funktionen sind alle $a_n = 0$, $b_n = \frac{2}{\pi} \int_{0}^{\pi} f(x)\sin(nx)\,dx \qquad (n \ge 1)$.
+
+\subsection*{b) Praktischer Teil: Anwendung der Symmetrie}
+
+\textbf{Gegeben:} \( f(x) = x \) im Intervall \([-\pi, \pi]\)\\
+\textbf{Gesucht:} $ a_0,\; a_n,\; b_n \text{ für } n \ge 1 $
+
+\subsubsection*{Symmetrieprüfung}
+$f(x) = x$ ist ungerade, da
+\[
+  f(-x) = -x = -f(x)
+\]
+Deshalb vereinfachen sich die Fourierkoeffizienten auf:
+\[
+  a_0 = 0, \quad a_n = 0.
+\]
+
+\subsubsection*{Berechnung von \(b_n\)}
+
+\[
+  b_n = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x) \sin(nx)\, dx
+\]
+Da $f(x)$ und $\sin(nx)$ ungerade sind, ist das Produkt grade. Vereinfacht:
+\[
+  b_n = \frac{2}{\pi} \int_{0}^{\pi} x \sin(nx)\, dx
+\]
+
+\subsubsection*{Partielle Integration}
+
+\[
+  u = x \Rightarrow u' = 1 \\
+  v' = sin(nx) \Rightarrow v = -\frac{1}{n}\cos(nx)
+\]
+
+\[
+  \int x \sin(nx)dx =  \left[ x\left( -\frac{1}{n}\cos(nx)\right) \right] - \int 1 \left( -\frac{1}{n}\cos(nx)\right)dx
+\]
+\begin{enumerate}
+  \item $-\frac{x}{n}\cos(nx)$\vspace{6pt}
+  \item $\frac{1}{n} \int \cos(nx)dx = \frac{1}{n}\cdot\frac{1}{n}\sin(nx) = \frac{1}{n^2}\sin(nx)$
+\end{enumerate}
+
+\[
+  \begin{aligned}
+    b_n & = \frac{2}{\pi}\left[ -\frac{x}{n}\cos(nx) + \frac{1}          {n^2}\sin(nx)\right]_{0}^{\pi}                                               \\
+        & = \frac{2}{\pi}\left( -\frac{\pi}{n}\cos(n\pi) + \frac{1}{n^2}\sin(n\pi) - \left( -\frac{0}{n}\cos(0) + \frac{1}{n^2}\sin(0) \right)\right) \\
+        & = \frac{2}{\pi}\left( -\frac{\pi}{n}\cos(n\pi) \right)                                                                                      \\
+        & = -\frac{2}{n}\cos(n\pi)
+  \end{aligned}
+\]
+Da $\cos(n\pi) = (-1)^n$,
+\[
+  b_n = -\frac{2}{n}(-1)^n = \frac{2}{n}(-1)^{n+1}
+\]
+
+\subsubsection*{Ergebnis}
+
+Die Fourier-Reihe lautet somit:
+\[
+  \begin{aligned}
+    f(x) & = 0 + \sum_{n=1}^{\infty}\left( 0\cos(nx) + \frac{2}{n}(-1)^{n+1}\sin(nx)\right) \\
+         & =\sum_{n=1}^{\infty}\frac{2}{n}(-1)^{n+1}\sin(nx)
+  \end{aligned}
+\]
+
+\section*{4.3: Faltung und Filterung}
+
+\subsection*{a) Suche über Raum und Skalierung (vgl. Slide 68)}
+
+Der Ansatz heißt Sliding-Window-Approach.
+
+\subsection*{b) Schritte (vgl. Slide 68)}
+
+\begin{enumerate}
+  \item Ein Eingabebild wird in Ein-Pixel-Schritten
+        horizontal und vertikal gescannt
+  \item Das Bild wird um den Faktor 1,2
+        verkleinert, die Suche wiederholt
+  \item Wiederholung
+\end{enumerate}
+
+\section*{4.4: Komplexe Zahlen}
+
+\[
+  z_1 = 7 - 3i,\quad z_2 = 7 + 5i
+\]
+
+\[
+  \begin{aligned}
+    z_3 & = z_1 \cdot z_2                                 \\
+        & = (7 - 3i)(7 + 5i)                              \\
+        & = 7\cdot 7 + 7\cdot 5i - 3i\cdot 7 - 3i\cdot 5i \\
+        & = 49 + 35i - 21i - 15i^2                        \\
+        & = 49 + 14i -15i^2
+  \end{aligned}
+\]
+
+Da \( i^2 = -1 \), gilt:
+
+\[
+  \begin{aligned}
+    z_3 & = 49 + 14i - 15 \cdot (-1) \\
+        & = 49 + 14i + 15            \\
+        & = 64 + 14i
+  \end{aligned}
+\]
+
+\begin{tikzpicture}[scale=0.8]
+  % Achsen
+  \draw[->,black,line width=1pt] (-1,0) -- (10,0);
+  \node at (10.3,0.3) {Re};
+  \draw[->,black,line width=1pt] (0,-4) -- (0,6);
+  \node at (0.3,6.3) {Im};
+
+  % Nur x = 0, 5, 10
+  \foreach \x in {5,10} {
+      \node[below] at (\x,0) {\x};
+    }
+
+  % Nur y = -4, 0, 6
+  \foreach \y in {-4,6} {
+      \node[left] at (0,\y) {\y};
+    }
+
+
+  % Gitterlinien optional
+  \draw[black!40,line width=1pt] (0,-3) -- (7,-3);
+  \draw[black!40,line width=1pt] (0,5) -- (7,5);
+  \draw[step=1cm,black!10] (-1,-5) grid (11,7);
+
+  % Punkte
+  \filldraw[blue] (7,-3) circle (2pt) node[right] {$z_1 = 7-3i$};
+  \filldraw[red]  (7,5)  circle (2pt) node[right] {$z_2 = 7+5i$};
+
+  % Markierungen
+  \draw[dashed] (7,0) -- (7,-3);
+  \draw[dashed] (7,0) -- (7,5);
+
+  % Nullpunkt Beschriftung
+  \node at (-0.3,-0.3) {$0$};
+\end{tikzpicture}
+
+\end{document}
