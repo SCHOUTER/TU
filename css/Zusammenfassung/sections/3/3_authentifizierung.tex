@@ -16,19 +16,19 @@
 \subsubsection{Begriffsdefinitionen}
 
 \begin{defbox}[Identität]
-Eine Menge von Attributen, die eine Entität beschreiben (z.B. Name, Geburtsdatum, Wohnort).
+    Eine Menge von Attributen, die eine Entität beschreiben (z.B. Name, Geburtsdatum, Wohnort).
 \end{defbox}
 
 \begin{defbox}[Authentisierung]
-Die \textbf{Bereitstellung} von Unterlagen oder Nachweisen, die es ermöglichen, die Identität zu prüfen (z.B. das Vorzeigen eines Personalausweises).
+    Die \textbf{Bereitstellung} von Unterlagen oder Nachweisen, die es ermöglichen, die Identität zu prüfen (z.B. das Vorzeigen eines Personalausweises).
 \end{defbox}
 
 \begin{defbox}[Authentifikation / Authentifizierung]
-Die \textbf{Prüfung} und Echtheitsbezeugung der vorgelegten Unterlagen zur Identitätsfeststellung (z.B. der Vergleich des Fotos auf dem Ausweis mit der Person).
+    Die \textbf{Prüfung} und Echtheitsbezeugung der vorgelegten Unterlagen zur Identitätsfeststellung (z.B. der Vergleich des Fotos auf dem Ausweis mit der Person).
 \end{defbox}
 
 \begin{defbox}[Autorisierung]
-Die Gewährung oder Verwehrung von Rechten an eine (authentifizierte) Entität.
+    Die Gewährung oder Verwehrung von Rechten an eine (authentifizierte) Entität.
 \end{defbox}
 
 \subsubsection{Drei Ansätze der Authentisierung}
@@ -59,7 +59,7 @@ Ziel ist die Identifikation von Subjekten (Menschen, Systeme, Dienste) und der N
 \subsubsection{Challenge-Response-Verfahren (mit Kryptoprozessor)}
 Dies ist ein dynamisches Verfahren, das den privaten Schlüssel nutzt, ohne ihn preiszugeben.
 \begin{center}
-  \vcentered{\includegraphics[width=0.9\textwidth]{css_1_05_Authentifizierung_page_8_1.png}}
+    \vcentered{\includegraphics[width=0.9\textwidth]{css_1_05_Authentifizierung_page_8_1.png}}
 \end{center}
 
 \begin{enumerate}
@@ -100,15 +100,15 @@ Dies ist ein dynamisches Verfahren, das den privaten Schlüssel nutzt, ohne ihn 
 \end{itemize}
 
 \begin{defbox}[Fehlerraten]
-\begin{itemize}
-    \item \defc{False Acceptance Rate (FAR):} Ein Unberechtigter wird fälschlicherweise authentifiziert. \textbf{(Sicherheitsproblem!)}
-    \item \defc{False Rejection Rate (FRR):} Ein Berechtigter wird fälschlicherweise abgewiesen. \textbf{(Benutzbarkeits-/Akzeptanzproblem!)}
-    \item \textbf{Equal Error Rate (EER):} Der Punkt, an dem FAR = FRR.
-\end{itemize}
-Man muss für den Anwendungsfall abwägen: Eine hochsichere Anwendung optimiert auf eine niedrige FAR (auf Kosten der Bequemlichkeit), eine komfortable Anwendung auf eine niedrige FRR.
-\begin{center}
-  \vcentered{\includegraphics[width=0.6\textwidth]{css_1_05_Authentifizierung_page_12_1.png}}
-\end{center}
+    \begin{itemize}
+        \item \defc{False Acceptance Rate (FAR):} Ein Unberechtigter wird fälschlicherweise authentifiziert. \textbf{(Sicherheitsproblem!)}
+        \item \defc{False Rejection Rate (FRR):} Ein Berechtigter wird fälschlicherweise abgewiesen. \textbf{(Benutzbarkeits-/Akzeptanzproblem!)}
+        \item \textbf{Equal Error Rate (EER):} Der Punkt, an dem FAR = FRR.
+    \end{itemize}
+    Man muss für den Anwendungsfall abwägen: Eine hochsichere Anwendung optimiert auf eine niedrige FAR (auf Kosten der Bequemlichkeit), eine komfortable Anwendung auf eine niedrige FRR.
+    \begin{center}
+        \vcentered{\includegraphics[width=0.6\textwidth]{css_1_05_Authentifizierung_page_12_1.png}}
+    \end{center}
 \end{defbox}
 
 \subsubsection{Beispiel: Fingerabdruck}
@@ -155,18 +155,18 @@ Authentisierung durch Wissen, ohne das "Wissen" (Passwort) zu übertragen. Nutzt
 \begin{itemize}
     \item \textbf{Voraussetzung:} Alice (Nutzer) und Bob (Server) teilen ein Geheimnis ($P_{ID}$, z.B. das Passwort).
     \item \textbf{Ablauf (CHAP):}
-    \begin{enumerate}
-        \item Alice $\rightarrow$ Bob: $ID$
-        \item Bob $\rightarrow$ Alice: $RAND$ (Zufallszahl, "Challenge")
-        \item Alice $\rightarrow$ Bob: $c = \text{HMAC}(P_{ID}, RAND)$
-        \item Bob prüft: Berechnet $c' = \text{HMAC}(P_{ID}, RAND)$ und testet, ob $c' == c$.
-    \end{enumerate}
+          \begin{enumerate}
+              \item Alice $\rightarrow$ Bob: $ID$
+              \item Bob $\rightarrow$ Alice: $RAND$ (Zufallszahl, "Challenge")
+              \item Alice $\rightarrow$ Bob: $c = \text{HMAC}(P_{ID}, RAND)$
+              \item Bob prüft: Berechnet $c' = \text{HMAC}(P_{ID}, RAND)$ und testet, ob $c' == c$.
+          \end{enumerate}
     \item \textbf{Probleme:}
-    \begin{itemize}
-        \item Der Klartextraum für $RAND$ muss groß sein, sonst \defc{Replay-Attacke} (Angreifer kann mehrfach genutzte Challenges korrekt beantworten).
-        \item Server muss $P_{ID}$ im Klartext kennen. Speichert er stattdessen $h(P_{ID})$, braucht der Angreifer bei einem Leak auch nur noch den Hash (und nicht das Passwort), um sich zu authentifizieren.
-        \item Schützt nur die Authentisierung, nicht den restlichen Kommunikationskanal (Integrität).
-    \end{itemize}
+          \begin{itemize}
+              \item Der Klartextraum für $RAND$ muss groß sein, sonst \defc{Replay-Attacke} (Angreifer kann mehrfach genutzte Challenges korrekt beantworten).
+              \item Server muss $P_{ID}$ im Klartext kennen. Speichert er stattdessen $h(P_{ID})$, braucht der Angreifer bei einem Leak auch nur noch den Hash (und nicht das Passwort), um sich zu authentifizieren.
+              \item Schützt nur die Authentisierung, nicht den restlichen Kommunikationskanal (Integrität).
+          \end{itemize}
 \end{itemize}
 
 \subsection{Single Sign On (SSO)}
@@ -183,11 +183,11 @@ Authentisierung durch Wissen, ohne das "Wissen" (Passwort) zu übertragen. Nutzt
 \begin{itemize}
     \item \textbf{Ziele:} Authentifizierung von \textit{Principals} (Benutzer, Server), Austausch von Sitzungs-Schlüsseln, SSO innerhalb einer administrativen Domäne (\textit{Realm}).
     \item \textbf{Design:}
-    \begin{itemize}
-        \item Pro \textit{Realm} ein \textbf{Key Distribution Center (KDC)}.
-        \item \textbf{KDC} = \textbf{Authentication Server (AS)} + \textbf{Ticket Granting Server (TGS)}.
-        \item Basiert auf \textbf{Pre-Shared Secrets}: Das KDC kennt einen geheimen Schlüssel ($K$) für jeden Principal in seinem Realm (z.B. $K_{Bob}$, $K_{TGS}$, $K_{SMB}$). Für Benutzer wird $K_{Bob}$ aus deren Passwort-Hash generiert.
-    \end{itemize}
+          \begin{itemize}
+              \item Pro \textit{Realm} ein \textbf{Key Distribution Center (KDC)}.
+              \item \textbf{KDC} = \textbf{Authentication Server (AS)} + \textbf{Ticket Granting Server (TGS)}.
+              \item Basiert auf \textbf{Pre-Shared Secrets}: Das KDC kennt einen geheimen Schlüssel ($K$) für jeden Principal in seinem Realm (z.B. $K_{Bob}$, $K_{TGS}$, $K_{SMB}$). Für Benutzer wird $K_{Bob}$ aus deren Passwort-Hash generiert.
+          \end{itemize}
 \end{itemize}
 
 \paragraph{Kerberos-Ablauf (vereinfacht)}
@@ -195,44 +195,44 @@ Ziel: Benutzer Bob (C) möchte auf den SMB-Server (S) zugreifen.
 
 \begin{enumerate}
     \item \textbf{Login + TGT-Anfrage:}
-    \begin{itemize}
-        \item Bob gibt sein Passwort ein. Client C generiert $K_{Bob} = \text{Hash}(\text{Passwort})$.
-        \item $C \rightarrow AS$: $(K_{Bob}(\text{timestamp}), \text{Bob}, \text{TGS})$ \\ (Bob bittet den AS um ein Ticket für den TGS, authentifiziert sich mit einem verschlüsselten Timestamp).
-    \end{itemize}
+          \begin{itemize}
+              \item Bob gibt sein Passwort ein. Client C generiert $K_{Bob} = \text{Hash}(\text{Passwort})$.
+              \item $C \rightarrow AS$: $(K_{Bob}(\text{timestamp}), \text{Bob}, \text{TGS})$ \\ (Bob bittet den AS um ein Ticket für den TGS, authentifiziert sich mit einem verschlüsselten Timestamp).
+          \end{itemize}
     \item \textbf{AS-Antwort (TGT):}
-    \begin{itemize}
-        \item $AS \rightarrow C$: $\{K_{Bob,TGS}\}_{K_{Bob}} + \{TGT\}_{K_{TGS}}$
-        \item Der AS prüft den Timestamp. Wenn gültig:
-        \item Er sendet den \textbf{Sitzungsschlüssel} für C und TGS ($K_{Bob,TGS}$), verschlüsselt mit Bobs Schlüssel ($K_{Bob}$).
-        \item Er sendet das \textbf{Ticket Granting Ticket (TGT)}, welches $(K_{Bob,TGS}, \text{Bob}, ...)$ enthält, alles verschlüsselt mit dem geheimen Schlüssel des TGS ($K_{TGS}$). \defc{Der Client kann das TGT nicht lesen.}
-    \end{itemize}
+          \begin{itemize}
+              \item $AS \rightarrow C$: $\{K_{Bob,TGS}\}_{K_{Bob}} + \{TGT\}_{K_{TGS}}$
+              \item Der AS prüft den Timestamp. Wenn gültig:
+              \item Er sendet den \textbf{Sitzungsschlüssel} für C und TGS ($K_{Bob,TGS}$), verschlüsselt mit Bobs Schlüssel ($K_{Bob}$).
+              \item Er sendet das \textbf{Ticket Granting Ticket (TGT)}, welches $(K_{Bob,TGS}, \text{Bob}, ...)$ enthält, alles verschlüsselt mit dem geheimen Schlüssel des TGS ($K_{TGS}$). \defc{Der Client kann das TGT nicht lesen.}
+          \end{itemize}
     \item \textbf{Service-Ticket-Anfrage:}
-    \begin{itemize}
-        \item $C \rightarrow TGS$: $\{A_{Bob}\}_{K_{Bob,TGS}} + \{TGT\}_{K_{TGS}} + \text{"SMB"}$
-        \item C entschlüsselt $\{K_{Bob,TGS}\}_{K_{Bob}}$, um den Sitzungsschlüssel $K_{Bob,TGS}$ zu erhalten.
-        \item C erstellt einen \textit{Authenticator} $A_{Bob} = (\text{Bob, IP, timestamp})$ und verschlüsselt ihn mit $K_{Bob,TGS}$.
-        \item C sendet den Authenticator, das (unlesbare) TGT und den Namen des Zieldienstes ("SMB") an den TGS.
-    \end{itemize}
+          \begin{itemize}
+              \item $C \rightarrow TGS$: $\{A_{Bob}\}_{K_{Bob,TGS}} + \{TGT\}_{K_{TGS}} + \text{"SMB"}$
+              \item C entschlüsselt $\{K_{Bob,TGS}\}_{K_{Bob}}$, um den Sitzungsschlüssel $K_{Bob,TGS}$ zu erhalten.
+              \item C erstellt einen \textit{Authenticator} $A_{Bob} = (\text{Bob, IP, timestamp})$ und verschlüsselt ihn mit $K_{Bob,TGS}$.
+              \item C sendet den Authenticator, das (unlesbare) TGT und den Namen des Zieldienstes ("SMB") an den TGS.
+          \end{itemize}
     \item \textbf{TGS-Antwort (Service Ticket):}
-    \begin{itemize}
-        \item $TGS \rightarrow C$: $\{K_{Bob,SMB}\}_{K_{Bob,TGS}} + \{T_{Bob,SMB}\}_{K_{SMB}}$
-        \item TGS entschlüsselt das TGT (mit $K_{TGS}$) und den Authenticator (mit $K_{Bob,TGS}$) und prüft sie.
-        \item Er generiert einen neuen Sitzungsschlüssel für Bob und den SMB-Server ($K_{Bob,SMB}$).
-        \item Er sendet $K_{Bob,SMB}$, verschlüsselt mit $K_{Bob,TGS}$.
-        \item Er sendet das \textbf{Service Ticket} ($T_{Bob,SMB}$), welches $(K_{Bob,SMB}, \text{Bob}, ...)$ enthält, alles verschlüsselt mit dem geheimen Schlüssel des SMB-Servers ($K_{SMB}$).
-    \end{itemize}
+          \begin{itemize}
+              \item $TGS \rightarrow C$: $\{K_{Bob,SMB}\}_{K_{Bob,TGS}} + \{T_{Bob,SMB}\}_{K_{SMB}}$
+              \item TGS entschlüsselt das TGT (mit $K_{TGS}$) und den Authenticator (mit $K_{Bob,TGS}$) und prüft sie.
+              \item Er generiert einen neuen Sitzungsschlüssel für Bob und den SMB-Server ($K_{Bob,SMB}$).
+              \item Er sendet $K_{Bob,SMB}$, verschlüsselt mit $K_{Bob,TGS}$.
+              \item Er sendet das \textbf{Service Ticket} ($T_{Bob,SMB}$), welches $(K_{Bob,SMB}, \text{Bob}, ...)$ enthält, alles verschlüsselt mit dem geheimen Schlüssel des SMB-Servers ($K_{SMB}$).
+          \end{itemize}
     \item \textbf{Zugriff auf Dienst:}
-    \begin{itemize}
-        \item $C \rightarrow SMB$: $\{A_{Bob}'\}_{K_{Bob,SMB}} + \{T_{Bob,SMB}\}_{K_{SMB}}$
-        \item C entschlüsselt $K_{Bob,SMB}$.
-        \item C erstellt einen *neuen* Authenticator $A_{Bob}'$ und verschlüsselt ihn mit $K_{Bob,SMB}$.
-        \item C sendet den neuen Authenticator und das (unlesbare) Service Ticket an den SMB-Server.
-    \end{itemize}
+          \begin{itemize}
+              \item $C \rightarrow SMB$: $\{A_{Bob}'\}_{K_{Bob,SMB}} + \{T_{Bob,SMB}\}_{K_{SMB}}$
+              \item C entschlüsselt $K_{Bob,SMB}$.
+              \item C erstellt einen *neuen* Authenticator $A_{Bob}'$ und verschlüsselt ihn mit $K_{Bob,SMB}$.
+              \item C sendet den neuen Authenticator und das (unlesbare) Service Ticket an den SMB-Server.
+          \end{itemize}
     \item \textbf{Verifikation:}
-    \begin{itemize}
-        \item Der SMB-Server entschlüsselt das Service Ticket (mit $K_{SMB}$) und den Authenticator (mit $K_{Bob,SMB}$) und prüft sie.
-        \item Wenn alles gültig ist, ist Bob authentifiziert und Bob und SMB teilen sich den Sitzungsschlüssel $K_{Bob,SMB}$ für die weitere Kommunikation.
-    \end{itemize}
+          \begin{itemize}
+              \item Der SMB-Server entschlüsselt das Service Ticket (mit $K_{SMB}$) und den Authenticator (mit $K_{Bob,SMB}$) und prüft sie.
+              \item Wenn alles gültig ist, ist Bob authentifiziert und Bob und SMB teilen sich den Sitzungsschlüssel $K_{Bob,SMB}$ für die weitere Kommunikation.
+          \end{itemize}
 \end{enumerate}
 
 \paragraph{Kerberos-Angriffe}
@@ -250,18 +250,18 @@ Nach der Authentifizierung (Wer bist du?) folgt die Autorisierung (Was darfst du
 
 \subsubsection{Discretionary Access Control (DAC)}
 \begin{center}
-  \vcentered{\includegraphics[width=0.9\textwidth]{css_1_05_Authentifizierung_page_49_1.png}}
+    \vcentered{\includegraphics[width=0.9\textwidth]{css_1_05_Authentifizierung_page_49_1.png}}
 \end{center}
 \begin{itemize}
     \item \textbf{Definition:} Der \textbf{Eigentümer} eines Objekts ist für die Vergabe von Zugriffsrechten verantwortlich ("at his discretion").
     \item \textbf{Modell:} \textbf{Zugriffsmatrix} ($M: S \times O \rightarrow \mathcal{P}(R)$), die Rechte von Subjekten $S$ auf Objekte $O$ abbildet.
     \item \textbf{Implementierung (Speicherung der Matrix):}
-    \begin{itemize}
-        \item \textbf{Spaltenweise (Access Control Lists, ACLs):} Jedes \textit{Objekt} hat eine Liste, die alle Subjekte und deren Rechte aufführt. (z.B. Dateiberechtigungen in Windows/Linux).
-        \item \textit{Vorteil:} Effizient zu bestimmen: "Wer darf auf diese Datei zugreifen?"
-        \item \textbf{Zeilenweise (Capability Lists, CLs):} Jedes \textit{Subjekt} hat eine Liste (Capability) mit allen Objekten, auf die es zugreifen darf, und den jeweiligen Rechten.
-        \item \textit{Vorteil:} Effizient zu bestimmen: "Worauf darf dieser Benutzer zugreifen?"
-    \end{itemize}
+          \begin{itemize}
+              \item \textbf{Spaltenweise (Access Control Lists, ACLs):} Jedes \textit{Objekt} hat eine Liste, die alle Subjekte und deren Rechte aufführt. (z.B. Dateiberechtigungen in Windows/Linux).
+              \item \textit{Vorteil:} Effizient zu bestimmen: "Wer darf auf diese Datei zugreifen?"
+              \item \textbf{Zeilenweise (Capability Lists, CLs):} Jedes \textit{Subjekt} hat eine Liste (Capability) mit allen Objekten, auf die es zugreifen darf, und den jeweiligen Rechten.
+              \item \textit{Vorteil:} Effizient zu bestimmen: "Worauf darf dieser Benutzer zugreifen?"
+          \end{itemize}
     \item \textbf{Nachteile:} Keine formalen Garantien für Informationsfluss (Problem "Trojanisches Pferd": Ein Programm, das im Kontext des Nutzers läuft, kann dessen Rechte missbrauchen, z.B. eine Datei kopieren und unerlaubt weitergeben).
 \end{itemize}
 
@@ -287,14 +287,14 @@ Ein MAC-Modell, das sich auf \textbf{Vertraulichkeit} (Confidentiality) konzentr
 \end{itemize}
 
 \begin{defbox}[Bell-La Padula Regeln]
-\begin{itemize}
-    \item \textbf{1. Simple-Security-Property (No-Read-Up):}
-    \item Ein Subjekt $S$ darf ein Objekt $O$ nur \textbf{lesen}, wenn $SC(S) \ge SC(O)$ (Subjekt dominiert Objekt).
-    \item \textit{(Ein "geheimer" Sekretär darf keine "streng geheimen" Bilanzdaten lesen).}
-    \item \textbf{2. $\ast$-Property (No-Write-Down):}
-    \item Ein Subjekt $S$ darf ein Objekt $O$ nur \textbf{schreiben}, wenn $SC(S) \le SC(O)$ (Objekt dominiert Subjekt).
-    \item \textit{(Ein "strenger geheimer" CEO darf Bilanzdaten nicht in eine "unlassifizierte" Website schreiben und so leaken).}
-\end{itemize}
+    \begin{itemize}
+        \item \textbf{1. Simple-Security-Property (No-Read-Up):}
+        \item Ein Subjekt $S$ darf ein Objekt $O$ nur \textbf{lesen}, wenn $SC(S) \ge SC(O)$ (Subjekt dominiert Objekt).
+        \item \textit{(Ein "geheimer" Sekretär darf keine "streng geheimen" Bilanzdaten lesen).}
+        \item \textbf{2. $\ast$-Property (No-Write-Down):}
+        \item Ein Subjekt $S$ darf ein Objekt $O$ nur \textbf{schreiben}, wenn $SC(S) \le SC(O)$ (Objekt dominiert Subjekt).
+        \item \textit{(Ein "strenger geheimer" CEO darf Bilanzdaten nicht in eine "unlassifizierte" Website schreiben und so leaken).}
+    \end{itemize}
 \end{defbox}
 
 \begin{itemize}

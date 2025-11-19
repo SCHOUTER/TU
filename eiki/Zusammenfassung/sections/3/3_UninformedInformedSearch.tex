@@ -1,5 +1,12 @@
-% !TEX root = ./eiki_summary.tex
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
 % TODO: für jede Suchart ein Bsp./Grafik darstellen
+
+\begin{document}
+
 \section{Uninformed and Informed Search}
 
 \subsection{Problem Formulation}
@@ -307,3 +314,5 @@ Failure to detect repeated states can turn a linear problem into an exponential 
   \item If $h(n)$ is \textbf{consistent}, Graph Search A* \textbf{is optimal}.
   \item \textbf{Why?} A consistent heuristic guarantees that $f$-values are non-decreasing along any path. This means the \textit{first} time A* expands a node $n$, it is \textit{guaranteed} to have found the shortest possible path to it. Therefore, we never need to re-expand any node in the explored set.
 \end{itemize}
+
+\end{document}

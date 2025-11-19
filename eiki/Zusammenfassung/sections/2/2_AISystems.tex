@@ -1,4 +1,10 @@
-% !TEX root = ./eiki_summary.tex
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
 
 \section{AI Systems: Agents and Environments}
 
@@ -38,17 +44,17 @@ The design of an agent heavily depends on the type of environment it operates in
 \begin{defbox}[Environment Dimensions]
     \begin{itemize}[leftmargin=*, noitemsep]
         \item \defc{Discrete vs. Continuous:} Does the environment have a limited, countable number of distinct states (e.g., chess) or is it continuous (e.g., position and speed of a self-driving car)?
-        
+
         \item \defc{Observable vs. Partially/Unobservable:} Can the agent's sensors determine the \textit{complete} state of the environment at each time point? If not, it is \defc{partially observable} (e.g., a taxi cannot know pedestrian intentions, poker agent cannot see opponent's cards).
-        
+
         \item \defc{Static vs. Dynamic:} Does the environment change while the agent is acting/deliberating? A crossword puzzle is \defc{static}; taxi driving is \defc{dynamic} (other cars move).
-        
+
         \item \defc{Single Agent vs. Multiple Agents:} Is the agent operating by itself? Or does the environment contain other agents (e.g., other drivers, poker players)?
-        
+
         \item \defc{Accessible vs. Inaccessible:} Can the agent obtain \textit{complete and accurate} information about the environment's state?
-        
+
         \item \defc{Deterministic vs. Non-deterministic (Stochastic):} Is the next state of the environment completely determined by the current state and the agent's action? Chess is \defc{deterministic}. A self-driving car is \defc{non-deterministic} (turning the wheel can have slightly different effects due to road friction, wind, etc.).
-        
+
         \item \defc{Episodic vs. Sequential:} In an \defc{episodic} environment, the agent's experience is divided into "episodes". The quality of its action depends only on the current episode (perceive $\rightarrow$ act). In a \defc{sequential} environment, the agent requires memory of past actions to make the best decision.
     \end{itemize}
 \end{defbox}
@@ -61,21 +67,21 @@ The design of an agent heavily depends on the type of environment it operates in
 \end{tcolorbox}
 
 \begin{center}
-\begin{table}[h!]
-\centering
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{lccccccc}
-\hline
-\textbf{Environment} & \textbf{Discrete?} & \textbf{Observable?} & \textbf{Static?} & \textbf{Single Agent?} & \textbf{Accessible?} & \textbf{Deterministic?} & \textbf{Episodic?} \\ \hline
-Chess & Discrete & Observable & Static & Multi-Agent & Accessible & Deterministic & Sequential \\
-Solitaire & Discrete & Observable & Static & Single Agent & Accessible & Deterministic & Sequential \\
-Poker & Discrete & Partially Observable & Static & Multi-Agent & Partially Accessible & Stochastic & Sequential \\
-Self-Driving & Continuous & Partially Observable & Dynamic & Single Agent & Inaccessible & Stochastic & Sequential \\
-Medical Diagnosis & Discrete & Partially Observable & Static & Single Agent & Inaccessible & Stochastic & Episodic \\ \hline
-\end{tabular}
-}
-\caption{Characteristics of various environments}
-\end{table}
+    \begin{table}[h!]
+        \centering
+        \resizebox{\textwidth}{!}{%
+            \begin{tabular}{lccccccc}
+                \hline
+                \textbf{Environment} & \textbf{Discrete?} & \textbf{Observable?} & \textbf{Static?} & \textbf{Single Agent?} & \textbf{Accessible?} & \textbf{Deterministic?} & \textbf{Episodic?} \\ \hline
+                Chess                & Discrete           & Observable           & Static           & Multi-Agent            & Accessible           & Deterministic           & Sequential         \\
+                Solitaire            & Discrete           & Observable           & Static           & Single Agent           & Accessible           & Deterministic           & Sequential         \\
+                Poker                & Discrete           & Partially Observable & Static           & Multi-Agent            & Partially Accessible & Stochastic              & Sequential         \\
+                Self-Driving         & Continuous         & Partially Observable & Dynamic          & Single Agent           & Inaccessible         & Stochastic              & Sequential         \\
+                Medical Diagnosis    & Discrete           & Partially Observable & Static           & Single Agent           & Inaccessible         & Stochastic              & Episodic           \\ \hline
+            \end{tabular}
+        }
+        \caption{Characteristics of various environments}
+    \end{table}
 
 \end{center}
 
@@ -91,7 +97,7 @@ Agents are categorized based on their perceived intelligence and complexity.
     \item \textbf{Problem:} Very limited. No knowledge of anything it cannot actively perceive.
 \end{itemize}
 \begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_20_1.png}} 
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_20_1.png}}
 \end{center}
 
 \subsubsection{Model-based Agent}
@@ -102,7 +108,7 @@ Agents are categorized based on their perceived intelligence and complexity.
     \item Example: A warehouse robot tracking inventory positions.
 \end{itemize}
 \begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_22_1.png}} 
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_22_1.png}}
 \end{center}
 
 \subsubsection{Goal-based Agent}
@@ -112,7 +118,7 @@ Agents are categorized based on their perceived intelligence and complexity.
     \item Example: A chess agent whose goal is to checkmate the opponent.
 \end{itemize}
 \begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_24_1.png}} 
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_24_1.png}}
 \end{center}
 
 \subsubsection{Utility-based Agent}
@@ -132,7 +138,7 @@ Agents are categorized based on their perceived intelligence and complexity.
     \item More robust in unknown environments.
 \end{itemize}
 \begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_28_1.png}} 
+    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_28_1.png}}
 \end{center}
 
 \begin{defbox}[Four Components of a Learning Agent]
@@ -160,12 +166,14 @@ There are several high-level approaches to selecting intelligent actions:
 
 \begin{itemize}[leftmargin=*, noitemsep]
     \item \defc{Search Algorithms:} Understand "finding a good action" as a search problem and use tree-based algorithms to find a solution (path to a goal).
-    
+
     \item \defc{Reinforcement Learning (RL):} Based on trial and error, similar to animal conditioning. The agent receives \defc{rewards} (positive) or \defc{pain/punishments} (negative) from the environment and learns to choose actions that maximize its cumulative reward.
-    \begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_33_1.png}}
-    \end{center}
-    
+          \begin{center}
+              \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_33_1.png}}
+          \end{center}
+
     \item \defc{Genetic Algorithms (GAs):} Inspired by Darwinian evolution ("survival of the fittest"). A \defc{population} of agents is generated, evaluated by a \defc{performance function}, and the best ones are "bred" (using \defc{crossover} and \defc{mutation}) to create a new, potentially better, generation.
 
 \end{itemize}
+
+\end{document}

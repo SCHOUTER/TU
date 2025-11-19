@@ -76,7 +76,7 @@
     vlined,
     %boxed,
     commentsnumbered,
-    ]{algorithm2e}% Mostly Pseudocode
+]{algorithm2e}% Mostly Pseudocode
 
 \SetAlgoNlRelativeSize{-1}
 
@@ -118,13 +118,13 @@
 \usepackage{tikz}
 \usepackage{tkz-graph}
 \usetikzlibrary{matrix,
-                backgrounds,
-                positioning,
-                trees,
-                shapes.geometric,
-                calc,
-                arrows,
-                chains,
+    backgrounds,
+    positioning,
+    trees,
+    shapes.geometric,
+    calc,
+    arrows,
+    chains,
 }
 
 %-------------------------------------
@@ -204,25 +204,25 @@
     before=\vspace{2pt},
     after=\vspace{2pt},
     inlbox/.style={
-        boxsep=0pt, left=6pt, right=6pt, top=2pt, bottom=2pt,
-        arc=5pt, 
-        before upper={\rule[-3pt]{0pt}{10pt}},
-        on line,
-        before=\space,
-        after=\space
-    },
+            boxsep=0pt, left=6pt, right=6pt, top=2pt, bottom=2pt,
+            arc=5pt,
+            before upper={\rule[-3pt]{0pt}{10pt}},
+            on line,
+            before=\space,
+            after=\space
+        },
     definitionbox/.style={
-        colback=\MainColor!2!white,
-        colframe=\MainColor!85!black
-    },
+            colback=\MainColor!2!white,
+            colframe=\MainColor!85!black
+        },
     mathematicsbox/.style={
-        colback=\MathColor!2!white,
-        colframe=\MathColor!85!black
-    },
+            colback=\MathColor!2!white,
+            colframe=\MathColor!85!black
+        },
     codingbox/.style={
-        colback=\CodeColor!2!white,
-        colframe=\CodeColor!85!black
-    }
+            colback=\CodeColor!2!white,
+            colframe=\CodeColor!85!black
+        }
 }
 
 \newtcolorbox[]{defbox}[1][]{
@@ -236,7 +236,7 @@
     definitionbox,
     hbox,
     title=\IfValueTF{#1}{#1}{}
-    }
+}
 \newtcolorbox[]{smalldefbox*}[1][]{
     definitionbox,
     hbox
@@ -257,7 +257,7 @@
     mathematicsbox,
     hbox,
     title=\IfValueTF{#1}{#1}{}
-    }
+}
 \newtcolorbox[]{smallmathbox*}[1][]{
     mathematicsbox,
     hbox
@@ -265,7 +265,7 @@
 \newtcolorbox[]{csmb*}[1][]{
     mathematicsbox,
     hbox,
-    center   
+    center
 }
 \newtcbox{\inlmathbox}[1][]{
     mathematicsbox,
@@ -283,7 +283,7 @@
     codingbox,
     hbox,
     title=\IfValueTF{#1}{#1}{}
-    }
+}
 \newtcolorbox[]{smallcodebox*}[1][]{
     codingbox,
     hbox
