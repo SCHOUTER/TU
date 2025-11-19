@@ -127,7 +127,7 @@ Complexity is measured in terms of:
 \end{defbox}
 \begin{itemize}
   \item \textbf{Completeness:} Yes (if step costs are positive, i.e., $>\epsilon > 0$).
-  \item \textbf{Time:} $O(b^(1+\lfloor C^/\epsilon \rfloor))$, where $C^$ is the cost of the optimal solution.
+  \item \textbf{Time:} $O(b^(1+\lfloor C^/\epsilon \rfloor))$, where $C^*$ is the cost of the optimal solution.
   \item \textbf{Space:} $O(b^(1+\lfloor C^*/\epsilon \rfloor))$.
   \item \textbf{Optimality:} Yes.
 \end{itemize}
@@ -179,12 +179,12 @@ Complexity is measured in terms of:
   \setlength{\tabcolsep}{4pt}
   \begin{tabular}{lccccc}
     \hline
-    \textbf{Criterion} & \textbf{Breadth-First} & \textbf{Uniform-Cost}               & \textbf{Depth-First} & \textbf{Depth-Limited} & \textbf{Iterative Deepening} \
+    \textbf{Criterion} & \textbf{Breadth-First} & \textbf{Uniform-Cost}               & \textbf{Depth-First} & \textbf{Depth-Limited} & \textbf{Iterative Deepening} \\
     \hline
-    Complete?          & Yes$^$                 & Yes$^$                              & No                   & Yes, if $l \ge d$      & Yes \
-    Time               & $O(b^{d+1})$           & $O(b^{\lceil C^*/\epsilon \rceil})$ & $O(b^m)$             & $O(b^l)$               & $O(b^d)$ \
-    Space              & $O(b^{d+1})$           & $O(b^{\lceil C^*/\epsilon \rceil})$ & $O(bm)$              & $O(bl)$                & $O(bd)$ \
-    Optimal?           & Yes$^$                 & Yes                                 & No                   & No                     & Yes$^$ \
+    Complete?          & Yes$^*$                & Yes$^*$                             & No                   & Yes, if $l \ge d$      & Yes                          \\
+    Time               & $O(b^{d+1})$           & $O(b^{\lceil C^*/\epsilon \rceil})$ & $O(b^m)$             & $O(b^l)$               & $O(b^d)$                     \\
+    Space              & $O(b^{d+1})$           & $O(b^{\lceil C^*/\epsilon \rceil})$ & $O(bm)$              & $O(bl)$                & $O(bd)$                      \\
+    Optimal?           & Yes$^*$                & Yes                                 & No                   & No                     & Yes$^*$                      \\
     \hline
   \end{tabular}
   \caption{Comparison of uninformed search strategies. ($^*$Assumes uniform step costs or $l \ge d$ where applicable).}
@@ -272,21 +272,21 @@ A (using Tree Search) is optimal if its heuristic $h(n)$ is admissible.
 
 \paragraph{Proof (Informal):}
 \begin{enumerate}
-  \item Let $G$ be an optimal goal state, with path cost $C^$.
-  \item Assume for contradiction that A is about to return a suboptimal goal $G_2$, with path cost $g(G_2) > C^$.
-  \item At this moment, $G_2$ is in the fringe. Because $A^$ chose $G_2$, its $f$-value must be the lowest, so $f(G_2) \le f(n)$ for all other fringe nodes $n$.
+  \item Let $G$ be an optimal goal state, with path cost $C^*$.
+  \item Assume for contradiction that A is about to return a suboptimal goal $G_2$, with path cost $g(G_2) > C^*$.
+  \item At this moment, $G_2$ is in the fringe. Because $A^*$ chose $G_2$, its $f$-value must be the lowest, so $f(G_2) \le f(n)$ for all other fringe nodes $n$.
   \item Let $n$ be any unexpanded node on a true optimal path to $G$. This node $n$ must be in the fringe.
   \item \textbf{Analyze $f(G_2)$:}
         For a goal state, $h(G_2) = 0$.
         So, $f(G_2) = g(G_2) + h(G_2) = g(G_2)$.
-        Since $G_2$ is suboptimal, $f(G_2) = g(G_2) > C^$.
+        Since $G_2$ is suboptimal, $f(G_2) = g(G_2) > C^*$.
   \item \textbf{Analyze $f(n)$:}
         $f(n) = g(n) + h(n)$.
         Because $h$ is admissible, $h(n) \le h^(n)$ (where $h^(n)$ is the true cost from $n$ to $G$).
         The true cost of the optimal path is $C^ = g(n) + h^(n)$.
-        Therefore, $f(n) = g(n) + h(n) \le g(n) + h^(n) = C^$.
+        Therefore, $f(n) = g(n) + h(n) \le g(n) + h^(n) = C^*$.
   \item \textbf{Contradiction:}
-        We have shown $f(n) \le C^$ and $f(G_2) > C^$.
+        We have shown $f(n) \le C^*$ and $f(G_2) > C^*$.
         This means $f(n) < f(G_2)$.
         A would be forced to expand $n$ (on the optimal path) \textit{before} it could ever expand $G_2$.
         Thus, A* can never select a suboptimal goal. It is optimal.

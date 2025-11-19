@@ -1,14 +1,11 @@
 % !TEX root = ./eiki_summary.tex
 \documentclass[
-    british,
-    color=3b,
-    boxarc,
-    main,
-    tikz,
-    border=3mm
+    british
 ]{article}
 
 \input{eiki_preamble.tex}
+
+\graphicspath{{pics/}}
 
 \begin{document}
 
@@ -16,9 +13,9 @@
 \thispagestyle{fancy}
 
 \begin{multicols*}{2}[
-\section*{Table of Contents}
-]
-\tableofcontents
+        \section*{Table of Contents}
+    ]
+    \tableofcontents
 \end{multicols*}
 \newpage
 \subfile{sections/1/1_Einfuerung.tex}
@@ -26,6 +23,8 @@
 \subfile{sections/2/2_AISystems.tex}
 \newpage
 \subfile{sections/3/3_UninformedInformedSearch.tex}
+\newpage
+\subfile{sections/4/4_search.tex}
 \newpage
 
 \end{document}
