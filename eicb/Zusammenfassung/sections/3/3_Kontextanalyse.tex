@@ -1,14 +1,23 @@
-% !TEX root = ./eicb_summary.tex
+\documentclass[
+../../eicb_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
 
 \section{Kontextanalyse}
 
 \begin{defbox}[Ziel der Kontextanalyse]
-Überprüfung der \defc{kontextuellen Einschränkungen}:
-\begin{itemize}
-  \item Geltungsbereiche von Bezeichnern
-  \item Typregeln (Typüberprüfung)
-  \item Konsistenzregeln (z.\,B. Funktionsaufrufe, Parameteranzahl, etc.)
-\end{itemize}
+  Überprüfung der \defc{kontextuellen Einschränkungen}:
+  \begin{itemize}
+    \item Geltungsbereiche von Bezeichnern
+    \item Typregeln (Typüberprüfung)
+    \item Konsistenzregeln (z.\,B. Funktionsaufrufe, Parameteranzahl, etc.)
+  \end{itemize}
 \end{defbox}
 
 \subsection{Geltungsbereiche und Symboltabellen}
@@ -21,12 +30,12 @@
 \end{itemize}
 
 \begin{defbox}[Symboltabelle]
-Datenstruktur zur \defc{Zuordnung von Namen zu Attributen}.
-\begin{itemize}
-  \item Schnelles Nachschlagen (z.\,B. Hash-Tabelle)
-  \item Enthält Art, Typ, Sichtbarkeit, evtl. Adresse
-  \item Hierarchische Struktur für verschachtelte Blöcke
-\end{itemize}
+  Datenstruktur zur \defc{Zuordnung von Namen zu Attributen}.
+  \begin{itemize}
+    \item Schnelles Nachschlagen (z.\,B. Hash-Tabelle)
+    \item Enthält Art, Typ, Sichtbarkeit, evtl. Adresse
+    \item Hierarchische Struktur für verschachtelte Blöcke
+  \end{itemize}
 \end{defbox}
 
 \subsubsection{Blockstrukturen}
@@ -37,22 +46,22 @@ Datenstruktur zur \defc{Zuordnung von Namen zu Attributen}.
 \end{itemize}
 
 \begin{defbox}[Geltungsbereichsregeln]
-\begin{itemize}
-  \item Kein Bezeichner mehrfach innerhalb eines Blocks.
-  \item Verwendung nur mit Deklaration im lokalen oder umschließenden Block.
-  \item Lokale Deklarationen überdecken äußere.
-\end{itemize}
+  \begin{itemize}
+    \item Kein Bezeichner mehrfach innerhalb eines Blocks.
+    \item Verwendung nur mit Deklaration im lokalen oder umschließenden Block.
+    \item Lokale Deklarationen überdecken äußere.
+  \end{itemize}
 \end{defbox}
 
 \subsection{Attribute}
 
 \begin{defbox}[Attribute]
-Informationen, die zu einem Bezeichner gespeichert werden:
-\begin{itemize}
-  \item Art (Konstante, Variable, Funktion)
-  \item Typ (int, char, boolean, array, record, …)
-  \item Sichtbarkeit, ggf. Speicheradresse
-\end{itemize}
+  Informationen, die zu einem Bezeichner gespeichert werden:
+  \begin{itemize}
+    \item Art (Konstante, Variable, Funktion)
+    \item Typ (int, char, boolean, array, record, …)
+    \item Sichtbarkeit, ggf. Speicheradresse
+  \end{itemize}
 \end{defbox}
 
 \textbf{Verwendung:}
@@ -70,7 +79,7 @@ Informationen, die zu einem Bezeichner gespeichert werden:
 \subsection{Identifikation}
 
 \begin{defbox}[Identifikation]
-Erste Phase der Kontextanalyse. Ordnet jede \defc{Verwendung} einer \defc{Definition} zu.
+  Erste Phase der Kontextanalyse. Ordnet jede \defc{Verwendung} einer \defc{Definition} zu.
 \end{defbox}
 
 \textbf{Ziel:} Aufbau einer Symboltabelle durch AST-Durchlauf.
@@ -80,7 +89,7 @@ Erste Phase der Kontextanalyse. Ordnet jede \defc{Verwendung} einer \defc{Defini
 \subsection{Typprüfung}
 
 \begin{defbox}[Typ]
-Einschränkung der möglichen Interpretationen eines Speicherbereiches oder Ausdrucks.
+  Einschränkung der möglichen Interpretationen eines Speicherbereiches oder Ausdrucks.
 \end{defbox}
 
 \begin{itemize}
@@ -104,11 +113,11 @@ Einschränkung der möglichen Interpretationen eines Speicherbereiches oder Ausd
 \subsection{Implementierung der Kontextanalyse}
 
 \begin{defbox}[AST-Dekoration]
-\defc{Dekorierter AST} speichert zusätzliche Informationen:
-\begin{itemize}
-  \item Typ jedes Ausdrucks
-  \item Verweis auf bindende Deklaration
-\end{itemize}
+  \defc{Dekorierter AST} speichert zusätzliche Informationen:
+  \begin{itemize}
+    \item Typ jedes Ausdrucks
+    \item Verweis auf bindende Deklaration
+  \end{itemize}
 \end{defbox}
 
 \textbf{Vorgehensweisen:}
@@ -119,7 +128,7 @@ Einschränkung der möglichen Interpretationen eines Speicherbereiches oder Ausd
 \end{itemize}
 
 \begin{defbox}[Visitor-Pattern]
-Ermöglicht neue Operationen auf AST-Knoten, ohne deren Klassen zu verändern.
+  Ermöglicht neue Operationen auf AST-Knoten, ohne deren Klassen zu verändern.
 \end{defbox}
 
 \textbf{Beispiele:}
@@ -132,7 +141,7 @@ Ermöglicht neue Operationen auf AST-Knoten, ohne deren Klassen zu verändern.
 \subsection{Standardumgebung}
 
 \begin{defbox}[Standardumgebung]
-Vordefinierte Typen, Konstanten und Operationen, die zur Analyse vorhanden sein müssen.
+  Vordefinierte Typen, Konstanten und Operationen, die zur Analyse vorhanden sein müssen.
 \end{defbox}
 
 \textbf{Beispiele:}
@@ -151,7 +160,7 @@ Implementierung:
 \subsection{Typäquivalenz}
 
 \begin{defbox}[Typäquivalenz]
-Regel, wann zwei Typen als "gleich" gelten.
+  Regel, wann zwei Typen als "gleich" gelten.
 \end{defbox}
 
 \subsubsection{Ansätze}
@@ -177,12 +186,12 @@ Regel, wann zwei Typen als "gleich" gelten.
 \subsection{Algorithmus der Kontextanalyse}
 
 \begin{defbox}[Algorithmus]
-Ein kombinierter AST-Durchlauf:
-\begin{enumerate}
-  \item Tiefensuche (DFS) über AST
-  \item Identifikation (Symboltabelle aufbauen)
-  \item Typprüfung (Dekoration des ASTs)
-\end{enumerate}
+  Ein kombinierter AST-Durchlauf:
+  \begin{enumerate}
+    \item Tiefensuche (DFS) über AST
+    \item Identifikation (Symboltabelle aufbauen)
+    \item Typprüfung (Dekoration des ASTs)
+  \end{enumerate}
 \end{defbox}
 
 \textbf{Voraussetzung:} Bindungen erscheinen im Code \textbf{vor} Verwendungen.
@@ -200,5 +209,7 @@ Ein kombinierter AST-Durchlauf:
 \end{itemize}
 
 \begin{defbox}[Prüfungsrelevante Kernbegriffe]
-Symboltabelle, Geltungsbereich, Attribut, Typüberprüfung, AST-Dekoration, Visitor, Standardumgebung, Typäquivalenz
+  Symboltabelle, Geltungsbereich, Attribut, Typüberprüfung, AST-Dekoration, Visitor, Standardumgebung, Typäquivalenz
 \end{defbox}
+
+\end{document}
