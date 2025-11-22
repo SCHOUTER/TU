@@ -1,0 +1,218 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 3}
+\author{Niclas Kusenbach, 360227}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[final]{microtype} %Fix most of overfull hboxes
+\usepackage{xurl} % better line breaks for \url and plain URLs
+\usepackage{hyperref} % better line breaks for \url and plain URLs
+\usepackage{tabularx}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Aufgabe 1) Informierte Suchalgorithmen: Einordnung}
+
+\subsection*{a)Unterschied informierter Suchalgorithmen zu uninformierten Suchalgorithmen}
+
+Uninformierte Suchalgorithmen haben keine Information über das Problem ausser die Problemdefinition. Dahingegen haben informierte Suchalgorithmen extra Wissen über das Problem und etwa eine grobe Richtung wo sie die Lösung dessen finden.
+
+\subsection*{b) Beispiele für Reale Probleme, bei denen informierte Suchstrategien effektiv angewandt werden}
+
+\begin{itemize}
+  \item \textbf{Routen- und Navigationsplanung:}
+        Verwendung von A*-ähnlichen Algorithmen zur Berechnung kürzester Wege, z.\,B. in GPS- oder Logistiksystemen.
+
+  \item \textbf{Pfadfindung in Videospielen:}
+        Einsatz heuristischer Suchalgorithmen (typisch A*) zur effizienten Wegfindung von Spielfiguren in 2D- und 3D-Umgebungen.
+
+  \item \textbf{Autonome Roboternavigation:}
+        Nutzung informierter Suche (A*, D*) zur Planung kollisionsfreier und optimaler Bewegungswege in dynamischen Umgebungen.
+\end{itemize}
+
+\section*{Aufgabe 2) Informierte Suchalgorithmen}
+
+\subsection*{a) Von Lugoj nach Bukarest}
+
+Im Folgenden ist der A*-Ablauf einmal recht natürlich und ohne allzu technische Formulierungen beschrieben — aber natürlich weiterhin korrekt und vollständig.
+Die Bewertungsfunktion von A* lautet:
+\[
+  f(n) = g(n) + h(n)
+\]
+\begin{itemize}
+  \item $g(n)$: tatsächliche Kosten vom Start bis zum aktuellen Knoten
+  \item $h(n)$: geschätzte Kosten bis zum Ziel (hier: Luftlinie)
+\end{itemize}
+Da wir eine \emph{Baumsuche} durchführen, merken wir uns bereits besuchte Knoten nicht in einer Closed List. Dadurch können wir immer wieder zu bereits besuchten Orten zurückkehren.
+
+\subsubsection*{Start in Lugoj}
+
+\begin{itemize}
+  \item $f(\text{Lugoj}) = 0 + 244 = 244$
+\end{itemize}
+
+\textbf{Expansion von Lugoj:}
+\begin{itemize}
+  \item \textbf{Mehadia}: $g=70,\; h=241 \Rightarrow f = 311$
+  \item \textbf{Timisoara}: $g=111,\; h=329 \Rightarrow f = 440$
+\end{itemize}
+
+\textit{fringe:} Mehadia (311), Timisoara (440)
+
+\subsubsection*{Mehadia auswählen ($f=311$)}
+
+\textbf{Expansion von Mehadia:}
+\begin{itemize}
+  \item \textbf{Lugoj (zurück)}: $g=140,\; h=244 \Rightarrow f = 384$
+  \item \textbf{Drobeta}: $g=145,\; h=242 \Rightarrow f = 387$
+\end{itemize}
+
+\textit{fringe:} Lugoj\,(Rückweg)\,(384), Drobeta (387), Timisoara (440)
+
+\subsubsection*{Lugoj (Rückweg) wählen ($f=384$)}
+
+Da wir keine Closed List verwenden, gilt schlicht: kleineres $f$ gewinnt, also wird auch der Rückweg expandiert.
+Die daraus entstehenden Kinder (erneut Mehadia, Timisoara usw.) haben jedoch nur schlechtere Pfadkosten und sind für den optimalen Weg unbedeutend. Wir lassen sie daher in der Darstellung weg.
+\textit{fringe (relevant):} Drobeta (387), Timisoara (440), …
+
+\subsubsection*{Drobeta auswählen ($f=387$)}
+
+\textbf{Expansion von Drobeta:}
+\begin{itemize}
+  \item \textbf{Craiova}: $g=265,\; h=160 \Rightarrow f = 425$
+  \item \textbf{Mehadia (zurück)}: $g=220,\; h=241 \Rightarrow f = 461$
+\end{itemize}
+\textit{fringe:} Craiova (425), Timisoara (440), …
+
+\subsubsection*{Craiova auswählen ($f=425$)}
+
+\textbf{Expansion von Craiova:}
+\begin{itemize}
+  \item \textbf{Pitesti}: $g=403,\; h=100 \Rightarrow f = 503$
+  \item \textbf{Rimnicu~Vilcea}: $g=411,\; h=193 \Rightarrow f = 604$
+\end{itemize}
+\textit{fringe:} Timisoara (440), Pitesti (503), …
+
+\subsubsection*{Timisoara auswählen ($f=440$)}
+
+Timisoara stammt noch aus dem ersten Schritt. Die Expansion führt letztlich nur zu Arad und Lugoj – beide wiederum mit höheren Kosten. Sie sind für den optimalen Weg nicht weiter relevant.
+\textit{fringe:} Pitesti (503), …
+
+\subsubsection*{Pitesti auswählen ($f=503$)}
+
+\textbf{Expansion von Pitesti:}
+\begin{itemize}
+  \item \textbf{Bukarest}: $g=504,\; h=0 \Rightarrow f = 504$
+\end{itemize}
+
+\subsubsection*{Unterschied zur Graphsuche}
+
+Bei der Graphsuche wird eine \emph{Closed List} geführt. Das führt zu folgenden Änderungen:
+
+\begin{itemize}
+  \item Bereits expandierte Knoten werden nicht erneut zur fringe hinzugefügt.
+  \item Dadurch fällt z.\,B. der Rückweg nach \textbf{Lugoj} in Schritt 2 komplett weg.
+  \item Auch der Rückweg von Drobeta nach \textbf{Mehadia} wird verworfen.
+  \item Insgesamt bleibt der Suchraum deutlich kleiner und enthält keine Zyklen.
+\end{itemize}
+
+\subsection*{b)}
+
+Ja es gibt viele Städte, die in einen unendlichen loop kommen würden durch die Greedy Best-First Search. Hier ein paar Bsp.: Craiova, Lugoj, Neamt, Eforie, etc.
+
+\subsection*{c)}
+Arad, Sibiu, Oradea, Zerind, Timisoara
+
+\section*{Heuristiken}
+
+\subsubsection*{a)}
+
+Ein zug bewegt nur eine einzige Kachel. Für diese Kachel gibt es drei mögliche Situationen:
+\begin{enumerate}
+  \item falsch $\rightarrow$ richtig: -1
+  \item richtig $\rightarrow$ falsch: +1
+  \item falsch $\rightarrow$ falsch: 0
+\end{enumerate}
+
+Da sich pro Zug nur eine Kachel verändert, kann sich $h_{MIS}$ ebenfalls nur $\pm 1$ ändern (Zugkosten = 1). Damit gilt:
+
+\[
+  h_{MIS}(n) - h_{MIS}(n') \leq 1
+\]
+Umgestellt also
+\[
+  h_{MIS}(n) \leq 1 + h_{MIS}(n')
+\]
+Da sich $h_{MIS}$ in einem Schritt höchstens um 1 ändern kann und die Schrittkosten 1 sind, folgt dass $h_{MIS}$ konsistent ist.
+
+Wenn eine Kachel verschoben wird, ändert sich ihre Manhattan Distanz um höchstens 1 ($\pm 1$)
+
+Die gesamte Manhattan Heuristik verändert sich höchstens um 1:
+
+\[
+  h_{MAN}(n) - h_{MAN}(n') \leq 1
+\]
+Da die Schrittkosten ebenfalls 1 betragen, folgt:
+\[
+  h_{MAN}(n) \leq 1 + h_{MAN}(n')
+\]
+Also ist $h_{MAN}$ konsistent.
+
+\subsubsection*{b)}
+
+Sei $h_1$ und $h_2$ admissible Heuristiken, d.h. für alle Knoten $n$ gilt $h_1(n) \leq h^*(n)$ und $h_2(n) \leq h^*(n)$.
+Definiere $h(n) = max{h_1(n), h_2(n)}$.
+Da sowohl $h_1(n)$ als auch $h_2(n)$ höchstens $h^*(n)$ sind, kann ihr Maximum $h(n)$ ebenfalls nicht größer als $h^*(n)$ sein:
+\[
+  h(n) = max{h_1(n), h_2(n)} \leq h^*(n)
+\]
+Also ist $h$ admissible.
+
+
+\subsubsection*{c)}
+Prüfung auf Inkonsistenz: Betrachten wir Kante $B \to A$.
+$h(B) \le c(B, A) + h(A)$ müsste gelten.
+Aber: $8 \le 1 + 0$ ist falsch. Die Heuristik fällt von $B$ nach $A$ zu stark ab.
+\begin{center}
+  \includegraphics[width=0.49\textwidth]{eiki_1_U3_1}
+  \includegraphics[width=0.49\textwidth]{eiki_1_U3_2}
+\end{center}
+
+\subsubsection*{d)}
+
+Wenn $h_2$ und $h_1$ beide zulässig sind und $h_1(n) \leq h_2(n)$ für alle $n$, dann wird $h_2$ von $h_1$ dominiert. Das bedeutet, dass $h_1$ näher an den wahren Kosten ($h^*$)ist als $h_2$.
+
+\begin{description}
+  \item[$h_{\text{MIS}}$ (Misplaced Tiles):] Zählt die Anzahl der Steine, die nicht an ihrer Zielposition sind.
+  \item[$h_{\text{MAN}}$ (Manhattan Distance):] Summiert für jeden Stein die horizontale und vertikale Distanz zu seiner Zielposition.
+\end{description}
+\smallskip
+\paragraph{Dominanz:}
+\begin{itemize}
+  \item Wenn ein Stein an der falschen Stelle liegt, trägt er zu $h_{MIS}$ genau 1 bei.
+  \item Wenn ein Stein an der falschen Stelle liegt, muss er mindestens 1 Feld bewegt werden,um zum Ziel zu kommen. Seine Manhattan Distanz ist also immer $\leq 1$. Oft ist sie sogar größer (2 oder 3 Schritte entfernt).
+  \item Daraus folgt: Für jeden Zustand $n$ ist die Summe der Manhattan Distanzen größer oder gleich der Anzahl der falsch platzierten Steine.
+        \[h_{MAN}(n) \leq h_{MIS}(n)\]
+\end{itemize}
+
+\paragraph{Effizienz:}
+\begin{itemize}
+  \item A* expandiert alle Knoten mit $f(n) < C^*$ (optimale Kosten).
+  \item Da $f(n) = g(n) + h(n)$, bedeutet ein größeres $h(n)$, dass der $f$-Wert schneller wächst.
+  \item Knoten überschreiten den Grenzwert $C^*$ schneller und werden nicht expandiert (der Suchbaum wird "pruned" bzw. beschnitten).
+  \item Fazit: Da $h_{MAN}$ dominiert, wird A* mit $h_{MAN}$ garantiert weniger oder gleich viele Knoten expandieren als mit $h_{MIS}$. Die Suche ist mit der Manhattan-Distanz also deutlich effizienter und schneller.
+\end{itemize}
+
+\end{document}

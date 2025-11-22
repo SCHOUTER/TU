@@ -1,0 +1,189 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Local Search and adversarial search}
+
+In previous lectures, the focus was on finding a sequence of actions (a path) to reach a goal (e.g., A* search). However, in many AI problems, the path to the solution is irrelevant; only the final state matters.
+
+\begin{defbox}[Optimization Problem]
+  An \defc{Optimization Problem} is a problem where all states are technically solutions, but they have different qualities. The goal is not to reach a state, but to find the \defc{best state} (Global Optimum) according to an \defc{Objective Function}.
+\end{defbox}
+
+\paragraph{The State Landscape}
+Imagine the state space as a physical landscape where "elevation" corresponds to the value of the objective function.
+% [Comment: Insert diagram of Objective Function vs State Space showing Global Max, Local Max, Shoulder, etc.]
+
+\begin{itemize}
+  \item \defc{Global Maximum}: The highest peak in the entire state space. The optimal solution.
+  \item \defc{Local Maximum}: A peak that is higher than all its immediate neighbors but lower than the global maximum.
+  \item \defc{Shoulder}: A flat region (plateau) that can be an intermediate step rising to a peak.
+  \item \defc{Flat Local Maximum}: A plateau that is a local maximum.
+\end{itemize}
+
+\subsection{Local Search Algorithms}
+
+Local search algorithms operate by maintaining a single \defc{Current State} and iteratively moving to neighboring states.
+
+\begin{itemize}
+  \item \textbf{Advantages:} Uses very little memory (constant space) and can find reasonable solutions in infinite/massive search spaces.
+  \item \textbf{Disadvantages:} No guarantee of completeness (finding a solution) or optimality (finding the best solution).
+\end{itemize}
+
+\subsubsection{Hill Climbing (Greedy Local Search)}
+The Hill Climbing algorithm is a loop that continually moves in the direction of increasing value (uphill).
+
+\begin{enumerate}
+  \item Generate all neighbors of the current state.
+  \item Move to the neighbor with the highest value.
+  \item Terminate when no neighbor has a higher value than the current state.
+\end{enumerate}
+
+\begin{defbox}[Metaphor]
+  Hill climbing is like "climbing Mount Everest in thick fog with amnesia." You only know the slope under your feet, not where the true peak is.
+\end{defbox}
+
+\paragraph{Problems with Hill Climbing}
+\begin{itemize}
+  \item \defc{Local Optima}: The algorithm halts at a local peak, missing the higher global peak elsewhere.
+  \item \defc{Ridges}: A sequence of local maxima that is difficult for greedy algorithms to navigate. If the ridge rises diagonally but movement is restricted to cardinal directions (North/East), the algorithm may think it's at a peak because every single step leads downhill, even though the ridge continues up.
+  \item \defc{Plateaus}: Flat areas where the algorithm cannot determine which direction is better, leading to random wandering.
+\end{itemize}
+
+\paragraph{Variants to Solve Local Optima}
+\begin{itemize}
+  \item \defc{Randomized Restart}: Run the algorithm multiple times from different random starting positions.
+  \item \defc{Stochastic Hill Climbing}: Choose a successor randomly, weighted by the steepness of the uphill move (better moves have higher probability).
+\end{itemize}
+
+\subsubsection{Beam Search}
+Instead of keeping just one state in memory, \defc{Beam Search} keeps track of $k$ states.
+\begin{itemize}
+  \item At each step, generate all successors of all $k$ states.
+  \item Select the best $k$ successors from the complete list to be the new current states.
+  \item This is different from $k$ random restarts because the "beams" (threads) can communicate/converge on the most promising area.
+\end{itemize}
+
+\subsubsection{Simulated Annealing}
+This algorithm combines Hill Climbing with a Random Walk to escape local optima. It is inspired by metallurgy (heating metal and cooling it slowly to toughen it).
+
+\begin{defbox}[Mechanism]
+  Instead of always picking the best move, the algorithm sometimes accepts "bad" moves (downhill) to explore the space. The probability of accepting a bad move depends on the \defc{Temperature (T)}.
+\end{defbox}
+
+\textbf{The Process:}
+\begin{itemize}
+  \item \textbf{High T (Early phase):} The algorithm accepts bad moves frequently (exploring widely, behaving like a random walk).
+  \item \textbf{Low T (Late phase):} The algorithm rarely accepts bad moves (exploiting the local area, behaving like hill climbing).
+\end{itemize}
+
+\textbf{The Probability Formula:}
+If the move improves the situation ($\Delta E > 0$), accept it always. If the move is worse ($\Delta E < 0$), accept it with probability:
+\[ P = e^{\frac{\Delta E}{T}} \]
+As $T \to 0$, the probability of accepting a negative $\Delta E$ approaches 0.
+
+\subsection{Gradient Descent}
+
+When the state space is \defc{continuous} (rather than discrete steps), we use Gradient Descent. This is the foundation of training Neural Networks.
+
+\begin{defbox}[Gradient]
+  The gradient $\nabla J(\theta)$ is a vector of partial derivatives pointing in the direction of the steepest ascent.
+\end{defbox}
+
+To minimize a cost function $J(\theta)$:
+\[ \theta_{new} = \theta_{old} - \lambda \nabla J(\theta) \]
+Where $\lambda$ is the \defc{Learning Rate}.
+
+\subsubsection{The Learning Rate ($\lambda$)}
+This hyperparameter controls the step size.
+\begin{itemize}
+  \item \textbf{Too Small:} Convergence is extremely slow; might get stuck in local minima.
+  \item \textbf{Too Large:} The algorithm may overshoot the minimum, oscillate, or diverge (move away from the solution).
+\end{itemize}
+
+\subsection{Brief Note: SAT and Complexity}
+The Boolean Satisfiability Problem (SAT) is finding an assignment of variables that makes a logical formula true.
+\begin{itemize}
+  \item \defc{Cook's Theorem}: SAT is NP-Complete.
+  \item \defc{NP-Complete}: Problems that are effectively "hardest" in NP. If you can solve one NP-Complete problem in polynomial time, you can solve all of them ($P=NP$).
+  \item \textbf{GSAT:} A local search algorithm for SAT that flips variable assignments to minimize unsatisfied clauses.
+\end{itemize}
+
+\subsection{Adversarial Search (Games)}
+
+This domain deals with multi-agent environments where agents have conflicting goals (Zero-Sum Games).
+
+\begin{defbox}[Zero-Sum Game]
+  A situation where one player's gain is exactly the other player's loss. The total utility remains constant (usually 0).
+\end{defbox}
+
+\subsubsection{Game Trees}
+Unlike standard search trees, nodes represent game states, and levels alternate between players:
+\begin{itemize}
+  \item \defc{MAX}: The agent trying to maximize the utility value.
+  \item \defc{MIN}: The opponent trying to minimize the utility value (make it worst for MAX).
+\end{itemize}
+
+\subsubsection{The Minimax Algorithm}
+A recursive algorithm to determine the optimal move assuming \textbf{perfect play} from the opponent.
+
+\begin{enumerate}
+  \item Navigate down the tree to the terminal nodes (game over states).
+  \item Calculate the Utility (score) of terminal nodes.
+  \item Backtrack up the tree:
+        \begin{itemize}
+          \item At a \textbf{MAX} node, pass up the highest child value.
+          \item At a \textbf{MIN} node, pass up the lowest child value.
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Complexity:}
+\begin{itemize}
+  \item Time: $O(b^m)$ (Exponential). $b$ is branching factor, $m$ is max depth.
+  \item Space: $O(bm)$ (Linear), due to Depth First Search nature.
+\end{itemize}
+
+\subsection{Alpha-Beta Pruning}
+
+Because Game Trees grow exponentially ($10^{40}$ nodes for Chess), we cannot search the whole tree. \defc{Pruning} allows us to ignore branches that will certainly not be chosen, without affecting the final result.
+
+\begin{defbox}[Alpha and Beta Parameters]
+  \begin{itemize}
+    \item \defc{$\alpha$ (Alpha)}: The value of the best (highest) choice found so far for MAX along the current path. Initialized to $-\infty$.
+    \item \defc{$\beta$ (Beta)}: The value of the best (lowest) choice found so far for MIN along the current path. Initialized to $+\infty$.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{The Pruning Logic}
+We prune (cut off) a branch when we prove it is worse than a move we have already examined.
+
+\begin{enumerate}
+  \item \textbf{Pruning at Min Node (Beta Cutoff):}
+        If the Min player finds a move with value $v$ such that $v \leq \alpha$, they stop looking.
+        \textit{Reasoning:} MAX already has an option worth $\alpha$ elsewhere. If MIN can force the game to a value $v$ (which is worse than $\alpha$), MAX will never choose the path leading to this MIN node.
+
+  \item \textbf{Pruning at Max Node (Alpha Cutoff):}
+        If the Max player finds a move with value $v$ such that $v \geq \beta$, they stop looking.
+        \textit{Reasoning:} MIN already has an option elsewhere that limits MAX to $\beta$. If MAX finds a move giving $v$ (better than $\beta$), MIN will never allow the game to reach this state.
+\end{enumerate}
+
+\textbf{Efficiency:} With optimal move ordering (checking best moves first), Alpha-Beta pruning effectively doubles the searchable depth, reducing complexity to $O(b^{m/2})$.
+
+\subsection{Advanced Game Search}
+
+\subsubsection{Evaluation Functions}
+Since we cannot reach terminal nodes in complex games (Chess/Go), we cut off the search at a specific depth and use a \defc{Heuristic Evaluation Function}. This estimates the probability of winning from that state (e.g., Material value in chess: Pawn=1, Queen=9).
+
+\subsubsection{Monte Carlo Tree Search (MCTS)}
+Used in games like Go where branching factors are too high for Minimax ($b \approx 250$).
+\begin{itemize}
+  \item Instead of exhaustive search, it plays many random "simulation" games from the current state to the end.
+  \item It builds statistics: "In 80\% of random games starting from move A, I won."
+  \item \textbf{AlphaGo:} Combined MCTS with Deep Neural Networks (to predict move probabilities and value positions) to defeat the world champion.
+\end{itemize}
+
+\end{document}

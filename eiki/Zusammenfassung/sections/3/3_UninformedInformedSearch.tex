@@ -204,7 +204,7 @@ This "hint" is provided by a heuristic function.
 
 \subsubsection{Greedy Best-first Search}
 \begin{defbox}[Greedy Best-first Search]
-  Uses an evaluation function $f(n) = h(n)$ to estimate the cost from node $n$ to the goal. It expands the node that appears to be closest to the goal, according to the heuristic.
+  Uses an evaluation function $f(n) = h(n)$ to estimate the cost from node $n$ to the goal. It expands the node that appears to be closest to the goal, according to the heuristic. It does not care about the actual cost/distance.
 \end{defbox}
 \begin{itemize}
   \item \textbf{Completeness:} No. Can get stuck in loops. (Complete in finite spaces with loop detection).
@@ -233,9 +233,13 @@ A* evaluates nodes using the function: $f(n) = g(n) + h(n)$.
 \subsubsection{Heuristic Properties}
 
 \begin{defbox}[Admissible Heuristics]
-  A heuristic is \textbf{admissible} if it \textbf{never overestimates} the cost to reach a goal.
-  Formally: $h(n) \le h^(n)$ for all nodes $n$, where $h^(n)$ is the true cost from $n$ to the goal.
-  (e.g., straight-line distance $h_{SLD}$ is admissible for route-finding).
+  A heuristic is \textbf{admissible} if it \textbf{never overestimates} the true cost to reach a goal.
+  Formally:
+  \[
+    h(n) \le h^*(n) \quad \text{for all nodes } n,
+  \]
+  where $h(n)$ is the heuristic estimate and $h^*(n)$ is the actual optimal cost from $n$ to the goal.
+  (For example, the straight-line distance heuristic $h_{\text{SLD}}$ is admissible in route-finding problems.)
 \end{defbox}
 
 \begin{defbox}[Consistent Heuristics]
