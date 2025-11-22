@@ -1,0 +1,261 @@
+\documentclass[
+../../css_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Netzwerkgrundlagen \& Sicherheit}
+
+\subsection{Einführung und Modelle}
+
+Dieser Abschnitt behandelt die Grundlagen von Netzwerken, Kommunikationsmodellen und spezifischen Angriffen sowie deren Abwehr auf verschiedenen Schichten.
+
+\subsubsection{OSI-Modell (Open System Interconnection)}
+Das OSI-Modell ist ein Referenzmodell für Netzwerkprotokolle, unterteilt in 7 Schichten. Jede Schicht bietet Dienste für die darüberliegende Schicht an.
+
+% [GRAFIK: OSI Modell Pyramide oder Tabelle]
+
+\begin{itemize}
+  \item \textbf{Layer 7: Application Layer} (Anwendungsschicht) \\
+        Stellt Funktionen für Anwendungen bereit (nicht die Anwendung selbst).\\
+        HTTPS/S, FTP, SMTP, DHCP, DNS
+  \item \textbf{Layer 6: Presentation Layer} (Darstellungsschicht) \\
+        Datenformatierung, Kompression, Verschlüsselung.\\
+        SSL/TLS
+  \item \textbf{Layer 5: Session Layer} (Sitzungsschicht) \\
+        Sitzungsmanagement (Aufbau, Abbau), Authentifizierung.\\
+        RPC, SMPP
+  \item \textbf{Layer 4: Transport Layer} (Transportschicht) \\
+        Ende-zu-Ende Kommunikation, TCP/UDP.\\
+        TCP, UDP
+  \item \textbf{Layer 3: Network Layer} (Vermittlungsschicht) \\
+        Logische Adressierung (IP), Routing.\\
+        IPv4, IPv6, ARP, ICMP
+  \item \textbf{Layer 2: Data Link Layer} (Sicherungsschicht) \\
+        Physische Adressierung (MAC), Zugriff auf das Medium.\\
+        SDLC, SLIP, NCP
+  \item \textbf{Layer 1: Physical Layer} (Bitübertragungsschicht) \\
+        Übertragung von Bits über ein Medium (Kabel, Funk).\\
+        Ethernet, Wi-Fi
+\end{itemize}
+
+\subsubsection{TCP/IP Modell vs. OSI}
+Das TCP/IP-Modell ist eine vereinfachte, praxisorientierte Version des OSI-Modells (oft 4 Schichten).
+
+\begin{defbox}[Vergleich der Dateneinheiten (Encapsulation)]
+  Beim Durchlaufen der Schichten von oben nach unten werden Daten \defc{gekapselt} (Encapsulation). Jede Schicht fügt ihren Header (und teilweise Trailer) hinzu.
+
+  \begin{itemize}
+    \item \textbf{Application Layer:} Daten / Message ($M$)
+    \item \textbf{Transport Layer:} \defc{Segments} (Header $H_t + M$)
+    \item \textbf{Internet Layer:} \defc{Packets} (Header $H_i + H_t + M$)
+    \item \textbf{Link Layer:} \defc{Frames} (Header $H_l + \dots + Trailer T_l$)
+  \end{itemize}
+\end{defbox}
+
+\subsection{Die Schichten im Detail}
+
+\subsubsection{Layer 1: Physical Layer}
+\begin{itemize}
+  \item \textbf{Funktion:} Konvertierung von Daten in physikalische Signale zur Übertragung zwischen Geräten.
+  \item \textbf{Medien:}
+        \begin{itemize}
+          \item Elektrische Impulse (Kupferkabel)
+          \item Lichtimpulse (Glasfaser)
+          \item Funksignale (Wi-Fi)
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Layer 2: Data Link Layer}
+\begin{itemize}
+  \item \textbf{Funktion:} Verbindung zwischen zwei Geräten im \textit{selben} Netzwerk (Hop-to-Hop).
+  \item \textbf{Hardware:} Switches.
+  \item \textbf{Adressierung:} \defc{MAC-Adresse} (Media Access Control).
+        \begin{itemize}
+          \item Weltweit eindeutig (theoretisch).
+          \item 48 Bit lang (6 Bytes).
+          \item \textbf{Aufbau:} Erste 3 Bytes = Hersteller-Kennung (OUI), Letzte 3 Bytes = Seriennummer.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Layer 3: Network Layer}
+\begin{itemize}
+  \item \textbf{Funktion:} Logische Adressierung und Weiterleitung (Routing) über Netzwerkgrenzen hinweg.
+  \item \textbf{Protokolle:} IPv4, IPv6, ICMP.
+  \item \textbf{Hardware:} Router.
+  \item \textbf{Wichtig:} IP ist ein \defc{unzuverlässiges} Protokoll (Best Effort). Es gibt keine Garantie für die Ankunft der Pakete.
+\end{itemize}
+
+\subsubsection{Layer 4: Transport Layer}
+Stellt die Ende-zu-Ende-Kommunikation sicher.
+\begin{itemize}
+  \item \textbf{Multiplexing:} Nutzung von \defc{Ports}, um verschiedene Dienste (z.B. Web, Mail) gleichzeitig auf einem Host zu betreiben.
+  \item \textbf{Segmentierung:} Aufteilen großer Datenmengen.
+  \item \textbf{Fehlererkennung:} Checksummen.
+  \item \textbf{Flusskontrolle:} Vermeidung von Überlastung des Empfängers.
+\end{itemize}
+
+\begin{defbox}[TCP vs. UDP]
+  \textbf{TCP (Transmission Control Protocol):}
+  \begin{itemize}
+    \item \defc{Verbindungsorientiert} (Handshake notwendig).
+    \item \defc{Zuverlässig} (ACKs für Pakete, Neuversand bei Verlust).
+    \item \textbf{Reihenfolge:} Garantiert (Sequenznummern).
+    \item \textbf{Einsatz:} Web (HTTP), Email (SMTP), Dateitransfer (FTP).
+  \end{itemize}
+
+  \textbf{UDP (User Datagram Protocol):}
+  \begin{itemize}
+    \item \defc{Verbindungslos} (Fire-and-Forget).
+    \item \defc{Unzuverlässig} (Keine ACKs, kein Neuversand).
+    \item \textbf{Schnell:} Geringer Overhead (nur 8 Byte Header).
+    \item \textbf{Einsatz:} Streaming, Gaming, DNS, DHCP.
+  \end{itemize}
+\end{defbox}
+
+\paragraph{TCP 3-Way Handshake}
+Um eine Verbindung aufzubauen, nutzen Client und Server folgenden Ablauf:
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{css_1_css_vorlesung 6_page_12_1.png}
+\end{center}
+\begin{enumerate}
+  \item \textbf{SYN:} Client sendet \texttt{Seq=X, Flags=SYN}. (Status: SYN-SENT)
+  \item \textbf{SYN-ACK:} Server antwortet \texttt{Seq=Y, Ack=X+1, Flags=SYN,ACK}. (Status: SYN-RECEIVED)
+  \item \textbf{ACK:} Client bestätigt \texttt{Seq=X+1, Ack=Y+1, Flags=ACK}. (Status: ESTABLISHED)
+\end{enumerate}
+
+
+\subsubsection{Layer 5-7: Höhere Schichten}
+\begin{itemize}
+  \item \textbf{Session Layer:} Authentifizierung, Verwaltung von Sitzungen (z.B. RPC).
+  \item \textbf{Presentation Layer:} Datenkonvertierung (z.B. ASCII $\to$ ASN.1), Verschlüsselung (SSL/TLS wird oft hier eingeordnet), Kompression.
+  \item \textbf{Application Layer:} Protokolle für Anwendungen. Ports definieren den Service:
+        \begin{itemize}
+          \item HTTP/S: Port 80/443
+          \item FTP: Port 20/21
+          \item SMTP: Port 25
+        \end{itemize}
+\end{itemize}
+
+\subsection{Angriffsmodelle im Netzwerk}
+
+\begin{itemize}
+  \item \textbf{Eavesdropping (Abhören):} Passiver Angreifer. Liest Daten mit, verändert sie aber nicht. Abwehr: Verschlüsselung.
+  \item \textbf{On-Path / Man-in-the-Middle (MitM):} Angreifer sitzt \textit{auf} dem Kommunikationsweg (z.B. kontrolliert Router). Kann Daten lesen, \defc{verändern}, \defc{blockieren} oder einschleusen.
+  \item \textbf{Off-Path:} Angreifer sitzt \textit{nicht} auf dem direkten Weg. Kann Daten nicht mitlesen oder blockieren, aber Daten einschleusen (z.B. Spoofing mit gefälschter Absenderadresse).
+\end{itemize}
+
+\subsection{Netzwerkprotokolle und spezifische Angriffe}
+
+\subsubsection{ARP (Address Resolution Protocol)}
+\textbf{Funktion:} Auflösung einer bekannten IP-Adresse zu einer unbekannten MAC-Adresse im lokalen Netzwerk (Layer 2).
+
+\begin{defbox}[Ablauf ARP]
+  \begin{enumerate}
+    \item \textbf{Request:} "Wer hat IP 10.23.4.38?" $\to$ Gesendet als \defc{Broadcast} (FF:FF:FF:FF:FF:FF). Alle Geräte empfangen es.
+    \item \textbf{Reply:} "Ich (10.23.4.38) habe MAC 11:AB:..." $\to$ Gesendet als \defc{Unicast} an den Anfragenden.
+  \end{enumerate}
+\end{defbox}
+
+\paragraph{ARP Spoofing / Cache Poisoning}
+Da ARP \defc{zustandslos} ist (Clients akzeptieren Antworten auch ohne vorherige Anfrage), kann ein Angreifer gefälschte ARP-Replies senden.
+\begin{itemize}
+  \item \textbf{Angriff:} Angreifer sendet: "Ich bin IP des Routers" an das Opfer und "Ich bin IP des Opfers" an den Router.
+  \item \textbf{Folge:} Der ARP-Cache der Opfer wird "vergiftet". Der Angreifer wird zum \textit{Man-in-the-Middle}.
+  \item \textbf{Gegenmaßnahmen:}
+        \begin{itemize}
+          \item Statische ARP-Einträge (aufwendig).
+          \item ARP-Monitoring Tools (z.B. Arpwatch, Snort).
+          \item Nutzung von IPv6 (nutzt NDP + SEND, sicherer).
+          \item Netzwerksegmentierung.
+        \end{itemize}
+\end{itemize}
+\textbf{MAC Spoofing:} MAC-Adressen sind in Software leicht änderbar. MAC-Filter sind daher kein verlässlicher Schutz.
+
+\subsubsection{DHCP (Dynamic Host Configuration Protocol)}
+\textbf{Funktion:} Automatische Zuweisung von IP-Adressen, Subnetzmasken, Gateway und DNS an Clients. Nutzt UDP (Ports 67/68).
+
+\paragraph{Ablauf (DORA-Prinzip)}
+\begin{enumerate}
+  \item \textbf{D}iscover (Broadcast): Client sucht DHCP-Server.
+  \item \textbf{O}ffer (Unicast/Broadcast): Server bietet IP an.
+  \item \textbf{R}equest (Broadcast): Client fordert die angebotene IP an.
+  \item \textbf{A}ck (Unicast/Broadcast): Server bestätigt und verleast IP.
+\end{enumerate}
+
+\paragraph{DHCP Spoofing (Rogue DHCP)}
+Ein Angreifer stellt einen falschen DHCP-Server im Netz auf. Wenn er schneller antwortet als der echte Server (Race Condition), übernimmt er die Konfiguration des Clients.
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{css_1_css_vorlesung 6_page_39_1.png}
+\end{center}
+\begin{itemize}
+  \item \textbf{Gefahr:} Angreifer setzt sich selbst als Gateway oder DNS-Server (MitM).
+  \item \textbf{Gegenmaßnahme: DHCP Snooping} auf Switches.
+        \begin{itemize}
+          \item Ports werden in \defc{Trusted} (nur hier darf ein DHCP-Server hängen) und \defc{Untrusted} unterteilt.
+          \item DHCP-Offers von Untrusted Ports werden blockiert.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{ICMP und (D)DoS Angriffe}
+\textbf{ICMP (Internet Control Message Protocol):} Dient dem Austausch von Informations- und Fehlermeldungen (z.B. \texttt{ping} zur Latenzmessung).
+
+\paragraph{(D)DoS - (Distributed) Denial of Service}
+Ziel ist es, die Verfügbarkeit eines Dienstes zu stören.
+\begin{itemize}
+  \item \textbf{DoS:} Ein Angreifer.
+  \item \textbf{DDoS:} Viele Angreifer (Botnet).
+\end{itemize}
+
+\paragraph{Spezifische Angriffe}
+\begin{itemize}
+  \item \textbf{Ping of Death:} Senden von malformierten (z.B. zu großen) ICMP-Paketen, die beim Zusammensetzen den Server zum Absturz bringen. (Heute meist gepatcht).
+  \item \textbf{Smurf Attack (Amplification):}
+        \begin{itemize}
+          \item Angreifer sendet Ping an die \defc{Broadcast-Adresse} eines Netzwerks.
+          \item Absender-Adresse ist gefälscht auf die \defc{Opfer-IP}.
+          \item Alle Hosts im Netz antworten dem Opfer $\to$ Überlastung.
+          \item \textbf{Schutz:} Broadcast-Pings im Router deaktivieren.
+        \end{itemize}
+  \item \textbf{SYN Flood:}
+        \begin{itemize}
+          \item Angreifer sendet viele TCP-SYN-Pakete, antwortet aber nie auf das SYN-ACK.
+          \item Server hält Ressourcen für "halboffene Verbindungen" reserviert, bis er überlastet ist.
+          \item \textbf{Schutz:} \defc{SYN Cookies} (Zustand wird nicht gespeichert, sondern kryptographisch in der Sequenznummer der Antwort kodiert).
+        \end{itemize}
+\end{itemize}
+
+\subsection{Netzwerkschutzmechanismen}
+
+\subsubsection{Firewall}
+Ein System, das den Netzwerkverkehr zwischen Zonen (z.B. LAN und Internet) überwacht und filtert.
+\begin{itemize}
+  \item Filtert basierend auf Regeln (IPs, Ports, Protokolle).
+  \item Ermöglicht Netzwerksegmentierung.
+\end{itemize}
+
+\subsubsection{IDS vs. IPS}
+
+\begin{defbox}[IDS und IPS Vergleich]
+  \textbf{IDS (Intrusion Detection System):}
+  \begin{itemize}
+    \item \defc{Passiver} Beobachter (nicht im Datenpfad/Inline).
+    \item Analysiert Kopien des Verkehrs ("Mirror Port").
+    \item Meldet Alarme, blockiert aber nicht selbstständig.
+  \end{itemize}
+
+  \textbf{IPS (Intrusion Prevention System):}
+  \begin{itemize}
+    \item \defc{Aktiver} Schutz (Inline im Datenpfad).
+    \item Kann bösartige Pakete in Echtzeit verwerfen/blockieren.
+  \end{itemize}
+\end{defbox}
+
+\end{document}
+
+\end{document}
