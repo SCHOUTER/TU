@@ -30,7 +30,7 @@ LaTeX resolves references on the second pass.
 
 ### ✔ Never fight LaTeX line-breaking manually
 
-Avoid `\\` inside text paragraphs.
+Avoid `\\` inside text paragraphs. Use `\linebreak` or `\newline`
 
 ### ✔ Keep your preamble clean
 
