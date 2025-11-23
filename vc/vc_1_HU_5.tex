@@ -1,0 +1,148 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Encoding, Fonts, Typography
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ---------------------------------------------------------
+% Language
+% ---------------------------------------------------------
+\usepackage[ngerman,english]{babel}
+
+% ---------------------------------------------------------
+% Math
+% ---------------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+
+% ---------------------------------------------------------
+% Tables
+% ---------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------------------------------------------------------
+% Figures & Graphics
+% ---------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% ---------------------------------------------------------
+% Lists
+% ---------------------------------------------------------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------------------------------------------------------
+% Units & Numbers
+% ---------------------------------------------------------
+\usepackage{siunitx}
+
+% ---------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% ---------------------------------------------------------
+% Global layout improvements
+% ---------------------------------------------------------
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+
+% ---------------------------------------------------------
+% Title
+% ---------------------------------------------------------
+\title{\"Ubung 5: Gruppe 28}
+\author{
+    Niclas Kusenbach, 360227 \and
+    Alicia Bayerl, 2633336 \and
+    Mohamed Naceur Hedhili, 2957151 \and
+    Selma Naz Öner, 2662640
+}
+
+\begin{document}
+\maketitle
+
+\section*{Aufgabe 5.1: Bildverbesserung}
+
+\subsection*{a) Drei Konzepte für Wahrnehmung und Qualität (vgl. Slide 15)}
+
+\begin{itemize}
+  \item Bilddynamik: Wie viel Intensitätsvariation aus der Realität überhaupt in die Grauwerte eines Bildes übertragen wird.
+  \item Bildkontrast: Wie stark sich helle und dunkle Pixel unterscheiden (Varianz der Grauwerte)
+  \item Bildhelligkeit: Die Beleuchtungsstärke (Helligkeit), durchschnittlicher Grauwert eines Bildes.
+\end{itemize}
+
+\subsection*{b) Pixeloperationen (vgl. Slide 20)}
+
+\begin{enumerate}
+  \item Negativ: Invertierung der Helligkeit
+  \item Kontrastspreizung: Abbildung des genutzten Grauwertbereichs auf die volle Skala
+\end{enumerate}
+
+\subsection*{c) Histogramme den Bildern zuordnen (vgl. Slide 19)}
+
+\begin{enumerate}[label=(\alph*)]
+  \item Zu diesem Bild gehört unserer Meinung nach das Histogramm H1, da es sehr Helle Bereiche (Himmel) und dunkle Schatten enthält. Das Histogramm zeigt einen großen Peak bei sehr hellen Werten (Himmel) und mehrere kleinere Peaks im dunklen Bereich (Schatten). Dazu passiert relativ wenig im mittleren Bereich. Dazu passt ideal die Szene mit starkem Kontrast wie in (a).
+  \item Dieses Bild ist insgesamt sehr Hell, mit großer Fläche (der Platz) und heller Fassade. Es gibt nur wenige dunkle Bildanteile. Dazu passt das Histogramm H2 sehr gut. Es hat Peaks im hellen Bereich (hohe Grauwerte) und kaum Werte im dunklen Spektrum.
+  \item Dieses Bild ist schwarz-weiß mit vielen Mitteltönen, sowie großen dunklen und Hellen Flächen (Schrift/Logo in weiß, Beton in Grau, Schatten in Dunkelgrau). Dazu passt das Histogramm H3. Es zeigt eine breite, relativ gleichmäßige Verteilung über den gesamten Helligkeitsbereich ohne starke Dominanz eines einzelnen Bereichs.
+\end{enumerate}
+
+\section*{Aufgabe 5.2: Bildfilterung}
+
+\subsection*{a) Welcher Filtertyp? (vgl. Slide 33 - 38)}
+
+Hier wurde ein Tiefpassfilter angewandt. Diese dienen er Rauschunterdrückung und \textbf{Weichzeichnung}.
+
+\subsection*{b) (vgl. Slide 33, 67)}
+
+Im Frequenzraum könnte der Gauß Tiefpass zum Einsatz gekommen sein. Im Ortsraum könnte ein Box-Filter oder ein Gauß Filter zum Einsatz gekommen sein.
+
+\subsection*{c) Funktionsweise Orts- und Frequenzraumfilterung (vgl. Slide 30, 57, 62f.)}
+
+Im Ortsraum werden Operationen direkt auf den Pixelwerten des Bildes durchgeführt. Bei einer Filterung wird dabei der neue Wert eines Pixels unter Berücksichtigung seiner Nachbarschaft berechnet.\newline
+Im Frequenzraum können Bilder durch Transformationen in Frequenzanteile zerlegt werden. Dabei wird das Eingabebild transformiert, im Anschluss mit der Filterfunktion multipliziert und zum Schluss zurück transformiert.
+
+\subsection*{d) Filtermasken zuordnen}
+
+\begin{enumerate}[label=(\alph*)]
+  \item Gauß-Filter (vgl. Slide 36)
+  \item Boxfilter (vgl. Slide 34)
+  \item Laplacian-Filter, $\alpha = 1.0$ (vgl. Slide 48)
+\end{enumerate}
+
+\section*{Aufgabe 5.3: Bildkompression}
+
+\subsection*{a) JPEG-Kompression (vgl. Slide 78 - 87)}
+
+\begin{enumerate}
+  \item Farbraum-Transformation
+  \item Farb-Subsampling (Downsampling)
+  \item Block-Aufteilung \& DCT\newline
+        Das Bild wird in 8x8 Blöcke unterteilt. Jeder Block wird mittels DCT in den Frequenzen formatiert. Das Ergebnis ist 1 DC-Koeffizient (Gleichanteil/Grundhelligkeit) und 63 AC-Koeffizienten (Wechselanteile). Meist sind nur wenige Koeffizienten (niedrige Frequenzen) signifikant groß.
+  \item Quantisierung
+  \item Kodierung
+\end{enumerate}
+
+\subsection*{b) RGB → YCrCb Umrechnung + Rechenweg (vgl. Slide 80)}
+
+R: 30, G: 60, B: 80
+
+\[
+  \begin{aligned}
+    Y' & = 0,299 \cdot 30 + 0,587 \cdot 30 + 0,114                      \\
+       & = 30,114 \approx 30                                            \\
+    Cb & = -0,268736 \cdot 60 + -0,331264 \cdot 60 + 0,5 \cdot 60 + 128 \\
+       & = 188                                                          \\
+    Cr & = 0,5 \cdot 80 + -0,418688 \cdot 80 + -0,081312 \cdot 80 + 128 \\
+       & = 208                                                          \\
+  \end{aligned}
+\]
+
+\end{document}

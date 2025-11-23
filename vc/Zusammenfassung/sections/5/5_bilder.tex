@@ -113,7 +113,7 @@ Bilder können durch Transformationen (z.B. Fourier) in Frequenzanteile zerlegt 
 \subsubsection{Filtertypen im Frequenzraum}
 \begin{itemize}
   \item \textbf{Idealer Tiefpass:} Schneidet alle Frequenzen oberhalb $D_0$ ab (Rechteckfunktion). Führt im Ortsraum zu \defc{Ringing-Artefakten} (Wellen um Kanten), da die FT einer Rechteckfunktion eine Sinc-Funktion ist.
-  \item \textbf{Gauß-Tiefpass:} Weicher Übergang. Kein Ringing, da FT einer Gauß-Funktion wieder eine Gauß-Funktion ist.
+  \item \textbf{Gauß-Tiefpass:} Weicher Übergang. Kein Ringing, da FT einer Gauß-Funktion wieder eine Gauß-Funktion ist.\[G(\omega )=e^{-\frac{\sigma^2\omega^2}{2}}\]
   \item \textbf{Hochpass:} Kehrt das Prinzip um (Zentrum wird auf 0 gesetzt, hohe Frequenzen bleiben).
 \end{itemize}
 
