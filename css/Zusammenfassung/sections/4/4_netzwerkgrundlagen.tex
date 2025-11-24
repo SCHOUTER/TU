@@ -118,15 +118,30 @@ Stellt die Ende-zu-Ende-Kommunikation sicher.
   \end{itemize}
 \end{defbox}
 
-\paragraph{TCP 3-Way Handshake}
+\paragraph{TCP 3-Way Handshake (Verbindungsaufbau)}
 Um eine Verbindung aufzubauen, nutzen Client und Server folgenden Ablauf:
 \begin{center}
+  % Dein bestehendes Bild für den Aufbau
   \includegraphics[width=0.7\textwidth]{css_1_css_vorlesung 6_page_12_1.png}
 \end{center}
 \begin{enumerate}
   \item \textbf{SYN:} Client sendet \texttt{Seq=X, Flags=SYN}. (Status: SYN-SENT)
   \item \textbf{SYN-ACK:} Server antwortet \texttt{Seq=Y, Ack=X+1, Flags=SYN,ACK}. (Status: SYN-RECEIVED)
   \item \textbf{ACK:} Client bestätigt \texttt{Seq=X+1, Ack=Y+1, Flags=ACK}. (Status: ESTABLISHED)
+\end{enumerate}
+
+\paragraph{TCP Connection Termination (Verbindungsabbau)}
+Der Abbau erfolgt in der Regel über einen 4-Schritte-Prozess unter Nutzung des \textbf{FIN}-Flags:
+\begin{center}
+  % Platzhalter für ein Bild zum Verbindungsabbau
+  % \includegraphics[width=0.7\textwidth]{tcp_termination.png}
+\end{center}
+
+\begin{enumerate}
+  \item \textbf{FIN:} Client möchte schließen, sendet \texttt{Flags=FIN}. (Status: FIN-WAIT-1)
+  \item \textbf{ACK:} Server bestätigt den Erhalt mit \texttt{Flags=ACK}. (Status: CLOSE-WAIT beim Server, FIN-WAIT-2 beim Client)
+  \item \textbf{FIN:} Server ist bereit zum Schließen, sendet ebenfalls \texttt{Flags=FIN}. (Status: LAST-ACK)
+  \item \textbf{ACK:} Client bestätigt den Erhalt mit \texttt{Flags=ACK}. (Status: TIME-WAIT, danach CLOSED)
 \end{enumerate}
 
 

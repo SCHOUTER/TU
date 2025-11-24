@@ -20,15 +20,15 @@ Die Kryptografie wird in drei Hauptkategorien unterteilt:
 Symmetrische Kryptografie ist eine Menge von kryptografischen Protokollen, bei der derselbe geheime Schlüssel für die Ver- und Entschlüsselung von Daten verwendet wird.
 
 \begin{defbox}[Symmetrische Kryptosysteme]
-Ein symmetrisches Kryptosystem ist ein 5-Tupel $(M, K, C, e, d)$ bestehend aus:
-\begin{itemize}
-  \item einer Menge $M$ von Klartexten,
-  \item einer Menge $K$ von Schlüsseln,
-  \item einer Menge $C$ von Chiffretexten,
-  \item einer Verschlüsselungsfunktion $e: M \times K \to C$,
-  \item einer Entschlüsselungsfunktion $d: C \times K \to M$,
-\end{itemize}
-so dass für alle Klartexte $m \in M$ und alle Schlüssel $k \in K$ gilt, dass $d(e(m,k),k) = m$.
+  Ein symmetrisches Kryptosystem ist ein 5-Tupel $(M, K, C, e, d)$ bestehend aus:
+  \begin{itemize}
+    \item einer Menge $M$ von Klartexten,
+    \item einer Menge $K$ von Schlüsseln,
+    \item einer Menge $C$ von Chiffretexten,
+    \item einer Verschlüsselungsfunktion $e: M \times K \to C$,
+    \item einer Entschlüsselungsfunktion $d: C \times K \to M$,
+  \end{itemize}
+  so dass für alle Klartexte $m \in M$ und alle Schlüssel $k \in K$ gilt, dass $d(e(m,k),k) = m$.
 \end{defbox}
 
 \subsubsection{Blockchiffren}
@@ -67,23 +67,23 @@ Eine gute Auffüllfunktion sollte umkehrbar sein, d.h. es muss eine $unpad()$-Fu
 
 \paragraph{Cipher Block Chaining (CBC) Modus}
 \begin{center}
-    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_13_1.png}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_13_1.png}
   \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_14_1.png}
 \end{center}
 
 Zur Formalisierung von CBC benötigen wir randomisierte Kryptosysteme. Der Zufallswert $r$ wird hier als Initialisierungsvektor (IV) bezeichnet.
 
 \begin{defbox}[Randomisierte symmetrische Kryptosysteme]
-Ein randomisiertes symmetrisches Kryptosystem ist ein 5-Tupel $(M, K, C, e, d)$ bestehend aus:
-\begin{itemize}
-  \item einer Menge $M$ von Klartexten,
-  \item einer Menge $K$ von Schlüsseln,
-  \item einer Menge $C$ von Chiffretexten,
-  \item einer Menge $R$ von Zufallswerten (z.B. IVs),
-  \item einer Verschlüsselungsfunktion $e: M \times K \times R \to C$,
-  \item einer Entschlüsselungsfunktion $d: C \times K \to M$,
-\end{itemize}
-(Anmerkung: Die Entschlüsselung $d$ benötigt den IV $r$, dieser wird aber typischerweise als Teil des Chiffretextes $C$ übermittelt und nicht als separater Zufallseingang für $d$ selbst.)
+  Ein randomisiertes symmetrisches Kryptosystem ist ein 5-Tupel $(M, K, C, e, d)$ bestehend aus:
+  \begin{itemize}
+    \item einer Menge $M$ von Klartexten,
+    \item einer Menge $K$ von Schlüsseln,
+    \item einer Menge $C$ von Chiffretexten,
+    \item einer Menge $R$ von Zufallswerten (z.B. IVs),
+    \item einer Verschlüsselungsfunktion $e: M \times K \times R \to C$,
+    \item einer Entschlüsselungsfunktion $d: C \times K \to M$,
+  \end{itemize}
+  (Anmerkung: Die Entschlüsselung $d$ benötigt den IV $r$, dieser wird aber typischerweise als Teil des Chiffretextes $C$ übermittelt und nicht als separater Zufallseingang für $d$ selbst.)
 \end{defbox}
 
 Sei $r \in R$ der Initialisierungsvektor (IV).
@@ -121,19 +121,19 @@ Das Orakel (Server):
 \begin{itemize}
   \item muss ein überprüfbares Padding-Schema verwenden.
   \item muss dem Angreifer verraten, ob ein entschlüsselter Text ein gültiges (oder nicht) Padding hat. Dies kann geschehen durch:
-    \begin{itemize}
-        \item[1.] direkte Fehlermeldungen (z.B. HTTP 500) oder
-        \item[2.] Side-Channel-Messungen (z.B. Unterschiede im Antwortverhalten).
-    \end{itemize}
+        \begin{itemize}
+          \item[1.] direkte Fehlermeldungen (z.B. HTTP 500) oder
+          \item[2.] Side-Channel-Messungen (z.B. Unterschiede im Antwortverhalten).
+        \end{itemize}
 \end{itemize}
 \begin{center}
-    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_21_1.png}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_21_1.png}
 \end{center}
 
 \textbf{Counter Mode (CTR) Modus}
 \begin{center}
-    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_22_1.png}
-    \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_23_1.png}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_22_1.png}
+  \includegraphics[width=200px]{../../pics/css_1_03_symm_krypto_RMU_page_23_1.png}
 \end{center}
 Um diesen Modus zu formalisieren, benötigen wir eine randomisierte Zählfunktion, die einen "Nonce" (Number used once) $r$ verwendet.
 \begin{itemize}
@@ -146,12 +146,12 @@ Um diesen Modus zu formalisieren, benötigen wir eine randomisierte Zählfunktio
 
 \textbf{Verschlüsselung:}
 \[
-e^*(x_0 x_1 \dots x_n, k, r) = y_0 y_1 \dots y_n \text{ mit } y_i = e(\operatorname{ctr}(r, i), k) \oplus x_i
+  e^*(x_0 x_1 \dots x_n, k, r) = y_0 y_1 \dots y_n \text{ mit } y_i = e(\operatorname{ctr}(r, i), k) \oplus x_i
 \]
 
 \textbf{Entschlüsselung:}
 \[
-d^*(y_0 y_1 \dots y_n, k, r) = x_0 x_1 \dots x_n \text{ mit } x_i = e(\operatorname{ctr}(r, i), k) \oplus y_i
+  d^*(y_0 y_1 \dots y_n, k, r) = x_0 x_1 \dots x_n \text{ mit } x_i = e(\operatorname{ctr}(r, i), k) \oplus y_i
 \]
 
 Der CTR Modus unterscheidet sich stark von den vorher betrachteten Betriebsmodi:
@@ -178,7 +178,7 @@ Der CTR Modus unterscheidet sich stark von den vorher betrachteten Betriebsmodi:
 \textbf{Gegenmaßnahmen}
 \begin{itemize}
   \item Konstantzeit-Implementierung (gegen Timing Angriffe): Ausführungszeit von Code soll unabhängig von den verarbeiteten geheimen Daten sein
-  \item 
+  \item
 \end{itemize}
 
 \paragraph{Stromchiffren}
@@ -197,24 +197,24 @@ Eine Hashfunktion ist ein Algorithmus, der eine Eingabe beliebiger Größe in ei
 Eigenschaften einer Hashfunktion:
 \begin{enumerate}
   \item \textbf{Pre-Image Resistance} \\
-  Bei gegebenem Hashwert $h$ ist es rechnerisch unmöglich, die ursprüngliche Nachricht $m$ zu finden, so dass $H(m) = h$.
+        Bei gegebenem Hashwert $h$ ist es rechnerisch unmöglich, die ursprüngliche Nachricht $m$ zu finden, so dass $H(m) = h$.
   \item \textbf{Second-Image Resistance}\\
-  Bei gegebener Nachricht $m_1$ ist es rechnerisch unmöglich, eine andere Nachricht $m_2$ zu finden, die denselben Hashwert erzeugt, so dass $H(m_1) = H(m_2)$
+        Bei gegebener Nachricht $m_1$ ist es rechnerisch unmöglich, eine andere Nachricht $m_2$ zu finden, die denselben Hashwert erzeugt, so dass $H(m_1) = H(m_2)$
   \item \textbf{Collision Resistance}\\
-  Es ist rechnerisch unmöglich irgendwelche zwei unterschiedlichen Nachrichten $m_1$ und $m_2$ zu finden, die denselben Hashwert erzeugen, so dass $H(m_1) = H(m_2)$
+        Es ist rechnerisch unmöglich irgendwelche zwei unterschiedlichen Nachrichten $m_1$ und $m_2$ zu finden, die denselben Hashwert erzeugen, so dass $H(m_1) = H(m_2)$
 \end{enumerate}
 \begin{table}[h!]
-\centering
-\begin{tabular}{|l|l|l|p{5cm}|}
-\hline
-\textbf{Hashfunktion} & \textbf{Output} & \textbf{Sicherheit} & \textbf{Anwendung} \\ \hline
-MD5 & 128 Bits & Unsicher & X \\ \hline
-SHA-1 & 160 Bits & Unsicher seit 2017 & X \\ \hline
-SHA-256 & 256 Bits & Sicher & TLS/SSL, hashing, Blockchain \\ \hline
-SHA-3/Keccak & 224/256/384/512 Bits & Sicher & Ähnlich wie SHA-2 (aber langsamer ohne Hardware Unterstützung) \\ \hline
-\end{tabular}
-\caption{Vergleich von Hashfunktionen}
-\label{tab:hashfunktionen}
+  \centering
+  \begin{tabular}{|l|l|l|p{5cm}|}
+    \hline
+    \textbf{Hashfunktion} & \textbf{Output}      & \textbf{Sicherheit} & \textbf{Anwendung}                                             \\ \hline
+    MD5                   & 128 Bits             & Unsicher            & X                                                              \\ \hline
+    SHA-1                 & 160 Bits             & Unsicher seit 2017  & X                                                              \\ \hline
+    SHA-256               & 256 Bits             & Sicher              & TLS/SSL, hashing, Blockchain                                   \\ \hline
+    SHA-3/Keccak          & 224/256/384/512 Bits & Sicher              & Ähnlich wie SHA-2 (aber langsamer ohne Hardware Unterstützung) \\ \hline
+  \end{tabular}
+  \caption{Vergleich von Hashfunktionen}
+  \label{tab:hashfunktionen}
 \end{table}
 
 \subsection{Asymmetrische Kryptografie}
@@ -228,31 +228,31 @@ Bei einem asymmetrischem Kryptosystem gibt es verschiedene Schlüssel.
 \end{enumerate}
 
 \begin{defbox}[Asymmetrische Kryptografie]
-Ein asymmetrisches Kryptosystem ist ein 7-Tupel $(M, K_s, K_p, K, C, e, d)$ bestehend aus
-\begin{itemize}
-  \item einer Menge $M$ von Klartexten,
-  \item einer Menge $K_s$ von geheimen/privaten Schlüsseln,
-  \item einer Menge $K_p$ von öffentlichen Schlüsseln
-  \item einer Menge $K \subset K_s \times K_p$ von Schlüsselpaaren,
-  \item einer Menge $C$ von Chiffretexten,
-  \item einer Verschlüsselungsfunktion $e: M \times K_p \rightarrow C$,
-  \item einer Entschlüsselungsfunktion $d: C \times K_s \rightarrow M$,
-\end{itemize}
-so dass für alle Klartexte $m \in M$ und alle Schlüsselpaare $(s, p) \in K$ gilt, dass $d(e(m, p), s) = m$.
+  Ein asymmetrisches Kryptosystem ist ein 7-Tupel $(M, K_s, K_p, K, C, e, d)$ bestehend aus
+  \begin{itemize}
+    \item einer Menge $M$ von Klartexten,
+    \item einer Menge $K_s$ von geheimen/privaten Schlüsseln,
+    \item einer Menge $K_p$ von öffentlichen Schlüsseln
+    \item einer Menge $K \subset K_s \times K_p$ von Schlüsselpaaren,
+    \item einer Menge $C$ von Chiffretexten,
+    \item einer Verschlüsselungsfunktion $e: M \times K_p \rightarrow C$,
+    \item einer Entschlüsselungsfunktion $d: C \times K_s \rightarrow M$,
+  \end{itemize}
+  so dass für alle Klartexte $m \in M$ und alle Schlüsselpaare $(s, p) \in K$ gilt, dass $d(e(m, p), s) = m$.
 \end{defbox}
 
 \noindent\textbf{Prinzip:}
 \begin{itemize}
-\item Verschlüsselung mit \defc{öffentlichem Schlüssel} des Empfängers
-\item Entschlüsselung mit \defc{privatem Schlüssel} des Empfängers
-\item Kein vorheriger Schlüsselaustausch nötig (im Gegensatz zu symmetrischer Kryptographie)
+  \item Verschlüsselung mit \defc{öffentlichem Schlüssel} des Empfängers
+  \item Entschlüsselung mit \defc{privatem Schlüssel} des Empfängers
+  \item Kein vorheriger Schlüsselaustausch nötig (im Gegensatz zu symmetrischer Kryptographie)
 \end{itemize}
 
 \subsection{RSA-Kryptosystem}
 
 \begin{defbox}[Idee]
-Das RSA-Kryptosystem (nach \textbf{Rivest, Shamir, Adleman}, 1977) ist das bekannteste Verfahren der asymmetrischen Kryptographie.  
-Es basiert auf der Schwierigkeit, eine große Zahl $n = p \cdot q$ in ihre Primfaktoren zu zerlegen.
+  Das RSA-Kryptosystem (nach \textbf{Rivest, Shamir, Adleman}, 1977) ist das bekannteste Verfahren der asymmetrischen Kryptographie.
+  Es basiert auf der Schwierigkeit, eine große Zahl $n = p \cdot q$ in ihre Primfaktoren zu zerlegen.
 \end{defbox}
 
 \subsubsection{Schlüsselerzeugung}
@@ -260,92 +260,92 @@ Es basiert auf der Schwierigkeit, eine große Zahl $n = p \cdot q$ in ihre Primf
 \begin{enumerate}
   \item \textbf{Wähle zwei große Primzahlen} $p, q$ mit $p \neq q$.
   \item Berechne das \textbf{RSA-Modul}:
-  \[
-  n = p \cdot q
-  \]
+        \[
+          n = p \cdot q
+        \]
   \item Berechne die \textbf{Eulersche Totientfunktion}:
-  \[
-  \varphi(n) = (p-1)(q-1)
-  \]
-  Diese gibt die Anzahl der zu $n$ teilerfremden Zahlen an.
+        \[
+          \varphi(n) = (p-1)(q-1)
+        \]
+        Diese gibt die Anzahl der zu $n$ teilerfremden Zahlen an.
   \item Wähle den \textbf{Verschlüsselungsexponenten} $e$ mit
-  \[
-  1 < e < \varphi(n), \quad \gcd(e, \varphi(n)) = 1
-  \]
-  (d.\,h. $e$ und $\varphi(n)$ sind teilerfremd).
+        \[
+          1 < e < \varphi(n), \quad \gcd(e, \varphi(n)) = 1
+        \]
+        (d.\,h. $e$ und $\varphi(n)$ sind teilerfremd).
   \item Berechne den \textbf{Entschlüsselungsexponenten} $d$ als \textbf{modulares Inverses} von $e$:
-  \[
-  d \cdot e \equiv 1 \pmod{\varphi(n)}
-  \]
-  Dies geschieht mit dem \defc{erweiterten Euklidischen Algorithmus}.
+        \[
+          d \cdot e \equiv 1 \pmod{\varphi(n)}
+        \]
+        Dies geschieht mit dem \defc{erweiterten Euklidischen Algorithmus}.
 \end{enumerate}
 
 \begin{defbox}[Beispiel: Erweiterter Euklidischer Algorithmus]
-Gegeben $e = 17$ und $\varphi(n) = 3120$:
+  Gegeben $e = 17$ und $\varphi(n) = 3120$:
 
-Wir suchen $d$ mit $17d \equiv 1 \pmod{3120}$.
+  Wir suchen $d$ mit $17d \equiv 1 \pmod{3120}$.
 
-\begin{align*}
-3120 &= 17 \cdot 183 + 9 \\
-17 &= 9 \cdot 1 + 8 \\
-9 &= 8 \cdot 1 + 1 \\
-8 &= 1 \cdot 8 + 0
-\end{align*}
+  \begin{align*}
+    3120 & = 17 \cdot 183 + 9 \\
+    17   & = 9 \cdot 1 + 8    \\
+    9    & = 8 \cdot 1 + 1    \\
+    8    & = 1 \cdot 8 + 0
+  \end{align*}
 
-Rückwärtseinsetzen:
-\[
-1 = 9 - 8 = 9 - (17 - 9) = 2 \cdot 9 - 17 = 2(3120 - 17 \cdot 183) - 17 = 2\cdot3120 - 367 \cdot 17
-\]
+  Rückwärtseinsetzen:
+  \[
+    1 = 9 - 8 = 9 - (17 - 9) = 2 \cdot 9 - 17 = 2(3120 - 17 \cdot 183) - 17 = 2\cdot3120 - 367 \cdot 17
+  \]
 
-Daraus folgt:
-\[
-d \equiv -367 \equiv 2753 \pmod{3120}
-\]
+  Daraus folgt:
+  \[
+    d \equiv -367 \equiv 2753 \pmod{3120}
+  \]
 
-\textbf{Ergebnis:} $d = 2753$.
+  \textbf{Ergebnis:} $d = 2753$.
 \end{defbox}
 
 \noindent Damit gilt:
 \[
-\text{Öffentlicher Schlüssel: } (e, n), \quad \text{Privater Schlüssel: } (d, n)
+  \text{Öffentlicher Schlüssel: } (e, n), \quad \text{Privater Schlüssel: } (d, n)
 \]
 
 \subsubsection{Verschlüsselung und Entschlüsselung}
 
 \begin{itemize}
   \item \textbf{Verschlüsselung:}
-  \[
-  c = m^e \bmod n
-  \]
+        \[
+          c = m^e \bmod n
+        \]
   \item \textbf{Entschlüsselung:}
-  \[
-  m = c^d \bmod n
-  \]
+        \[
+          m = c^d \bmod n
+        \]
 \end{itemize}
 
 \noindent\textbf{Sicherheit von RSA:}
 \begin{itemize}
-\item Basierend auf \defc{Faktorisierungsproblem}: Schwierigkeit, $n$ in $p$ und $q$ zu zerlegen
-\item Kenntnis von $p$, $q$ oder $\varphi(n)$ ermöglicht Berechnung von $d$
-\item \defc{Multiplikative Eigenschaft}: $(m_1^e \mod n) \cdot (m_2^e \mod n) \mod n = (m_1 m_2)^e \mod n$ $\rightarrow$ problematisch für Sicherheit
-\item Durch \defc{Quantencomputer} (Shor-Algorithmus) brüchbar
-\item $p$ und $q$ sollten groß und ähnlich groß sein (gleiche Bitlänge)
+  \item Basierend auf \defc{Faktorisierungsproblem}: Schwierigkeit, $n$ in $p$ und $q$ zu zerlegen
+  \item Kenntnis von $p$, $q$ oder $\varphi(n)$ ermöglicht Berechnung von $d$
+  \item \defc{Multiplikative Eigenschaft}: $(m_1^e \mod n) \cdot (m_2^e \mod n) \mod n = (m_1 m_2)^e \mod n$ $\rightarrow$ problematisch für Sicherheit
+  \item Durch \defc{Quantencomputer} (Shor-Algorithmus) brüchbar
+  \item $p$ und $q$ sollten groß und ähnlich groß sein (gleiche Bitlänge)
 \end{itemize}
 
 \subsection{ElGamal-Kryptosystem}
 
 \begin{defbox}[ElGamal Schlüsselerzeugung (Alice)]
-\begin{itemize}
-  \item Wähle eine \textbf{zyklische Gruppe} $G = (\mathbb{G}, \circ, e)$ mit großem Primzahlmodulus (z.\,B. $\mathbb{Z}_p^\times$) und einem \textbf{Erzeuger} $g$
-  \item Wähle einen privaten Exponenten $a \in \{1, \dots, \text{ord}(g)-1\}$ und berechne $A = g^a \bmod p$
-  \item \textbf{Privater Schlüssel:} $a$
-  \item \textbf{Öffentlicher Schlüssel:} $(G, g, A)$
-\end{itemize}
+  \begin{itemize}
+    \item Wähle eine \textbf{zyklische Gruppe} $G = (\mathbb{G}, \circ, e)$ mit großem Primzahlmodulus (z.\,B. $\mathbb{Z}_p^\times$) und einem \textbf{Erzeuger} $g$
+    \item Wähle einen privaten Exponenten $a \in \{1, \dots, \text{ord}(g)-1\}$ und berechne $A = g^a \bmod p$
+    \item \textbf{Privater Schlüssel:} $a$
+    \item \textbf{Öffentlicher Schlüssel:} $(G, g, A)$
+  \end{itemize}
 \end{defbox}
 
 \noindent\textbf{Verschlüsselung (an Alice):}
 \begin{itemize}
-  \item Wähle zufällig $r \in \{1, \dots, \text{ord}(g)-1\}$ 
+  \item Wähle zufällig $r \in \{1, \dots, \text{ord}(g)-1\}$
   \item Berechne $R = g^r \bmod p$
   \item Berechne gemeinsamen Schlüssel $K = A^r = (g^a)^r = g^{ar} \bmod p$
   \item Berechne $C = (R,\, m \cdot K \bmod p)$ und sende $C$
@@ -369,79 +369,79 @@ d \equiv -367 \equiv 2753 \pmod{3120}
 \noindent\textbf{Hinweis:} Bei allen Potenzoperationen und Multiplikationen muss stets das \textbf{Modulus $p$} angewendet werden. Der in der Vorlesung gezeigte Fehler (fehlendes $\bmod p$ bei $K$) wurde hier korrigiert.
 
 \begin{itemize}
-\item Kombination von asymmetrischer und symmetrischer Kryptographie
-\item Nachricht wird mit \defc{symmetrischem Verfahren} verschlüsselt (schnell, effizient)
-\item Symmetrischer Schlüssel wird mit \defc{asymmetrischem Verfahren} verschlüsselt (sicherer Schlüsselaustausch)
-\item Vorteile: Effizienz + Sicherheit, einfaches Teilen mit mehreren Empfängern
-\item Nachteil: Sicherheit von beiden Systemen abhängig
+  \item Kombination von asymmetrischer und symmetrischer Kryptographie
+  \item Nachricht wird mit \defc{symmetrischem Verfahren} verschlüsselt (schnell, effizient)
+  \item Symmetrischer Schlüssel wird mit \defc{asymmetrischem Verfahren} verschlüsselt (sicherer Schlüsselaustausch)
+  \item Vorteile: Effizienz + Sicherheit, einfaches Teilen mit mehreren Empfängern
+  \item Nachteil: Sicherheit von beiden Systemen abhängig
 \end{itemize}
 
 \subsection*{5. Digitale Signaturen}
 
 \begin{defbox}[Zweck digitaler Signaturen]
-\begin{itemize}
-\item \defc{Authentizität}: Nachweis des Urhebers
-\item \defc{Integrität}: Nachweis der Unverändertheit
-\item \defc{Nicht-Abstreitbarkeit (Non-Repudiation)}: Unterzeichner kann Unterschrift nicht abstreiten
-\end{itemize}
+  \begin{itemize}
+    \item \defc{Authentizität}: Nachweis des Urhebers
+    \item \defc{Integrität}: Nachweis der Unverändertheit
+    \item \defc{Nicht-Abstreitbarkeit (Non-Repudiation)}: Unterzeichner kann Unterschrift nicht abstreiten
+  \end{itemize}
 \end{defbox}
 
 \noindent\textbf{Rechtlicher Rahmen (eIDAS/VDG):}
 \begin{itemize}
-\item \defc{Einfache elektronische Signatur}: Keine besondere rechtliche Vermutung
-\item \defc{Fortgeschrittene elektronische Signatur}: Eindeutige Zuordnung, hohes Vertrauen
-\item \defc{Qualifizierte elektronische Signatur}: Rechtliche Gleichstellung mit handschriftlicher Unterschrift
+  \item \defc{Einfache elektronische Signatur}: Keine besondere rechtliche Vermutung
+  \item \defc{Fortgeschrittene elektronische Signatur}: Eindeutige Zuordnung, hohes Vertrauen
+  \item \defc{Qualifizierte elektronische Signatur}: Rechtliche Gleichstellung mit handschriftlicher Unterschrift
 \end{itemize}
 
 \subsubsection{RSA-Signaturen}
 
 \begin{defbox}[RSA-Signaturverfahren]
-\begin{itemize}
-\item Schlüsselgenerierung wie bei RSA
-\item Signieren: $s = (h(m))^d \mod n$
-\item Verifizieren: Teste ob $h(m) = s^e \mod n$
-\item \defc{Hashfunktion $h$ notwendig} zur Vermeidung von Angriffen
-\end{itemize}
+  \begin{itemize}
+    \item Schlüsselgenerierung wie bei RSA
+    \item Signieren: $s = (h(m))^d \mod n$
+    \item Verifizieren: Teste ob $h(m) = s^e \mod n$
+    \item \defc{Hashfunktion $h$ notwendig} zur Vermeidung von Angriffen
+  \end{itemize}
 \end{defbox}
 
 \subsubsection*{Digital Signature Algorithm (DSA)}
 
 \begin{defbox}[DSA Parametergenerierung]
-\begin{enumerate}
-\item Wähle Primzahl $q$ (160/224/256 Bit)
-\item Wähle Primzahl $p$ (1024/2048/3072 Bit) mit $q \mid (p-1)$
-\item Finde $g \in \mathbb{Z}_p^\times$ mit $\text{ord}(g) = q$
-\item Parameter $(p, q, g)$ sind öffentlich
-\end{enumerate}
+  \begin{enumerate}
+    \item Wähle Primzahl $q$ (160/224/256 Bit)
+    \item Wähle Primzahl $p$ (1024/2048/3072 Bit) mit $q \mid (p-1)$
+    \item Finde $g \in \mathbb{Z}_p^\times$ mit $\text{ord}(g) = q$
+    \item Parameter $(p, q, g)$ sind öffentlich
+  \end{enumerate}
 \end{defbox}
 
 \begin{defbox}[DSA Schlüsselgenerierung und Signatur]
-\begin{itemize}
-\item Privater Schlüssel: $x$ mit $1 < x < q$
-\item Öffentlicher Schlüssel: $y = g^x \mod p$
-\item Signieren: Wähle $k$, berechne $r = (g^k \mod p) \mod q$, $s = k^{-1} \cdot (H(m) + r \cdot x) \mod q$
-\item Verifizieren: Berechne $w = s^{-1} \mod q$, $u_1 = H(m) \cdot w \mod q$, $u_2 = r \cdot w \mod q$, $v = (g^{u_1} \cdot y^{u_2} \mod p) \mod q$, akzeptiere wenn $v = r$
-\end{itemize}
+  \begin{itemize}
+    \item Privater Schlüssel: $x$ mit $1 < x < q$
+    \item Öffentlicher Schlüssel: $y = g^x \mod p$
+    \item Signieren: Wähle $k$, berechne $r = (g^k \mod p) \mod q$, $s = k^{-1} \cdot (H(m) + r \cdot x) \mod q$
+    \item Verifizieren: Berechne $w = s^{-1} \mod q$, $u_1 = H(m) \cdot w \mod q$, $u_2 = r \cdot w \mod q$, $v = (g^{u_1} \cdot y^{u_2} \mod p) \mod q$, akzeptiere wenn $v = r$
+  \end{itemize}
 \end{defbox}
 
 \subsubsection{Sicherheitsbegriffe für Signaturen}
 
 \begin{defbox}[Angreiferwissen]
-\begin{itemize}
-\item \defc{Key-Only Attack}: Nur öffentlicher Schlüssel bekannt
-\item \defc{Known Signature Attack}: Nachricht-Signatur-Paare bekannt
-\item \defc{Chosen Message Attack}: Signaturen für selbstgewählte Nachrichten erhältlich
-\item \defc{Adaptive Chosen Message Attack}: Signaturen auch während Angriff erhältlich
-\end{itemize}
+  \begin{itemize}
+    \item \defc{Key-Only Attack}: Nur öffentlicher Schlüssel bekannt
+    \item \defc{Known Signature Attack}: Nachricht-Signatur-Paare bekannt
+    \item \defc{Chosen Message Attack}: Signaturen für selbstgewählte Nachrichten erhältlich
+    \item \defc{Adaptive Chosen Message Attack}: Signaturen auch während Angriff erhältlich
+  \end{itemize}
 \end{defbox}
 
 \begin{defbox}[Angreiferziele]
-\begin{itemize}
-\item \defc{Existential Forgery}: Neues gültiges Nachricht-Signatur-Paar
-\item \defc{Selective Forgery}: Signatur für bestimmte neue Nachricht
-\item \defc{Universal Forgery}: Signatur für beliebige Nachricht
-\item \defc{Total Break}: Bestimmung des privaten Schlüssels
-\end{itemize}
+  \begin{itemize}
+    \item \defc{Existential Forgery}: Neues gültiges Nachricht-Signatur-Paar
+    \item \defc{Selective Forgery}: Signatur für bestimmte neue Nachricht
+    \item \defc{Universal Forgery}: Signatur für beliebige Nachricht
+    \item \defc{Total Break}: Bestimmung des privaten Schlüssels
+  \end{itemize}
 \end{defbox}
 
 \subsection{Schlüsselverteilung und Schlüsselaustausch}
@@ -449,29 +449,29 @@ d \equiv -367 \equiv 2753 \pmod{3120}
 \subsubsection{Schlüsselarten}
 
 \begin{itemize}
-\item \defc{Langzeitschlüssel}: Lange Gültigkeit (Monate/Jahre), häufig für Authentifizierung
-\item \defc{Sitzungsschlüssel (Session Keys)}: Kurze Gültigkeit (eine Sitzung), reduziert Risiko bei Kompromittierung
+  \item \defc{Langzeitschlüssel}: Lange Gültigkeit (Monate/Jahre), häufig für Authentifizierung
+  \item \defc{Sitzungsschlüssel (Session Keys)}: Kurze Gültigkeit (eine Sitzung), reduziert Risiko bei Kompromittierung
 \end{itemize}
 
 \subsubsection*{Public Key Infrastructure (PKI)}
 
 \begin{defbox}[Zertifikate]
-\begin{itemize}
-\item Bestätigung der Zuordnung von öffentlichen Schlüsseln zu Identitäten durch vertrauenswürdige dritte Partei
-\item Enthalten: Öffentlicher Schlüssel, Name, Gültigkeitszeitraum, Aussteller, Signatur
-\item \defc{X.509}: Hierarchisches, zentralisiertes System mit Root-Zertifikaten
-\item \defc{Web of Trust}: Dezentrales System (PGP), gegenseitige Zertifizierung
-\end{itemize}
+  \begin{itemize}
+    \item Bestätigung der Zuordnung von öffentlichen Schlüsseln zu Identitäten durch vertrauenswürdige dritte Partei
+    \item Enthalten: Öffentlicher Schlüssel, Name, Gültigkeitszeitraum, Aussteller, Signatur
+    \item \defc{X.509}: Hierarchisches, zentralisiertes System mit Root-Zertifikaten
+    \item \defc{Web of Trust}: Dezentrales System (PGP), gegenseitige Zertifizierung
+  \end{itemize}
 \end{defbox}
 
 \subsubsection{Schlüsselaustauschprotokolle}
 
 \begin{defbox}[Dolev-Yao-Angreifermodell]
-\begin{itemize}
-\item Angreifer hat volle Kontrolle über Kommunikationskanal
-\item Kann: Abfangen, Verzögern, Unterdrücken, Ersetzen, Unter falscher Identität senden
-\item Kann \defc{nicht}: Kryptographische Primitive brechen (perfekte Kryptographie angenommen)
-\end{itemize}
+  \begin{itemize}
+    \item Angreifer hat volle Kontrolle über Kommunikationskanal
+    \item Kann: Abfangen, Verzögern, Unterdrücken, Ersetzen, Unter falscher Identität senden
+    \item Kann \defc{nicht}: Kryptographische Primitive brechen (perfekte Kryptographie angenommen)
+  \end{itemize}
 \end{defbox}
 
 \paragraph{Needham–Schroeder}
@@ -483,37 +483,38 @@ d \equiv -367 \equiv 2753 \pmod{3120}
 \subsubsection{Diffie-Hellman-Schlüsselaustausch}
 
 \begin{defbox}[Diffie-Hellman Protokoll]
-\begin{enumerate}
-\item Einigung auf Primzahl $p$ und Generator $g$ von $\mathbb{Z}_p^\times$
-\item A wählt $a$, sendet $g^a \mod p$ an B
-\item B wählt $b$, sendet $g^b \mod p$ an A
-\item A berechnet $(g^b)^a = g^{ab} \mod p$
-\item B berechnet $(g^a)^b = g^{ab} \mod p$
-\end{enumerate}
-Gemeinsamer Schlüssel: $K = g^{ab} \mod p$
+  Dabei geht es um den Schlüsselaustausch um danach ein symmetrisches Kommunikationsverfahren anzuwenden. $g^{ab}$ ist der gemeinsame symmetrische Schlüssel am Ende. Die öffentlichen Elemente sind: $g, p , g^a\mod p , g^b\mod p$
+  \begin{enumerate}
+    \item Einigung auf Primzahl $p$ und Generator $g$ von $\mathbb{Z}_p^\times$
+    \item A wählt $a$, sendet $g^a \mod p$ an B
+    \item B wählt $b$, sendet $g^b \mod p$ an A
+    \item A berechnet $(g^b)^a = g^{ab} \mod p$
+    \item B berechnet $(g^a)^b = g^{ab} \mod p$
+  \end{enumerate}
+  Gemeinsamer Schlüssel: $K = g^{ab} \mod p$
 \end{defbox}
 
 \noindent\textbf{Sicherheit:}
 \begin{itemize}
-\item Basierend auf \defc{Computational Diffie-Hellman Problem (CDH)}: Berechnung von $g^{ab}$ aus $g$, $g^a$, $g^b$
-\item \defc{Man-in-the-Middle-Angriff} möglich: Angreifer führt zwei separate DH-Protokolle
-\item Lösung: \defc{Authenticated Diffie-Hellman} oder \defc{Station-to-Station (STS)} Protokoll mit Signaturen
+  \item Basierend auf \defc{Computational Diffie-Hellman Problem (CDH)}: Berechnung von $g^{ab}$ aus $g$, $g^a$, $g^b$
+  \item \defc{Man-in-the-Middle-Angriff} möglich: Angreifer führt zwei separate DH-Protokolle
+  \item Lösung: \defc{Authenticated Diffie-Hellman} oder \defc{Station-to-Station (STS)} Protokoll mit Signaturen
 \end{itemize}
 
 \begin{defbox}[Station-to-Station (STS) Protokoll]
-\begin{itemize}
-\item $A \rightarrow B$: $g^a$
-\item $B \rightarrow A$: $g^b$, $\{\text{sig}(sk_B, (g^a, g^b))\}_K$ mit $K = g^{ab}$
-\item $A \rightarrow B$: $\{\text{sig}(sk_A, (g^a, g^b))\}_K$
-\end{itemize}
-Signatur gewährleistet Authentizität und Integrität.
+  \begin{itemize}
+    \item $A \rightarrow B$: $g^a$
+    \item $B \rightarrow A$: $g^b$, $\{\text{sig}(sk_B, (g^a, g^b))\}_K$ mit $K = g^{ab}$
+    \item $A \rightarrow B$: $\{\text{sig}(sk_A, (g^a, g^b))\}_K$
+  \end{itemize}
+  Signatur gewährleistet Authentizität und Integrität.
 \end{defbox}
 
 \noindent\textbf{Logjam-Angriff (2015):}
 \begin{itemize}
-\item Vorberechnung des diskreten Logarithmus für häufig verwendete Primzahlen
-\item Betraf 512/768 Bit, Abschätzung für 1024 Bit möglich
-\item Lösung: Verwendung größerer, individueller Primzahlen
+  \item Vorberechnung des diskreten Logarithmus für häufig verwendete Primzahlen
+  \item Betraf 512/768 Bit, Abschätzung für 1024 Bit möglich
+  \item Lösung: Verwendung größerer, individueller Primzahlen
 \end{itemize}
 
 \end{document}
