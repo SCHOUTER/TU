@@ -1,13 +1,22 @@
-% !TEX root = ./eicb_summary.tex
+\documentclass[
+../../eicb_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../eicb_summary}
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
 \section{Einführung}
 
 \begin{defbox}[Was ist ein Compiler?]
-Ein \textbf{Compiler} ist die \defc{Schnittstelle zwischen Programmiersprache und Maschine}.
-Er übersetzt menschenlesbaren Quellcode in maschinennahe Instruktionen.
-\begin{itemize}
-  \item \textbf{Programmiersprachen:} gut handhabbar für Menschen (z.B. Java, C++)
-  \item \textbf{Maschine:} optimiert auf Geschwindigkeit, Energieeffizienz, Fläche
-\end{itemize}
+  Ein \textbf{Compiler} ist die \defc{Schnittstelle zwischen Programmiersprache und Maschine}.
+  Er übersetzt menschenlesbaren Quellcode in maschinennahe Instruktionen.
+  \begin{itemize}
+    \item \textbf{Programmiersprachen:} gut handhabbar für Menschen (z.B. Java, C++)
+    \item \textbf{Maschine:} optimiert auf Geschwindigkeit, Energieeffizienz, Fläche
+  \end{itemize}
 \end{defbox}
 
 \subsubsection{Wirkung und Bedeutung}
@@ -18,12 +27,12 @@ Er übersetzt menschenlesbaren Quellcode in maschinennahe Instruktionen.
 \end{itemize}
 
 \begin{defbox}[Paralleles Rechnen]
-Trend von Ein-Prozessor-Systemen hin zu \defc{Mehrkern- und heterogenen Systemen}.
-\begin{itemize}
-  \item OpenMP – Mehrkern-CPUs
-  \item CUDA – GPUs
-  \item OpenCL – Kombination aus CPUs und GPUs
-\end{itemize}
+  Trend von Ein-Prozessor-Systemen hin zu \defc{Mehrkern- und heterogenen Systemen}.
+  \begin{itemize}
+    \item OpenMP – Mehrkern-CPUs
+    \item CUDA – GPUs
+    \item OpenCL – Kombination aus CPUs und GPUs
+  \end{itemize}
 \end{defbox}
 
 \subsubsection{Motivation}
@@ -36,11 +45,11 @@ Trend von Ein-Prozessor-Systemen hin zu \defc{Mehrkern- und heterogenen Systemen
 \subsection{Aufbau eines Compilers}
 
 \begin{defbox}[Compilerphasen]
-\begin{enumerate}
-  \item \textbf{Front-End:} Lexikalische, syntaktische und kontextuelle Analyse
-  \item \textbf{Middle-End:} Optimierung der Zwischendarstellung (IR)
-  \item \textbf{Back-End:} Codeerzeugung für Zielarchitektur
-\end{enumerate}
+  \begin{enumerate}
+    \item \textbf{Front-End:} Lexikalische, syntaktische und kontextuelle Analyse
+    \item \textbf{Middle-End:} Optimierung der Zwischendarstellung (IR)
+    \item \textbf{Back-End:} Codeerzeugung für Zielarchitektur
+  \end{enumerate}
 \end{defbox}
 
 \subsubsection{Syntaxanalyse}
@@ -63,27 +72,27 @@ Trend von Ein-Prozessor-Systemen hin zu \defc{Mehrkern- und heterogenen Systemen
 \begin{itemize}
   \item Ziel: effizienterer Code bei gleicher Semantik
   \item Beispiele:
-  \begin{itemize}
-    \item \textbf{Constant Folding:} $x = (2+3)*y \Rightarrow x=5*y$
-    \item \textbf{Common Subexpression Elimination}
-    \item \textbf{Strength Reduction}
-    \item \textbf{Loop-Invariant Code Motion}
-  \end{itemize}
+        \begin{itemize}
+          \item \textbf{Constant Folding:} $x = (2+3)*y \Rightarrow x=5*y$
+          \item \textbf{Common Subexpression Elimination}
+          \item \textbf{Strength Reduction}
+          \item \textbf{Loop-Invariant Code Motion}
+        \end{itemize}
 \end{itemize}
 
 %--------------------------------------------------
 \subsection{Syntax und Grammatik}
 
 \begin{defbox}[Syntax]
-Beschreibt die \defc{Struktur korrekter Programme}.
+  Beschreibt die \defc{Struktur korrekter Programme}.
 \end{defbox}
 
 \begin{defbox}[Formalisierungsmethoden]
-\begin{itemize}
-  \item \textbf{Reguläre Ausdrücke (RE)} – beschreiben Tokens, aber nicht Programmsyntax.
-  \item \textbf{Kontextfreie Grammatiken (CFG)} – Basis für Programmiersprachen.
-  \item \textbf{BNF / EBNF} – Notation zur Beschreibung von CFGs.
-\end{itemize}
+  \begin{itemize}
+    \item \textbf{Reguläre Ausdrücke (RE)} – beschreiben Tokens, aber nicht Programmsyntax.
+    \item \textbf{Kontextfreie Grammatiken (CFG)} – Basis für Programmiersprachen.
+    \item \textbf{BNF / EBNF} – Notation zur Beschreibung von CFGs.
+  \end{itemize}
 \end{defbox}
 
 \subsubsection{Begrifflichkeiten}
@@ -95,23 +104,23 @@ Beschreibt die \defc{Struktur korrekter Programme}.
 \end{itemize}
 
 \begin{defbox}[Mehrdeutigkeit]
-Eine Grammatik ist \defc{mehrdeutig}, wenn ein Satz mehrere Ableitungsbäume hat.
-Für Compiler sind nur eindeutige CFGs sinnvoll.
+  Eine Grammatik ist \defc{mehrdeutig}, wenn ein Satz mehrere Ableitungsbäume hat.
+  Für Compiler sind nur eindeutige CFGs sinnvoll.
 \end{defbox}
 
 %--------------------------------------------------
 \subsection{(Mini-)Triangle}
 
 \begin{defbox}[Mini-Triangle]
-\begin{itemize}
-  \item Pascal-artige Beispiel-Sprache
-  \item Enthält Variablen, Konstanten, Schleifen, Bedingungen
-  \item Keine Unterprogramme
-  \item Beispielhafte CFG-Definitionen für:
   \begin{itemize}
-    \item \textbf{Command}, \textbf{Expression}, \textbf{Declaration}, \textbf{Type-denoter}
+    \item Pascal-artige Beispiel-Sprache
+    \item Enthält Variablen, Konstanten, Schleifen, Bedingungen
+    \item Keine Unterprogramme
+    \item Beispielhafte CFG-Definitionen für:
+          \begin{itemize}
+            \item \textbf{Command}, \textbf{Expression}, \textbf{Declaration}, \textbf{Type-denoter}
+          \end{itemize}
   \end{itemize}
-\end{itemize}
 \end{defbox}
 
 \subsubsection{Syntaxbäume}
@@ -121,39 +130,39 @@ Für Compiler sind nur eindeutige CFGs sinnvoll.
 \end{itemize}
 
 \begin{defbox}[AST als IR]
-\begin{itemize}
-  \item \textbf{Vorteile:} maschinenunabhängig, gut für Analysen
-  \item \textbf{Nachteile:} weniger geeignet für hardwarenahe Optimierungen
-\end{itemize}
+  \begin{itemize}
+    \item \textbf{Vorteile:} maschinenunabhängig, gut für Analysen
+    \item \textbf{Nachteile:} weniger geeignet für hardwarenahe Optimierungen
+  \end{itemize}
 \end{defbox}
 
 %--------------------------------------------------
 \subsection{Kontextuelle Einschränkungen}
 
 \begin{defbox}[Geltungsbereiche (Scopes)]
-\begin{itemize}
-  \item Jede Variable muss \defc{vor ihrer Verwendung} deklariert sein.
-  \item Deklaration = \textit{bindendes Auftreten}, Verwendung = \textit{verwendendes Auftreten}.
-\end{itemize}
+  \begin{itemize}
+    \item Jede Variable muss \defc{vor ihrer Verwendung} deklariert sein.
+    \item Deklaration = \textit{bindendes Auftreten}, Verwendung = \textit{verwendendes Auftreten}.
+  \end{itemize}
 \end{defbox}
 
 \begin{defbox}[Typprüfung]
-\begin{itemize}
-  \item Jede Operation verlangt passende Operandentypen.
-  \item Beispielregeln:
-  \begin{align*}
-  E_1 > E_2 &: \text{liefert bool, wenn } E_1,E_2:int\\
-  V := E &: \text{nur erlaubt, wenn Typen äquivalent}\\
-  while~E~do~C &: \text{nur erlaubt, wenn } E:bool
-  \end{align*}
-\end{itemize}
+  \begin{itemize}
+    \item Jede Operation verlangt passende Operandentypen.
+    \item Beispielregeln:
+          \begin{align*}
+            E_1 > E_2    & : \text{liefert bool, wenn } E_1,E_2:int    \\
+            V := E       & : \text{nur erlaubt, wenn Typen äquivalent} \\
+            while~E~do~C & : \text{nur erlaubt, wenn } E:bool
+          \end{align*}
+  \end{itemize}
 \end{defbox}
 
 %--------------------------------------------------
 \subsection{Semantik}
 
 \begin{defbox}[Semantik]
-Beschreibt die \defc{Bedeutung von Programmen zur Laufzeit}.
+  Beschreibt die \defc{Bedeutung von Programmen zur Laufzeit}.
 \end{defbox}
 
 \subsubsection{Operationelle Sicht}
@@ -166,15 +175,15 @@ Beschreibt die \defc{Bedeutung von Programmen zur Laufzeit}.
 \subsubsection{Beispiele}
 \begin{itemize}
   \item \textbf{AssignCmd:} $V := E$
-    \begin{enumerate}
-      \item Evaluiere $E \Rightarrow v$
-      \item Weise $v$ an Variable $V$ zu
-    \end{enumerate}
+        \begin{enumerate}
+          \item Evaluiere $E \Rightarrow v$
+          \item Weise $v$ an Variable $V$ zu
+        \end{enumerate}
   \item \textbf{BinaryExp:} $E_1~op~E_2$
-    \begin{enumerate}
-      \item Evaluiere $E_1,E_2 \Rightarrow v_1,v_2$
-      \item Führe Operation $op(v_1,v_2)$ aus
-    \end{enumerate}
+        \begin{enumerate}
+          \item Evaluiere $E_1,E_2 \Rightarrow v_1,v_2$
+          \item Führe Operation $op(v_1,v_2)$ aus
+        \end{enumerate}
 \end{itemize}
 
 %--------------------------------------------------
@@ -185,3 +194,5 @@ Beschreibt die \defc{Bedeutung von Programmen zur Laufzeit}.
   \item Zentrale Themen: Syntax, Semantik, Typen, Optimierung.
   \item Mini-Triangle dient als Lehrsprache zur Umsetzung der Konzepte.
 \end{itemize}
+
+\end{document}

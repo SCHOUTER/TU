@@ -1,0 +1,253 @@
+\documentclass[
+../../eicb_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../eicb_summary}
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Laufzeitorganisationen}
+
+\subsection{Einführung und Überblick}
+
+Die Laufzeitorganisation beschäftigt sich mit der Abbildung von abstrakten Strukturen einer Hochsprache (Variablen, Prozeduren, Objekte) auf die konkreten Ressourcen der Zielmaschine (Register, Speicher, Instruktionen).
+
+Es existiert eine \defc{Semantic Gap} zwischen den komplexen Konstrukten der Hochsprache (Arrays, Objekte, Methoden) und den primitiven Möglichkeiten der Hardware.
+
+\begin{defbox}[Aufgaben der Laufzeitorganisation]
+  \begin{itemize}
+    \item Datendarstellung (Primitive Typen, Records, Arrays).
+    \item Auswertung von Ausdrücken (Stack vs. Register).
+    \item Speicherverwaltung (Global, Lokal/Stack, Heap).
+    \item Routinen und Aufrufkonventionen (Parameterübergabe).
+  \end{itemize}
+\end{defbox}
+
+% % Comment: Hier wäre die Grafik von Seite 4 ("Semantic Gap") nützlich, um die Diskrepanz zwischen Hochsprache und Hardware zu visualisieren.
+
+\subsection{Triangle Abstract Machine (TAM)}
+
+Die TAM ist eine abstrakte Zielmaschine für Lehrzwecke. Sie basiert auf einer \defc{Harvard-Architektur}, was bedeutet, dass Befehls- und Datenspeicher getrennt sind.
+
+\subsubsection{Speicherbereiche und Register}
+
+Die TAM nutzt verschiedene Register zur Adressierung der Speichersegmente.
+
+\paragraph{Instruktionsspeicher (Code Store)}
+Der Code-Speicher enthält das ausführbare Programm.
+
+\begin{itemize}
+  \item \defc{CB} (Code Base): Startadresse des Code-Segments (konstant).
+  \item \defc{CT} (Code Top): Endadresse des Code-Segments (konstant).
+  \item \defc{CP} (Code Pointer): Aktueller Befehlszähler (Instruction Pointer), zeigt auf den nächsten auszuführenden Befehl.
+  \item \defc{PB} (Primitive Base): Startadresse der Intrinsics (eingebaute Funktionen).
+  \item \defc{PT} (Primitive Top): Endadresse der Intrinsics.
+\end{itemize}
+
+\paragraph{Datenspeicher (Data Store)}
+Der Datenspeicher ist in Stack und Heap unterteilt. In der TAM wachsen diese Bereiche aufeinander zu (siehe Speicherverwaltung).
+
+\begin{itemize}
+  \item \defc{SB} (Stack Base): Boden des Stacks (Start der globalen Variablen).
+  \item \defc{ST} (Stack Top): Aktuelles oberes Ende des Stacks.
+  \item \defc{HB} (Heap Base): Startadresse des Heaps (oberes Ende des Speichers).
+  \item \defc{HT} (Heap Top): Aktuelle Grenze des belegten Heaps.
+  \item \defc{LB} (Local Base): Zeiger auf den aktuellen \textit{Stack Frame} (Beginn der lokalen Variablen der aktuellen Prozedur).
+\end{itemize}
+
+% % Comment: Hier wäre die Grafik von Seite 10 (TAM Speicherbereiche) sehr hilfreich, um die Anordnung von Stack, Heap und Code zu verstehen.
+
+\subsubsection{Instruktionen}
+TAM-Instruktionen sind 32-bit breit und haben folgendes Format:
+$$ \text{Instruktion} = \underbrace{\text{op (4 Bit)}}_{\text{Opcode}} \mid \underbrace{\text{r (4 Bit)}}_{\text{Register}} \mid \underbrace{\text{n (8 Bit)}}_{\text{Größe}} \mid \underbrace{\text{d (16 Bit)}}_{\text{Displacement}} $$
+
+Beispiel: \texttt{LOAD (1) 3[ST]} lädt ein Wort von der Adresse $ST + 3$.
+
+\subsection{Datendarstellung (Repräsentation)}
+
+Daten müssen im Speicher so abgelegt werden, dass sie effizient zugreifbar sind.
+
+\subsubsection{Prinzipien}
+\begin{enumerate}
+  \item \defc{Unverwechselbarkeit}: Unterschiedliche Werte sollten unterschiedliche Bitmuster haben.
+  \item \defc{Einzigartigkeit}: Ein Wert wird immer gleich dargestellt.
+  \item \defc{Konstante Größe}: Alle Werte eines Typs belegen gleich viel Platz.
+\end{enumerate}
+
+\begin{defbox}[Invariante der Datengröße]
+  Es muss gelten: $size[T] \ge \log_2(\#[T])$, wobei $\#[T]$ die Anzahl der unterschiedlichen Elemente in $T$ ist.
+\end{defbox}
+
+\subsubsection{Primitive Typen}
+\begin{itemize}
+  \item \textbf{Boolean}: 1 Wort (16b in TAM). Werte: $00..00$ (false), $00..01$ (true). \textit{Hinweis: In C/x86 oft nur 8 Bit.}
+  \item \textbf{Char}: 1 Wort (16b), Unicode/ASCII.
+  \item \textbf{Integer}: 1 Wort (16b), Zweierkomplement.
+\end{itemize}
+
+\subsubsection{Zusammengesetzte Typen}
+
+\paragraph{Records (Verbundtypen)}
+Die Felder eines Records werden im Speicher nacheinander (sequenziell) abgelegt.
+\begin{itemize}
+  \item \textbf{Adressierung}: Adresse des Records + Offset des Feldes.
+  \item \textbf{Padding}: Viele Prozessoren verlangen eine Ausrichtung (Alignment) auf Wortgrenzen (z.B. 32-bit), was zu ungenutzten Lücken (Padding) führen kann. TAM adressiert wortweise, daher weniger Padding-Probleme, aber Platzverschwendung bei Booleans.
+\end{itemize}
+
+\paragraph{Arrays (Felder)}
+\begin{itemize}
+  \item \textbf{Statische Arrays}: Größe zur Compile-Zeit bekannt. Elemente liegen direkt hintereinander.
+        $$ address[me[i]] = address[me] + i \times size[Element] $$
+  \item \textbf{Dynamische Arrays}: Größe erst zur Laufzeit bekannt.
+  \item \textbf{Repräsentation}: Indirekt über einen \defc{Deskriptor} (Dope Vector). Dieser enthält einen Zeiger auf die Daten (im Heap) und die aktuelle Größe.
+\end{itemize}
+
+% % Comment: Die Grafik von Seite 29 (Dynamische Arrays im Speicher) visualisiert gut den Unterschied zwischen dem Deskriptor auf dem Stack und den Daten im Heap.
+
+\paragraph{Variante Records (Disjoint Unions)}
+Ähnlich wie Records, aber die Komponenten überlagern sich im Speicher (Union in C). Ein \textit{Type Tag} entscheidet, welche Interpretation gerade gültig ist. Die Größe richtet sich nach der größten Komponente.
+
+\subsection{Auswertung von Ausdrücken}
+
+Wie werden mathematische Ausdrücke wie $a \times a + 2 \times a \times b$ berechnet?
+
+\subsubsection{Stack-Maschine (z.B. TAM)}
+Arbeitet nach dem \defc{Post-Fix-Prinzip}. Operanden werden auf den Stack gelegt (\texttt{LOAD}), Operationen (\texttt{ADD}, \texttt{MUL}) nehmen die obersten Elemente, verrechnen sie und legen das Ergebnis zurück.
+\begin{itemize}
+  \item \textit{Vorteil}: Einfache Code-Generierung, keine Registerverwaltung nötig.
+  \item \textit{Nachteil}: Viele Speicherzugriffe, langsamer als Registermaschinen.
+\end{itemize}
+
+\subsubsection{Register-Maschine}
+Berechnungen finden in schnellen CPU-Registern statt.
+\begin{itemize}
+  \item \textit{Vorteil}: Sehr schnell.
+  \item \textit{Nachteil}: Begrenzte Anzahl Register erfordert komplexe Zuteilungsstrategien (Register Allocation), wenn Zwischenergebnisse die Anzahl der Register übersteigen ("Spilling").
+\end{itemize}
+
+\subsection{Speicherverwaltung (Stack)}
+
+Die Verwaltung des Speichers für Variablen hängt von ihrer Lebensdauer ab.
+
+\subsubsection{Arten von Variablen}
+\begin{enumerate}
+  \item \textbf{Globale Variablen}: Existieren über die gesamte Laufzeit. Adresse ist fest relativ zu $SB$.
+  \item \textbf{Lokale Variablen}: Existieren nur, solange der Block (Prozedur/Funktion) aktiv ist. Verwaltung über den \defc{Stack}.
+  \item \textbf{Heap-Variablen}: Lebensdauer unabhängig vom Scope (siehe Abschnitt Heap).
+\end{enumerate}
+
+\subsubsection{Stack Frame (Activation Record)}
+Jeder Prozeduraufruf erzeugt einen neuen Stack Frame. Dieser enthält:
+\begin{itemize}
+  \item \textbf{Parameter}: Vom Aufrufer abgelegt.
+  \item \textbf{Verwaltungsdaten (Link Data)}: Static Link, Dynamic Link, Rücksprungadresse.
+  \item \textbf{Lokale Variablen}: Innerhalb der Prozedur angelegt.
+  \item \textbf{Zwischenergebnisse}: Für die Expression-Evaluation.
+\end{itemize}
+
+% % Comment: Grafik Seite 47 (Aufbau Stack Frame) ist essenziell.
+
+\subsubsection{Verkettung (Linking)}
+Um auf Variablen zuzugreifen, werden zwei Arten von Links im Stack Frame gespeichert:
+
+\begin{defbox}[Dynamic Link (Dynamische Verkettung)]
+  Zeigt auf den Stack Frame des \textbf{Aufrufers} (Caller). Entspricht dem alten Wert des $LB$-Registers. Dient dazu, beim Rücksprung (Return) den Stack-Kontext des Aufrufers wiederherzustellen.
+\end{defbox}
+
+\begin{defbox}[Static Link (Statische Verkettung)]
+  Zeigt auf den Stack Frame der Prozedur, die die aktuelle Prozedur im Quelltext \textbf{umschließt} (textuelle/lexikalische Hierarchie). Dient dem Zugriff auf \textbf{nicht-lokale Variablen} in verschachtelten Prozeduren.
+\end{defbox}
+
+\paragraph{Bestimmung des Static Link (SL)}
+Wenn Prozedur $P$ (auf Ebene $L_P$) eine Prozedur $Q$ (auf Ebene $L_Q$) aufruft:
+\begin{itemize}
+  \item \textbf{Aufruf einer globalen Prozedur ($L_Q=0$)}: $SL = SB$.
+  \item \textbf{Aufruf einer eingebetteten Prozedur ($L_Q > 0$)}:
+        \begin{itemize}
+          \item \textit{$Q$ ist direkt in $P$ definiert ($L_Q = L_P + 1$)}: $SL = LB$ (aktueller Frame von P).
+          \item \textit{$Q$ ist auf gleicher Ebene oder weiter außen ($L_Q \le L_P$)}: Man muss der statischen Kette von $P$ folgen ($k = L_P - L_Q + 1$ Schritte), um den korrekten Kontext zu finden.
+        \end{itemize}
+\end{itemize}
+
+\textit{Display-Register}: Eine Alternative zur statischen Verkettung, bei der ein Array von Zeigern (Display) gepflegt wird, das für jede Schachtelungstiefe direkt auf den aktuellen gültigen Frame zeigt. Schnellerer Zugriff, aber aufwendigerer Prozeduraufruf.
+
+\subsection{Routinen und Protokolle}
+
+Das Zusammenspiel von Aufrufer (Caller) und Aufgerufenem (Callee) wird durch ein Protokoll (Calling Convention) geregelt.
+
+\subsubsection{Ablauf eines Aufrufs (TAM)}
+\begin{enumerate}
+  \item \textbf{Vor CALL (Caller)}:
+        \begin{itemize}
+          \item Argumente (Parameter) werden auf den Stack gepusht (in TAM: in umgekehrter Reihenfolge, damit das erste Argument oben liegt oder direkt über $LB$ adressierbar ist).
+        \end{itemize}
+  \item \textbf{CALL (Instruktion)}:
+        \begin{itemize}
+          \item Sichert \textit{Static Link} (wird berechnet/übergeben).
+          \item Sichert \textit{Dynamic Link} (aktueller LB).
+          \item Sichert \textit{Return Address} (PC + 1).
+          \item Setzt neuen $LB$ auf den Beginn des neuen Frames.
+          \item Sprung zur Code-Adresse der Routine.
+        \end{itemize}
+  \item \textbf{In der Routine}:
+        \begin{itemize}
+          \item Reserviert Platz für lokale Variablen (Inkrementiert $ST$).
+        \end{itemize}
+  \item \textbf{RETURN (Callee)}:
+        \begin{itemize}
+          \item Entfernt lokalen Speicher und Verwaltungsdaten.
+          \item Entfernt Argumente vom Stack.
+          \item Legt Rückgabewert (Result) auf den Stack.
+          \item Stellt alten $LB$ und $ST$ wieder her.
+          \item Springt zurück.
+        \end{itemize}
+\end{enumerate}
+
+% % Comment: Die Grafiken auf Seite 69 (Vor/Nach Call/Return) zeigen sehr gut, wie der Stack atmet.
+
+\subsubsection{Parameterübergabe}
+Parameter werden relativ zu $LB$ mit \textbf{negativen Offsets} adressiert (da sie vor dem Frame-Start auf den Stack gelegt wurden). Lokale Variablen haben positive Offsets.
+
+\begin{itemize}
+  \item \textbf{Call-by-Value}: Der Wert der Variable wird kopiert. Änderungen in der Prozedur haben keinen Effekt auf den Aufrufer.
+  \item \textbf{Call-by-Reference} (\texttt{var}): Die \textit{Adresse} der Variable wird übergeben. Die Prozedur arbeitet via Indirektion direkt auf dem Speicherplatz des Aufrufers. Änderungen sind global sichtbar.
+\end{itemize}
+
+\subsubsection{Funktionen als Parameter (Closures)}
+Wenn eine Funktion $F$ als Parameter übergeben wird, reicht die Startadresse nicht aus, da $F$ Zugriff auf ihren statischen Kontext benötigt.
+\begin{itemize}
+  \item Lösung: \defc{Closure} (Funktionsabschluss).
+  \item Repräsentation: Paar aus \texttt{(Code-Adresse, Static Link)}.
+  \item Aufruf: \texttt{CALLI} (Call Indirect) nutzt dieses Paar.
+\end{itemize}
+
+\subsection{Heap-Speicherverwaltung}
+
+Der Heap dient für Daten, deren Lebensdauer nicht an den Block-Scope gebunden ist (z.B. verkettete Listen, Bäume).
+
+\subsubsection{Organisation}
+In der TAM (und vielen Systemen) wachsen Stack und Heap aufeinander zu. Wenn sie sich treffen $\rightarrow$ \textit{Out of Memory}.
+\begin{itemize}
+  \item \textbf{Allokation}: Suchen eines freien Blocks geeigneter Größe.
+  \item \textbf{Deallokation}: Freigabe von Speicher.
+\end{itemize}
+
+\subsubsection{Probleme und Strategien}
+\begin{itemize}
+  \item \defc{Fragmentierung}: Durch unregelmäßiges Anlegen und Freigeben entstehen Lücken ("Löcher"), die zu klein für neue Objekte sind, obwohl in Summe genug Speicher frei wäre.
+  \item \textbf{Freispeicherliste (Free List)}: Liste (z.B. \texttt{HF} in TAM) verkettet alle freien Blöcke.
+  \item \textbf{Kompaktierung}: Verschieben von belegten Blöcken, um Lücken zu schließen. Erfordert Aktualisierung aller Zeiger (schwierig!) oder Nutzung von \textit{Handles} (Zeiger auf Zeiger).
+\end{itemize}
+
+\subsubsection{Garbage Collection (Automatische Speicherbereinigung)}
+Verfahren, um nicht mehr erreichbaren Speicher automatisch freizugeben (z.B. in Java).
+
+\paragraph{Mark-and-Sweep Algorithmus}
+\begin{enumerate}
+  \item \textbf{Mark (Markieren)}: Gehe von allen Wurzeln (Register, Stack-Variablen) aus und verfolge alle Zeiger. Markiere jedes erreichte Objekt im Heap als "lebendig".
+  \item \textbf{Sweep (Fegen)}: Durchlaufe den gesamten Heap. Alle nicht markierten Objekte sind "Müll" und werden zur Freispeicherliste hinzugefügt. Markierungen werden für den nächsten Lauf zurückgesetzt.
+\end{enumerate}
+
+\end{document}
