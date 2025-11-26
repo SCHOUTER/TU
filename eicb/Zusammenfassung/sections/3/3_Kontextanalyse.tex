@@ -12,141 +12,167 @@
 
 \subsection{Einordnung und Ziele}
 
-\begin{defbox}[Kontextuelle Analyse]
-  Die Phase zwischen Syntaxanalyse (AST-Erstellung) und Code-Generierung. Sie prüft Regeln, die nicht durch die kontextfreie Grammatik abgedeckt sind.
-  \begin{itemize}
-    \item \textbf{Eingabe:} Abstrakter Syntaxbaum (AST).
-    \item \textbf{Ausgabe:} \defc{Dekorierter AST} (mit Typ- und Bindungsinformationen).
-  \end{itemize}
-\end{defbox}
+Die kontextuelle Analyse ist die Phase zwischen Syntaxanalyse (Parsing) und Code-Generierung. Während der Parser nur die grammatikalische Korrektheit prüft (Kontextfreie Grammatik), prüft diese Phase Regeln, die vom Kontext abhängen.
 
-\textbf{Hauptaufgaben:}
-\begin{enumerate}
-  \item \defc{Identifikation} (Identification): Zuordnung von Bezeichner-Verwendungen zu ihren Deklarationen (Scope-Regeln).
-  \item \defc{Typprüfung} (Type Checking): Sicherstellen der Typkompatibilität von Operatoren und Operanden.
-\end{enumerate}
-
-\subsection{Identifikation und Geltungsbereiche (Scopes)}
-
-\subsubsection{Blockstrukturen}
 \begin{itemize}
-  \item \textbf{Monolithisch} (z.\,B. BASIC): Ein globaler Scope. Bezeichner müssen programmweit eindeutig sein.
-  \item \textbf{Flach} (z.\,B. FORTRAN): Zwei Ebenen (Global und Lokal).
-  \item \textbf{Verschachtelt} (z.\,B. Pascal, Triangle, Java): Beliebige Schachtelungstiefe.
+  \item \textbf{Eingabe:} Abstrakter Syntaxbaum (AST).
+  \item \textbf{Ausgabe:} \defc{Dekorierter AST} (Knoten sind mit Typ- und Bindungsinformationen angereichert).
+  \item \textbf{Aufgaben:}
+        \begin{enumerate}
+          \item \defc{Identifikation} (Identification): Zuordnung von Bezeichner-Verwendungen zu ihren Deklarationen (Geltungsbereiche prüfen).
+          \item \defc{Typprüfung} (Type Checking): Sicherstellen, dass Operatoren auf kompatible Typen angewendet werden.
+        \end{enumerate}
 \end{itemize}
 
-\begin{defbox}[Regeln für verschachtelte Scopes]
+% [Hier könnte Grafik von Slide 3 eingefügt werden: Ablauf Syntax -> Contextual -> CodeGen]
+
+\subsection{Identifikation und Geltungsbereiche}
+
+\subsubsection{Blockstrukturen}
+Programmiersprachen definieren \defc{Geltungsbereiche} (Scopes), in denen Bezeichner sichtbar sind.
+
+\begin{defbox}[Arten von Blockstrukturen]
   \begin{itemize}
-    \item \textbf{Deklaration:} Ein Bezeichner darf im selben Block nur einmal deklariert werden.
-    \item \textbf{Sichtbarkeit:} Ein Bezeichner ist sichtbar, wenn er im aktuellen oder einem umschließenden Block deklariert wurde.
-    \item \defc{Verschattung} (Hiding): Eine lokale Deklaration verdeckt eine gleichnamige Deklaration in einem äußeren Block.
+    \item \textbf{Monolithisch} (z.B. BASIC): Ein einziger globaler Scope. Keine Namensdopplungen erlaubt.
+    \item \textbf{Flach} (z.B. FORTRAN): Trennung in Global und Lokal.
+    \item \textbf{Verschachtelt} (z.B. Triangle, Java, Pascal): Beliebig tiefe Schachtelung von Blöcken.
   \end{itemize}
 \end{defbox}
 
-\subsubsection{Symboltabelle (Identification Table)}
-Datenstruktur zur effizienten Zuordnung von Namen zu Attributen.
-
-\textbf{Implementierung (Triangle-Ansatz):}
-Um lineare Suche zu vermeiden, wird eine Kombination aus Hash-Map und Stacks verwendet:
+\textbf{Regeln für verschachtelte Strukturen (Nested Scopes):}
 \begin{enumerate}
-  \item \texttt{Map<String, Stack<Attribute>>}: Der Bezeichner ist der Key. Der Value ist ein Stack aller aktuellen Deklarationen dieses Namens (oberstes Element = aktuell sichtbare Bindung).
-  \item \texttt{Stack<List<String>> scopes}: Verwaltet die Scope-Ebenen. Beim Öffnen eines Scopes (\texttt{openScope}) wird eine neue Liste aufgelegt. Alle darin deklarierten Variablen werden vermerkt, um sie beim Schließen (\texttt{closeScope}) effizient aus der Map zu entfernen.
+  \item Ein Bezeichner darf innerhalb eines Blocks nur \textbf{einmal} deklariert werden.
+  \item Ein benutzter Bezeichner muss im aktuellen oder einem umschließenden (äußeren) Block deklariert sein.
+  \item \defc{Verschattung (Hiding)}: Eine Deklaration in einem inneren Block verdeckt eine gleichnamige Deklaration in einem äußeren Block.
 \end{enumerate}
+
+\subsubsection{Die Identifikationstabelle (Symboltabelle)}
+Die Symboltabelle (in den Folien \texttt{IdentificationTable}) ist die zentrale Datenstruktur, um Deklarationen zu verwalten und effizient abzurufen.
+
+\textbf{Problem naiver Ansätze:}
+\begin{itemize}
+  \item \textit{Liste:} Lineare Suche ist zu langsam ($O(n)$).
+  \item \textit{Einfache Map:} Kann keine Verschattung (gleicher Name in verschiedenen Scopes) abbilden.
+\end{itemize}
+
+\textbf{Effiziente Implementierung (Triangle-Ansatz):}
+Es wird eine Kombination aus Hash-Map und Stacks verwendet, um schnellen Zugriff ($O(1)$) und Scope-Verwaltung zu kombinieren.
+
+\begin{defbox}[Datenstrukturen der IdentificationTable]
+  \begin{itemize}
+    \item \texttt{private Map<String, Stack<Attribute>> \defc{idents}} \\
+          Bildet Bezeichnernamen (String) auf einen Stapel von Attributen ab.
+          \begin{itemize}
+            \item \textit{Warum ein Stack?} Wenn Variable \texttt{x} global und lokal existiert, liegt die lokale (aktuelle) Definition oben auf dem Stack.
+          \end{itemize}
+
+    \item \texttt{private Stack<List<String>> \defc{scopes}} \\
+          Verwaltet die Schachtelungsebenen. Jedes Element des Stacks ist eine Liste aller Bezeichner, die im \textit{aktuellen} Scope deklariert wurden.
+          \begin{itemize}
+            \item \textit{Zweck:} Ermöglicht das schnelle Aufräumen (Löschen) aller Variablen eines Blocks, wenn dieser verlassen wird.
+          \end{itemize}
+  \end{itemize}
+\end{defbox}
+
+\textbf{Algorithmus der Scope-Operationen:}
+
+\begin{enumerate}
+  \item \textbf{Scope öffnen} (\texttt{openScope}):
+        \begin{itemize}
+          \item Lege eine neue, leere Liste auf den \texttt{scopes}-Stack.
+          \item Markiert den Beginn eines neuen Blocks (z.B. bei \texttt{LetCommand}).
+        \end{itemize}
+
+  \item \textbf{Eintrag hinzufügen} (\texttt{enter(id, attr)}):
+        \begin{itemize}
+          \item Hole den Attribut-Stack für \texttt{id} aus \texttt{idents} (erstelle ihn, falls nicht existent).
+          \item Pushe das neue \texttt{attr} auf diesen Stack (Verschattung aktiv).
+          \item Füge \texttt{id} zur Liste hinzu, die oben auf \texttt{scopes} liegt (damit wir wissen, dass \texttt{id} zu diesem Scope gehört).
+        \end{itemize}
+
+  \item \textbf{Eintrag abrufen} (\texttt{retrieve(id)}):
+        \begin{itemize}
+          \item Suche \texttt{id} in \texttt{idents}.
+          \item Wenn vorhanden: Gib das oberste Element des Stacks zurück (tiefste/aktuellste Verschachtelungsebene).
+          \item Wenn Stack leer/nicht vorhanden: Bezeichner nicht deklariert $\rightarrow$ Fehler.
+        \end{itemize}
+
+  \item \textbf{Scope schließen} (\texttt{closeScope}):
+        \begin{itemize}
+          \item Poppe die oberste Liste von \texttt{scopes} (Liste der lokalen Variablen).
+          \item Durchlaufe diese Liste: Für jeden String \texttt{id} darin, poppe das oberste Element vom entsprechenden Stack in \texttt{idents}.
+          \item \textit{Effekt:} Die lokalen Deklarationen sind "vergessen", vorherige (globale) Deklarationen liegen wieder oben auf den Stacks in \texttt{idents}.
+        \end{itemize}
+\end{enumerate}
+
+% [Hier könnte Grafik von Slide 20/21 zur Datenstruktur eingefügt werden]
 
 \subsection{Attribute und AST-Dekoration}
 
-\begin{defbox}[Attribute]
-  Gespeicherte Eigenschaften eines Bezeichners:
+Was genau wird in der Symboltabelle gespeichert?
+
+\begin{itemize}
+  \item \textbf{Klassischer Ansatz:} Eigene Klasse \texttt{Attribute} mit Feldern für \texttt{Kind} (Var, Const, Proc) und \texttt{Type} (Int, Bool). Wird bei komplexen Typen (Arrays, Records) schnell unhandlich.
+  \item \textbf{AST-Ansatz (Triangle):} Da im AST (genauer: im Deklarations-Teilbaum) bereits alle Infos stehen, speichert man in der Symboltabelle einfach \defc{Referenzen auf die AST-Knoten}.
+\end{itemize}
+
+\begin{defbox}[Dekoration]
+  Der Prozess der Kontextanalyse reichert den AST an:
   \begin{itemize}
-    \item \defc{Art}: Variable, Konstante, Typ, Prozedur, Funktion.
-    \item \defc{Typ}: Verweis auf die Typstruktur.
-    \item Laufzeitinfos: Adressen, Offsets (für Code-Gen).
+    \item \textbf{Bei der Deklaration:} Der AST-Knoten der Deklaration wird in die Symboltabelle eingetragen.
+    \item \textbf{Bei der Verwendung (Applied Occurrence):} Der AST-Knoten der Verwendung (z.B. \texttt{Identifier}) erhält einen Zeiger (\texttt{public Declaration decl}) auf den AST-Knoten seiner Deklaration.
   \end{itemize}
 \end{defbox}
-
-\textbf{Speicherstrategie:}
-Statt komplexe Attribut-Klassen zu bauen, nutzt man den AST selbst. Die Symboltabelle speichert \textbf{Referenzen auf die Deklarations-Knoten} im AST.
-
-\textbf{Ablauf der Dekoration:}
-\begin{itemize}
-  \item Bei der Deklaration (\texttt{Binding Occurrence}): Eintrag in Symboltabelle.
-  \item Bei der Verwendung (\texttt{Applied Occurrence}): Suche in Symboltabelle $\rightarrow$ AST-Knoten der Verwendung erhält Zeiger auf AST-Knoten der Deklaration.
-\end{itemize}
 
 \subsection{Typprüfung (Type Checking)}
 
-\begin{defbox}[Statische vs. Dynamische Typisierung]
-  \begin{itemize}
-    \item \defc{Statisch} (Triangle, Java): Prüfung zur Compile-Zeit. Jeder Ausdruck hat einen fixen Typ. Sicherer und performanter.
-    \item \defc{Dynamisch} (Python, Lisp): Prüfung zur Laufzeit. Flexibler, aber fehleranfälliger.
-  \end{itemize}
-\end{defbox}
-
-\textbf{Algorithmus (Bottom-Up):}
-Die Prüfung erfolgt rekursiv von den Blättern zur Wurzel:
-\begin{enumerate}
-  \item \textbf{Blätter:} Typen von Literalen (z.\,B. \texttt{1} $\to$ Integer) sind bekannt. Variablen-Typen kommen aus der Identifikation (Symboltabelle).
-  \item \textbf{Knoten:} Typ eines Ausdrucks $E_1 \ op \ E_2$ wird aus den Typen der Kinder $E_1, E_2$ und der Signatur von $op$ abgeleitet.
-  \item \textbf{Kontext-Check:} Z.\,B. muss die Bedingung in \texttt{if E ...} vom Typ \texttt{Boolean} sein.
-\end{enumerate}
-
-\subsection{Implementierung mit dem Visitor-Pattern}
-
-Um die Logik (Typprüfung) von der Datenstruktur (AST) zu trennen, wird das \defc{Visitor-Pattern} verwendet. Dies verhindert das Aufblähen der AST-Klassen.
-
-\begin{defbox}[Funktionsweise Visitor]
-  \begin{itemize}
-    \item \textbf{Double Dispatch:} Der AST-Knoten ruft \texttt{v.visit(this)} auf, der Visitor führt dann die spezifische Methode (z.\,B. \texttt{visitAssignCommand}) aus.
-    \item \textbf{Generics:} \texttt{Visitor<RetTy, ArgTy>} ermöglicht flexible Rückgabe- und Argumenttypen.
-  \end{itemize}
-\end{defbox}
-
-\textbf{Spezialisierte Checker (Best Practice):}
-Statt eines riesigen Visitors gibt es spezialisierte Unterklassen von \texttt{VisitorBase}:
 \begin{itemize}
-  \item \texttt{ExpressionChecker}: Liefert \texttt{TypeDenoter} zurück (da Ausdrücke einen Typ haben).
-  \item \texttt{CommandChecker}: Liefert \texttt{Void} zurück (da Befehle keinen Typ haben).
+  \item \textbf{Ziel:} Sicherstellen, dass Operationen mit validen Typen ausgeführt werden (z.B. \texttt{if} benötigt \texttt{Boolean}).
+  \item \textbf{Vorgehen:} Bottom-Up Verfahren (von den Blättern zur Wurzel).
+  \item \textbf{Statische Typisierung:} Findet zur Compile-Zeit statt. Jeder Ausdruck hat einen festen Typ.
 \end{itemize}
 
-\textbf{Beispiele für Visitor-Methoden:}
+\textbf{Ablauf am Beispiel \texttt{n + 1}:}
+\begin{enumerate}
+  \item \texttt{IntLit (1)}: Typ ist direkt bekannt (\texttt{Integer}).
+  \item \texttt{Ident (n)}: Typ wird aus der Symboltabelle geholt (via Link zur Deklaration).
+  \item \texttt{BinaryExpr (+)}: Prüft, ob Operator \texttt{+} für \texttt{Integer} $\times$ \texttt{Integer} definiert ist und was der Rückgabetyp ist.
+\end{enumerate}
+
+\subsection{Implementierung: Das Visitor Pattern}
+
+Um die Logik der Kontextanalyse nicht in den AST-Klassen zu verstreuen, wird das \defc{Visitor Pattern} verwendet. Dies trennt Datenstruktur (AST) von Algorithmus (Checker).
+
 \begin{itemize}
-  \item \texttt{visitAssignCommand}: Prüft, ob LHS eine Variable ist und ob $Type(LHS) == Type(RHS)$.
-  \item \texttt{visitLetCommand}: Ruft \texttt{idTable.openScope()} auf, besucht Deklarationen, besucht Body, ruft \texttt{idTable.closeScope()} auf.
+  \item \textbf{Prinzip:} \texttt{astNode.visit(visitor, arg)}.
+  \item \textbf{Double Dispatch:} Der Knoten ruft zurück auf \texttt{visitor.visitSpecificNode(this, arg)}.
+  \item \textbf{Vorteil:} Neue Analysen (z.B. CodeGen) können hinzugefügt werden, ohne AST-Klassen zu ändern.
+\end{itemize}
+
+\textbf{Spezialisierte Visitors in Triangle:}
+Statt eines einzigen Visitors werden spezialisierte Unterklassen verwendet, um Typsicherheit bei Rückgabewerten zu erhöhen:
+\begin{itemize}
+  \item \texttt{ExpressionChecker}: Liefert \texttt{TypeDenoter} (da Ausdrücke einen Typ haben).
+  \item \texttt{CommandChecker}: Liefert \texttt{Void} (Befehle haben keinen Typ).
+  \item \texttt{DeclarationChecker}: Trägt Bezeichner in die Symboltabelle ein.
 \end{itemize}
 
 \subsection{Standardumgebung (Standard Environment)}
-
-Vordefinierte Bezeichner (z.\,B. \texttt{Integer}, \texttt{true}, \texttt{put}) sind nicht Teil der Grammatik, sondern werden \textbf{vor} der Analyse in die Symboltabelle geladen.
-
-\textbf{Realisierung:}
-Es werden künstliche AST-Fragmente erstellt (z.\,B. eine \texttt{ConstDeclaration} für \texttt{true}), die dann in den globalsten Scope eingefügt werden.
-
-\subsection{Typäquivalenz}
-
-Wann sind zwei Typen $T_1$ und $T_2$ gleich?
-
-\begin{defbox}[Äquivalenzarten]
-  \begin{itemize}
-    \item \defc{Strukturelle Äquivalenz} (Triangle): Typen sind gleich, wenn ihre Struktur identisch ist (z.\,B. Array gleicher Länge und gleicher Elementtyp).
-    \item \defc{Namensäquivalenz} (Pascal, Ada): Typen sind nur gleich, wenn sie denselben Typnamen haben. Jede \texttt{type}-Definition erzeugt einen neuen, inkompatiblen Typ.
-  \end{itemize}
-\end{defbox}
-
-\textbf{Beispiel Triangle (Strukturell):}
+Sprachen haben vordefinierte Typen (\texttt{Integer}, \texttt{Boolean}) und Funktionen (\texttt{put}, \texttt{get}).
 \begin{itemize}
-  \item \texttt{array 8 of Char} $==$ \texttt{array 8 of Char} (Äquivalent)
-  \item \texttt{record a:Int end} $\neq$ \texttt{record b:Int end} (Nicht äquivalent, da Bezeichner zur Struktur gehören).
+  \item Diese sind nicht Teil der Grammatik.
+  \item \textbf{Lösung:} Vor dem Start der eigentlichen Analyse wird die Symboltabelle mit "künstlichen" Deklarationen befüllt (z.B. wird ein AST-Fragment für eine Konstante \texttt{true} erzeugt und eingetragen).
 \end{itemize}
 
-\subsection{Zusammenfassung des Gesamtablaufs}
-\begin{enumerate}
-  \item Aufbau der \textbf{Standardumgebung}.
-  \item \textbf{Tiefensuche} über den AST (Visitor).
-  \item Bei Eintritt in Block (\texttt{Let}): \texttt{openScope}.
-  \item Bei Deklaration: Eintrag in Symboltabelle + Prüfung auf Dopplung.
-  \item Bei Verwendung: Lookup in Symboltabelle + \textbf{Identifikation} (Setzen des Links).
-  \item Berechnung der Typen von unten nach oben (\textbf{Typprüfung}).
-  \item Bei Austritt aus Block: \texttt{closeScope}.
-\end{enumerate}
+\subsection{Typäquivalenz}
+Wann gelten zwei Typen als gleich?
+
+\begin{defbox}[Äquivalenz-Arten]
+  \begin{itemize}
+    \item \defc{Strukturelle Äquivalenz} (Triangle): Typen sind gleich, wenn ihre Struktur identisch ist. \\
+          Beispiel: \texttt{array 8 of Char} ist kompatibel mit \texttt{array 8 of Char}.
+    \item \defc{Namensäquivalenz} (Pascal, Ada): Typen sind nur gleich, wenn sie denselben Typnamen haben. Jede Typ-Definition erzeugt einen neuen, inkompatiblen Typ.
+  \end{itemize}
+\end{defbox}
 
 \end{document}

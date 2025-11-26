@@ -1,13 +1,21 @@
-% !TEX root = ./eicb_summary.tex
+\documentclass[
+../../eicb_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../css_summary}
+\graphicspath{{../../pics/}}
+
+\begin{document}
 
 \section{Syntaktische Analyse/Lexparse}
 
 \begin{defbox}[Übersetzung und Phasen]
-\begin{itemize}
-  \item \defc{Syntaxanalyse} → Struktur des Programms (AST)
-  \item \defc{Kontextanalyse} → Bedeutungsprüfung (Typen, Gültigkeit)
-  \item \defc{Codegenerierung} → Übersetzung in Zielcode
-\end{itemize}
+  \begin{itemize}
+    \item \defc{Syntaxanalyse} → Struktur des Programms (AST)
+    \item \defc{Kontextanalyse} → Bedeutungsprüfung (Typen, Gültigkeit)
+    \item \defc{Codegenerierung} → Übersetzung in Zielcode
+  \end{itemize}
 \end{defbox}
 
 \subsection{Compilerstruktur}
@@ -33,13 +41,13 @@
 \end{itemize}
 
 \begin{defbox}[Kontextfreie Grammatik (CFG)]
-Eine CFG ist ein 4-Tupel $(N, T, P, S)$ mit:
-\begin{itemize}
-  \item $N$: Nichtterminale
-  \item $T$: Terminale
-  \item $P$: Produktionen
-  \item $S$: Startsymbol
-\end{itemize}
+  Eine CFG ist ein 4-Tupel $(N, T, P, S)$ mit:
+  \begin{itemize}
+    \item $N$: Nichtterminale
+    \item $T$: Terminale
+    \item $P$: Produktionen
+    \item $S$: Startsymbol
+  \end{itemize}
 \end{defbox}
 
 \subsection{BNF und EBNF}
@@ -47,9 +55,9 @@ Eine CFG ist ein 4-Tupel $(N, T, P, S)$ mit:
   \item \textbf{BNF:} Grundform zur Definition von Grammatiken
   \item \textbf{EBNF:} Erweiterung mit regulären Ausdrücken, optionalen und wiederholten Konstrukten
   \item Beispiel:
-  \[
-  \text{Expression} ::= \text{primary-Expression (operator primary-Expression)*}
-  \]
+        \[
+          \text{Expression} ::= \text{primary-Expression (operator primary-Expression)*}
+        \]
 \end{itemize}
 
 \subsection{Grammatiktransformationen}
@@ -62,7 +70,7 @@ Eine CFG ist ein 4-Tupel $(N, T, P, S)$ mit:
 
 \subsection{Parsing-Grundlagen}
 \begin{defbox}[Parsing]
-Entscheidung, ob Eingabe zur Grammatik gehört und Aufbau des Syntaxbaumes.
+  Entscheidung, ob Eingabe zur Grammatik gehört und Aufbau des Syntaxbaumes.
 \end{defbox}
 \begin{itemize}
   \item \textbf{Top-Down (z. B. rekursiver Abstieg):} Von Startsymbol zu Terminalen
@@ -79,7 +87,7 @@ Entscheidung, ob Eingabe zur Grammatik gehört und Aufbau des Syntaxbaumes.
 
 \subsection{Rekursiver Abstieg}
 \begin{defbox}[Rekursiver Abstieg]
-Jedes Nichtterminal erhält eine Prozedur \texttt{parseN()}, deren Aufrufstruktur dem Parsebaum entspricht.
+  Jedes Nichtterminal erhält eine Prozedur \texttt{parseN()}, deren Aufrufstruktur dem Parsebaum entspricht.
 \end{defbox}
 \begin{itemize}
   \item \textbf{accept(t)} prüft aktuelles Token
@@ -88,20 +96,59 @@ Jedes Nichtterminal erhält eine Prozedur \texttt{parseN()}, deren Aufrufstruktu
 \end{itemize}
 
 \subsection{Starter- und Folgemengen}
-\begin{defbox}[starters[[X]]]
-Menge aller Tokens, die am Anfang einer aus $X$ ableitbaren Zeichenkette stehen können.
-\end{defbox}
 
-\begin{defbox}[follow[[X]]]
-Menge aller Tokens, die in der Grammatik direkt nach $X$ folgen können.
-\end{defbox}
-
-\textbf{LL(1)-Bedingungen:}
+% Definition der Mengenarten für den Kontext
 \begin{itemize}
-  \item Für jede Alternative $X|Y$: \\
-  $starters[[X]] \cap starters[[Y]] = \emptyset$
-  \item Wenn $\varepsilon$-Produktionen vorkommen: \\
-  $starters[[X]] \cap (starters[[Y]] \cup follow[[X|Y]]) = \emptyset$
+  \item $T$: Menge der Terminale (Tokens, z.B. \texttt{id}, \texttt{+})
+  \item $N$: Menge der Nichtterminale (Variablen, z.B. \texttt{Expression})
+  \item $\varepsilon$: Das leere Wort (Epsilon)
+  \item $\$$: End-of-File Marker (eof)
+\end{itemize}
+
+% WICHTIG: Die geschweiften Klammern { ... } um den Titel verhindern, 
+% dass LaTeX bei den inneren eckigen Klammern [[ ]] abstürzt.
+
+\begin{defbox}[{$\text{starters}[[X]]$ (First-Menge)}]
+  Menge aller Terminale, mit denen ein aus $X$ abgeleiteter String beginnen kann.
+
+  \textbf{Berechnung:}
+  \begin{itemize}
+    \item \textbf{Ist $X \in T$ (Terminal):} \\
+          $starters[[X]] = \{X\}$
+    \item \textbf{Ist $X \in N$ (Nichtterminal) mit $X \rightarrow Y_1 Y_2 \dots$:}
+          \begin{itemize}
+            \item Füge $starters[[Y_1]] \setminus \{\varepsilon\}$ hinzu.
+            \item Falls $\varepsilon \in starters[[Y_1]]$, füge auch $starters[[Y_2]]$ hinzu (usw.).
+          \end{itemize}
+    \item \textbf{Epsilon:} Falls $X \rightarrow \varepsilon$ existiert, ist $\varepsilon \in starters[[X]]$.
+  \end{itemize}
+\end{defbox}
+
+\begin{defbox}[{$\text{follow}[[A]]$ (Folgemenge)}]
+  Menge aller Terminale, die in einer Satzform unmittelbar rechts von einem Nichtterminal $A$ stehen können.
+
+  \textbf{Regeln:}
+  \begin{enumerate}
+    \item \textbf{Startsymbol $S$:} Enthält immer das Ende-Zeichen ($\$$).
+    \item \textbf{Rechter Nachbar ($B \rightarrow \alpha A \beta$):} \\
+          Alles aus $starters[[\beta]]$ (außer $\varepsilon$) kommt zu $follow[[A]]$.
+    \item \textbf{Eltern-Vererbung ($B \rightarrow \alpha A$ oder $\beta \Rightarrow^* \varepsilon$):} \\
+          Wenn $A$ am Ende steht (oder $\beta$ wegfallen kann), erbt $A$ alles aus $follow[[B]]$.
+  \end{enumerate}
+  \textit{Hinweis: Folgemengen enthalten niemals $\varepsilon$, können aber $\$$ enthalten.}
+\end{defbox}
+
+\subsubsection*{LL(1)-Konfliktfreiheit}
+Eine Grammatik ist LL(1), wenn für jede Produktion mit Alternativen $A \rightarrow \alpha \mid \beta$ gilt:
+
+\begin{itemize}
+  \item \textbf{Disjunkte Starter (Auswahl-Konflikt):} \\
+        Die Alternativen dürfen nicht mit demselben Terminal beginnen. \\
+        $starters[[\alpha]] \cap starters[[\beta]] = \emptyset$
+
+  \item \textbf{Disjunkte Folge bei Epsilon (Nullable-Konflikt):} \\
+        Falls $\alpha \Rightarrow^* \varepsilon$ (d.h. $\alpha$ kann verschwinden), darf die Folgemenge von $A$ keinen gemeinsamen Start mit $\beta$ haben. \\
+        $starters[[\beta]] \cap follow[[A]] = \emptyset$
 \end{itemize}
 
 \subsection{AST (Abstract Syntax Tree)}
@@ -112,16 +159,16 @@ Menge aller Tokens, die in der Grammatik direkt nach $X$ folgen können.
 \end{itemize}
 
 \begin{defbox}[AST-Aufbau]
-\begin{itemize}
-  \item \textbf{Abstrakte Basisklasse:} \texttt{AST}
-  \item \textbf{Subklassen:} \texttt{Command}, \texttt{Expression}, \texttt{Declaration}, \texttt{TypeDenoter}
-  \item Terminalknoten (z. B. Identifier, Operator) speichern tatsächlichen Text
-\end{itemize}
+  \begin{itemize}
+    \item \textbf{Abstrakte Basisklasse:} \texttt{AST}
+    \item \textbf{Subklassen:} \texttt{Command}, \texttt{Expression}, \texttt{Declaration}, \texttt{TypeDenoter}
+    \item Terminalknoten (z. B. Identifier, Operator) speichern tatsächlichen Text
+  \end{itemize}
 \end{defbox}
 
 \subsection{Scanner (Lexikalische Analyse)}
 \begin{defbox}[Scanner]
-Wandelt Zeichen → Tokens anhand regulärer Ausdrücke (REs).
+  Wandelt Zeichen → Tokens anhand regulärer Ausdrücke (REs).
 \end{defbox}
 
 \textbf{Aufgaben:}
@@ -133,11 +180,11 @@ Wandelt Zeichen → Tokens anhand regulärer Ausdrücke (REs).
 
 \textbf{Beispiel EBNF Mini-Triangle:}
 \[
-\begin{aligned}
-\text{Identifier} &::= \text{Letter (Letter | Digit)*} \\
-\text{Integer-Literal} &::= \text{Digit Digit*} \\
-\text{Operator} &::= + | - | * | / | < | > | = \\
-\end{aligned}
+  \begin{aligned}
+    \text{Identifier}      & ::= \text{Letter (Letter | Digit)*} \\
+    \text{Integer-Literal} & ::= \text{Digit Digit*}             \\
+    \text{Operator}        & ::= + | - | * | / | < | > | =       \\
+  \end{aligned}
 \]
 
 \subsection{Automatisierung}
@@ -163,3 +210,5 @@ Wandelt Zeichen → Tokens anhand regulärer Ausdrücke (REs).
   \item AST-Struktur: Klassenhierarchie, Terminal- und Nichtterminalknoten
   \item Scanner: REs, endliche Automaten, Schlüsselworterkennung
 \end{itemize}
+
+\end{document}
