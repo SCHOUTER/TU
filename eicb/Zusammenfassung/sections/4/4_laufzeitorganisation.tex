@@ -25,8 +25,6 @@ Es existiert eine \defc{Semantic Gap} zwischen den komplexen Konstrukten der Hoc
   \end{itemize}
 \end{defbox}
 
-% % Comment: Hier wäre die Grafik von Seite 4 ("Semantic Gap") nützlich, um die Diskrepanz zwischen Hochsprache und Hardware zu visualisieren.
-
 \subsection{Triangle Abstract Machine (TAM)}
 
 Die TAM ist eine abstrakte Zielmaschine für Lehrzwecke. Sie basiert auf einer \defc{Harvard-Architektur}, was bedeutet, dass Befehls- und Datenspeicher getrennt sind.
@@ -36,6 +34,12 @@ Die TAM ist eine abstrakte Zielmaschine für Lehrzwecke. Sie basiert auf einer \
 Die TAM nutzt verschiedene Register zur Adressierung der Speichersegmente.
 
 \paragraph{Instruktionsspeicher (Code Store)}
+\begin{wrapfigure}{r}{0.45\linewidth}
+  \centering
+  \vspace{-1em} % optional fine-tuning
+  \includegraphics[width=\linewidth]{eicb_1_04-tamruntime-handout_page_10_1.png}
+\end{wrapfigure}
+
 Der Code-Speicher enthält das ausführbare Programm.
 
 \begin{itemize}
@@ -47,17 +51,18 @@ Der Code-Speicher enthält das ausführbare Programm.
 \end{itemize}
 
 \paragraph{Datenspeicher (Data Store)}
-Der Datenspeicher ist in Stack und Heap unterteilt. In der TAM wachsen diese Bereiche aufeinander zu (siehe Speicherverwaltung).
+
+Der Datenspeicher ist in Stack und Heap unterteilt. In der TAM wachsen diese Bereiche
+aufeinander zu (siehe Speicherverwaltung).
 
 \begin{itemize}
   \item \defc{SB} (Stack Base): Boden des Stacks (Start der globalen Variablen).
   \item \defc{ST} (Stack Top): Aktuelles oberes Ende des Stacks.
   \item \defc{HB} (Heap Base): Startadresse des Heaps (oberes Ende des Speichers).
   \item \defc{HT} (Heap Top): Aktuelle Grenze des belegten Heaps.
-  \item \defc{LB} (Local Base): Zeiger auf den aktuellen \textit{Stack Frame} (Beginn der lokalen Variablen der aktuellen Prozedur).
+  \item \defc{LB} (Local Base): Zeiger auf den aktuellen \textit{Stack Frame}
+        (Beginn der lokalen Variablen der aktuellen Prozedur).
 \end{itemize}
-
-% % Comment: Hier wäre die Grafik von Seite 10 (TAM Speicherbereiche) sehr hilfreich, um die Anordnung von Stack, Heap und Code zu verstehen.
 
 \subsubsection{Instruktionen}
 TAM-Instruktionen sind 32-bit breit und haben folgendes Format:
@@ -97,14 +102,18 @@ Die Felder eines Records werden im Speicher nacheinander (sequenziell) abgelegt.
 \end{itemize}
 
 \paragraph{Arrays (Felder)}
+\begin{wrapfigure}{r}{0.45\linewidth}
+  \centering
+  \vspace{-1em} % optional fine-tuning
+  \includegraphics[width=\linewidth]{eicb_1_04-tamruntime-handout_page_29_1.png}
+\end{wrapfigure}
 \begin{itemize}
   \item \textbf{Statische Arrays}: Größe zur Compile-Zeit bekannt. Elemente liegen direkt hintereinander.
         $$ address[me[i]] = address[me] + i \times size[Element] $$
   \item \textbf{Dynamische Arrays}: Größe erst zur Laufzeit bekannt.
   \item \textbf{Repräsentation}: Indirekt über einen \defc{Deskriptor} (Dope Vector). Dieser enthält einen Zeiger auf die Daten (im Heap) und die aktuelle Größe.
 \end{itemize}
-
-% % Comment: Die Grafik von Seite 29 (Dynamische Arrays im Speicher) visualisiert gut den Unterschied zwischen dem Deskriptor auf dem Stack und den Daten im Heap.
+\clearpage
 
 \paragraph{Variante Records (Disjoint Unions)}
 Ähnlich wie Records, aber die Komponenten überlagern sich im Speicher (Union in C). Ein \textit{Type Tag} entscheidet, welche Interpretation gerade gültig ist. Die Größe richtet sich nach der größten Komponente.
@@ -139,6 +148,11 @@ Die Verwaltung des Speichers für Variablen hängt von ihrer Lebensdauer ab.
 \end{enumerate}
 
 \subsubsection{Stack Frame (Activation Record)}
+\begin{wrapfigure}{r}{0.45\linewidth}
+  \centering
+  \vspace{-2em} % optional fine-tuning
+  \includegraphics[width=\linewidth]{eicb_1_04-tamruntime-handout_page_47_1.png}
+\end{wrapfigure}
 Jeder Prozeduraufruf erzeugt einen neuen Stack Frame. Dieser enthält:
 \begin{itemize}
   \item \textbf{Parameter}: Vom Aufrufer abgelegt.
@@ -146,8 +160,6 @@ Jeder Prozeduraufruf erzeugt einen neuen Stack Frame. Dieser enthält:
   \item \textbf{Lokale Variablen}: Innerhalb der Prozedur angelegt.
   \item \textbf{Zwischenergebnisse}: Für die Expression-Evaluation.
 \end{itemize}
-
-% % Comment: Grafik Seite 47 (Aufbau Stack Frame) ist essenziell.
 
 \subsubsection{Verkettung (Linking)}
 Um auf Variablen zuzugreifen, werden zwei Arten von Links im Stack Frame gespeichert:
@@ -178,6 +190,12 @@ Wenn Prozedur $P$ (auf Ebene $L_P$) eine Prozedur $Q$ (auf Ebene $L_Q$) aufruft:
 Das Zusammenspiel von Aufrufer (Caller) und Aufgerufenem (Callee) wird durch ein Protokoll (Calling Convention) geregelt.
 
 \subsubsection{Ablauf eines Aufrufs (TAM)}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\linewidth]{eicb_1_04-tamruntime-handout_page_69_1.png}
+  \caption{Vor/Nach Call/Return im Stack}
+\end{figure}
+
 \begin{enumerate}
   \item \textbf{Vor CALL (Caller)}:
         \begin{itemize}
@@ -204,8 +222,6 @@ Das Zusammenspiel von Aufrufer (Caller) und Aufgerufenem (Callee) wird durch ein
           \item Springt zurück.
         \end{itemize}
 \end{enumerate}
-
-% % Comment: Die Grafiken auf Seite 69 (Vor/Nach Call/Return) zeigen sehr gut, wie der Stack atmet.
 
 \subsubsection{Parameterübergabe}
 Parameter werden relativ zu $LB$ mit \textbf{negativen Offsets} adressiert (da sie vor dem Frame-Start auf den Stack gelegt wurden). Lokale Variablen haben positive Offsets.
