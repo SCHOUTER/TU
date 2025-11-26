@@ -4,7 +4,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[ngerman,english]{babel}
+\usepackage[ngerman,british]{babel}
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
@@ -25,7 +25,7 @@
 
 \section*{Aufgabe 1) Informierte Suchalgorithmen: Einordnung}
 
-\subsection*{a)Unterschied informierter Suchalgorithmen zu uninformierten Suchalgorithmen}
+\subsection*{a) Unterschied informierter Suchalgorithmen zu uninformierten Suchalgorithmen}
 
 Uninformierte Suchalgorithmen haben keine Information über das Problem ausser die Problemdefinition. Dahingegen haben informierte Suchalgorithmen extra Wissen über das Problem und etwa eine grobe Richtung wo sie die Lösung dessen finden.
 
@@ -40,13 +40,13 @@ Uninformierte Suchalgorithmen haben keine Information über das Problem ausser d
 
   \item \textbf{Autonome Roboternavigation:}
         Nutzung informierter Suche (A*, D*) zur Planung kollisionsfreier und optimaler Bewegungswege in dynamischen Umgebungen.
+  \item Package routing im Internet
 \end{itemize}
 
 \section*{Aufgabe 2) Informierte Suchalgorithmen}
 
 \subsection*{a) Von Lugoj nach Bukarest}
 
-Im Folgenden ist der A*-Ablauf einmal recht natürlich und ohne allzu technische Formulierungen beschrieben — aber natürlich weiterhin korrekt und vollständig.
 Die Bewertungsfunktion von A* lautet:
 \[
   f(n) = g(n) + h(n)
@@ -130,7 +130,7 @@ Bei der Graphsuche wird eine \emph{Closed List} geführt. Das führt zu folgende
 
 \subsection*{b)}
 
-Ja es gibt viele Städte, die in einen unendlichen loop kommen würden durch die Greedy Best-First Search. Hier ein paar Bsp.: Craiova, Lugoj, Neamt, Eforie, etc.
+Es gibt keine Städte, die in einen unendlichen Loop kommen würden.
 
 \subsection*{c)}
 Arad, Sibiu, Oradea, Zerind, Timisoara
@@ -145,7 +145,6 @@ Ein zug bewegt nur eine einzige Kachel. Für diese Kachel gibt es drei mögliche
   \item richtig $\rightarrow$ falsch: +1
   \item falsch $\rightarrow$ falsch: 0
 \end{enumerate}
-
 Da sich pro Zug nur eine Kachel verändert, kann sich $h_{MIS}$ ebenfalls nur $\pm 1$ ändern (Zugkosten = 1). Damit gilt:
 
 \[
@@ -155,10 +154,8 @@ Umgestellt also
 \[
   h_{MIS}(n) \leq 1 + h_{MIS}(n')
 \]
-Da sich $h_{MIS}$ in einem Schritt höchstens um 1 ändern kann und die Schrittkosten 1 sind, folgt dass $h_{MIS}$ konsistent ist.
-
-Wenn eine Kachel verschoben wird, ändert sich ihre Manhattan Distanz um höchstens 1 ($\pm 1$)
-
+Da sich $h_{MIS}$ in einem Schritt höchstens um 1 ändern kann und die Schrittkosten 1 sind, folgt dass $h_{MIS}$ konsistent ist. \newline
+Wenn eine Kachel verschoben wird, ändert sich ihre Manhattan Distanz um höchstens 1 ($\pm 1$).\newline
 Die gesamte Manhattan Heuristik verändert sich höchstens um 1:
 
 \[
@@ -173,10 +170,10 @@ Also ist $h_{MAN}$ konsistent.
 \subsubsection*{b)}
 
 Sei $h_1$ und $h_2$ admissible Heuristiken, d.h. für alle Knoten $n$ gilt $h_1(n) \leq h^*(n)$ und $h_2(n) \leq h^*(n)$.
-Definiere $h(n) = max{h_1(n), h_2(n)}$.
+Definiere $h(n) = max\left(h_1(n), h_2(n)\right)$.
 Da sowohl $h_1(n)$ als auch $h_2(n)$ höchstens $h^*(n)$ sind, kann ihr Maximum $h(n)$ ebenfalls nicht größer als $h^*(n)$ sein:
 \[
-  h(n) = max{h_1(n), h_2(n)} \leq h^*(n)
+  h(n) = max\left(h_1(n), h_2(n)\right) \leq h^*(n)
 \]
 Also ist $h$ admissible.
 
