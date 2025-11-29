@@ -1,4 +1,13 @@
-% !TEX root = ./vc_summary.tex
+\documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics}}
+
+\begin{document}
 
 \section{Wahrnehmung (Perception)}
 \label{sec:wahrnehmung}
@@ -6,40 +15,40 @@
 \subsection{Motivation und Kognition (Motivation and Cognition)}
 \label{ssec:motivation_kognition}
 \begin{itemize}
-    \item \textbf{Warum VC? (Why VC?)} Die Leistungsf\"ahigkeit von Rechnern w\"achst exponentiell (\textbf{Moore's Law}), aber die Kapazit\"at von Menschen ist (fast) konstant (\textbf{Darwin's Law}). VC hilft, diese L\"ucke zu \"uberbr\"ucken.
-    \item \textbf{Kognition (Cognition):} Sammelbegriff f\"ur alle Prozesse des Wahrnehmens und Erkennens (Denken, Erinnern, Lernen, etc.).
+    \item \textbf{Warum VC? (Why VC?)} Die Leistungsfähigkeit von Rechnern wächst exponentiell (\textbf{Moore's Law}), aber die Kapazität von Menschen ist (fast) konstant (\textbf{Darwin's Law}). VC hilft, diese Lücke zu überbrücken.
+    \item \textbf{Kognition (Cognition):} Sammelbegriff für alle Prozesse des Wahrnehmens und Erkennens (Denken, Erinnern, Lernen, etc.).
     \item \textbf{Modell der Informationsverarbeitung (Model of Information Processing):} Ein modulares 3-Stufenmodell:
-    \begin{enumerate}
-        \item \textbf{Perception} (Wahrnehmung durch Sinne)
-        \item \textbf{Decision} (Entscheidungsfindung im Gehirn)
-        \item \textbf{Response} (Reaktion durch K\"orper)
-    \end{enumerate}
-    \item \textbf{Bearbeitungszeiten (Processing Times):} Jedes Untersystem ben\"otigt Zeit.
-    \begin{itemize}
-        \item Wahrnehmung (Perception): $\approx$ 100 ms
-        \item Entscheidung (Cognition): $\approx$ 70 ms
-        \item Reaktion (Motor): $\approx$ 70 ms
-    \end{itemize}
-    \item \textbf{Wahrnehmung vs. Realit\"at:} Was wir wahrnehmen, ist kein direktes Abbild der Realit\"at, sondern eine partielle Hypothese, die auf unvollst\"andiger Information basiert.
+          \begin{enumerate}
+              \item \textbf{Perception} (Wahrnehmung durch Sinne)
+              \item \textbf{Decision} (Entscheidungsfindung im Gehirn)
+              \item \textbf{Response} (Reaktion durch Körper)
+          \end{enumerate}
+    \item \textbf{Bearbeitungszeiten (Processing Times):} Jedes Untersystem benötigt Zeit.
+          \begin{itemize}
+              \item Wahrnehmung (Perception): $\approx$ 100 ms
+              \item Entscheidung (Cognition): $\approx$ 70 ms
+              \item Reaktion (Motor): $\approx$ 70 ms
+          \end{itemize}
+    \item \textbf{Wahrnehmung vs. Realität:} Was wir wahrnehmen, ist kein direktes Abbild der Realität, sondern eine partielle Hypothese, die auf unvollständiger Information basiert.
 \end{itemize}
 
 \subsection{Das Visuelle System (The Visual System)}
 \label{ssec:visual_system}
 
 \begin{defbox}[Visueller Reiz (Visual Stimulus)]
-    Ein \"au\ss erer visueller Reiz ist \textbf{elektromagnetische Strahlung}. Sichtbares Licht liegt im Wellenl\"angenbereich von ca. 400nm (violett) bis 700nm (rot).
-    Die Frequenz $v$ und Wellenl\"ange $\lambda$ h\"angen \"uber $v \cdot \lambda = c$ zusammen.
+    Ein äu\ss erer visueller Reiz ist \textbf{elektromagnetische Strahlung}. Sichtbares Licht liegt im Wellenlängenbereich von ca. 400nm (violett) bis 700nm (rot).
+    Die Frequenz $v$ und Wellenlänge $\lambda$ hängen über $v \cdot \lambda = c$ zusammen.
 \end{defbox}
 
 \subsubsection{Aufbau des Auges (Structure of the Eye)}
 \begin{center}
-  \includegraphics[width=250px]{pics/vc_1_VC2025_02_Wahrnehmung_page_30_1.png}
+    \includegraphics[width=250px]{vc_1_VC2025_02_Wahrnehmung_page_30_1.png}
 \end{center}
 \begin{itemize}
-    \item \textbf{Optische Elemente:} Hornhaut (Kornea), Linse, Iris (Blende, 2-8mm), Glask\"orper.
+    \item \textbf{Optische Elemente:} Hornhaut (Kornea), Linse, Iris (Blende, 2-8mm), Glaskörper.
     \item \textbf{Linse (Lens):} Akkomodation (Scharfeinstellung).
-    \item \textbf{Retina (Netzhaut):} Enth\"alt die Photorezeptoren.
-    \item \textbf{Fovea Centralis:} Bereich der h\"ochsten Aufl\"osung (im "gelben Fleck" / Macula lutea).
+    \item \textbf{Retina (Netzhaut):} Enthält die Photorezeptoren.
+    \item \textbf{Fovea Centralis:} Bereich der höchsten Auflösung (im "gelben Fleck" / Macula lutea).
     \item \textbf{Blinder Fleck (Blind Spot):} Papilla nervi optici; Austrittspunkt des Sehnervs, keine Rezeptoren.
 \end{itemize}
 
@@ -47,79 +56,79 @@
 \subsubsection{Photorezeptoren (Photoreceptors)}
 Es gibt zwei Haupttypen von Photorezeptoren auf der Retina:
 \begin{itemize}
-    \item \textbf{St\"abchen (Rods):}
-    \begin{itemize}
-        \item ca. 100-120 Mio.
-        \item Haupts\"achlich au\ss erhalb der Fovea.
-        \item F\"ur \textbf{Nachtsehen (skotopisches Sehen)}.
-        \item Sehr lichtempfindlich, kein Farbsehen.
-        \item Empfindlichkeitsmaximum bei 498 nm (gr\"un).
-    \end{itemize}
+    \item \textbf{Stäbchen (Rods):}
+          \begin{itemize}
+              \item ca. 100-120 Mio.
+              \item Hauptsächlich au\ss erhalb der Fovea.
+              \item Für \textbf{Nachtsehen (skotopisches Sehen)}.
+              \item Sehr lichtempfindlich, kein Farbsehen.
+              \item Empfindlichkeitsmaximum bei 498 nm (grün).
+          \end{itemize}
     \item \textbf{Zapfen (Cones):}
-    \begin{itemize}
-        \item ca. 7-8 Mio.
-        \item Haupts\"achlich \textbf{in der Fovea} (Bereich des sch\"arfsten Sehens).
-        \item F\"ur \textbf{Tagsehen (photopisches Sehen)}.
-        \item 3 Typen f\"ur Farbsehen:
-        \begin{itemize}
-            \item \textbf{S-Zapfen} (Short): Max. bei 420 nm (Blau).
-            \item \textbf{M-Zapfen} (Medium): Max. bei 534 nm (Gr\"un).
-            \item \textbf{L-Zapfen} (Long): Max. bei 564 nm (Rot).
-        \end{itemize}
-    \end{itemize}
+          \begin{itemize}
+              \item ca. 7-8 Mio.
+              \item Hauptsächlich \textbf{in der Fovea} (Bereich des schärfsten Sehens).
+              \item Für \textbf{Tagsehen (photopisches Sehen)}.
+              \item 3 Typen für Farbsehen:
+                    \begin{itemize}
+                        \item \textbf{S-Zapfen} (Short): Max. bei 420 nm (Blau).
+                        \item \textbf{M-Zapfen} (Medium): Max. bei 534 nm (Grün).
+                        \item \textbf{L-Zapfen} (Long): Max. bei 564 nm (Rot).
+                    \end{itemize}
+          \end{itemize}
 \end{itemize}
 \begin{center}
-  \includegraphics[width=250px]{pics/vc_1_VC2025_02_Wahrnehmung_page_42_1.png}
+    \includegraphics[width=250px]{vc_1_VC2025_02_Wahrnehmung_page_42_1.png}
 \end{center}
 
 \begin{defbox}[Bayer-Sensor]
-    Digitale Kamerasensoren nutzen oft ein \textbf{Bayer-Muster}. Dies ist ein Farbfilter-Array, meist mit \textbf{50\% Gr\"un, 25\% Rot und 25\% Blau}. Gr\"un ist privilegiert, da das menschliche Auge f\"ur Gr\"un den gr\"o\ss ten Beitrag zur \textbf{Helligkeits- und Kontrastwahrnehmung} leistet (72\% Gr\"unanteil).
+    Digitale Kamerasensoren nutzen oft ein \textbf{Bayer-Muster}. Dies ist ein Farbfilter-Array, meist mit \textbf{50\% Grün, 25\% Rot und 25\% Blau}. Grün ist privilegiert, da das menschliche Auge für Grün den grö\ss ten Beitrag zur \textbf{Helligkeits- und Kontrastwahrnehmung} leistet (72\% Grünanteil).
     \begin{center}
-  \includegraphics[width=150px]{pics/vc_1_VC2025_02_Wahrnehmung_page_39_1.png}
-\end{center}
+        \includegraphics[width=150px]{vc_1_VC2025_02_Wahrnehmung_page_39_1.png}
+    \end{center}
 \end{defbox}
 
 \subsection{Vorverarbeitung \& Helligkeit (Preprocessing \& Brightness)}
 \label{ssec:preprocessing_brightness}
 
 \subsubsection{Signalverarbeitung in der Retina}
-Das Licht trifft (paradoxerweise) erst auf die Ganglien- und Bipolarzellen, bevor es die St\"abchen und Zapfen erreicht.
+Das Licht trifft (paradoxerweise) erst auf die Ganglien- und Bipolarzellen, bevor es die Stäbchen und Zapfen erreicht.
 \begin{itemize}
     \item \textbf{Bipolar-Zellen:} Sammeln, gewichten und leiten Informationen weiter.
-    \item \textbf{Horizontal- \& Amakrin-Zellen:} Kombinieren Signale mehrerer Rezeptoren (r\"aumlich) bzw. verarbeiten zeitliche \"Anderungen.
-    \item \textbf{Ganglien-Zellen:} Integrieren Informationen, z.B. f\"ur \textbf{Kontrastwahrnehmung} durch Unterschied zwischen Zentrum und Peripherie (Center-Surround-Antagonismus).
+    \item \textbf{Horizontal- \& Amakrin-Zellen:} Kombinieren Signale mehrerer Rezeptoren (räumlich) bzw. verarbeiten zeitliche änderungen.
+    \item \textbf{Ganglien-Zellen:} Integrieren Informationen, z.B. für \textbf{Kontrastwahrnehmung} durch Unterschied zwischen Zentrum und Peripherie (Center-Surround-Antagonismus).
 \end{itemize}
 \begin{center}
-  \includegraphics[width=200px]{pics/vc_1_VC2025_02_Wahrnehmung_page_47_2.png}
-  \includegraphics[width=200px]{pics/vc_1_VC2025_02_Wahrnehmung_page_48_1.png}
+    \includegraphics[width=200px]{vc_1_VC2025_02_Wahrnehmung_page_47_2.png}
+    \includegraphics[width=200px]{vc_1_VC2025_02_Wahrnehmung_page_48_1.png}
 \end{center}
 
 
-\subsubsection{Optische T\"auschungen (Optical Illusions)}
-Diese fr\"uhe Signalverarbeitung f\"uhrt zu T\"auschungen, die zeigen, dass Wahrnehmung nicht objektiv ist:
+\subsubsection{Optische Täuschungen (Optical Illusions)}
+Diese frühe Signalverarbeitung führt zu Täuschungen, die zeigen, dass Wahrnehmung nicht objektiv ist:
 \begin{itemize}
     \item \textbf{Hermann-Gitter:} Graue Flecke erscheinen in den Kreuzungen eines wei\ss en Gitters auf schwarzem Grund.
-    \item \textbf{Mach-B\"ander (Mach Bands):} An Kanten zwischen unterschiedlich hellen, aber homogenen Fl\"achen werden helle/dunkle B\"ander wahrgenommen, wo keine sind (eine Art "Uberschwingen" der Wahrnehmung).
-    \item \textbf{Simultankontrast (Simultaneous Contrast):} Die wahrgenommene Helligkeit einer Fl\"ache h\"angt von der Helligkeit ihrer Umgebung ab. Ein identisches Grau erscheint auf schwarzem Grund heller als auf wei\ss em Grund.
+    \item \textbf{Mach-Bänder (Mach Bands):} An Kanten zwischen unterschiedlich hellen, aber homogenen Flächen werden helle/dunkle Bänder wahrgenommen, wo keine sind (eine Art "Uberschwingen" der Wahrnehmung).
+    \item \textbf{Simultankontrast (Simultaneous Contrast):} Die wahrgenommene Helligkeit einer Fläche hängt von der Helligkeit ihrer Umgebung ab. Ein identisches Grau erscheint auf schwarzem Grund heller als auf wei\ss em Grund.
 \end{itemize}
 
 \subsubsection{Helligkeitswahrnehmung (Brightness Perception)}
 \begin{itemize}
-    \item Helligkeit (Brightness) ist \textbf{keine absolute Gr\"o\ss e}, sondern subjektiv.
-    \item Sie ist u.a. abh\"angig von der Reizst\"arke (Leuchtdichte), der Adaption an vorherige Leuchtdichten und der Umgebungsleuchtdichte.
-    \item \textbf{Weber-Fechnersches Gesetz:} Beschreibt den Zusammenhang zwischen Reizintensit\"at (R) und Hellempfindung (L).
-    \begin{itemize}
-        \item \textbf{Webersches Gesetz (Schwelle):} $\Delta L = \frac{\Delta R}{R} = const.$ (minimaler Kontrast f\"ur Wahrnehmung ca. 0.8\%)
-        \item \textbf{Fechnersches Gesetz:} $L = c_{1} \times \log R$
-        \item \textbf{Stevensches Gesetz (State-of-the-Art):} $E = c_{2} \times R^{k}$ (f\"ur Licht $k=0.3$)
-    \end{itemize}
+    \item Helligkeit (Brightness) ist \textbf{keine absolute Grö\ss e}, sondern subjektiv.
+    \item Sie ist u.a. abhängig von der Reizstärke (Leuchtdichte), der Adaption an vorherige Leuchtdichten und der Umgebungsleuchtdichte.
+    \item \textbf{Weber-Fechnersches Gesetz:} Beschreibt den Zusammenhang zwischen Reizintensität (R) und Hellempfindung (L).
+          \begin{itemize}
+              \item \textbf{Webersches Gesetz (Schwelle):} $\Delta L = \frac{\Delta R}{R} = const.$ (minimaler Kontrast für Wahrnehmung ca. 0.8\%)
+              \item \textbf{Fechnersches Gesetz:} $L = c_{1} \times \log R$
+              \item \textbf{Stevensches Gesetz (State-of-the-Art):} $E = c_{2} \times R^{k}$ (für Licht $k=0.3$)
+          \end{itemize}
 \end{itemize}
 
-\subsubsection{Aufl\"osung und Kontrast (Resolution and Contrast)}
+\subsubsection{Auflösung und Kontrast (Resolution and Contrast)}
 \begin{itemize}
-    \item \textbf{Sehsch\"arfe (Visual Acuity):} Die F\"ahigkeit, kleine Details zu erkennen, ist begrenzt. Z.B. Punktsehsch\"arfe ca. 1 Bogenminute ($1'$).
+    \item \textbf{Sehschärfe (Visual Acuity):} Die Fähigkeit, kleine Details zu erkennen, ist begrenzt. Z.B. Punktsehschärfe ca. 1 Bogenminute ($1'$).
     \item \textbf{Kontrastempfindlichkeit (Contrast Sensitivity):} Gemessen mit Sinus-Mustern (sinusoidal gratings).
-    \item \textbf{Contrast Sensitivity Function (CSF):} Beschreibt die Aufl\"osung im Frequenzraum. Zeigt, dass das Auge f\"ur mittlere Ortsfrequenzen (ca. 2-5 Zyklen/Grad) am empfindlichsten ist und die Empfindlichkeit zu sehr hohen (Details) und sehr niedrigen Frequenzen (langsame \"Uberg\"ange) abf\"allt.
+    \item \textbf{Contrast Sensitivity Function (CSF):} Beschreibt die Auflösung im Frequenzraum. Zeigt, dass das Auge für mittlere Ortsfrequenzen (ca. 2-5 Zyklen/Grad) am empfindlichsten ist und die Empfindlichkeit zu sehr hohen (Details) und sehr niedrigen Frequenzen (langsame Übergänge) abfällt.
 \end{itemize}
 
 \subsection{Informationsextraktion: Tiefenwahrnehmung (Depth Perception)}
@@ -128,46 +137,48 @@ Das visuelle System nutzt verschiedene Hinweisreize (\textbf{Depth Cues}), um Ra
 
 \begin{itemize}
     \item \textbf{1. Binokulare Cues (Zwei Augen):}
-    \begin{itemize}
-        \item \textbf{Disparit\"at / Parallaxe:} Der Haupt-Cue. Da die Augen getrennt sind, sehen sie leicht unterschiedliche Bilder. Das Gehirn fusioniert diese.
-        \item \textbf{Positive Parallaxe:} Objekte erscheinen \textit{hinter} der Bildebene.
-        \item \textbf{Negative Parallaxe:} Objekte erscheinen \textit{vor} der Bildebene.
-        \item \textbf{Akkomodation} (Linsenanpassung) und \textbf{Konvergenz} (Augenstellung).
-    \end{itemize}
-    
+          \begin{itemize}
+              \item \textbf{Disparität / Parallaxe:} Der Haupt-Cue. Da die Augen getrennt sind, sehen sie leicht unterschiedliche Bilder. Das Gehirn fusioniert diese.
+              \item \textbf{Positive Parallaxe:} Objekte erscheinen \textit{hinter} der Bildebene.
+              \item \textbf{Negative Parallaxe:} Objekte erscheinen \textit{vor} der Bildebene.
+              \item \textbf{Akkomodation} (Linsenanpassung) und \textbf{Konvergenz} (Augenstellung).
+          \end{itemize}
+
     \item \textbf{2. Pictorial Depth Cues (Monokular / Bildlich):}
-    \begin{itemize}
-        \item \textbf{Linearperspektive:} Parallele Linien konvergieren in der Ferne.
-        \item \textbf{Verdeckung (Occlusion):} Ein Objekt, das ein anderes verdeckt, wird als n\"aher wahrgenommen.
-        \item \textbf{Texturgradient:} Texturen werden mit der Entfernung dichter und feiner.
-        \item \textbf{Atmosph\"arische Tiefe:} Entfernte Objekte erscheinen blasser und bl\"aulicher.
-        \item \textbf{Schattenwurf (Shadows):} Wichtig f\"ur Position und Form; Annahme: Licht kommt von oben.
-        \item Weitere: Fokus/Blur, Vertraute Gr\"o\ss e, H\"ohe im Gesichtsfeld, etc..
-    \end{itemize}
-    
+          \begin{itemize}
+              \item \textbf{Linearperspektive:} Parallele Linien konvergieren in der Ferne.
+              \item \textbf{Verdeckung (Occlusion):} Ein Objekt, das ein anderes verdeckt, wird als näher wahrgenommen.
+              \item \textbf{Texturgradient:} Texturen werden mit der Entfernung dichter und feiner.
+              \item \textbf{Atmosphärische Tiefe:} Entfernte Objekte erscheinen blasser und bläulicher.
+              \item \textbf{Schattenwurf (Shadows):} Wichtig für Position und Form; Annahme: Licht kommt von oben.
+              \item Weitere: Fokus/Blur, Vertraute Grö\ss e, Höhe im Gesichtsfeld, etc..
+          \end{itemize}
+
     \item \textbf{3. Dynamische Depth Cues (Bewegung):}
-    \begin{itemize}
-        \item \textbf{Bewegungsparallaxe (Motion Parallax):} Objekte, die n\"aher sind, bewegen sich bei einer Kopfbewegung scheinbar schneller als entfernte Objekte.
-        \item \textbf{Kinetischer Tiefeneffekt (Kinetic Depth Effect):} 3D-Struktur wird aus der 2D-Projektion einer Bewegung extrahiert (z.B. "Structure from Motion").
-    \end{itemize}
+          \begin{itemize}
+              \item \textbf{Bewegungsparallaxe (Motion Parallax):} Objekte, die näher sind, bewegen sich bei einer Kopfbewegung scheinbar schneller als entfernte Objekte.
+              \item \textbf{Kinetischer Tiefeneffekt (Kinetic Depth Effect):} 3D-Struktur wird aus der 2D-Projektion einer Bewegung extrahiert (z.B. "Structure from Motion").
+          \end{itemize}
 \end{itemize}
 Die Depth Cues sind nicht redundant, sondern \textbf{additiv} und werden je nach Aufgabe (Task) \textbf{flexibel gewichtet}.
 
-\subsection{Aufmerksamkeit und Ged\"achtnis (Attention and Memory)}
+\subsection{Aufmerksamkeit und Gedächtnis (Attention and Memory)}
 \label{ssec:attention_memory}
 \begin{itemize}
-    \item \textbf{Fr\"uhe Wahrnehmung (Preattentive Processing):} Bestimmte Merkmale (Farbe, Gr\"o\ss e, Richtung, Schattierung) werden sehr schnell (ca. < 10 ms) und parallel verarbeitet, bevor die bewusste Aufmerksamkeit greift. \textbf{Verbindungen} von Merkmalen (z.B. "roter Kreis") erfordern Aufmerksamkeit.
+    \item \textbf{Frühe Wahrnehmung (Preattentive Processing):} Bestimmte Merkmale (Farbe, Grö\ss e, Richtung, Schattierung) werden sehr schnell (ca. < 10 ms) und parallel verarbeitet, bevor die bewusste Aufmerksamkeit greift. \textbf{Verbindungen} von Merkmalen (z.B. "roter Kreis") erfordern Aufmerksamkeit.
     \item \textbf{Aufmerksamkeit (Attention):} Dient als \textbf{Filter} oder "Gateway to Memory".
-    \item \textbf{Ver\"anderungsblindheit (Change Blindness):} Unf\"ahigkeit, gro\ss e \"Anderungen in einer Szene zu bemerken, wenn die Aufmerksamkeit abgelenkt ist (z.B. durch Flimmern). Dies zeigt, dass wir kein vollst\"andiges Bild der Welt im Kopf haben.
-    \item \textbf{Arbeitsged\"achtnis (Working Memory):}
-    \begin{itemize}
-        \item Schneller Zugriff (ca. 70 ms), schneller Verfall (ca. 200 ms).
-        \item Sehr begrenzte Kapazit\"at: \textbf{$7 \pm 2$ "Chunks"} (Miller, 1956).
-        \item "Chunks" sind sinnvolle Einheiten (z.B. DA, TU, VC, VL statt DATUVCVL).
-    \end{itemize}
-    \item \textbf{Langzeitged\"achtnis (Long-term Memory):}
-    \begin{itemize}
-        \item Nahezu unbegrenzte Kapazit\"at.
-        \item Langsamerer Zugriff (ca. 100 ms).
-    \end{itemize}
+    \item \textbf{Veränderungsblindheit (Change Blindness):} Unfähigkeit, gro\ss e änderungen in einer Szene zu bemerken, wenn die Aufmerksamkeit abgelenkt ist (z.B. durch Flimmern). Dies zeigt, dass wir kein vollständiges Bild der Welt im Kopf haben.
+    \item \textbf{Arbeitsgedächtnis (Working Memory):}
+          \begin{itemize}
+              \item Schneller Zugriff (ca. 70 ms), schneller Verfall (ca. 200 ms).
+              \item Sehr begrenzte Kapazität: \textbf{$7 \pm 2$ "Chunks"} (Miller, 1956).
+              \item "Chunks" sind sinnvolle Einheiten (z.B. DA, TU, VC, VL statt DATUVCVL).
+          \end{itemize}
+    \item \textbf{Langzeitgedächtnis (Long-term Memory):}
+          \begin{itemize}
+              \item Nahezu unbegrenzte Kapazität.
+              \item Langsamerer Zugriff (ca. 100 ms).
+          \end{itemize}
 \end{itemize}
+
+\end{document}

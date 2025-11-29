@@ -5,228 +5,228 @@
 
 \externaldocument[ext:]{../../vc_summary}
 % Set Graphics Path, so pictures load correctly
-\graphicspath{{../}}
+\graphicspath{{../../pics}}
 
 \begin{document}
 \section{Fouriertheorie}
 
 \subsection{Motivation}
-Die Fouriertheorie bietet eine neue Perspektive, um Signale und Funktionen zu analysieren, indem sie vom \defc{Ortsraum} (z.B. Position, Zeit) in den \defc{Frequenzraum} (z.B. Frequenz, Wellenlänge) wechselt. 
+Die Fouriertheorie bietet eine neue Perspektive, um Signale und Funktionen zu analysieren, indem sie vom \defc{Ortsraum} (z.B. Position, Zeit) in den \defc{Frequenzraum} (z.B. Frequenz, Wellenlänge) wechselt.
 
 \begin{itemize}
     \item \textbf{Beispiele:}
-    \begin{itemize}
-        \item \textbf{Optik/Physik:} Lichtbeugung an einem Spalt. Ein Spalt kann mathematisch als \textbf{Rechteckfunktion} ($rect(x)$) beschrieben werden.  Das resultierende Beugungsmuster (die Amplitudenverteilung) $B(\varphi)$ hat die Form einer \textbf{sinc-Funktion} ($\frac{\sin x}{x}$).  Die gemessene Intensität $I(x)$ ist proportional zum Quadrat der Amplitude ($I \propto B^2$), also eine $sinc^2$-Funktion. 
-        \item \textbf{Medizintechnik (MRT):} Ein MR-Scanner misst direkt Frequenzmuster im Fourierraum. 
-        \item \textbf{Menschliche Wahrnehmung:} Die Kontrastempfindlichkeit des Auges wird im Frequenzraum gemessen, oft mittels sinusförmiger Muster (sinusoidal gratings). 
-    \end{itemize}
-    \item \textbf{Kernidee:} Es besteht ein direkter Zusammenhang zwischen der Gestalt eines Objekts (Ortsraum) und seiner Amplitudenfunktion (Frequenzraum).  Dieser Zusammenhang ist die \defc{Fourier-Transformation}. 
-    \item \textbf{Erstes Fourier-Paar:} $rect(x) \xrightarrow{FT} sinc(u)$. 
+          \begin{itemize}
+              \item \textbf{Optik/Physik:} Lichtbeugung an einem Spalt. Ein Spalt kann mathematisch als \textbf{Rechteckfunktion} ($rect(x)$) beschrieben werden.  Das resultierende Beugungsmuster (die Amplitudenverteilung) $B(\varphi)$ hat die Form einer \textbf{sinc-Funktion} ($\frac{\sin x}{x}$).  Die gemessene Intensität $I(x)$ ist proportional zum Quadrat der Amplitude ($I \propto B^2$), also eine $sinc^2$-Funktion.
+              \item \textbf{Medizintechnik (MRT):} Ein MR-Scanner misst direkt Frequenzmuster im Fourierraum.
+              \item \textbf{Menschliche Wahrnehmung:} Die Kontrastempfindlichkeit des Auges wird im Frequenzraum gemessen, oft mittels sinusförmiger Muster (sinusoidal gratings).
+          \end{itemize}
+    \item \textbf{Kernidee:} Es besteht ein direkter Zusammenhang zwischen der Gestalt eines Objekts (Ortsraum) und seiner Amplitudenfunktion (Frequenzraum).  Dieser Zusammenhang ist die \defc{Fourier-Transformation}.
+    \item \textbf{Erstes Fourier-Paar:} $rect(x) \xrightarrow{FT} sinc(u)$.
 \end{itemize}
 
 \subsection{Mathematische Grundlagen}
 \begin{itemize}
-    \item \textbf{Vektorraum ($R^n$):} Ein Raum, in dem Vektoren addiert und skalar multipliziert werden können. 
-    \item \textbf{Skalarprodukt:} Definiert Längen und Winkel. $\langle\vec{v},\vec{w}\rangle=\sum_{i=1}^{n}v_{i}w_{i}$. 
-    \item \textbf{Basis:} Ein Satz linear unabhängiger Vektoren (z.B. $\vec{e}_1, \vec{e}_2$), die den Raum aufspannen.  Jeder Vektor $\vec{v}$ ist eine Linearkombination der Basis: $\vec{v}=a_{1}\vec{e}_{1}+a_{2}\vec{e}_{2}$. 
+    \item \textbf{Vektorraum ($R^n$):} Ein Raum, in dem Vektoren addiert und skalar multipliziert werden können.
+    \item \textbf{Skalarprodukt:} Definiert Längen und Winkel. $\langle\vec{v},\vec{w}\rangle=\sum_{i=1}^{n}v_{i}w_{i}$.
+    \item \textbf{Basis:} Ein Satz linear unabhängiger Vektoren (z.B. $\vec{e}_1, \vec{e}_2$), die den Raum aufspannen.  Jeder Vektor $\vec{v}$ ist eine Linearkombination der Basis: $\vec{v}=a_{1}\vec{e}_{1}+a_{2}\vec{e}_{2}$.
     \item \defc{\textbf{Funktionenräume:}}
-    \begin{itemize}
-        \item Die Elemente sind nun \textbf{Funktionen} statt Vektoren. 
-        \item Diese Räume sind i.d.R. \textbf{unendlich-dimensional}. 
-        \item \textbf{Ziel:} Finde \defc{Basisfunktionen}, um (beliebige) Funktionen als Linearkombination dieser Basen darzustellen. Dies leistet die \textbf{Fouriertheorie}.
-    \end{itemize}
+          \begin{itemize}
+              \item Die Elemente sind nun \textbf{Funktionen} statt Vektoren.
+              \item Diese Räume sind i.d.R. \textbf{unendlich-dimensional}.
+              \item \textbf{Ziel:} Finde \defc{Basisfunktionen}, um (beliebige) Funktionen als Linearkombination dieser Basen darzustellen. Dies leistet die \textbf{Fouriertheorie}.
+          \end{itemize}
 \end{itemize}
 
 \subsection{Die Fourier-Reihe (Fourier Series)}
 \begin{defbox}[Grundidee der Fourier-Reihe]
-Jede \defc{2$\pi$-periodische Funktion} $f(x)$, die die \textbf{Dirichlet-Bedingungen} erfüllt, kann als unendliche Summe (Überlagerung) von Sinus- und Kosinusfunktionen dargestellt werden.
+    Jede \defc{2$\pi$-periodische Funktion} $f(x)$, die die \textbf{Dirichlet-Bedingungen} erfüllt, kann als unendliche Summe (Überlagerung) von Sinus- und Kosinusfunktionen dargestellt werden.
 
-\textbf{Dirichlet-Bedingungen} :
-\begin{enumerate}
-    \item Endliche Anzahl von Unstetigkeiten pro Periode. 
-    \item Endliche Anzahl von Maxima und Minima pro Periode. 
-    \item In jeder Periode integrierbar (d.h. $\int |f(x)| dx < \infty$ pro Periode). 
-\end{enumerate}
+    \textbf{Dirichlet-Bedingungen} :
+    \begin{enumerate}
+        \item Endliche Anzahl von Unstetigkeiten pro Periode.
+        \item Endliche Anzahl von Maxima und Minima pro Periode.
+        \item In jeder Periode integrierbar (d.h. $\int |f(x)| dx < \infty$ pro Periode).
+    \end{enumerate}
 \end{defbox}
 
 \subsubsection{Analogie zum Vektorraum}
 \begin{itemize}
-    \item \textbf{Skalarprodukt für Funktionen:} $\langle f,g\rangle = \int_{-\pi}^{\pi} f(t)g(t)dt$. 
-    \item \textbf{Orthogonale Basis:} Die Funktionen $u_n(t) = \cos(nt)$ und $v_n(t) = \sin(nt)$ bilden eine \defc{orthogonale Basis} im Funktionenraum H.  Das bedeutet, ihr Skalarprodukt ist 0, wenn sie nicht identisch sind (z.B. $\int_{-\pi}^{\pi} \cos(nt)\sin(mt)dt = 0$ $\forall n,m$). 
+    \item \textbf{Skalarprodukt für Funktionen:} $\langle f,g\rangle = \int_{-\pi}^{\pi} f(t)g(t)dt$.
+    \item \textbf{Orthogonale Basis:} Die Funktionen $u_n(t) = \cos(nt)$ und $v_n(t) = \sin(nt)$ bilden eine \defc{orthogonale Basis} im Funktionenraum H.  Das bedeutet, ihr Skalarprodukt ist 0, wenn sie nicht identisch sind (z.B. $\int_{-\pi}^{\pi} \cos(nt)\sin(mt)dt = 0$ $\forall n,m$).
 \end{itemize}
 
 \subsubsection{Formeln der Fourier-Reihe}
 
 \begin{defbox}[Reelle Fourier-Reihe]
-$$ f(x) = a_{0} + \sum_{n=1}^{\infty} (a_{n}\cos(nx) + b_{n}\sin(nx)) $$
+    $$ f(x) = a_{0} + \sum_{n=1}^{\infty} (a_{n}\cos(nx) + b_{n}\sin(nx)) $$
 
-Die \defc{Fourier-Koeffizienten} $a_n, b_n$ werden durch Projektion von $f(x)$ auf die Basisfunktionen berechnet:
-\begin{itemize}
-    \item $a_{0} = \frac{1}{2\pi} \int_{-\pi}^{\pi} f(x)dx$ \quad (Der "Gleichanteil" oder Mittelwert) 
-    \item $a_{m} = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x)\cos(mx)dx$ \quad (für $m>0$) 
-    \item $b_{m} = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x)\sin(mx)dx$ 
-\end{itemize}
+    Die \defc{Fourier-Koeffizienten} $a_n, b_n$ werden durch Projektion von $f(x)$ auf die Basisfunktionen berechnet:
+    \begin{itemize}
+        \item $a_{0} = \frac{1}{2\pi} \int_{-\pi}^{\pi} f(x)dx$ \quad (Der "Gleichanteil" oder Mittelwert)
+        \item $a_{m} = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x)\cos(mx)dx$ \quad (für $m>0$)
+        \item $b_{m} = \frac{1}{\pi} \int_{-\pi}^{\pi} f(x)\sin(mx)dx$
+    \end{itemize}
 \end{defbox}
 
 \begin{itemize}
     \item \textbf{Symmetrie-Eigenschaften:}
-    \begin{itemize}
-        \item \textbf{Gerade Funktion} ($f(-t)=f(t)$, z.B. $\cos(x)$): Alle \defc{$b_n = 0$}. 
-        \item \textbf{Ungerade Funktion} ($f(-t)=-f(t)$, z.B. $\sin(x)$): Alle \defc{$a_n = 0$} (inkl. $a_0$). 
-    \end{itemize}
-    \item \textbf{Beispiel (Rechteck-Schwingung):} Dies ist eine ungerade Funktion.  Daher sind alle $a_n = 0$.  Die $b_n$ Koeffizienten sind $\frac{4k}{n\pi}$ für ungerade $n$ und $0$ für gerade $n$. 
-    $$ f(x) = \frac{4k}{\pi}\left(\sin(x) + \frac{1}{3}\sin(3x) + \frac{1}{5}\sin(5x) + \dots\right) $$ 
-    (Die Folien 39-43 visualisieren, wie diese Summe die Rechteckfunktion approximiert ).
+          \begin{itemize}
+              \item \textbf{Gerade Funktion} ($f(-t)=f(t)$, z.B. $\cos(x)$): Alle \defc{$b_n = 0$}.
+              \item \textbf{Ungerade Funktion} ($f(-t)=-f(t)$, z.B. $\sin(x)$): Alle \defc{$a_n = 0$} (inkl. $a_0$).
+          \end{itemize}
+    \item \textbf{Beispiel (Rechteck-Schwingung):} Dies ist eine ungerade Funktion.  Daher sind alle $a_n = 0$.  Die $b_n$ Koeffizienten sind $\frac{4k}{n\pi}$ für ungerade $n$ und $0$ für gerade $n$.
+          $$ f(x) = \frac{4k}{\pi}\left(\sin(x) + \frac{1}{3}\sin(3x) + \frac{1}{5}\sin(5x) + \dots\right) $$
+          (Die Folien 39-43 visualisieren, wie diese Summe die Rechteckfunktion approximiert ).
 \end{itemize}
 
 \begin{defbox}[Komplexe Fourier-Reihe]
-Mit der Euler-Identität ($e^{i\phi} = \cos\phi + i\sin\phi$ und $e^{inx} = \cos(nx) + i\sin(nx)$) lässt sich die Reihe kompakter schreiben :
-$$ f(x) = \sum_{n=-\infty}^{\infty} c_n e^{inx} $$
+    Mit der Euler-Identität ($e^{i\phi} = \cos\phi + i\sin\phi$ und $e^{inx} = \cos(nx) + i\sin(nx)$) lässt sich die Reihe kompakter schreiben :
+    $$ f(x) = \sum_{n=-\infty}^{\infty} c_n e^{inx} $$
 
 \end{defbox}
 
 \subsection{Die Fourier-Transformation (FT)}
 \begin{defbox}[Motivation der Fourier-Transformation]
-Erweiterung der Fourier-Reihe auf \defc{nicht-periodische Funktionen}. 
+    Erweiterung der Fourier-Reihe auf \defc{nicht-periodische Funktionen}.
 
-Dies geschieht durch einen Grenzübergang: Die Periode $L$ der Funktion wird unendlich groß ($L \to \infty$). 
+    Dies geschieht durch einen Grenzübergang: Die Periode $L$ der Funktion wird unendlich groß ($L \to \infty$).
 
-Dabei wird die \textbf{diskrete Summe} der Fourier-Reihe (über $n$) zu einem \textbf{kontinuierlichen Integral} (über $u$).  Das Spektrum ist nicht mehr diskret (Vielfache einer Grundfrequenz), sondern \defc{kontinuierlich}. 
+    Dabei wird die \textbf{diskrete Summe} der Fourier-Reihe (über $n$) zu einem \textbf{kontinuierlichen Integral} (über $u$).  Das Spektrum ist nicht mehr diskret (Vielfache einer Grundfrequenz), sondern \defc{kontinuierlich}.
 \end{defbox}
 
 \begin{defbox}[Das Fourier-Transformationspaar]
-\begin{itemize}
-    \item \textbf{Fourier-Transformation (FT):} (Analyse: Ortsraum $\to$ Frequenzraum)
-    $$ F(u) = \int_{-\infty}^{\infty} f(t) e^{-2\pi i ut} dt $$
-    
-    
-    \item \textbf{Inverse Fourier-Transformation (iFT):} (Synthese: Frequenzraum $\to$ Ortsraum)
-    $$ f(x) = \int_{-\infty}^{\infty} F(u) e^{+2\pi i ux} du $$
-    
-\end{itemize}
-$f(x)$ ist oft reell, aber $F(u)$ ist i.d.R. komplex: $F(u) = \text{Re}(F(u)) + i~\text{Im}(F(u))$. 
+    \begin{itemize}
+        \item \textbf{Fourier-Transformation (FT):} (Analyse: Ortsraum $\to$ Frequenzraum)
+              $$ F(u) = \int_{-\infty}^{\infty} f(t) e^{-2\pi i ut} dt $$
+
+
+        \item \textbf{Inverse Fourier-Transformation (iFT):} (Synthese: Frequenzraum $\to$ Ortsraum)
+              $$ f(x) = \int_{-\infty}^{\infty} F(u) e^{+2\pi i ux} du $$
+
+    \end{itemize}
+    $f(x)$ ist oft reell, aber $F(u)$ ist i.d.R. komplex: $F(u) = \text{Re}(F(u)) + i~\text{Im}(F(u))$.
 \end{defbox}
 
 \subsubsection{Wichtige Fourier-Transformationspaare}
 \begin{itemize}
     \item \textbf{Rechteck-Funktion $\leftrightarrow$ sinc-Funktion:}
-    \begin{itemize}
-        \item $f(x) = rect(x)$ 
-        \item $F(u) \propto sinc(u)$ 
-    \end{itemize}
+          \begin{itemize}
+              \item $f(x) = rect(x)$
+              \item $F(u) \propto sinc(u)$
+          \end{itemize}
     \item \textbf{Dirac-Delta-Distribution $\leftrightarrow$ Konstante:}
-    \begin{itemize}
-        \item Die \textbf{Dirac-Delta-Distribution} $\delta(t)$ ist keine Funktion, sondern eine Distribution, definiert durch ihre \defc{"Sampling-Eigenschaft": $\int f(t)\delta(t-t')dt = f(t')$}. 
-        \item $f(x) = \delta(x) \xrightarrow{FT} F(u) = 1$ (Ein Impuls im Ort enthält alle Frequenzen)
-        \item $f(x) = K \xrightarrow{FT} F(u) = K \cdot \delta(u)$ (Eine Konstante im Ort ist nur die Frequenz 0) 
-    \end{itemize}
+          \begin{itemize}
+              \item Die \textbf{Dirac-Delta-Distribution} $\delta(t)$ ist keine Funktion, sondern eine Distribution, definiert durch ihre \defc{"Sampling-Eigenschaft": $\int f(t)\delta(t-t')dt = f(t')$}.
+              \item $f(x) = \delta(x) \xrightarrow{FT} F(u) = 1$ (Ein Impuls im Ort enthält alle Frequenzen)
+              \item $f(x) = K \xrightarrow{FT} F(u) = K \cdot \delta(u)$ (Eine Konstante im Ort ist nur die Frequenz 0)
+          \end{itemize}
     \item \textbf{Kosinus $\leftrightarrow$ Zwei Delta-Peaks:}
-    \begin{itemize}
-        \item $f(x) = \cos(kx)$ 
-        \item $F(u) \propto (\delta(u-k) + \delta(u+k))$ 
-        \item Eine reine Schwingung im Ortsraum entspricht zwei scharfen Peaks (diskreten Frequenzen) im Frequenzraum.
-    \end{itemize}
+          \begin{itemize}
+              \item $f(x) = \cos(kx)$
+              \item $F(u) \propto (\delta(u-k) + \delta(u+k))$
+              \item Eine reine Schwingung im Ortsraum entspricht zwei scharfen Peaks (diskreten Frequenzen) im Frequenzraum.
+          \end{itemize}
 \end{itemize}
 
 \subsection{Faltung und Filterung}
 \begin{defbox}[Faltung (Convolution)]
-Das Faltungsintegral $h(t)$ zweier Funktionen $f$ und $g$ ist definiert als:
-$$ h(t) = (f \circ g)(t) = \int_{-\infty}^{\infty} f(x)g(t-x)dx $$
+    Das Faltungsintegral $h(t)$ zweier Funktionen $f$ und $g$ ist definiert als:
+    $$ h(t) = (f \circ g)(t) = \int_{-\infty}^{\infty} f(x)g(t-x)dx $$
 
-Graphisch entspricht dies einer "Spiegelung, Verschiebung, Multiplikation und Integration". 
-\begin{itemize}
-    \item Bsp: $rect(x) \circ rect(x) = triangle(x)$. 
-\end{itemize}
+    Graphisch entspricht dies einer "Spiegelung, Verschiebung, Multiplikation und Integration".
+    \begin{itemize}
+        \item Bsp: $rect(x) \circ rect(x) = triangle(x)$.
+    \end{itemize}
 \end{defbox}
 
 \begin{defbox}[Der Faltungssatz (Convolution Theorem)]
-Dies ist einer der wichtigsten Sätze der Fouriertheorie:
-\begin{itemize}
-    \item Eine \defc{Faltung im Ortsraum} entspricht einer \defc{Multiplikation im Frequenzraum}. 
-    \item Eine \defc{Multiplikation im Ortsraum} entspricht einer \defc{Faltung im Frequenzraum}.
-\end{itemize}
-$$ h(t) = f(t) \circ g(t) \quad \xrightarrow{FT} \quad H(u) = F(u) \cdot G(u) $$
+    Dies ist einer der wichtigsten Sätze der Fouriertheorie:
+    \begin{itemize}
+        \item Eine \defc{Faltung im Ortsraum} entspricht einer \defc{Multiplikation im Frequenzraum}.
+        \item Eine \defc{Multiplikation im Ortsraum} entspricht einer \defc{Faltung im Frequenzraum}.
+    \end{itemize}
+    $$ h(t) = f(t) \circ g(t) \quad \xrightarrow{FT} \quad H(u) = F(u) \cdot G(u) $$
 
 \end{defbox}
 
 \subsubsection{Anwendung: Filterung}
 Der Faltungssatz ist die Grundlage für effiziente Filterung :
 \begin{enumerate}
-    \item Ein Signal $f(x)$ soll gefiltert werden. 
-    \item Anstatt eine aufwändige Faltung im Ortsraum ($f \circ g$) durchzuführen... 
-    \item ...transformiert man Signal ($f \to F$) und Filterfunktion ($g \to G$) in den Frequenzraum. 
-    \item Dort wird eine \textbf{einfache Multiplikation} durchgeführt: $H(u) = F(u) \cdot G(u)$. 
-    \item Das Ergebnis $H(u)$ wird zurück in den Ortsraum transformiert ($H \to h$), um das gefilterte Signal $h(x)$ zu erhalten. 
+    \item Ein Signal $f(x)$ soll gefiltert werden.
+    \item Anstatt eine aufwändige Faltung im Ortsraum ($f \circ g$) durchzuführen...
+    \item ...transformiert man Signal ($f \to F$) und Filterfunktion ($g \to G$) in den Frequenzraum.
+    \item Dort wird eine \textbf{einfache Multiplikation} durchgeführt: $H(u) = F(u) \cdot G(u)$.
+    \item Das Ergebnis $H(u)$ wird zurück in den Ortsraum transformiert ($H \to h$), um das gefilterte Signal $h(x)$ zu erhalten.
 \end{enumerate}
 Dies ist oft (via \textit{Fast Fourier Transform}, FFT) viel schneller als die direkte Faltung.
 
 \subsection{Abtastung von Signalen (Sampling)}
 \subsubsection{Modell der Abtastung}
 \begin{itemize}
-    \item \textbf{Problem:} Ein kontinuierliches Signal $f(x)$ muss in diskrete Werte $f(n\Delta x)$ für die digitale Verarbeitung umgewandelt werden. 
-    \item \textbf{Mathematisches Modell:} Abtastung ist eine \defc{Multiplikation} des Signals $f(x)$ mit einer \textbf{Kamm-Funktion} (einer Kette von $\delta$-Impulsen im Abstand $\Delta x$). 
-    $$ \hat{f}(x) = f(x) \cdot \sum_{n=-\infty}^{\infty} \delta(x - n \cdot \Delta x) $$ 
+    \item \textbf{Problem:} Ein kontinuierliches Signal $f(x)$ muss in diskrete Werte $f(n\Delta x)$ für die digitale Verarbeitung umgewandelt werden.
+    \item \textbf{Mathematisches Modell:} Abtastung ist eine \defc{Multiplikation} des Signals $f(x)$ mit einer \textbf{Kamm-Funktion} (einer Kette von $\delta$-Impulsen im Abstand $\Delta x$).
+          $$ \hat{f}(x) = f(x) \cdot \sum_{n=-\infty}^{\infty} \delta(x - n \cdot \Delta x) $$
 \end{itemize}
 
 \subsubsection{Abtastung im Frequenzraum}
 \begin{itemize}
     \item Laut Faltungssatz (Multiplikation im Ortsraum $\to$ Faltung im Frequenzraum) wird das Spektrum $F(u)$ des Signals mit der FT der Kamm-Funktion gefaltet.
     \item Die FT einer Kamm-Funktion (Abstand $\Delta x$) ist wieder eine Kamm-Funktion (Abstand $1/\Delta x$).
-    \item \textbf{Folge:} Das Spektrum $\hat{F}(u)$ des abgetasteten Signals ist eine \defc{periodische Wiederholung} des Originalspektrums $F(u)$, wobei die Kopien den Abstand $1/\Delta x$ haben. 
+    \item \textbf{Folge:} Das Spektrum $\hat{F}(u)$ des abgetasteten Signals ist eine \defc{periodische Wiederholung} des Originalspektrums $F(u)$, wobei die Kopien den Abstand $1/\Delta x$ haben.
 \end{itemize}
 
 \subsubsection{Aliasing und das Abtasttheorem}
-Angenommen, das Signal ist \textbf{bandbegrenzt}, d.h. seine höchste Frequenz ist $u_G$ ($F(u)=0$ für $|u|>u_G$). 
+Angenommen, das Signal ist \textbf{bandbegrenzt}, d.h. seine höchste Frequenz ist $u_G$ ($F(u)=0$ für $|u|>u_G$).
 
 \begin{itemize}
     \item \textbf{Fall 1: Korrekte Abtastung ($1/\Delta x > 2u_G$)}
-    \begin{itemize}
-        \item Die Abtastfrequenz ($1/\Delta x$) ist mehr als doppelt so hoch wie die maximale Signalfrequenz ($u_G$). 
-        \item Die periodischen Kopien von $F(u)$ im Frequenzraum \defc{überlappen nicht}. 
-        \item Das Originalsignal kann \textbf{fehlerfrei rekonstruiert} werden (z.B. durch einen Tiefpassfilter, der nur die zentrale Kopie isoliert). 
-    \end{itemize}
-    
+          \begin{itemize}
+              \item Die Abtastfrequenz ($1/\Delta x$) ist mehr als doppelt so hoch wie die maximale Signalfrequenz ($u_G$).
+              \item Die periodischen Kopien von $F(u)$ im Frequenzraum \defc{überlappen nicht}.
+              \item Das Originalsignal kann \textbf{fehlerfrei rekonstruiert} werden (z.B. durch einen Tiefpassfilter, der nur die zentrale Kopie isoliert).
+          \end{itemize}
+
     \item \textbf{Fall 2: Unterabtastung ($1/\Delta x < 2u_G$)}
-    \begin{itemize}
-        \item Die Abtastfrequenz ist zu niedrig. 
-        \item Die Kopien von $F(u)$ \defc{überlappen sich}. 
-        \item In den Überlappungsbereichen addieren sich Frequenzen. Hohe Frequenzen "erscheinen" fälschlicherweise als niedrige Frequenzen.
-        \item Dieser irreversible Fehler wird \defc{Aliasing} genannt.  (z.B. Wagenrad-Effekt bei Filmen , Moiré-Muster ).
-    \end{itemize}
+          \begin{itemize}
+              \item Die Abtastfrequenz ist zu niedrig.
+              \item Die Kopien von $F(u)$ \defc{überlappen sich}.
+              \item In den Überlappungsbereichen addieren sich Frequenzen. Hohe Frequenzen "erscheinen" fälschlicherweise als niedrige Frequenzen.
+              \item Dieser irreversible Fehler wird \defc{Aliasing} genannt.  (z.B. Wagenrad-Effekt bei Filmen , Moiré-Muster ).
+          \end{itemize}
 \end{itemize}
 
 \begin{defbox}[Abtasttheorem von Whittaker-Shannon]
-Eine bandbegrenzte Funktion (höchste Frequenz $u_G$) kann aus ihren Abtastwerten $f(n\Delta x)$ fehlerfrei rekonstruiert werden, wenn die Abtastfrequenz $f_s = 1/\Delta x$ \defc{mindestens doppelt so hoch} wie die höchste Signalfrequenz $u_G$ ist. 
+    Eine bandbegrenzte Funktion (höchste Frequenz $u_G$) kann aus ihren Abtastwerten $f(n\Delta x)$ fehlerfrei rekonstruiert werden, wenn die Abtastfrequenz $f_s = 1/\Delta x$ \defc{mindestens doppelt so hoch} wie die höchste Signalfrequenz $u_G$ ist.
 
-\defc{$$ f_s > 2u_G \quad \text{oder} \quad \frac{1}{\Delta x} > 2u_G $$}
+    \defc{$$ f_s > 2u_G \quad \text{oder} \quad \frac{1}{\Delta x} > 2u_G $$}
 
-Die Frequenz $2u_G$ wird als \textbf{Nyquist-Frequenz} bezeichnet.
+    Die Frequenz $2u_G$ wird als \textbf{Nyquist-Frequenz} bezeichnet.
 \end{defbox}
 
 \subsection{Zusammenfassung der Konzepte}
 \begin{itemize}
     \item \textbf{Fourier-Reihe:}
-    \begin{itemize}
-        \item \textbf{Für:} $2\pi$-periodische Funktionen. 
-        \item \textbf{Spektrum:} \defc{Diskret} (Vielfache einer Grundfrequenz). 
-        \item \textbf{Formel:} $f(x) = \sum c_n e^{inx}$. 
-    \end{itemize}
+          \begin{itemize}
+              \item \textbf{Für:} $2\pi$-periodische Funktionen.
+              \item \textbf{Spektrum:} \defc{Diskret} (Vielfache einer Grundfrequenz).
+              \item \textbf{Formel:} $f(x) = \sum c_n e^{inx}$.
+          \end{itemize}
     \item \textbf{Fourier-Transformation:}
-    \begin{itemize}
-        \item \textbf{Für:} Nicht-periodische Funktionen. 
-        \item \textbf{Spektrum:} \defc{Kontinuierlich}. 
-        \item \textbf{Formel:} $F(u) = \int f(t) e^{-2\pi i ut} dt$. 
-    \end{itemize}
+          \begin{itemize}
+              \item \textbf{Für:} Nicht-periodische Funktionen.
+              \item \textbf{Spektrum:} \defc{Kontinuierlich}.
+              \item \textbf{Formel:} $F(u) = \int f(t) e^{-2\pi i ut} dt$.
+          \end{itemize}
     \item \textbf{Faltungssatz:}
-    \begin{itemize}
-        \item $f(t) \circ g(t) \longleftrightarrow F(u) \cdot G(u)$
-        \item Ermöglicht effiziente \textbf{Filterung} im Frequenzraum. 
-    \end{itemize}
+          \begin{itemize}
+              \item $f(t) \circ g(t) \longleftrightarrow F(u) \cdot G(u)$
+              \item Ermöglicht effiziente \textbf{Filterung} im Frequenzraum.
+          \end{itemize}
     \item \textbf{Abtasttheorem:}
-    \begin{itemize}
-        \item Abtastung (Multiplikation mit $\delta$-Kamm) im Ortsraum $\to$ Periodisierung (Faltung mit $\delta$-Kamm) im Frequenzraum. 
-        \item Zur Rekonstruktion muss die Abtastfrequenz $f_s$ größer als die doppelte maximale Signalfrequenz $u_G$ sein ($f_s > 2u_G$), um \textbf{Aliasing} zu vermeiden. 
-    \end{itemize}
+          \begin{itemize}
+              \item Abtastung (Multiplikation mit $\delta$-Kamm) im Ortsraum $\to$ Periodisierung (Faltung mit $\delta$-Kamm) im Frequenzraum.
+              \item Zur Rekonstruktion muss die Abtastfrequenz $f_s$ größer als die doppelte maximale Signalfrequenz $u_G$ sein ($f_s > 2u_G$), um \textbf{Aliasing} zu vermeiden.
+          \end{itemize}
 \end{itemize}
 
 

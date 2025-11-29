@@ -1,8 +1,19 @@
+\documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics}}
+
+\begin{document}
+
 \section{Einführung in Visual Computing}
 
 \subsection{Grundlagen Visual Computing}
 \begin{defbox}[Definition]
-Visual Computing ist die Kombination mehrerer Informatikbereiche, die im Wesentlichen mit Bildern und Modellen arbeiten.  
+  Visual Computing ist die Kombination mehrerer Informatikbereiche, die im Wesentlichen mit Bildern und Modellen arbeiten.
 \end{defbox}
 
 \begin{itemize}[leftmargin=1.2em]
@@ -13,31 +24,31 @@ Visual Computing ist die Kombination mehrerer Informatikbereiche, die im Wesentl
 
 \subsection{Vier exemplarische Themenbereiche}
 \begin{enumerate}[leftmargin=1.2em]
-  \item \textbf{3D Internet:}  
-  Erweiterung des Dokumentbegriffs auf 3D-Modelle; Anwendungen in Bildung, Medizin, Kultur.
-  \begin{itemize}
-    \item 3D-Web, AR/VR, digitale Kulturgüter, Metaverse.
-    \item Retro-Digitalisierung vs. Digital Creation (CultLab3D, Flickr-Photogrammetrie).  
-  \end{itemize}
+  \item \textbf{3D Internet:}
+        Erweiterung des Dokumentbegriffs auf 3D-Modelle; Anwendungen in Bildung, Medizin, Kultur.
+        \begin{itemize}
+          \item 3D-Web, AR/VR, digitale Kulturgüter, Metaverse.
+          \item Retro-Digitalisierung vs. Digital Creation (CultLab3D, Flickr-Photogrammetrie).
+        \end{itemize}
 
-  \item \textbf{Skalierbare Objektmodellierung und -erkennung:}  
-  \begin{itemize}
-    \item Ziel: Erkennung zehntausender Kategorien mittels semantischer Hierarchien.
-    \item Nutzung von Deep Learning (Convolutional NNs, Transferlernen, 3D-Objektdatenbanken).
-  \end{itemize}
+  \item \textbf{Skalierbare Objektmodellierung und -erkennung:}
+        \begin{itemize}
+          \item Ziel: Erkennung zehntausender Kategorien mittels semantischer Hierarchien.
+          \item Nutzung von Deep Learning (Convolutional NNs, Transferlernen, 3D-Objektdatenbanken).
+        \end{itemize}
 
-  \item \textbf{Big Data / Visual Analytics:}  
-  \begin{itemize}
-    \item Kombination von Datenanalyse, ML und Visualisierung zur explorativen Erkenntnisgewinnung.
-    \item Verarbeitung großer heterogener Datenmengen (z. B. 300 000 Flickr-Bilder von Rom).
-  \end{itemize}
+  \item \textbf{Big Data / Visual Analytics:}
+        \begin{itemize}
+          \item Kombination von Datenanalyse, ML und Visualisierung zur explorativen Erkenntnisgewinnung.
+          \item Verarbeitung großer heterogener Datenmengen (z. B. 300 000 Flickr-Bilder von Rom).
+        \end{itemize}
 
-  \item \textbf{Scene Understanding (3D/4D):}  
-  \begin{itemize}
-    \item Modellierung und Analyse von Szenen in Raum und Zeit.
-    \item Kombination von Objekterkennung, Tracking, Semantik und Bewegungsanalyse.
-    \item Anwendungen: Autonomes Fahren, Robotik, Sicherheitsüberwachung, AAL.
-  \end{itemize}
+  \item \textbf{Scene Understanding (3D/4D):}
+        \begin{itemize}
+          \item Modellierung und Analyse von Szenen in Raum und Zeit.
+          \item Kombination von Objekterkennung, Tracking, Semantik und Bewegungsanalyse.
+          \item Anwendungen: Autonomes Fahren, Robotik, Sicherheitsüberwachung, AAL.
+        \end{itemize}
 \end{enumerate}
 
 \subsection{Wichtige Konzepte und Begriffe}
@@ -51,12 +62,12 @@ Visual Computing ist die Kombination mehrerer Informatikbereiche, die im Wesentl
 
 \subsection{Empfohlene Literatur}
 \begin{longtable}{@{}p{0.35\textwidth}p{0.6\textwidth}@{}}
-\toprule
-\textbf{Autor / Titel} & \textbf{Relevanz} \\ \midrule
-Szeliski – \textit{Computer Vision: Algorithms and Applications} & Fundamentale Algorithmen zur Bildverarbeitung und -analyse.\\
-Blundell – \textit{An Introduction to Computer Graphics} & Grundlagen der 3D-Darstellung.\\
-Dix et al. – \textit{Human Computer Interaction} & Basis für Mensch-Maschine-Schnittstellen.\\
-Burger \& Burke – \textit{Digitale Bildverarbeitung – algorithmische Einführung} & Mathematische Grundlagen für Bildverarbeitung.\\ \bottomrule
+  \toprule
+  \textbf{Autor / Titel}                                                           & \textbf{Relevanz}                                           \\ \midrule
+  Szeliski – \textit{Computer Vision: Algorithms and Applications}                 & Fundamentale Algorithmen zur Bildverarbeitung und -analyse. \\
+  Blundell – \textit{An Introduction to Computer Graphics}                         & Grundlagen der 3D-Darstellung.                              \\
+  Dix et al. – \textit{Human Computer Interaction}                                 & Basis für Mensch-Maschine-Schnittstellen.                   \\
+  Burger \& Burke – \textit{Digitale Bildverarbeitung – algorithmische Einführung} & Mathematische Grundlagen für Bildverarbeitung.              \\ \bottomrule
 \end{longtable}
 
 \subsection{Zusammenfassung}
@@ -65,3 +76,5 @@ Burger \& Burke – \textit{Digitale Bildverarbeitung – algorithmische Einfüh
   \item Vier Kernbereiche (3D Internet, Objekterkennung, Visual Analytics, Scene Understanding) bilden die strukturierende Grundlage der Vorlesung und sind klausurrelevant.
   \item Verständnis der praktischen Beispiele und Übungen ist essentiell für die Klausur.
 \end{itemize}
+
+\end{document}
