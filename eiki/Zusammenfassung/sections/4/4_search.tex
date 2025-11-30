@@ -6,7 +6,7 @@
 
 \begin{document}
 
-\section{Local Search and adversarial search}
+\section{Local Search and Adversarial Search}
 
 In previous lectures, the focus was on finding a sequence of actions (a path) to reach a goal (e.g., A* search). However, in many AI problems, the path to the solution is irrelevant; only the final state matters.
 
@@ -16,7 +16,7 @@ In previous lectures, the focus was on finding a sequence of actions (a path) to
 
 \paragraph{The State Landscape}
 Imagine the state space as a physical landscape where "elevation" corresponds to the value of the objective function.
-% [Comment: Insert diagram of Objective Function vs State Space showing Global Max, Local Max, Shoulder, etc.]
+
 
 \begin{itemize}
   \item \defc{Global Maximum}: The highest peak in the entire state space. The optimal solution.
@@ -124,22 +124,29 @@ This domain deals with multi-agent environments where agents have conflicting go
 \subsubsection{Game Trees}
 Unlike standard search trees, nodes represent game states, and levels alternate between players:
 \begin{itemize}
-  \item \defc{MAX}: The agent trying to maximize the utility value.
-  \item \defc{MIN}: The opponent trying to minimize the utility value (make it worst for MAX).
+  \item \defc{MAX}: The agent trying to maximize the utility value (Us).
+  \item \defc{MIN}: The opponent trying to minimize the utility value (Enemy).
 \end{itemize}
 
 \subsubsection{The Minimax Algorithm}
-A recursive algorithm to determine the optimal move assuming \textbf{perfect play} from the opponent.
+The Minimax algorithm determines the optimal move by performing a Depth-First Search (DFS) to the end of the game tree and then reasoning \textbf{backwards} (bottom-up).
 
+
+[Image of minimax game tree example]
+
+
+\textbf{The Process:}
 \begin{enumerate}
-  \item Navigate down the tree to the terminal nodes (game over states).
-  \item Calculate the Utility (score) of terminal nodes.
-  \item Backtrack up the tree:
+  \item \textbf{Dive (DFS):} Traverse the tree all the way down to the leaf nodes (terminal states).
+  \item \textbf{Evaluate:} Assign utility values to the leaf nodes (e.g., Win=1, Loss=-1, or numerical scores).
+  \item \textbf{Propagate (Backtracking):}
         \begin{itemize}
-          \item At a \textbf{MAX} node, pass up the highest child value.
-          \item At a \textbf{MIN} node, pass up the lowest child value.
+          \item If the parent is a \textbf{MAX} node: It looks at its children and picks the \textbf{highest} value.
+          \item If the parent is a \textbf{MIN} node: It looks at its children and picks the \textbf{lowest} value.
         \end{itemize}
+  \item \textbf{Root Decision:} When the values reach the root, MAX chooses the move leading to the highest value.
 \end{enumerate}
+\textit{Note:} If multiple moves have the same value, standard implementations often pick the one found first (left-most).
 
 \textbf{Complexity:}
 \begin{itemize}
@@ -151,25 +158,31 @@ A recursive algorithm to determine the optimal move assuming \textbf{perfect pla
 
 Because Game Trees grow exponentially ($10^{40}$ nodes for Chess), we cannot search the whole tree. \defc{Pruning} allows us to ignore branches that will certainly not be chosen, without affecting the final result.
 
-\begin{defbox}[Alpha and Beta Parameters]
-  \begin{itemize}
-    \item \defc{$\alpha$ (Alpha)}: The value of the best (highest) choice found so far for MAX along the current path. Initialized to $-\infty$.
-    \item \defc{$\beta$ (Beta)}: The value of the best (lowest) choice found so far for MIN along the current path. Initialized to $+\infty$.
-  \end{itemize}
-\end{defbox}
+\subsubsection{Concept: Alpha and Beta}
+We maintain two values during the search that represent the "best guarantees" found so far on the path from the root.
 
-\subsubsection{The Pruning Logic}
-We prune (cut off) a branch when we prove it is worse than a move we have already examined.
+\begin{itemize}
+  \item \defc{$\alpha$ (Alpha)}: The best (highest) value \textbf{MAX} can guarantee so far.
+        \begin{itemize}
+          \item Initialized to $-\infty$.
+          \item Updated only at \textbf{MAX} nodes (when a child returns a value higher than current $\alpha$).
+        \end{itemize}
+  \item \defc{$\beta$ (Beta)}: The best (lowest) value \textbf{MIN} can guarantee so far.
+        \begin{itemize}
+          \item Initialized to $+\infty$.
+          \item Updated only at \textbf{MIN} nodes (when a child returns a value lower than current $\beta$).
+        \end{itemize}
+\end{itemize}
 
-\begin{enumerate}
-  \item \textbf{Pruning at Min Node (Beta Cutoff):}
-        If the Min player finds a move with value $v$ such that $v \leq \alpha$, they stop looking.
-        \textit{Reasoning:} MAX already has an option worth $\alpha$ elsewhere. If MIN can force the game to a value $v$ (which is worse than $\alpha$), MAX will never choose the path leading to this MIN node.
+\subsubsection{The Pruning Condition}
+A branch is pruned (cut off) immediately when:
+\[ \alpha \ge \beta \]
 
-  \item \textbf{Pruning at Max Node (Alpha Cutoff):}
-        If the Max player finds a move with value $v$ such that $v \geq \beta$, they stop looking.
-        \textit{Reasoning:} MIN already has an option elsewhere that limits MAX to $\beta$. If MAX finds a move giving $v$ (better than $\beta$), MIN will never allow the game to reach this state.
-\end{enumerate}
+\textbf{Why does this work?}
+\begin{itemize}
+  \item \textbf{Beta Cutoff (at MIN node):} If MIN finds a move that results in a value $v$ where $v \le \alpha$, MIN will choose that (or something even lower). However, the MAX player at the parent node already has a guaranteed option worth $\alpha$ from a previous branch. MAX will therefore \textbf{never} choose the path to this MIN node. The rest of MIN's children are irrelevant.
+  \item \textbf{Alpha Cutoff (at MAX node):} Symmetrically, if MAX finds a move worth $v \ge \beta$, MIN (at the parent node) will never allow the game to reach this MAX node, because MIN already has a better option (worth $\beta$) elsewhere.
+\end{itemize}
 
 \textbf{Efficiency:} With optimal move ordering (checking best moves first), Alpha-Beta pruning effectively doubles the searchable depth, reducing complexity to $O(b^{m/2})$.
 
