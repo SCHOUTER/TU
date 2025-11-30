@@ -1,0 +1,194 @@
+\documentclass[
+../../css_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Border Gateway Protocol (BGP)}
+
+\subsection{Grundlagen des Routings: LAN vs. Internet}
+
+Bevor BGP behandelt wird, ist es wichtig, den Unterschied zwischen lokalem Switching und globalem Routing zu verstehen.
+
+\subsection{Lokale Netzwerke (LAN)}
+In lokalen Netzen (Layer 2) erfolgt die Weiterleitung durch \textbf{Switches} basierend auf MAC-Adressen.
+
+\begin{itemize}
+  \item \textbf{Funktionsweise:} Switches führen eine \textit{Address Table} (MAC-Adresstabelle), die MAC-Adressen physischen Ports zuordnet.
+  \item \textbf{Lernphase:} Ist die Ziel-MAC unbekannt, wird das Paket an \textit{alle} Ports gesendet (\textit{Flooding}). Antwortet der Empfänger, speichert der Switch die Port-Zuordnung.
+\end{itemize}
+
+\subsection{Internet Routing}
+Das Internet basiert auf IP-Adressen (Layer 3). Hier übernehmen \textbf{Router} die Weiterleitung.
+
+\begin{itemize}
+  \item \textbf{Routingtabelle:} Ordnet IP-Adressbereiche (\defc{Prefixes}) bestimmten Ausgänge (Interfaces/Ports) zu.
+  \item \textbf{Problemstellung:} Während Switches lokal lernen können, benötigt das Internet ein Protokoll, um Routingtabellen global auszutauschen. Hier kommt BGP ins Spiel.
+\end{itemize}
+
+\subsection{Border Gateway Protocol (BGP)}
+
+\begin{defbox}[Autonomes System (AS)]
+  Ein \defc{Autonomes System (AS)} ist ein Verbund von IP-Netzwerken, der unter der Kontrolle einer einzigen administrativen Instanz steht und eine einheitliche Routing-Policy verfolgt. Jedes AS wird durch eine eindeutige Nummer identifiziert, die \textbf{ASN} (Autonomous System Number).
+\end{defbox}
+
+Beispiele für AS sind ISPs (Deutsche Telekom), Content Provider (Google) oder große Institutionen (TU Darmstadt). Das Internet ist ein Verbund zehntausender solcher AS.
+
+\subsection{Funktionsweise von BGP}
+BGP organisiert die Kommunikation \textit{zwischen} diesen Autonomen Systemen.
+
+\begin{itemize}
+  \item \textbf{Protokoll-Typ:} BGP ist ein \defc{Path-Vector-Protokoll}. Es speichert nicht nur die Kosten, sondern den gesamten Pfad (Liste der ASNs) zum Ziel, um Schleifen zu vermeiden.
+  \item \textbf{Transport:} BGP nutzt \textbf{TCP Port 179} für eine zuverlässige Übertragung.
+  \item \textbf{Peering:} Zwei Router bauen eine direkte Nachbarschaft auf („Peers“), um Routeninformationen auszutauschen.
+  \item \textbf{NLRI:} Ausgetauscht werden \textit{Network Layer Reachability Information} (Erreichbarkeitsinformationen für IP-Präfixe).
+\end{itemize}
+
+\subsection{BGP Varianten}
+\begin{enumerate}
+  \item \textbf{External BGP (EBGP):} Verbindet Router in \textit{unterschiedlichen} AS.
+        \begin{itemize}
+          \item \textit{Sicherheitsregel:} Die TTL (Time to Live) ist standardmäßig auf 1 gesetzt. Das erzwingt eine physische Direktverbindung.
+        \end{itemize}
+  \item \textbf{Internal BGP (IBGP):} Verbindet Router \textit{innerhalb desselben} AS.
+        \begin{itemize}
+          \item Dient dazu, extern gelernte Routen im eigenen Netz zu verteilen.
+          \item Erfordert oft ein Full-Mesh (jeder mit jedem) oder Route Reflectors.
+        \end{itemize}
+\end{enumerate}
+
+\subsection{Routing-Entscheidungen}
+
+BGP-Router müssen entscheiden, welchen Weg sie für ein Paket wählen, wenn mehrere Routen zum gleichen Ziel existieren. Die Hierarchie der Entscheidungskriterien ist für das Verständnis von Angriffen essenziell (Reihenfolge ist wichtig):
+
+\begin{enumerate}
+  \item \defc{Longest Prefix Match (Spezifität)}: Das spezifischere Präfix gewinnt \textit{immer}.
+        \begin{itemize}
+          \item \textit{Beispiel:} AS2 kennt Route A zu $1.1.0.0/16$ und Route B zu $1.1.1.0/24$.
+          \item Obwohl $1.1.1.0$ Teil von $1.1.0.0$ ist, wird für eine IP wie $1.1.1.5$ die Route B gewählt, da $/24$ spezifischer (länger) ist als $/16$.
+          \item \textbf{Wichtig:} Diese Regel schlägt alle anderen Metriken, sogar die Pfadlänge! Dies ist die Grundlage für \textit{Sub-Prefix Hijacking}.
+        \end{itemize}
+  \item \defc{Shortest AS Path}: Bei gleicher Präfix-Länge gewinnt die Route, die über weniger Autonome Systeme führt.
+\end{enumerate}
+
+\subsection{Angriffe gegen BGP}
+
+BGP wurde ursprünglich ohne Sicherheitsmechanismen entwickelt („Vertrauensbasis“). Dies ermöglicht verschiedene Angriffe.
+
+\subsection{BGP Hijacking}
+Ein Angreifer (ein feindliches AS) kündigt IP-Präfixe an, die ihm nicht gehören.
+
+\begin{defbox}[Hijacking Varianten]
+  \begin{itemize}
+    \item \defc{Same-prefix Hijack}: Der Angreifer kündigt exakt das gleiche Präfix an wie das Opfer (z.B. Opfer: $10.10.0.0/24$, Angreifer: $10.10.0.0/24$).
+          \begin{itemize}
+            \item \textit{Effekt:} Das Internet teilt sich auf. Nur Router, die "näher" (kürzerer AS-Pfad) am Angreifer sind, leiten den Verkehr falsch um.
+          \end{itemize}
+    \item \defc{Sub-prefix Hijack}: Der Angreifer kündigt ein \textit{spezifischeres} Teilnetz an (z.B. Opfer: $10.10.0.0/24$, Angreifer: $10.10.0.0/25$).
+          \begin{itemize}
+            \item \textit{Effekt:} Aufgrund der \textit{Longest Prefix Match}-Regel gewinnt der Angreifer global den gesamten Verkehr für dieses Subnetz, unabhängig von der Pfadlänge. Dies ist der mächtigere Angriff.
+          \end{itemize}
+  \end{itemize}
+\end{defbox}
+
+\subsection{Weitere Angriffsvektoren}
+\begin{itemize}
+  \item \textbf{AS\_PATH Fälschung:} Der Angreifer manipuliert den AS-Pfad in seinem Announcement, um legitim zu erscheinen (fügt z.B. das Opfer-AS in den Pfad ein), oder um Pfade künstlich attraktiv zu machen.
+  \item \textbf{Route Leaks:} Ein AS verbreitet Routen, die es gelernt hat, versehentlich weiter (oft Konfigurationsfehler). Dies kann dazu führen, dass globaler Verkehr durch ein kleines, überlastetes Netz geleitet wird.
+\end{itemize}
+
+\subsection{Ziele der Angriffe}
+\begin{itemize}
+  \item \textbf{Blackholing (DoS):} Verkehr wird angezogen und verworfen.
+  \item \textbf{Redirection / Man-in-the-Middle:} Verkehr wird durch den Angreifer geleitet, analysiert/manipuliert und dann zum Ziel weitergeleitet (schwer zu entdecken).
+  \item \textbf{Subversion:} Umgehen von Zensur oder Geolokalisierung.
+\end{itemize}
+
+\subsection{Reale Angriffsbeispiele}
+
+Die Vorlesung nennt drei prominente Beispiele, die die theoretischen Konzepte verdeutlichen:
+
+\begin{enumerate}
+  \item \textbf{KLAYswap (2022) - Redirection \& Diebstahl:}
+        \begin{itemize}
+          \item \textit{Ziel:} Krypto-Dienst KLAYswap.
+          \item \textit{Methode:} Angreifer hijackten den IP-Bereich einer Drittanbieter-Bibliothek (KakaoTalk Messenger), die von KLAYswap geladen wurde.
+          \item \textit{Folge:} Der Angreifer lieferte schadhaften Code aus, da er durch den Hijack gültige SSL-Zertifikate ausstellen konnte. Nutzer überwiesen Krypto-Währung an den Angreifer.
+        \end{itemize}
+
+  \item \textbf{China Telecom (2015-2017) - Route Leak / Subversion:}
+        \begin{itemize}
+          \item \textit{Vorfall:} China Telecom kündigte sich fälschlicherweise als Transit-Provider für US-Netze (Verizon) an.
+          \item \textit{Folge:} Inneramerikanischer Verkehr (USA $\to$ USA) wurde über China umgeleitet. Ermöglichte Spionage/Analyse. Dauerte ca. 2,5 Jahre.
+        \end{itemize}
+
+  \item \textbf{Cloudflare / Eletronet (2024) - Blackholing:}
+        \begin{itemize}
+          \item \textit{Vorfall:} Ein kleiner brasilianischer ISP kündigte versehentlich (Route Leak) das spezifische Präfix $1.1.1.1/32$ an.
+          \item \textit{Mechanismus:} Cloudflare kündigt normalerweise $1.1.1.0/24$ an. Da $/32$ spezifischer ist als $/24$, zog der brasilianische ISP den globalen DNS-Verkehr an.
+          \item \textit{Ergebnis:} Globaler Ausfall des DNS-Dienstes 1.1.1.1.
+        \end{itemize}
+\end{enumerate}
+
+\subsection{Gegenmaßnahmen}
+
+Es gibt keinen eingebauten Schutz in BGP. Sicherheit muss "aufgesetzt" werden.
+
+\subsection{Organisatorische Basis}
+\begin{itemize}
+  \item \textbf{RIR (Regional Internet Registries):} Organisationen wie RIPE (Europa) verwalten IP-Adressen und ASNs.
+  \item IP-Adressen sind Eigentum. Wer sie "besitzt", darf sie announcen.
+\end{itemize}
+
+\subsection{Internet Routing Registry (IRR)}
+Ein Netzwerk verteilter Datenbanken, in denen Betreiber dokumentieren, welche Routen ihnen gehören.
+\begin{itemize}
+  \item \defc{Problem:} Rein manuell gepflegt, oft veraltet, ungenau. Dient nur als sekundäre Informationsquelle.
+\end{itemize}
+
+\subsection{Resource Public Key Infrastructure (RPKI)}
+Der aktuelle Standard zur Absicherung des \textit{Ursprungs} (Origin) einer Route. Nutzt Kryptographie.
+
+\begin{enumerate}
+  \item \textbf{ROA (Route Origin Authorization):}
+        Ein kryptografisch signiertes Objekt in der RPKI-Datenbank. Es legt fest:
+        \begin{itemize}
+          \item Welches \textbf{AS} darf das Präfix announcen? (Origin ASN)
+          \item Welches \textbf{Präfix} (z.B. $10.20.0.0/16$)?
+          \item \textbf{Max Length:} Die maximal erlaubte Präfixlänge (z.B. $/24$). Verhindert Sub-Prefix Hijacking.
+        \end{itemize}
+
+  \item \textbf{ROV (Route Origin Validation):} Der Router lädt ROAs herunter und prüft eingehende BGP-Announcements.
+        \begin{itemize}
+          \item \defc{Valid}: Announcement stimmt mit ROA überein. $\to$ Route wird akzeptiert.
+          \item \defc{Invalid}: AS stimmt nicht oder Präfix ist spezifischer als \textit{Max Length} erlaubt. $\to$ Route wird verworfen ("Do Not Route").
+          \item \defc{Not Found}: Keine ROA vorhanden. $\to$ Route wird meist akzeptiert (da RPKI noch nicht flächendeckend ist).
+        \end{itemize}
+\end{enumerate}
+
+\begin{defbox}[Grenzen von RPKI]
+  RPKI schützt nur den \textbf{Origin} (Wer darf announcen?). Es schützt \textbf{nicht} den Pfad (\textbf{AS\_PATH}).
+  \begin{itemize}
+    \item Ein Angreifer kann immer noch den Pfad manipulieren, solange er den korrekten Ursprung im Announcement lässt (Path-Manipulation ist weiterhin möglich).
+    \item Implementierungsfehler in Routern können RPKI wirkungslos machen.
+  \end{itemize}
+\end{defbox}
+
+\subsection{BGPSec}
+Eine Erweiterung, um auch den Pfad zu schützen.
+\begin{itemize}
+  \item \textbf{Konzept:} Jedes AS signiert kryptografisch das Announcement an das nächste AS. Es entsteht eine lückenlose Signaturkette.
+  \item \textbf{Vorteil:} Schützt vor Pfad-Manipulationen und AS-Spoofing.
+  \item \textbf{Nachteile (Warum es kaum genutzt wird):}
+        \begin{itemize}
+          \item Sehr hoher Rechenaufwand auf den Routern.
+          \item Erfordert lückenlose Unterstützung: Wenn ein Router im Pfad kein BGPSec spricht, bricht die Kette ("Chain of Trust").
+        \end{itemize}
+\end{itemize}
+
+\end{document}
