@@ -1,0 +1,130 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Encoding, Fonts, Typography
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ---------------------------------------------------------
+% Language
+% ---------------------------------------------------------
+\usepackage[ngerman,english]{babel}
+
+% ---------------------------------------------------------
+% Math
+% ---------------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+
+% ---------------------------------------------------------
+% Tables
+% ---------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------------------------------------------------------
+% Figures & Graphics
+% ---------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% ---------------------------------------------------------
+% Lists
+% ---------------------------------------------------------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------------------------------------------------------
+% Units & Numbers
+% ---------------------------------------------------------
+\usepackage{siunitx}
+
+% ---------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% ---------------------------------------------------------
+% Global layout improvements
+% ---------------------------------------------------------
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+
+% ---------------------------------------------------------
+% Title
+% ---------------------------------------------------------
+\title{\"Ubung 6: Gruppe 28}
+\author{
+    Niclas Kusenbach, 360227 \and
+    Alicia Bayerl, 2633336 \and
+    Mohamed Naceur Hedhili, 2957151 \and
+    Selma Naz Öner, 2662640
+}
+
+\begin{document}
+\maketitle
+
+\section*{6.1. (vgl. Slide 37)}
+
+\subsection*{a)}
+Kleinstes R.
+
+\subsection*{b)}
+Größtes R.
+
+\subsection*{c)}
+Mittleres R.\newline
+Damit gilt: A < C < B
+
+\section*{6.2. Deblurring and Hadmard}
+
+\subsection*{a) (vgl. Slide 33, 45, 58)}
+\begin{itemize}
+  \item Ein Einschrittverfahren, das das Abschätzen eines Regularisierungsparameters erfordert. \textbf{Wiener Filter}
+  \item  Ein Verfahren, das eine Distance Penalty verwendet. \textbf{Total Variation}
+  \item Ein Verfahren, das basierend auf der lokalen Kantenstärke Rauschen verwischt und Kanten verstärkt. \textbf{Perona und Malik}
+  \item Ein Verfahren, das Rauschen verstärken kann wenn man zu viele Terme hinzufügt. \textbf{LaPlace-Operator}
+\end{itemize}
+\subsection*{b) (vgl. Slide 29, 31)}
+Ein Modell ist korrekt gestellt, wenn eine Lösung existiert, die Lösung eindeutig ist und die Lösung kontinuierlich von den Daten abhängt. \newline
+Deblurring ist nicht korrekt gestellt, da die Algorithmen nicht stabil sind und zum Beispiel das Rauschen verstärkt wird.
+
+\section*{6.3}
+
+\subsection*{a1) (vgl. Slide 53)}
+Die Energie sagt aus, wieviel Intensität in den Pixeln vorhanden ist. Ein Bild mit großen Grauwerten hat hohe Energie - ein Bild mit kleinen Grauwerten hat niedrige Energie.
+
+\subsection*{a2) (vgl. Slide 53, 55)}
+\textbf{Minimale Energie:} Das zielt auf Minimierung der Bildwerte selbst ab, was zu einer möglichst konstant kleinen Lösung führt.\newline
+\textbf{Minimale Gesamtableitung:} Nicht nur die Helligkeit, sondern auch die Variation wird bestraft. Das produziert glatte Bilder, die starke lokale Schwankungen (Rauschen) reduzieren, aber den globalen Mittelwert bewahren.
+
+\subsection*{b) (vgl. Slide 57, \url{https://image-processing-is-fun.blogspot.com/2011/11/heat-equation-removes-noise-in-images.html})}
+Die Heat Equation hat eine glättende und entrauschende Wirkung auf ein Bild, da die Formel einen Temperaturausgleich modelliert, bei dem Helligkeitswerte hoher oder niedriger Pixel (Rauschen) abgebaut werden. Jeder dieser Pixelwerte wird iterativ durch einen gewichteten Durchschnitt seiner Nachbarn ersetzt. Die Heat Equation kann allerdings nicht zwischen Rauschen und wichtigen Eigenschaften wie Kanten unterscheiden. Das Bild wird immer weiter geglättet und auch scharfe Kanten verschwimmen zunehmend. Mathematisch entspricht das einer Faltung mit einem Gauß-Filter, dessen Glättungsstärke mit der Diffusionszeit zunimmt. Dadurch wird hochfrequentes Rauschen schneller abgebaut wird als langsame Helligkeitsänderungen.
+
+Die angegebene Formel beschreibt eine numerische Simulation der Heat equation. Die Anzahl diskreter Zeit-Schritte ergibt $T = 200 * \frac{1}{8} = 25$. Dies balanciert die Entrauschung ohne starke Überglättung.
+
+\section*{6.4}
+
+\subsection*{a) (vgl. Slide 69)}
+
+Es wird eine Stoppzeit benötigt, da das Bild sonst überschärft wird.
+
+\subsection*{b) (vgl.: \url{https://pmc.ncbi.nlm.nih.gov/articles/PMC3967457/})}
+Die Iterationszahl wirkt wie ein Regularisierungsparameter. Bei zu kurzer Laufzeit ist noch zu wenig Rauschen entfernt, bei zu langer Laufzeit tendiert das Verfahren zum stationären Zustand, in dem das Bild übermäßig geglättet wird und relevante Strukturen verloren gehen. Ist die Iterationszahl zu groß, kommt es in der Praxis zu zu starkem Glätten (Blurring) sowie potenziell zu Artefakten.
+
+\subsection*{c)}
+\paragraph*{Perona-Malik:} In homogenen Bereichen (kleiner Gradient) wird stark geglättet, an Kanten (großer Gradient) durch die Diffusionsfunktion fast gestoppt, sodass Kanten erhalten oder sogar leicht geschärft werden. (vgl. \url{https://en.wikipedia.org/wiki/Anisotropic_diffusion}) Der Faktor k ist der Gradient-Schwellenwert in der Edge-Stopping-Funktion:
+\begin{itemize}
+  \item Ist k klein, wird bereits bei relativ kleinen Gradienten die Diffusion stark reduziert, was Kanten sehr gut schützt, aber auch feine Details schnell reduzieren kann.
+  \item Ist k groß, werden auch größere Gradienten noch diffundiert, was mehr Blurring verursacht und Kanten stärker angreift.
+\end{itemize}
+
+\paragraph*{Total Variation:} Wird als Variationsproblem formuliert und führt zu einem globalen TV-Minimum, das Rauschen reduziert, ohne Kanten zu verwischen. Kanten erscheinen typischerweise als scharfe Sprünge, während Flächen fast konstant werden. (vgl. \url{https://en.wikipedia.org/wiki/Total_variation_denoising})\newline
+Im Gegensatz zu Perona-Malik ist TV wohldefiniert und stabiler; allerdings kann es zum Treppenstufen-Effekt kommen, während Perona-Malik eher graduelle Übergänge zulässt, dafür aber empfindlicher gegenüber zu langer Laufzeit und Parameterwahl ist.
+
+\end{document}
