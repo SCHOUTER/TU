@@ -1,0 +1,227 @@
+\documentclass[
+../../css_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+\section{Domain Name System}
+
+Das \defc{Domain Name System (DNS)} ist ein fundamentaler Dienst des Internets, oft bezeichnet als das „Telefonbuch des Internets“. Es wurde ca. 1985 entworfen (Ursprung im ARPANET) und ursprünglich \textbf{ohne} Sicherheitsfeatures konzipiert.
+
+\begin{defbox}[Kernfunktion]
+  Das DNS ist eine \defc{globale, verteilte Datenbank}, die hierarchisch verwaltet wird. Die Hauptaufgabe ist die Übersetzung (Auflösung) von menschenlesbaren Hostnamen (z.\,B. \texttt{www.example.org}) in maschinenlesbare IP-Adressen (z.\,B. \texttt{93.184.216.34}).
+\end{defbox}
+
+\subsection{Hierarchie und Namensraum}
+Das DNS ist als Baumstruktur organisiert:
+\begin{itemize}
+  \item \textbf{Root (.):} Die Wurzel des Baums (oft als Punkt am Ende dargestellt).
+  \item \textbf{Top-Level-Domains (TLDs):} Unterhalb der Root (z.\,B. \texttt{org}, \texttt{com}, \texttt{de}).
+  \item \textbf{Second-Level-Domains:} Z.\,B. \texttt{example} in \texttt{example.org}.
+  \item \textbf{Subdomains:} Weitere Unterteilungen, z.\,B. \texttt{www} oder \texttt{ftp}.
+\end{itemize}
+
+\subsection{Domain vs. Zone}
+Es ist wichtig, zwischen einer logischen Domain und einer administrativen Zone zu unterscheiden.
+
+\begin{itemize}
+  \item \defc{Domain}: Ein logisch abgegrenzter Teilbereich des Internets mit eindeutigem Namen.
+  \item \defc{Zone}: Ein von einer \textbf{einzigen Autorität} verwalteter Bereich. Eine Zone kann eine Domain umfassen, schließt aber Subdomains aus, die an andere Autoritäten delegiert wurden (z.\,B. wird eine Subdomain administrativ ausgegliedert, bildet sie eine eigene Zone).
+\end{itemize}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{css_1_08_DomainNameSystem_06_1.png}
+\end{center}
+
+\subsection{DNS Resource Records (RR)}
+
+Informationen im DNS werden in sogenannten \defc{Resource Records} gespeichert. Ein Record besteht aus folgenden Feldern:
+
+\begin{enumerate}
+  \item \textbf{Name (Owner):} Identifikator (FQDN - Fully Qualified Domain Name).
+  \item \textbf{Type:} Art des Datensatzes (siehe Tabelle).
+  \item \textbf{Class:} Meist \texttt{IN} (Internet).
+  \item \textbf{TTL (Time to Live):} Gültigkeitsdauer in Sekunden (für Caching).
+  \item \textbf{RDLength:} Länge der Daten in Bytes.
+  \item \textbf{RData:} Der eigentliche Wert (z.\,B. die IP-Adresse).
+\end{enumerate}
+
+\subsubsection{Wichtige Record-Typen}
+\begin{center}
+  \begin{tabular}{llp{8cm}}
+    \toprule
+    \textbf{Typ} & \textbf{Beispiel-Daten} & \textbf{Zweck}                                            \\
+    \midrule
+    \defc{A}     & 93.184.216.34           & IPv4-Adresse zum Hostnamen.                               \\
+    \defc{AAAA}  & 2606:2808::1            & IPv6-Adresse zum Hostnamen.                               \\
+    \defc{MX}    & mail.example.org        & Mail Exchange: Mailserver für die Domain.                 \\
+    \defc{NS}    & ns.example.org          & Name Server: Autoritativer Server für eine Zone.          \\
+    \defc{CNAME} & server1.blau.de         & Canonical Name: Alias auf einen anderen Namen.            \\
+    \defc{TXT}   & v=spf1 -all             & Beliebiger Text (oft für Sicherheitsmechanismen wie SPF). \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{defbox}[RRset]
+  Ein \defc{Resource Record Set (RRset)} ist die Menge aller Records mit \textbf{gleichem Namen, Typ und Klasse}. DNS überträgt immer ganze RRsets, nie einzelne Records aus einem Set (z.\,B. beim Load-Balancing mit mehreren A-Records für eine Domain).
+\end{defbox}
+
+\subsection{Nachrichtenübermittlung und Auflösung}
+
+\subsubsection{Kommunikation}
+DNS verwendet ein Client/Server-Modell.
+\begin{itemize}
+  \item \textbf{Transport:} Standardmäßig \defc{UDP Port 53}. TCP Port 53 wird bei großen Antworten (Zone Transfers, große DNSSEC-Pakete) verwendet.
+  \item \textbf{Format:} Anfragen und Antworten haben dasselbe Format (Header, Question, Answer, Authority, Additional).
+\end{itemize}
+
+\subsubsection{Server-Typen und Rollen}
+\begin{itemize}
+  \item \defc{Stub Resolver}: Einfacher Client auf dem Endgerät (PC/Laptop), stellt nur Anfragen.
+  \item \defc{Forwarder}: Leitet Anfragen weiter (z.\,B. Router im Heimnetz).
+  \item \defc{Rekursiver Resolver}: "Der Suchenende". Übernimmt die komplette Auflösung für den Client, fragt verschiedene Server ab und cacht Ergebnisse (z.\,B. Server beim ISP oder Google 8.8.8.8).
+  \item \defc{Autoritativer Name Server}: "Der Wissende". Hat die Hoheit über eine Zone und liefert die endgültigen Antworten.
+\end{itemize}
+
+\subsubsection{Auflösungsmethoden}
+\begin{defbox}[Rekursive vs. Iterative Anfragen]
+  \begin{itemize}
+    \item \textbf{Rekursiv (RD-Flag=1):} „Besorge mir die Antwort.“ Der angefragte Server übernimmt die Arbeit und liefert das Endergebnis. Typisch zwischen \textit{Stub Resolver} und \textit{Rekursivem Resolver}.
+    \item \textbf{Iterativ (RD-Flag=0):} „Gib mir die Antwort oder sag mir, wen ich fragen soll.“ Der Server liefert entweder die Daten oder einen Verweis (Referral) auf den nächsten zuständigen Server. Typisch zwischen \textit{Rekursivem Resolver} und \textit{Autoritativen Servern}.
+  \end{itemize}
+\end{defbox}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{css_1_08_DomainNameSystem_15_1.png}
+\end{center}
+
+\subsection{DNS Cache Poisoning}
+
+Da DNS ursprünglich keine Authentifizierung besaß, vertrauen Resolver den Antworten, die sie erhalten (UDP ist verbindungslos und leicht zu fälschen).
+
+\begin{defbox}[Cache Poisoning]
+  Einspeisung gefälschter DNS-Einträge in den Cache eines Resolvers. Ziel ist meist die \defc{Impersonation} (Umlenkung von Nutzern auf Angreifer-Server).
+\end{defbox}
+
+\subsubsection{Angriffsmethoden}
+\begin{enumerate}
+  \item \textbf{Klassisches Poisoning (Pre-Bailiwick):} Angreifer sendet Antwort mit zusätzlichen, gefälschten Records für fremde Domains (z.\,B. „Hier ist die IP für \texttt{example.org}, und übrigens ist die IP für \texttt{google.com} 6.6.6.6“).
+  \item \textbf{Off-Path Angriff:} Der Angreifer kann den Verkehr nicht mitlesen (Blind spoofing). Er muss die Anfrage des Resolvers an den autoritativen Server erraten und schneller antworten als der echte Server.
+        \begin{itemize}
+          \item \textit{Herausforderung:} Erraten der 16-Bit \defc{Transaction-ID} und des \defc{UDP-Quellports}.
+        \end{itemize}
+  \item \textbf{Kaminsky Angriff (2008):}
+        Ein ausgeklügelter Off-Path Angriff. Um das Problem zu umgehen, dass ein Cache-Eintrag (selbst ein fehlgeschlagener) eine TTL hat und weitere Angriffsversuche blockiert:
+        \begin{itemize}
+          \item Angreifer fragt nicht-existente Subdomains an (z.\,B. \texttt{1.bank.com}, \texttt{2.bank.com}).
+          \item Resolver muss jedes Mal neu beim autoritativen Server fragen.
+          \item Angreifer flutet gefälschte Antworten, die einen neuen, gefälschten Nameserver für die Ziel-Zone (\texttt{bank.com}) einschmuggeln.
+          \item \textit{Gegenmaßnahme:} Randomisierung des UDP-Quellports (zusätzlich zur Transaction-ID), was den Suchraum auf ca. 32-Bit erhöht.
+        \end{itemize}
+  \item \textbf{Man-in-the-Middle (MITM):} Angreifer kann Verkehr mitlesen (z.\,B. im WLAN oder via BGP-Hijacking). Transaction-ID und Ports sind sichtbar $\rightarrow$ Triviales Poisoning möglich.
+\end{enumerate}
+
+\subsubsection{Bailiwick-Regel (Gegenmaßnahme)}
+Ein Resolver akzeptiert nur Informationen, die in den Zuständigkeitsbereich (Zone) des antwortenden Servers fallen.
+\begin{itemize}
+  \item Ein Server für \texttt{example.org} darf keine Records für \texttt{google.com} liefern.
+  \item Er darf aber Records für \texttt{www.example.org} liefern.
+\end{itemize}
+
+\subsection{Gegenmaßnahme: DNSSEC}
+
+Um MITM und fortgeschrittenes Cache Poisoning zu verhindern, muss die Authentizität der Daten sichergestellt werden. \defc{DNSSEC} (DNS Security Extensions) bietet Integrität und Authentizität durch kryptographische Signaturen, aber \textbf{keine} Vertraulichkeit (Daten sind lesbar).
+
+\subsubsection{Funktionsweise}
+DNSSEC bildet eine \defc{Chain of Trust} von der Root-Zone bis zur Ziel-Domain.
+\begin{itemize}
+  \item Records werden nicht verschlüsselt, sondern \textbf{signiert}.
+  \item Eltern-Zonen signieren den Hash der Schlüssel ihrer Kinder (Delegation).
+\end{itemize}
+
+\subsubsection{Neue Record-Typen}
+\begin{itemize}
+  \item \defc{RRSIG}: Enthält die digitale Signatur eines RRsets.
+  \item \defc{DNSKEY}: Enthält den öffentlichen Schlüssel (Public Key) zum Überprüfen der Signatur.
+  \item \defc{DS} (Delegation Signer): Fingerprint (Hash) des Schlüssels der Unterzone (liegt in der Elternzone, stellt die Vertrauenskette her).
+  \item \defc{NSEC / NSEC3}: Dient dem \textit{Authenticated Denial of Existence} (Beweis, dass ein Name \textbf{nicht} existiert).
+\end{itemize}
+
+\subsubsection{Problem: Zone Enumeration}
+Da DNSSEC beweisen muss, dass ein Name \textit{nicht} existiert, geben NSEC-Records Informationen über den „nächsten“ existierenden Namen preis.
+\begin{itemize}
+  \item \textbf{NSEC Walking:} Angreifer fragt nacheinander Namen ab und erhält durch die NSEC-Antworten („Zwischen A und F gibt es nichts“) die Liste aller existierenden Domains.
+  \item \textbf{NSEC3:} Hasht die Namen. Angreifer können die Hashes jedoch offline via Brute-Force (GPU) knacken, da der Namensraum (z.\,B. www, mail) klein ist.
+  \item \textbf{Lösung (Live Signing / White Lies):} Server berechnet Signaturen on-the-fly. Bei Anfrage nach \texttt{ghost.example.com} behauptet der Server: „Der Vorgänger ist \texttt{ghost} und der Nachfolger ist \texttt{ghost\textbackslash000}“. Der Bereich ist so klein, dass er nur den angefragten Namen abdeckt. Verhindert Enumeration effektiv.
+\end{itemize}
+
+\subsection{Transport-Sicherheit (Privacy)}
+
+DNSSEC schützt die Daten, verschlüsselt aber nicht den Transport. Wer wissen will, welche Webseiten ein Nutzer besucht, kann den DNS-Verkehr mitlesen.
+
+\begin{defbox}[DoT vs. DoH]
+  Beide Protokolle verschlüsseln die Kommunikation zwischen Stub-Resolver und Rekursivem Resolver (Last-Mile-Security).
+  \begin{itemize}
+    \item \defc{DoT (DNS over TLS):} Dedizierter Port (TCP 853).
+    \item \defc{DoH (DNS over HTTPS):} Versteckt DNS im HTTPS-Traffic (TCP 443). Schwerer zu blockieren/filtern.
+  \end{itemize}
+  \textbf{Wichtig:} Sie schützen vor Lauschern auf der Leitung, garantieren aber \textbf{nicht} die Echtheit der Daten vom autoritativen Server (dafür wird DNSSEC benötigt).
+\end{defbox}
+
+\subsection{Weitere Angriffe auf DNS-Infrastruktur}
+
+\subsubsection{DNS Amplification DDoS}
+Ein \textbf{Reflection}-Angriff unter Ausnutzung des UDP-Protokolls.
+\begin{enumerate}
+  \item Angreifer sendet Anfrage an offene DNS-Server.
+  \item \textbf{IP-Spoofing:} Absender-Adresse ist die des Opfers.
+  \item \textbf{Amplification:} Die Anfrage ist klein (z.\,B. 60 Byte), die Antwort ist riesig (z.\,B. 3000 Byte, Faktor 50x).
+  \item Der DNS-Server flutet das Opfer mit den großen Antworten.
+\end{enumerate}
+\textit{Gegenmaßnahmen:} Response Rate Limiting (RRL) auf Servern, Verhinderung von IP-Spoofing im Netzwerk (BCP 38).
+
+\subsubsection{DNS Tunneling}
+Umgehung von Firewalls oder Exfiltration von Daten.
+\begin{itemize}
+  \item Daten werden in Subdomains kodiert (z.\,B. \texttt{geheimespasswort.angreifer.com}).
+  \item Der autoritative Server des Angreifers empfängt die Anfrage und dekodiert die Daten.
+  \item Antworten können Steuerbefehle (C2) enthalten (via TXT oder CNAME Records).
+\end{itemize}
+
+\subsection{DNS-basierte Sicherheitsmechanismen für E-Mail}
+
+Das DNS wird genutzt, um die Sicherheit anderer Dienste (v.a. E-Mail) zu erhöhen.
+
+\subsubsection{SPF (Sender Policy Framework)}
+Schutz gegen E-Mail-Spoofing (Versand unter falschem Namen).
+\begin{itemize}
+  \item Ein \textbf{TXT-Record} in der Domain definiert, welche IP-Adressen Mails für diese Domain versenden dürfen.
+  \item \textbf{Syntax:} \texttt{v=spf1 [Mechanismen] [Qualifier]all}
+\end{itemize}
+
+\begin{center}
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Qualifier}       & \textbf{Bedeutung}                                     \\
+    \midrule
+    \texttt{+}               & Pass (Standard, wenn weggelassen).                     \\
+    \texttt{-}               & Fail (Mail ablehnen).                                  \\
+    \texttt{\textasciitilde} & Soft-Fail (Mail annehmen, aber markieren/Spam-Ordner). \\
+    \texttt{?}               & Neutral.                                               \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\textit{Beispiel:} \texttt{v=spf1 mx ip4:1.2.3.0/24 -all}\\
+Bedeutet: Die MX-Server und das Subnetz 1.2.3.0/24 dürfen senden. Alles andere (\texttt{-all}) wird abgelehnt.
+
+\subsubsection{Weitere Mechanismen}
+\begin{itemize}
+  \item \defc{DKIM}: Signieren von E-Mails; Public Key liegt im DNS.
+  \item \defc{DANE}: Bindung von TLS-Zertifikaten an DNS-Namen (via TLSA-Records), benötigt zwingend DNSSEC.
+\end{itemize}
+\end{document}
