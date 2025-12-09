@@ -1,0 +1,50 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 4}
+\author{Niclas Kusenbach, 360227}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,british]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[final]{microtype} %Fix most of overfull hboxes
+\usepackage{xurl} % better line breaks for \url and plain URLs
+\usepackage{hyperref} % better line breaks for \url and plain URLs
+\usepackage{tabularx}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{1) Lokale Suchalgorithmen}
+
+\subsection*{a)}
+Da man immer nur den aktuellsten besten Nachfolger verfolgt, gibt es keine parallelen Strahlen. \textbf{Hill Climb}
+\subsection*{b)}
+Eine Temperatur nahe 0 bedeutet, dass schlechtere Zustände, praktisch nie akzeptiert werden. \textbf{Hill Climb}
+\subsection*{c)}
+Wenn die Temperatur unendlich ist werden schlechtere Zustände immer akzeptiert. Damit verhält sich das Verfahren wie ein Zufallsprozess: \textbf{Random Walk.}
+
+\section*{2) Spielbaumsuche}
+
+\subsection*{a)}
+Die Lösung ist $3 \leq x < 7$. \newline
+Damit x gegen den rechten Teilbaum gewinnt muss es größer oder gleich 3 sein. Damit es gegen die 7 gewinnt, kleiner als diese.
+
+\subsection*{b)}
+
+\begin{enumerate}
+  \item Der linke Teilbaum legt den Alpha-Wert der Wurzel fest auf das Ergebnis von Knoten (b), also $\alpha = \min(7, x)$.
+  \item Im rechten Teilbaum liefert der erste geprüfte Ast (Knoten f) den Wert 3, wodurch der MIN-Knoten (c) sein Beta auf $\beta = 3$ setzt.
+  \item Der Schnitt (Pruning) erfolgt, wenn $\alpha \ge \beta$ gilt.
+  \item Setzt man die Werte ein ($\min(7, x) \ge 3$), muss folglich $x \ge 3$ sein, damit der Rest (Knoten g) ignoriert wird.
+\end{enumerate}
+
+\end{document}
