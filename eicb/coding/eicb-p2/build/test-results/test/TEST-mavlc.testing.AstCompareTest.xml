@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="mavlc.testing.AstCompareTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2025-12-08T12:50:10" hostname="MacBook-Pro-von-Niclas.local" time="0.339">
+<testsuite name="mavlc.testing.AstCompareTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2025-12-13T15:22:47" hostname="MacBook-Pro-von-Niclas.local" time="0.226">
   <properties/>
-  <testcase name="test[p2_public/task_6/call_1]" classname="mavlc.testing.AstCompareTest" time="0.182"/>
-  <testcase name="test[p2_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.023"/>
-  <testcase name="test[p2_public/task_1/compound_2]" classname="mavlc.testing.AstCompareTest" time="0.015"/>
-  <testcase name="test[p2_public/task_1/compound_4]" classname="mavlc.testing.AstCompareTest" time="0.018"/>
-  <testcase name="test[p2_public/task_4/transpose_3]" classname="mavlc.testing.AstCompareTest" time="0.012"/>
-  <testcase name="test[p2_public/task_3/const_expr_2]" classname="mavlc.testing.AstCompareTest" time="0.014"/>
-  <testcase name="test[p2_public/task_3/const_expr_3]" classname="mavlc.testing.AstCompareTest" time="0.012"/>
-  <testcase name="test[p2_public/task_2/assign_6]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
-  <testcase name="test[p2_public/task_2/assign_5]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
-  <testcase name="test[p2_public/task_2/assign_2]" classname="mavlc.testing.AstCompareTest" time="0.013"/>
-  <testcase name="test[p2_public/task_5/for_loop_5]" classname="mavlc.testing.AstCompareTest" time="0.012"/>
-  <testcase name="test[p2_public/task_5/for_loop_6]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
+  <testcase name="test[p2_public/task_6/call_1]" classname="mavlc.testing.AstCompareTest" time="0.109"/>
+  <testcase name="test[p2_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.015"/>
+  <testcase name="test[p2_public/task_1/compound_2]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
+  <testcase name="test[p2_public/task_1/compound_4]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
+  <testcase name="test[p2_public/task_4/transpose_3]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p2_public/task_3/const_expr_2]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p2_public/task_3/const_expr_3]" classname="mavlc.testing.AstCompareTest" time="0.008"/>
+  <testcase name="test[p2_public/task_2/assign_6]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p2_public/task_2/assign_5]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p2_public/task_2/assign_2]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
+  <testcase name="test[p2_public/task_5/for_loop_5]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p2_public/task_5/for_loop_6]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
   <system-out><![CDATA[=== Running test case p2_public/task_6/call_1 ===
 
 

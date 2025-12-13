@@ -1,23 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="mavlc.testing.AstCompareTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2025-11-13T15:51:31" hostname="Hamzas-MacBook-Air.local" time="0.232">
+<testsuite name="mavlc.testing.AstCompareTest" tests="17" skipped="0" failures="1" errors="0" timestamp="2025-12-13T15:23:40" hostname="MacBook-Pro-von-Niclas.local" time="0.277">
   <properties/>
-  <testcase name="test[p1_public/task_7/rec_sel_1]" classname="mavlc.testing.AstCompareTest" time="0.085"/>
-  <testcase name="test[p1_public/task_7/rec_atom_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
+  <testcase name="test[p1_public/task_7/rec_sel_1]" classname="mavlc.testing.AstCompareTest" time="0.112"/>
+  <testcase name="test[p1_public/task_7/rec_atom_1]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
   <testcase name="test[p1_public/task_7/rec_dec_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
   <testcase name="test[p1_public/task_6/call_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
   <testcase name="test[p1_public/task_6/return_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
-  <testcase name="test[p1_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_1/assign_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_1/val_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_1/var_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
+  <testcase name="test[p1_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p1_public/task_1/assign_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p1_public/task_1/val_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p1_public/task_1/var_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
   <testcase name="test[p1_public/task_4/bool_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
   <testcase name="test[p1_public/task_3/if_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_3/if_2]" classname="mavlc.testing.AstCompareTest" time="0.008"/>
-  <testcase name="test[p1_public/task_2/not_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_2/arith_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_2/exp_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
+  <testcase name="test[p1_public/task_3/if_2]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p1_public/task_2/not_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p1_public/task_2/arith_1]" classname="mavlc.testing.AstCompareTest" time="0.013">
+    <failure message="&#10;Ast mismatch in line 2, column 22:&#10;&gt; Mismatching source location (got line 2, column 22, expected line 2, column 12)&#10;&#10;Tested node:&#10;5 * 5 * 5 &gt; 7 / 7 / 7&#10;&#10;Reference node:&#10;5 * 5 * 5 &gt; 7 / 7 / 7&#10;" type="mavlc.errors.AstMismatchError">
+Ast mismatch in line 2, column 22:
+&gt; Mismatching source location (got line 2, column 22, expected line 2, column 12)
+
+Tested node:
+5 * 5 * 5 &gt; 7 / 7 / 7
+
+Reference node:
+5 * 5 * 5 &gt; 7 / 7 / 7
+
+	at app//mavlc.testing.AstComparator.mismatch(AstComparator.java:40)
+	at app//mavlc.testing.AstComparator.compare(AstComparator.java:47)
+	at app//mavlc.testing.AstComparator.visitSwitchStatement(AstComparator.java:279)
+	at app//mavlc.testing.AstComparator.visitSwitchStatement(AstComparator.java:33)
+	at app//mavlc.syntax.statement.SwitchStatement.accept(SwitchStatement.java:45)
+	at app//mavlc.testing.AstComparator.compare(AstComparator.java:50)
+	at app//mavlc.testing.AstComparator.compare(AstComparator.java:75)
+	at app//mavlc.testing.AstComparator.visitFunction(AstComparator.java:95)
+	at app//mavlc.testing.AstComparator.visitFunction(AstComparator.java:33)
+	at app//mavlc.syntax.function.Function.accept(Function.java:134)
+	at app//mavlc.testing.AstComparator.compare(AstComparator.java:50)
+	at app//mavlc.testing.AstComparator.compare(AstComparator.java:75)
+	at app//mavlc.testing.AstComparator.visitModule(AstComparator.java:83)
+	at app//mavlc.testing.AstComparator.visitModule(AstComparator.java:33)
+	at app//mavlc.syntax.module.Module.accept(Module.java:45)
+	at app//mavlc.testing.AstComparator.compare(AstComparator.java:50)
+	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:42)
+	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base@21.0.8/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base@21.0.8/java.lang.reflect.Method.invoke(Method.java:580)
+	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
+	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
+	at java.base@21.0.8/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base@21.0.8/java.lang.Thread.run(Thread.java:1583)
+</failure>
+  </testcase>
+  <testcase name="test[p1_public/task_2/exp_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
   <testcase name="test[p1_public/task_5/select_2]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_5/select_1]" classname="mavlc.testing.AstCompareTest" time="0.008"/>
+  <testcase name="test[p1_public/task_5/select_1]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
   <system-out><![CDATA[=== Running test case p1_public/task_7/rec_sel_1 ===
 
 
@@ -84,9 +124,6 @@
 === Test case p1_public/task_2/not_1 finished successfully ===
 
 === Running test case p1_public/task_2/arith_1 ===
-
-
-=== Test case p1_public/task_2/arith_1 finished successfully ===
 
 === Running test case p1_public/task_2/exp_1 ===
 
