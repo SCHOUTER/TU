@@ -1,0 +1,213 @@
+\documentclass[
+../../css_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Sichere Verbindungen}
+
+Sichere Verbindungen dienen dazu, die Schutzziele der darüberliegenden Protokollschichten zwischen Endpunkten zu gewährleisten. Je nach Schicht (Layer) im OSI-Modell kommen unterschiedliche Protokolle zum Einsatz.
+
+\begin{defbox}[Schutzziele sicherer Verbindungen]
+  \begin{itemize}
+    \item \defc{Vertraulichkeit}: Daten können von Dritten nicht mitgelesen werden.
+    \item \defc{Integrität}: Daten können nicht unbemerkt manipuliert werden.
+    \item \defc{Authentizität}: Die Identität der Kommunikationspartner ist gesichert.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Protokolle und ihre Schichten}
+\begin{itemize}
+  \item \textbf{Layer 7 (Application):} SSH, Signal, PGP
+  \item \textbf{Layer 4 (Transport):} TLS (Transport Layer Security), QUIC
+  \item \textbf{Layer 3 (Network):} IPsec
+  \item \textbf{Layer 2 (Link):} WPA2, WPA3
+\end{itemize}
+\textit{Hinweis:} Ungeschützte Protokolle (z.B. HTTP, DNS) können durch eine sichere Verbindung getunnelt oder abgesichert werden (z.B. HTTPS, DoT).
+
+\subsection{Transport Layer Security (TLS)}
+
+TLS ist der Nachfolger von SSL (Secure Sockets Layer) und der De-facto-Standard für sichere Kommunikation im Internet (z.B. HTTPS).
+
+\subsubsection{Schutzziele und Eigenschaften}
+\begin{itemize}
+  \item \textbf{Vertraulichkeit:} Verschlüsselung der Payload (Nutzdaten).
+  \item \textbf{Integrität:} Schutz vor Veränderung, z.B. durch HMAC.
+  \item \textbf{Authentifikation:} Optional einseitig (nur Server, Standard im Web) oder beidseitig (Mutual TLS) mittels Zertifikaten (X.509).
+  \item \textbf{Replay-Schutz:} Verhinderung des Wiedereinspielens alter Nachrichten durch \defc{Nonces} (Number used once).
+  \item \textbf{Perfect Forward Secrecy (PFS):}
+        Die Kompromittierung eines Langzeitschlüssels (z.B. Server Private Key) führt \textit{nicht} zur Entschlüsselung aufgezeichneter vergangener Sitzungen. Dies wird durch temporäre (ephemerale) Sitzungsschlüssel (z.B. via Diffie-Hellman) erreicht.
+\end{itemize}
+
+\subsubsection{Historie und Versionen}
+\begin{itemize}
+  \item \textbf{SSL 1.0 - 3.0:} Veraltet und unsicher (POODLE Angriff auf SSL 3.0).
+  \item \textbf{TLS 1.0 \& 1.1:} Veraltet, nutzen schwache Hashfunktionen (MD5/SHA-1). Deprecated seit 2020/2021 (RFC 8996).
+  \item \textbf{TLS 1.2 (2008):} Aktueller Standard. Einführung von AEAD (Authenticated Encryption) und SHA-256.
+  \item \textbf{TLS 1.3 (2018):} Neueste Version.
+        \begin{itemize}
+          \item \defc{Verbesserungen:} Entfernung unsicherer Algorithmen (kein statisches RSA/DH mehr), 1-RTT Handshake (schneller), verpflichtendes PFS.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Cipher Suites}
+Eine Cipher Suite definiert die Algorithmen für eine TLS-Sitzung.
+\\
+\textbf{Aufbau Beispiel:} \texttt{TLS\_DHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256}
+
+\begin{enumerate}
+  \item \textbf{Protokoll:} TLS
+  \item \textbf{Key Exchange (Schlüsseltausch):} DHE (Ephemeral Diffie-Hellman) $\rightarrow$ sorgt für PFS.
+  \item \textbf{Authentication (Authentifizierung):} RSA (Signatur des Servers).
+  \item \textbf{Encryption (Verschlüsselung):} AES\_128\_GCM (Galois/Counter Mode $\rightarrow$ AEAD).
+  \item \textbf{MAC/PRF (Integrität):} SHA256.
+\end{enumerate}
+
+\subsubsection{Der TLS Handshake (vereinfacht TLS 1.2)}
+Ziel: Aushandlung von Parametern, Authentifizierung und Generierung des Session Keys.
+
+\begin{enumerate}
+  \item \textbf{ClientHello:} Sendet Random $R_C$, SessionID, Liste unterstützter CipherSuites.
+  \item \textbf{ServerHello:} Wählt CipherSuite, sendet Random $R_S$.
+  \item \textbf{Zertifikatsaustausch:} Server sendet Zertifikat (Public Key) und Key-Exchange Parameter.
+  \item \textbf{Key Exchange:} Client und Server berechnen das \defc{Pre-Master Secret}.
+  \item \textbf{Finished:} Beide Seiten senden einen MAC über alle bisherigen Handshake-Nachrichten, um Integrität sicherzustellen (Schutz vor Downgrade-Angriffen).
+\end{enumerate}
+
+\subsubsection{Angriffe auf TLS}
+
+\paragraph{Downgrade-Angriffe}
+Ein Man-in-the-Middle (MitM) täuscht vor, dass eine Seite nur veraltete Versionen unterstützt, um die Verbindung auf unsichere Standards (z.B. SSL 3.0) herabzustufen.
+\begin{itemize}
+  \item \textbf{POODLE:} Nutzt Fallback auf SSL 3.0 aus.
+  \item \textbf{SLOTH:} Nutzt Kollisionen in schwachen Hashfunktionen (MD5/SHA-1) im Handshake (Transcript Collision), um sich als Kommunikationspartner auszugeben.
+  \item \textbf{Gegenmaßnahme in TLS 1.3:} MD5/SHA-1 verboten, Signatur über gesamten Handshake.
+\end{itemize}
+
+\paragraph{Heartbleed (Implementierungsfehler)}
+Kein kryptographischer Fehler, sondern ein \defc{Buffer-Over-Read} in der OpenSSL-Bibliothek.
+\begin{itemize}
+  \item \textbf{Funktionsweise:} Die Heartbeat-Extension erlaubt das Senden einer "Keep-Alive" Nachricht (z.B. String "Bird", Länge 4). Der Server soll dasselbe zurücksenden.
+  \item \textbf{Der Fehler:} Der Angreifer sendet "Bird", gibt aber als Länge 64kB an. Der Server prüft die Länge nicht und kopiert 64kB aus seinem Arbeitsspeicher zurück an den Angreifer.
+  \item \textbf{Folge:} Angreifer konnten Private Keys, Passwörter und Session-Daten auslesen.
+\end{itemize}
+
+\subsection{IPsec (Internet Protocol Security)}
+
+IPsec sichert IP-Pakete auf Layer 3 ab. Es ist transparent für Anwendungen (im Gegensatz zu TLS). Es wird oft für VPNs (Virtual Private Networks) genutzt.
+
+\subsubsection{Architektur und Datenbanken}
+\begin{itemize}
+  \item \textbf{SA (Security Association):} Ein "Vertrag" zwischen zwei Partnern über Algorithmen und Schlüssel (unidirektional).
+  \item \textbf{SPD (Security Policy Database):} Regelt, was mit Paketen passiert (Verwerfen, Durchlassen, Verschlüsseln).
+\end{itemize}
+
+\subsubsection{Modi: Transport vs. Tunnel}
+
+\begin{defbox}[Transportmodus]
+  \textbf{Einsatz:} End-to-End Kommunikation (Host-zu-Host).
+  \begin{itemize}
+    \item Nur die \defc{Payload} (z.B. TCP/UDP Segment) wird verschlüsselt/authentifiziert.
+    \item Der originale IP-Header bleibt erhalten und sichtbar.
+    \item \textit{Nachteil:} Verbindungsmetadaten (Quell-/Ziel-IP) sind sichtbar.
+  \end{itemize}
+  \texttt{[IP Header] [IPsec Header] [Verschlüsselte Payload]}
+\end{defbox}
+
+\begin{defbox}[Tunnelmodus]
+  \textbf{Einsatz:} Site-to-Site VPN (Gateway-zu-Gateway) oder Remote Access VPN.
+  \begin{itemize}
+    \item Das \defc{gesamte IP-Paket} (inkl. Header) wird verschlüsselt und in ein neues IP-Paket verpackt.
+    \item Ermöglicht virtuelle Netzwerke (z.B. Zugriff auf internes Uni-Netz von zuhause).
+    \item Versteckt die inneren IP-Adressen.
+  \end{itemize}
+  \texttt{[Neuer IP Header (Gateway)] [IPsec Header] [Verschlüsselt: Orig. IP Header + Payload]}
+\end{defbox}
+
+\subsubsection{Protokolle: AH und ESP}
+\begin{enumerate}
+  \item \textbf{Authentication Header (AH):}
+        \begin{itemize}
+          \item Bietet Integrität und Authentizität.
+          \item \defc{Keine Verschlüsselung} (Vertraulichkeit).
+          \item Signiert auch Teile des IP-Headers $\rightarrow$ \textbf{Inkompatibel mit NAT} (da NAT IP-Adressen ändert und somit die Signatur bricht).
+        \end{itemize}
+  \item \textbf{Encapsulating Security Payload (ESP):}
+        \begin{itemize}
+          \item Bietet Vertraulichkeit (Verschlüsselung), Integrität und Authentizität.
+          \item Schützt (im Tunnelmodus) das innere Paket komplett.
+          \item Standard für VPNs.
+        \end{itemize}
+\end{enumerate}
+
+\subsubsection{IKEv2 (Internet Key Exchange)}
+Dient dem Schlüsselaustausch und der Authentifizierung für IPsec (ähnlich dem TLS Handshake, läuft über UDP 500/4500).
+\begin{itemize}
+  \item \textbf{Phase 1 (IKE\_SA\_INIT):} Aushandeln der Krypto-Parameter, Diffie-Hellman Austausch.
+  \item \textbf{Phase 2 (IKE\_AUTH):} Authentifizierung der Identitäten, Aufbau der IPsec SA.
+\end{itemize}
+
+\subsection{Secure Shell (SSH)}
+
+SSH (Layer 7) dient primär dem sicheren Fernzugriff auf Kommandozeilen (Remote Shell), ersetzt unsichere Protokolle wie Telnet.
+
+\subsubsection{Funktionsweise und Authentifizierung}
+\begin{itemize}
+  \item \textbf{Trust on First Use (TOFU):} Der Client kennt den Server beim ersten Verbinden meist nicht. Der Server schickt seinen Public Key. Der User muss den Fingerprint bestätigen. Danach wird der Key gespeichert (in \texttt{known\_hosts}).
+  \item \textbf{Client-Authentifizierung:}
+        \begin{itemize}
+          \item \textit{Passwort:} Unsicher, sollte deaktiviert werden.
+          \item \textit{Public Key (empfohlen):} Der Client besitzt ein Schlüsselpaar. Der Public Key wird auf dem Server (\texttt{authorized\_keys}) hinterlegt. Der Server stellt eine Challenge, die der Client mit dem Private Key signiert.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Härtung (Hardening)}
+\begin{itemize}
+  \item Root-Login verbieten.
+  \item Nur Key-Based Authentication erlauben (keine Passwörter).
+  \item Port ändern (Security by Obscurity, hilft aber gegen Massen-Scans).
+\end{itemize}
+
+\subsection{Onion Routing / Tor}
+
+Tor dient der Anonymisierung von Verbindungen (Verschleierung von Wer kommuniziert mit Wem).
+
+\subsubsection{Funktionsprinzip}
+\begin{itemize}
+  \item Daten werden über mehrere Knoten (Relays) geleitet (typisch 3 Hops: Entry, Middle, Exit).
+  \item \textbf{Zwiebelschalen-Prinzip:} Das Paket wird vom Sender mehrfach verschlüsselt. Jeder Knoten entfernt eine Schicht (entschlüsselt mit seinem Key) und kennt nur den direkten Vorgänger und den direkten Nachfolger. Kein Knoten kennt die gesamte Route (Sender bis Ziel).
+\end{itemize}
+
+\subsubsection{Tor Onion Services (Hidden Services)}
+Ermöglicht das Anbieten von Diensten (z.B. Webseiten), ohne dass der Server seinen Standort (IP) preisgibt.
+
+\defc{Verbindungsaufbau zu einem Onion Service:}
+\begin{enumerate}
+  \item \textbf{Setup:} Der Server wählt \textit{Introduction Points} (Tor Nodes) und veröffentlicht diese zusammen mit seinem Public Key in einer \textit{Distributed Hash Table} (Directory).
+  \item \textbf{Discovery:} Der Client erhält die Onion-Adresse (z.B. via Website), lädt die Infos aus dem Directory und verifiziert die Signatur.
+  \item \textbf{Rendezvous-Wahl:} Der Client wählt einen zufälligen \textit{Rendezvous Point} und teilt diesem ein "One-Time-Secret" mit.
+  \item \textbf{Kontaktaufnahme:} Der Client sendet eine Nachricht (verschlüsselt mit dem Public Key des Servers) inkl. des gewählten Rendezvous Points und des Secrets an einen \textit{Introduction Point} des Servers.
+  \item \textbf{Verbindung:} Der Server verbindet sich zum \textit{Rendezvous Point} und sendet das Secret. Wenn die Secrets übereinstimmen, werden die Verbindungen zusammengeschaltet.
+\end{enumerate}
+\textit{Ergebnis:} Weder Client noch Server kennen die IP des anderen. Die Verbindung läuft über 6 Hops (3 vom Client, 3 vom Server).
+
+\subsubsection{Tor Adressen (v3)}
+\begin{itemize}
+  \item Format: \texttt{[base32-encoded-key].onion}
+  \item Enthält den kompletten Public Key (Ed25519), eine Version und eine \defc{Prüfsumme} (Checksum).
+  \item \textit{Vorteil Checksum:} Tippfehler werden sofort erkannt, bevor eine Verbindung versucht wird; Validierung ohne Directory möglich.
+\end{itemize}
+
+\subsubsection{Grenzen der Anonymität}
+\begin{itemize}
+  \item \textbf{Globaler Angreifer:} Wer Eintritts- und Austrittsknoten überwacht, kann über Zeitkorrelation (Timing Analysis) Sender und Empfänger verknüpfen.
+  \item \textbf{Metadaten:} Browser-Fingerprinting oder Nutzerverhalten können zur De-Anonymisierung führen.
+  \item \textbf{Exit Nodes:} Der Exit Node sieht den unverschlüsselten Traffic zum Ziel (wenn kein End-to-End TLS genutzt wird).
+\end{itemize}
+
+\end{document}
