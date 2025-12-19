@@ -1,0 +1,182 @@
+\documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics}}
+
+\begin{document}
+
+\section{Grafikpipeline}
+
+\subsection{Computer Vision vs. Computer Grafik}
+Das Kernproblem kann als Inversion betrachtet werden:
+\begin{itemize}
+  \item \defc{Computer Vision (CV)}: Prozess von \textit{Rechts nach Links}. Aus Bildern (Pixelrastern) werden Informationen (Objekte, Tiefe) extrahiert. Ziel: Verstehen, was zu sehen ist (``Inverse Grafik'').
+  \item \defc{Computer Grafik (CG)}: Prozess von \textit{Links nach Rechts}. Aus abstrakten Daten (Zahlen, Modellen) werden Bilder erzeugt. Ziel: Realistische oder stilisierte Darstellung von Informationen.
+\end{itemize}
+
+\subsection{Computing Paradigmen}
+Die Entwicklung der Hardware beeinflusst die Interaktion und Darstellung:
+\begin{enumerate}
+  \item \textbf{Mainframe / Large Scale:} Zentralisierte Rechenleistung, Zugriff über Terminals.
+  \item \textbf{Personal Computing (Desktop):} Eigene Rechenleistung, GUI-basiert (WIMP: Windows, Icons, Menus, Pointer).
+  \item \textbf{Networked Computing:} Vernetzung von Systemen (WAN, LAN, Internet).
+  \item \textbf{Mobile Computing:} Smartphones, Tablets. Einschränkungen bei Leistung und Batterie, aber hohe Portabilität.
+  \item \textbf{Collaborative Computing:} Gemeinsames Arbeiten (z.B. Multi-Touch Tables).
+  \item \textbf{Virtual Reality (VR) \& Augmented Reality (AR):}
+        \subitem \defc{Virtual Reality (VR)}: Immersion in eine vollständig virtuelle Welt (z.B. CAVE, Head Mounted Displays).
+        \subitem \defc{Augmented Reality (AR)}: Nahtlose Integration virtueller Objekte in die reale Welt zur Erweiterung der Wahrnehmung (z.B. HUDs, Smart Glasses, Smartphone-Kamera). Wichtig: Synchronisation mit der echten Welt.
+
+  \item \textbf{Ubiquitous / Invisible Computing:} Computer verschwinden in der Umgebung (Ambient Intelligence, Wearables, IoT).
+\end{enumerate}
+
+\subsection{Virtuelle Charaktere und Wahrnehmung}
+Bei der Darstellung menschenähnlicher Avatare tritt ein psychologisches Phänomen auf:\newline
+\begin{defbox}[Uncanny Valley]
+  Das \defc{Uncanny Valley} (Akzeptanzlücke) beschreibt den Effekt, dass die Akzeptanz eines künstlichen Charakters schlagartig abfällt, wenn dieser sehr menschenähnlich ist, aber nicht perfekt wirkt (z.B. Zombies, Leichen). Stilisierte Charaktere (Comic) werden oft besser akzeptiert als fast-realistische.
+\end{defbox}
+
+\subsection{Die 3D-Grafikpipeline}
+
+Die Grafikpipeline beschreibt den Weg von der geometrischen Beschreibung einer Szene bis zum fertigen Pixelbild auf dem Monitor. Sie wird typischerweise in vier Hauptstufen unterteilt.
+
+\begin{enumerate}
+  \item \textbf{Anwendung (CPU):} Modellierung, Eingabe, Szenegraph.
+  \item \textbf{Geometrieverarbeitung (GPU):} Transformationen, Beleuchtung, Clipping.
+  \item \textbf{Rasterisierung (GPU):} Umwandlung von Primitiven in Fragmente (Pixelkandidaten).
+  \item \textbf{Ausgabe:} Darstellung, Speicherung.
+\end{enumerate}
+
+\subsubsection{Stufe 1: Anwendung (Application)}
+Hier finden Berechnungen statt, die nicht fest in der Hardware verdrahtet sind (Software-Seite).
+\begin{itemize}
+  \item \textbf{Eingabe:} Verarbeitung von Nutzereingaben (Maus, Tastatur, Tracking).
+  \item \textbf{Modellierung:} Erstellung von 3D-Modellen (aus CT-Daten, Laserscans oder manuellem Design).
+  \item \textbf{Primitive:} Die Grundbausteine der Grafik sind \defc{Punkte}, \defc{Linien} und \defc{Dreiecke} (Polygone). Dreiecke sind bevorzugt, da sie immer planar (eben) sind.
+\end{itemize}
+
+\paragraph{Räumliche Datenstrukturen}
+Um Berechnungen zu beschleunigen (z.B. Kollisionserkennung oder Sichtbarkeitstest), werden Hüllkörper und Raumunterteilungen genutzt.
+
+\begin{itemize}
+  \item \textbf{Hüllkörper (Bounding Volumes):} Einfache geometrische Formen, die ein komplexes Objekt umschließen.
+        \begin{itemize}
+          \item \textit{Kugel (Sphere):} Einfache Distanzberechnung, oft nicht passgenau.
+          \item \textit{AABB (Axis Aligned Bounding Box):} Achsenparallel, einfach zu berechnen, rotiert nicht mit dem Objekt.
+          \item \textit{OBB (Oriented Bounding Box):} Passt sich der Rotation an, teurer in der Berechnung.
+        \end{itemize}
+
+  \item \textbf{Raumunterteilung (Space Partitioning):}
+        \begin{itemize}
+          \item \defc{Gitter (Grids):} Regelmäßige Unterteilung. Problem: Speicheraufwendig bei leeren Räumen.
+          \item \defc{Quadtree (2D) / Octree (3D):} Hierarchische Unterteilung. Ein Quadrat/Würfel wird bei Bedarf in 4 (bzw. 8) kleinere Einheiten geteilt. Effizient für ungleichmäßig verteilte Szenen.
+          \item \defc{BSP-Tree (Binary Space Partitioning):} Der Raum wird durch Ebenen rekursiv in zwei Hälften geteilt. Wichtig für den \textit{Painters Algorithm}, da die Zeichenreihenfolge (Vorn/Hinten) vorberechnet werden kann.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Stufe 2: Geometrieverarbeitung (Geometry Processing)}
+In dieser Stufe werden die Vertizes (Eckpunkte) der Primitive transformiert und beleuchtet.
+
+\paragraph{Transformationen}
+Objekte müssen vom lokalen Koordinatensystem in das Weltkoordinatensystem und schließlich in das Sichtsystem der Kamera überführt werden. Dies geschieht durch affine Transformationen (Translation, Rotation, Skalierung, Scherung) mittels Matrizenmultiplikation.
+
+\paragraph{Beleuchtung (Illumination)}
+Ziel ist die Simulation der Interaktion von Licht und Material. Das \defc{Phong-Beleuchtungsmodell} ist ein lokales Modell (berücksichtigt nur direkte Lichtquellen, keine Reflexionen zwischen Objekten).
+
+Die Lichtintensität $I_{total}$ an einem Punkt setzt sich zusammen aus:
+\[ I_{total} = I_{amb} + I_{diff} + I_{spec} \]
+
+\begin{enumerate}
+  \item \textbf{Ambientes Licht ($I_{amb}$):} Grundhelligkeit der Szene (indirekte Beleuchtung simuliert durch Konstante).
+        \[ I_{amb} = k_{amb} \cdot C_{amb} \]
+
+  \item \textbf{Diffuse Reflexion ($I_{diff}$):} Matte Oberflächen (Lambert-Reflexion). Helligkeit hängt vom Winkel zwischen Lichtvektor $L$ und Oberflächennormale $N$ ab.
+        \[ I_{diff} = k_{diff} \cdot C_{light} \cdot (\vec{N} \cdot \vec{L}) \]
+
+  \item \textbf{Spiegelnde Reflexion ($I_{spec}$):} Glanzpunkte (Highlights). Hängt vom Winkel zwischen Reflexionsvektor $R$ und Blickvektor $V$ ab. Der Exponent $m$ bestimmt die Rauhigkeit (je höher $m$, desto kleiner und schärfer der Glanzpunkt).
+        \[ I_{spec} = k_{spec} \cdot C_{light} \cdot (\vec{R} \cdot \vec{V})^m \]
+\end{enumerate}
+
+\paragraph{Shading-Verfahren (Interpolation)}
+Wie wird die Beleuchtung auf das gesamte Polygon angewendet?
+\begin{itemize}
+  \item \defc{Flat Shading}: Ein Normalenvektor für das ganze Polygon. Eine Farbe pro Polygon. Sieht "kantig" aus.
+  \item \defc{Gouraud Shading}: Beleuchtung wird an den Eckpunkten (Vertizes) berechnet. Die resultierenden \textit{Farbwerte} werden über das Polygon interpoliert. Glatter Verlauf, aber Glanzpunkte können verloren gehen, wenn sie in der Mitte des Polygons liegen.
+  \item \defc{Phong Shading}: Die \textit{Normalenvektoren} werden über das Polygon interpoliert. Die Beleuchtungsgleichung wird für jedes Pixel berechnet. Bestes Ergebnis, aber rechenaufwendigsten.
+\end{itemize}
+
+\paragraph{Clipping \& Culling}
+Optimierungsschritte, um nicht sichtbare Geometrie frühzeitig zu verwerfen.
+\begin{itemize}
+  \item \defc{Clipping}: Abschneiden von Geometrie, die aus dem Sichtvolumen (Frustum) herausragt.
+  \item \defc{Backface Culling}: Entfernen von Polygonen, die von der Kamera wegzeigen (Rückseiten).
+        \textit{Test:} Skalarprodukt aus Blickrichtung $s$ und Normale $n$. Wenn $n \cdot s > 0$, ist es eine Rückseite (bei entsprechender Vektor-Definition).
+\end{itemize}
+
+\subsubsection{Stufe 3: Rasterisierung}
+Umwandlung der kontinuierlichen geometrischen Primitive in diskrete Pixel (Fragmente).
+
+\paragraph{Linien-Algorithmen}
+Der \defc{Bresenham-Algorithmus} (1965) ermöglicht das Zeichnen von Linien unter ausschließlicher Verwendung von Integer-Arithmetik (Ganzzahlen).
+\begin{itemize}
+  \item \textit{Idee:} Entscheidung, ob das nächste Pixel "rechts" oder "rechts oben" gesetzt wird, basierend auf einem Fehlerterm, der akkumuliert wird.
+  \item Vermeidet langsame Gleitkommaoperationen.
+\end{itemize}
+
+\begin{defbox}[Bresenham-Algorithmus (für 1. Oktant)]
+  \textbf{Annahme:} Linie im ersten Oktanten, d.h. $0 < \Delta y \le \Delta x$ (Steigung zwischen 0 und 1). \\
+  \textbf{Gegeben:} Startpunkt $(x_{start}, y_{start})$ und Endpunkt $(x_{end}, y_{end})$.
+
+  \textbf{Vorbereitung:}
+  \begin{itemize}
+    \item Berechne Differenzen: $dx = x_{end} - x_{start}$ und $dy = y_{end} - y_{start}$
+    \item Initialisiere Startpixel: $x = x_{start}$, $y = y_{start}$
+    \item Initialisiere Fehlerterm: $fehler = dx / 2$ (Integer-Division)
+    \item Setze erstes Pixel $(x, y)$
+  \end{itemize}
+
+  \textbf{Iteration (Schleife solange $x < x_{end}$):}
+  \begin{enumerate}
+    \item Schritt in die \textit{schnelle Richtung} (hier x):
+          \[ x = x + 1 \]
+    \item Fehlerterm aktualisieren (Idealgerade weicht ab):
+          \[ fehler = fehler - dy \]
+    \item \textbf{Entscheidung:} Ist der Fehler zu groß geworden ($fehler < 0$)?
+          \begin{itemize}
+            \item \textbf{JA:} Wir müssen auch in die \textit{langsame Richtung} (y) gehen, um der Linie zu folgen.
+                  \[ y = y + 1 \]
+                  \[ fehler = fehler + dx \] (Fehlerterm korrigieren)
+            \item \textbf{NEIN:} Wir bleiben auf der gleichen y-Höhe.
+          \end{itemize}
+    \item Setze Pixel $(x, y)$
+  \end{enumerate}
+\end{defbox}
+
+\paragraph{Polygon-Rasterisierung}
+\defc{Scanline-Algorithmus}: Eine horizontale Linie wandert zeilenweise über das Bild. Schnittpunkte mit Polygonkanten werden berechnet und sortiert. Pixel zwischen Paaren von Schnittpunkten werden gefüllt (Paritätsregel: Umschalten zwischen Malen/Nicht-Malen bei Kantenübertritt).
+
+\paragraph{Verdeckungsrechnung (Visibility)}
+Wie wird bestimmt, welches Objekt vorne liegt?
+
+\begin{defbox}[Z-Buffer Algorithmus]
+  Für jedes Pixel wird neben der Farbe auch ein Tiefenwert (z-Wert) gespeichert.
+  \begin{itemize}
+    \item Initialisierung: Bildspeicher = Hintergrundfarbe, Z-Buffer = unendlich (max Tiefe).
+    \item Für jedes Pixel eines neuen Polygons: Berechne Tiefe $z_{neu}$.
+    \item \textit{Test:} Ist $z_{neu} < z_{gespeichert}$?
+    \item \textit{Ja:} Schreibe Farbe in Bildspeicher, aktualisiere $z_{gespeichert} = z_{neu}$.
+    \item \textit{Nein:} Verwerfe Pixel (verdeckt).
+  \end{itemize}
+  \textbf{Vorteile:} Reihenfolge der Objekte egal, einfache Hardware-Implementierung.\\
+  \textbf{Nachteile:} Speicherbedarf, Transparenz schwierig, Z-Fighting (Genauigkeitsprobleme).
+\end{defbox}
+
+Alternativ: \textbf{Painters Algorithm}. Sortiere Polygone nach Tiefe (weit weg $\to$ nah) und zeichne sie übereinander. Problem: Zyklische Überlappungen und komplexe Sortierung ($O(n^2)$).
+
+\subsubsection{Stufe 4: Ausgabe}
+Finales Schreiben in den Framebuffer, Darstellung auf CRT, LCD, Beamer oder Speicherung in Dateien.
+
+\end{document}
