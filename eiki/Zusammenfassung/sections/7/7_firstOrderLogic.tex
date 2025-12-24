@@ -1,0 +1,201 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{First-Order Logic}
+
+\subsection{Limitations of Propositional Logic}
+Propositional Logic allows us to capture knowledge about the world using atomic facts and logical connectives. However, it suffers from major limitations regarding expressiveness:
+\begin{itemize}
+  \item It deals with \defc{atomic facts} only.
+  \item It has no notion of \defc{objects} or \defc{relations} between them.
+  \item Terms have no formal meaning; meaning is only intuitive to the reader (e.g., $RoommateCarryingUmbrella$ is just a string "P" to the computer).
+\end{itemize}
+
+\subsection{First-Order Logic (FOL)}
+First-Order Logic extends propositional logic by introducing the notion of objects, variables, and quantifiers. This allows us to generalize rules over entire classes of objects rather than writing rules for every specific instance.
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-07_page_3_3.png}}
+\end{center}
+
+\begin{defbox}[Key Elements of FOL Syntax]
+  \begin{itemize}
+    \item \defc{Objects}: Specific entities in the world. (e.g., $John$, $Earth$, $Umbrella_0$).
+    \item \defc{Relations (Predicates)}: properties that hold true or false.
+          \begin{itemize}
+            \item \defc{Unary Relations}: Properties of a single object (e.g., $IsWet(x)$, $Person(y)$).
+            \item \defc{n-ary Relations}: Relationships between multiple objects (e.g., $Carrying(John, Umbrella_0)$).
+          \end{itemize}
+    \item \defc{Functions}: A mapping that refers to an object without needing a specific name. Unlike predicates, functions do \textbf{not} return true/false; they return an \textbf{object}.
+          \begin{itemize}
+            \item Example: $LeftLegOf(John)$ refers to a specific leg object.
+            \item Functions allow encoding data structures (e.g., $succ(0)$, $succ(succ(0))$ for integers).
+          \end{itemize}
+    \item \defc{Equality}: $Roommate(Person_0) = Person_1$.
+  \end{itemize}
+\end{defbox}
+
+\subsection{Quantifiers}
+Quantifiers allow us to talk about sets of objects rather than individuals.
+
+\subsubsection{Universal Quantifier (\texorpdfstring{$\forall$}{forall})}
+"For all..." or "For every...".
+\begin{itemize}
+  \item Syntax: $\forall x: \text{Formula}(x)$.
+  \item Typically used with \defc{Implication} ($\Rightarrow$).
+  \item \textbf{Example:} "All lions are cats."
+        $$ \forall x: Lion(x) \Rightarrow Cat(x) $$
+  \item \textbf{Common Mistake:} Using AND ($\land$) with $\forall$. $\forall x: Lion(x) \land Cat(x)$ would mean "Everything in the universe is both a lion and a cat."
+\end{itemize}
+
+\subsubsection{Existential Quantifier (\texorpdfstring{$\exists$}{exists})}
+"There exists..." or "For some...".
+\begin{itemize}
+  \item Syntax: $\exists x: \text{Formula}(x)$.
+  \item Typically used with \defc{Conjunction} ($\land$).
+  \item \textbf{Example:} "There is a cat that is not a lion."
+        $$ \exists x: Cat(x) \land \neg Lion(x) $$
+  \item \textbf{Common Mistake:} Using Implication ($\Rightarrow$) with $\exists$. $\exists x: Lion(x) \Rightarrow Cat(x)$ is trivially true if there is even one object in the universe that is not a lion (because False $\Rightarrow$ True is valid).
+\end{itemize}
+
+\subsubsection{Duality of Quantifiers}
+Universal and existential quantifiers are related via negation:
+\begin{itemize}
+  \item "All $x$ are $P$" is equivalent to "There is no $x$ that is not $P$".
+        $$ \forall x: P(x) \equiv \neg \exists x: \neg P(x) $$
+  \item "There exists an $x$ that is $P$" is equivalent to "It is not the case that for all $x$, $P$ is false".
+        $$ \exists x: P(x) \equiv \neg \forall x: \neg P(x) $$
+\end{itemize}
+
+\subsubsection{Translating English to FOL}
+\begin{itemize}
+  \item "John has Jane's umbrella": $Has(John, Umbrella(Jane))$ (Using function).
+  \item "John has an umbrella": $\exists y: (Has(John, y) \land IsUmbrella(y))$.
+  \item "Any person who has an umbrella is not wet":
+        $$ \forall x: (IsPerson(x) \Rightarrow ((\exists y: (Has(x, y) \land IsUmbrella(y))) \Rightarrow \neg IsWet(x))) $$
+\end{itemize}
+
+\subsection{Inference and Substitution}
+
+\subsubsection{Substitution (SUBST)}
+To perform inference (reasoning), we need to make general rules apply to specific objects. \defc{Substitution} replaces variables with specific terms (constants or functions).
+\begin{itemize}
+  \item Notation: $SUBST(\{x/John\}, IsHealthy(x))$
+  \item Result: $IsHealthy(John)$
+\end{itemize}
+
+\subsubsection{Generalized Modus Ponens}
+This is the workhorse of FOL inference. It combines substitution with the standard Modus Ponens rule.
+\begin{itemize}
+  \item \textbf{Premise 1:} $\forall x: Loves(John, x)$ (John loves everything).
+  \item \textbf{Premise 2:} $\forall y: Loves(y, Jane) \Rightarrow FeelsAppreciatedBy(Jane, y)$.
+  \item \textbf{Unification:} We find a substitution that makes the "Loves" parts match.
+  \item Substitution $\theta = \{x/Jane, y/John\}$.
+  \item \textbf{Conclusion:} $FeelsAppreciatedBy(Jane, John)$.
+\end{itemize}
+
+\subsection{Normal Forms and Skolemization}
+To use automated theorem proving (like Resolution), sentences must be converted into \defc{Conjunctive Normal Form (CNF)}.
+
+\begin{defbox}[Algorithm: Converting to First-Order CNF]
+  This is a critical procedure for the exam.
+
+  \begin{enumerate}
+    \item \textbf{Eliminate Implications:} Replace $A \Rightarrow B$ with $\neg A \lor B$.
+    \item \textbf{Move Negations Inwards (NNF):} Apply De Morgan's laws and $\neg \forall x P \equiv \exists x \neg P$. Negations should only appear immediately before predicates.
+    \item \textbf{Standardize Variables:} Rename variables so that no two quantifiers use the same variable name (e.g., $\forall x P(x) \lor \forall x Q(x)$ becomes $\forall x P(x) \lor \forall y Q(y)$).
+    \item \defc{Skolemization} (Eliminate Existential Quantifiers):
+          \begin{itemize}
+            \item If $\exists$ occurs outside all $\forall$: Replace variable with a \defc{Skolem Constant}.
+            \item If $\exists$ occurs inside a $\forall x$: The existential variable depends on $x$. Replace it with a \defc{Skolem Function} $f(x)$.
+            \item \textit{Example:} $\forall x \exists y : Loves(x, y) \rightarrow \forall x : Loves(x, f(x))$. (Everyone loves someone $\to$ Everyone loves their specific "loved one").
+          \end{itemize}
+    \item \textbf{Drop Universal Quantifiers:} Assuming all remaining variables are universally quantified.
+    \item \textbf{Distribute OR over AND:} To get the conjunction of disjunctions.
+    \item \textbf{Create Clauses:} Separate into a set of clauses.
+  \end{enumerate}
+\end{defbox}
+
+\subsection{Resolution}
+Resolution is a refutation proof procedure. To prove a sentence $P$, we add $\neg P$ to the knowledge base and try to derive a contradiction (empty clause).
+
+\begin{itemize}
+  \item \textbf{Input:} Two clauses containing complementary literals (e.g., $P(x)$ and $\neg P(y)$).
+  \item \textbf{Process:}
+        \begin{enumerate}
+          \item \defc{Unify} the complementary literals. Find a substitution $\theta$ such that $P(x)\theta = P(y)\theta$.
+          \item Apply $\theta$ to the remaining literals in both clauses.
+          \item Combine the remaining literals into a new clause (the resolvent).
+        \end{enumerate}
+  \item \textbf{Completeness:} Resolution is refutation-complete. If a set of clauses is unsatisfiable, resolution will find a contradiction.
+\end{itemize}
+
+\subsection{Prolog and Logic Programming}
+
+\subsubsection{Horn Clauses}
+Prolog is based on a subset of FOL called \defc{Horn Clauses}. A Horn clause is a disjunction of literals with \textbf{at most one positive literal}.
+\begin{itemize}
+  \item Can be written as an implication: $Head \leftarrow Body_1, Body_2, \dots$
+  \item In Prolog syntax: \texttt{Head :- Body1, Body2.}
+  \item "Head is true IF Body1 AND Body2 are true."
+\end{itemize}
+
+\subsubsection{Prolog Syntax}
+\begin{itemize}
+  \item \defc{Facts}: \texttt{eats(sam, dal).} (Note: atoms are lowercase).
+  \item \defc{Variables}: Start with Uppercase (e.g., \texttt{Person}, \texttt{X}).
+  \item \defc{Rules}: \texttt{compatible(P1, P2) :- eats(P1, Food), eats(P2, Food).}
+\end{itemize}
+
+\subsubsection{Prolog Inference}
+Prolog uses \defc{Backward Chaining} with \defc{Depth-First Search (DFS)}.
+\begin{enumerate}
+  \item Start with the query (goal).
+  \item Try to unify the goal with the head of a rule in the database (top-down).
+  \item If matched, the body of the rule becomes the new sub-goal.
+  \item If a path fails, \defc{Backtrack} to the last choice point.
+\end{enumerate}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-07_page_45_1.png}}
+\end{center}
+
+\subsection{Theoretical Limits}
+
+\subsubsection{Decidability}
+\begin{itemize}
+  \item \textbf{Semidecidable:} Inference in FOL is semidecidable.
+  \item If a sentence is entailed, an algorithm exists that will eventually prove it.
+  \item If a sentence is \textbf{not} entailed, the algorithm might run forever (halting problem). We cannot always conclude "False".
+\end{itemize}
+
+\subsubsection{Gödel's Incompleteness Theorem}
+\begin{itemize}
+  \item FOL is not rich enough to fully model basic arithmetic (specifically mathematical induction) while remaining complete.
+  \item For any consistent formal system capable of expressing arithmetic, there exist true statements that \defc{cannot be proved} within the system.
+  \item Implication: We cannot prove every truth in the universe using a single formal system.
+\end{itemize}
+
+\subsubsection{Higher-Order Logic}
+FOL cannot quantify over predicates or relations.
+\begin{itemize}
+  \item FOL: $\forall x P(x)$ (Valid).
+  \item Higher-Order: $\forall P P(John)$ ("John has all properties"). This is not allowed in FOL.
+\end{itemize}
+
+\subsection{Neuro-Symbolic AI (Current Trends)}
+There is a debate on how to combine the reasoning power of logic with the learning power of neural networks.
+
+\begin{itemize}
+  \item \defc{Symbols}: Good for general intelligent action, reasoning, interpretability (Newell \& Simon).
+  \item \defc{Neurons}: Learning from data, handling noise, high-dimensional perception (Hinton).
+  \item \defc{Neuro-Symbolic}: Approaches that use neural networks to perceive (e.g., identifying objects in an image) and logic to reason about them (e.g., "If $X$ is close to $Y$...").
+  \item \textbf{Example Approach:} Differentiable Forward Reasoning, where logic rules are treated as weighted components in a differentiable loss function, allowing backpropagation through logic.
+\end{itemize}
+
+\end{document}
