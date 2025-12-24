@@ -1,0 +1,199 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Introduction: Logic and AI}
+
+Artificial Intelligence aims to create agents that not only search for solutions but ``understand'' the world. While search algorithms generate successors and evaluate states, they lack a representation of knowledge. **Logic** provides the framework for this representation.
+
+\subsection{Knowledge-Based Agents}
+A \defc{Knowledge-Based Agent} maintains a representation of the world and uses logical reasoning to derive new information and make decisions. It operates on two main components:
+
+\begin{defbox}[Components of a Knowledge-Based System]
+  \begin{itemize}
+    \item \textbf{Knowledge Base (KB)}: A set of sentences in a formal language representing facts about the world. It follows a declarative approach (TELL the agent what it needs to know).
+    \item \textbf{Inference Engine}: Domain-independent algorithms that derive new sentences (conclusions) from the KB.
+  \end{itemize}
+\end{defbox}
+
+The interaction loop of a KB-Agent involves:
+\begin{enumerate}
+  \item \textbf{TELL}: The agent incorporates new percepts into the KB.
+  \item \textbf{ASK}: The agent queries the KB to decide on an action.
+  \item \textbf{TELL}: The agent records the chosen action and updates the time.
+\end{enumerate}
+
+\subsection{The Wumpus World}
+The Wumpus World is a standard environment used to illustrate logical reasoning in AI. It is a grid-based cave where an agent must find gold while avoiding pits and a monster (Wumpus).
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.6\textwidth]{eiki_1_AI101-06_page_11_2.png}}
+\end{center}
+
+\subsubsection{PEAS Description}
+\begin{itemize}
+  \item \textbf{Performance}: $+1000$ for gold, $-1000$ for death, $-1$ per step, $-10$ for using the arrow.
+  \item \textbf{Environment}:
+        \begin{itemize}
+          \item Squares adjacent to the \defc{Wumpus} smell (Stench).
+          \item Squares adjacent to a \defc{Pit} are breezy (Breeze).
+          \item Gold glitters in its square.
+        \end{itemize}
+  \item \textbf{Sensors}: $[Stench, Breeze, Glitter, Bump, Scream]$.
+  \item \textbf{Actuators}: Turn Left/Right, Forward, Grab, Release, Shoot.
+\end{itemize}
+
+\subsubsection{Reasoning Example}
+If the agent is in $[1,1]$ and perceives no breeze and no stench, it knows $[1,2]$ and $[2,1]$ are safe (OK). If it moves to $[2,1]$ and perceives a breeze, it infers a pit must be in $[2,2]$ or $[3,1]$. Logic allows the agent to combine observations over time to build a map of safe and dangerous areas.
+
+\subsection{Propositional Logic (PL)}
+
+Propositional logic is the simplest logic, where symbols represent whole propositions (facts) that can be true or false.
+
+\subsubsection{Syntax}
+Syntax defines the rules for constructing well-formed sentences. We use \defc{Backus-Naur Form (BNF)}:
+
+\begin{itemize}
+  \item \textbf{Atomic Sentences}: Single symbols (e.g., $P$, $Q$, $RoommateWet$).
+  \item \textbf{Complex Sentences}: Constructed using logical connectives.
+        \begin{itemize}
+          \item $\neg P$ (Not/Negation)
+          \item $P \land Q$ (And/Conjunction)
+          \item $P \lor Q$ (Or/Disjunction)
+          \item $P \Rightarrow Q$ (Implication/If-Then)
+          \item $P \Leftrightarrow Q$ (Biconditional/If and only if)
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Semantics}
+Semantics defines the meaning of sentences, specifically their \defc{Truth Value} relative to a specific world configuration (Interpretation).
+
+\begin{defbox}[Model]
+  A \textbf{Model} is an interpretation (a specific setting of true/false values for all propositional symbols) in which a specific sentence or Knowledge Base is \textbf{True}.
+\end{defbox}
+
+\paragraph{Truth Tables}
+The semantics are defined by truth tables. Key logical behaviors to remember:
+\begin{itemize}
+  \item $P \land Q$ is true only if \emph{both} are true.
+  \item $P \lor Q$ is true if \emph{at least one} is true (inclusive OR).
+  \item $P \Rightarrow Q$ is true unless $P$ is true and $Q$ is false. (Note: $False \Rightarrow True$ is valid/True).
+\end{itemize}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.8\textwidth]{eiki_1_AI101-06_page_21_1.png}}
+\end{center}
+
+\subsubsection{Logical Properties}
+
+\begin{enumerate}
+  \item \defc{Tautology}: A sentence that is true in \emph{all} possible models (e.g., $P \lor \neg P$).
+  \item \defc{Satisfiability}: A sentence is satisfiable if it is true in \emph{at least one} model.
+  \item \defc{Contradiction}: A sentence that is false in all models (e.g., $P \land \neg P$).
+  \item \defc{Logical Equivalence}: Two sentences $\alpha$ and $\beta$ are equivalent ($\alpha \equiv \beta$) if they have the same truth value in every model.
+\end{enumerate}
+
+\paragraph{Important Equivalences (for simplification)}
+\begin{itemize}
+  \item \textbf{Double Negation}: $\neg(\neg A) \equiv A$
+  \item \textbf{Contraposition}: $(A \Rightarrow B) \equiv (\neg B \Rightarrow \neg A)$
+  \item \textbf{Implication Elimination}: $(A \Rightarrow B) \equiv (\neg A \lor B)$
+  \item \textbf{De Morgan's Laws}:
+        \begin{itemize}
+          \item $\neg(A \land B) \equiv (\neg A \lor \neg B)$
+          \item $\neg(A \lor B) \equiv (\neg A \land \neg B)$
+        \end{itemize}
+  \item \textbf{Distributivity}: $A \land (B \lor C) \equiv (A \land B) \lor (A \land C)$
+\end{itemize}
+
+\subsection{Inference and Entailment}
+
+The core goal of the Inference Engine is to determine if a sentence follows from the Knowledge Base.
+
+\begin{defbox}[Entailment ($KB \models \alpha$)]
+  We say the Knowledge Base $KB$ \textbf{entails} sentence $\alpha$ if and only if $\alpha$ is true in all models where $KB$ is true.
+\end{defbox}
+
+\subsubsection{Model Checking}
+A simple algorithm to check entailment is \textbf{Truth Table Enumeration}:
+\begin{enumerate}
+  \item Enumerate all possible assignments of True/False to the symbols.
+  \item Check if the KB is true in that assignment.
+  \item If KB is true, check if $\alpha$ is also true.
+  \item If $\alpha$ is true in every model where KB is true, then $KB \models \alpha$.
+\end{enumerate}
+\textbf{Drawback}: The time complexity is $O(2^n)$, making it inefficient for large numbers of variables.
+
+\subsubsection{Consistency and The Principle of Explosion}
+It is critical that a Knowledge Base is \defc{Consistent}.
+\begin{itemize}
+  \item If a KB contains a contradiction (e.g., $P$ and $\neg P$), it is inconsistent.
+  \item An inconsistent KB entails \textbf{everything}.
+  \item \textit{Example}: If "The roommate flies" and "The roommate does not fly" are both in the KB, we can prove "The Moon is made of cheese."
+  \item This relies on the \textbf{Law of Non-Contradiction} (Aristotle): $A$ and $\neg A$ cannot both be true.
+\end{itemize}
+
+\subsection{Resolution and Proof Systems}
+
+To avoid enumerating truth tables, we use syntactic proof systems like \defc{Resolution}. To use resolution, sentences must be in a specific form.
+
+\subsubsection{Conjunctive Normal Form (CNF)}
+Any sentence in propositional logic can be converted into CNF. A CNF formula is a conjunction (AND) of clauses, where each clause is a disjunction (OR) of literals.
+\begin{center}
+  $(L_{1,1} \lor \dots \lor L_{1,k}) \land (L_{2,1} \lor \dots) \land \dots$
+\end{center}
+where a literal is a symbol ($P$) or its negation ($\neg P$).
+
+\textbf{Conversion Steps (Example):}
+\begin{enumerate}
+  \item Eliminate $\Leftrightarrow$ and $\Rightarrow$ using $(A \Rightarrow B) \equiv (\neg A \lor B)$.
+  \item Move $\neg$ inwards using De Morgan's Laws.
+  \item Distribute $\lor$ over $\land$.
+\end{enumerate}
+
+\subsubsection{The Resolution Rule}
+The resolution inference rule takes two clauses and produces a new one:
+\begin{center}
+  $(P \lor A)$ and $(\neg P \lor B)$ derive $(A \lor B)$
+\end{center}
+Here, $P$ and $\neg P$ are complementary literals. They ``cancel out.''
+
+\begin{defbox}[Unit Resolution]
+  A simplified version where one clause is a single literal:
+  $$(l_1 \lor \dots \lor l_k) \text{ and } \neg l_i \implies (l_1 \lor \dots \lor l_{i-1} \lor l_{i+1} \dots)$$
+  This is effectively \textbf{Modus Ponens} in CNF form.
+\end{defbox}
+
+\subsubsection{Proof by Refutation (Resolution Algorithm)}
+To prove that $KB \models \alpha$, we use \defc{Proof by Contradiction}:
+\begin{enumerate}
+  \item Assume $\neg \alpha$ (the negation of what we want to prove).
+  \item Add $\neg \alpha$ to the Knowledge Base.
+  \item Convert the entire set of sentences to CNF.
+  \item Repeatedly apply the Resolution Rule to pairs of clauses containing complementary literals.
+  \item If you derive the \textbf{Empty Clause} (a contradiction, e.g., resolving $P$ and $\neg P$), then the original assumption $\neg \alpha$ must be false, meaning $\alpha$ is true.
+\end{enumerate}
+
+\subsection{Horn Clauses}
+Resolution is complete (can prove anything that is true) but can be slow (exponential in worst case). \defc{Horn Clauses} are a subset of PL that allows for more efficient inference.
+
+\begin{itemize}
+  \item A Horn Clause is a disjunction of literals with \textbf{at most one positive literal}.
+  \item \textit{Example}: $\neg P \lor \neg Q \lor R$ is equivalent to $(P \land Q) \Rightarrow R$.
+  \item Inference with Horn Clauses can be done in linear time using \textbf{Forward Chaining}.
+\end{itemize}
+
+\subsection{Limitations of Propositional Logic}
+While powerful, PL has distinct limitations:
+\begin{enumerate}
+  \item \textbf{Lack of Objects and Relations}: In PL, ``Roommate carrying umbrella'' is a single atomic symbol. The logic does not understand that ``Roommate'' is a person or ``Umbrella'' is an object.
+  \item \textbf{Verbose}: To say ``All pits cause breezes,'' we must write a rule for every square: $B_{1,1} \Leftrightarrow (P_{1,2} \lor P_{2,1})$, $B_{1,2} \Leftrightarrow \dots$
+  \item \textbf{Variable Explosion}: In the Wumpus world alone, a small grid generates 64 distinct symbols and hundreds of sentences.
+\end{enumerate}
+These limitations lead to the development of \textbf{First-Order Logic} (not covered in this summary).
+
+\end{document}
