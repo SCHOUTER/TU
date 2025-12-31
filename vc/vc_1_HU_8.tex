@@ -1,0 +1,209 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Encoding, Fonts, Typography
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ---------------------------------------------------------
+% Language
+% ---------------------------------------------------------
+\usepackage[ngerman,english]{babel}
+
+% ---------------------------------------------------------
+% Math
+% ---------------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+
+% ---------------------------------------------------------
+% Tables
+% ---------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------------------------------------------------------
+% Figures & Graphics
+% ---------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% ---------------------------------------------------------
+% Lists
+% ---------------------------------------------------------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------------------------------------------------------
+% Units & Numbers
+% ---------------------------------------------------------
+\usepackage{siunitx}
+
+% ---------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% ---------------------------------------------------------
+% Global layout improvements
+% ---------------------------------------------------------
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+
+% ---------------------------------------------------------
+% Title
+% ---------------------------------------------------------
+\title{\"Ubung 8: Gruppe 28}
+\author{
+    Niclas Kusenbach, 360227 \and
+    Alicia Bayerl, 2633336 \and
+    Mohamed Naceur Hedhili, 2957151 \and
+    Selma Naz Öner, 2662640
+}
+
+\begin{document}
+\maketitle
+\section*{Aufgabe 8.1: Transformationen (Quelle: Folien 13, 21, 35-44)}
+
+\subsection*{a) Zuordnung der Begriffe (Visuelle Analyse)}
+Basierend auf der grafischen Darstellung der Teekannen im Koordinatensystem:
+
+\begin{itemize}
+  \item \textbf{(a) Rotation}
+  \item \textbf{(b) Translation}
+  \item \textbf{(c) Scherung}
+  \item \textbf{(d) Skalierung}
+\end{itemize}
+
+\subsection*{b) Zuordnung der Matrizen}
+
+\begin{itemize}
+  \item \textbf{(a) Skalierung} [Quelle: Folie 35]
+        \[
+          \begin{pmatrix}
+            5 & 0 & 0 & 0 \\
+            0 & 5 & 0 & 0 \\
+            0 & 0 & 5 & 0 \\
+            0 & 0 & 0 & 1
+          \end{pmatrix}
+        \]
+        Dies ist eine Diagonalmatrix mit Werten $\neq 1$, was einer uniformen Skalierung um den Faktor 5 entspricht.
+
+  \item \textbf{(b) Translation} [Quelle: Folie 21]
+        \[
+          \begin{pmatrix}
+            1 & 0 & 0 & 7 \\
+            0 & 1 & 0 & 0 \\
+            0 & 0 & 1 & 3 \\
+            0 & 0 & 0 & 1
+          \end{pmatrix}
+        \]
+        Die letzte Spalte enthält den Verschiebungsvektor $(7, 0, 3)^T$.
+
+  \item \textbf{(c) Rotation} [Quelle: Folie 44]
+        \[
+          \begin{pmatrix}
+            -1 & 0 & 0  & 0 \\
+            0  & 1 & 0  & 0 \\
+            0  & 0 & -1 & 0 \\
+            0  & 0 & 0  & 1
+          \end{pmatrix}
+        \]
+        Dies entspricht einer Rotation um die y-Achse um $180^\circ$ ($\cos 180^\circ = -1, \sin 180^\circ = 0$).
+
+  \item \textbf{(d) Scherung} [Quelle: Folie 39]
+        \[
+          \begin{pmatrix}
+            1 & 0 & 0 & 0 \\
+            7 & 1 & 0 & 0 \\
+            0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 1
+          \end{pmatrix}
+        \]
+        Das Element in der zweiten Zeile, erste Spalte ($a_{21}=7$) bewirkt eine Scherung der y-Koordinate in Abhängigkeit von x ($y' = y + 7x$).
+\end{itemize}
+
+\subsection*{c) Berechnung der Transformationsmatrix (Quelle: Folien 27, 37, 44)}
+Gegeben: Punkt $P = (4, 0, 1)$. In homogenen Koordinaten: $P_h = (4, 0, 1, 1)^T$.
+\textbf{1. Transformationsmatrizen:}
+\begin{itemize}
+  \item Skalierung ($S$) um Faktor 2:
+        \[ S = \begin{pmatrix} 2 & 0 & 0 & 0 \\ 0 & 2 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix} \]
+  \item Rotation ($R_x$) 90° um x-Achse ($\cos 90^\circ=0, \sin 90^\circ=1$):
+        \[ R_x = \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & -1 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix} \]
+  \item Translation ($T$) um Vektor $(5, 0, 0)$:
+        \[ T = \begin{pmatrix} 1 & 0 & 0 & 5 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix} \]
+\end{itemize}
+\textbf{2. Gesamttansformation und Anwendung:}
+Reihenfolge: Erst Skalieren, dann Rotieren, dann Verschieben ($M = T \cdot R_x \cdot S$).
+
+\[
+  P' = T \cdot (R_x \cdot (S \cdot P_h))
+\]
+
+1. Skalierung:
+\[ \begin{pmatrix} 2 & 0 & 0 & 0 \\ 0 & 2 & 0 & 0 \\ 0 & 0 & 2 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} 4 \\ 0 \\ 1 \\ 1 \end{pmatrix} = \begin{pmatrix} 8 \\ 0 \\ 2 \\ 1 \end{pmatrix} \]
+
+2. Rotation:
+\[ \begin{pmatrix} 1 & 0 & 0 & 0 \\ 0 & 0 & -1 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} 8 \\ 0 \\ 2 \\ 1 \end{pmatrix} = \begin{pmatrix} 8 \\ -2 \\ 0 \\ 1 \end{pmatrix} \]
+
+3. Translation:
+\[ \begin{pmatrix} 1 & 0 & 0 & 5 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{pmatrix} \begin{pmatrix} 8 \\ -2 \\ 0 \\ 1 \end{pmatrix} = \begin{pmatrix} 13 \\ -2 \\ 0 \\ 1 \end{pmatrix} \]
+
+\textbf{Ergebnis:} Der transformierte Punkt ist $P' = (13, -2, 0)$.
+
+\section*{Aufgabe 8.2: Projektionen (Quelle: Folien 54-59)}
+
+\subsection*{a) Die 6 klassischen Projektionen (Folie 54)}
+\begin{enumerate}
+  \item Aufriss (Frontansicht)
+  \item Kabinett-Projektion
+  \item Kavalliersperspektive
+  \item Allgemeine Parallelprojektion
+  \item Isometrische Perspektive
+  \item Zentralperspektive (Vogelperspektive)
+\end{enumerate}
+
+\subsection*{b) 4 Eigenschaften von projektiven Abbildungen (Folie 55)}
+\begin{enumerate}
+  \item Geraden werden auf Geraden abgebildet.
+  \item Schnitte von Geraden bleiben erhalten.
+  \item Flächen werden auf Flächen abgebildet.
+  \item Reihenfolge von Punkten auf projektiven Geraden bleibt erhalten.
+\end{enumerate}
+
+\subsection*{c) Unterschiede: Perspektivische vs. Parallele Projektion (Folie 56-58)}
+\begin{enumerate}
+  \item \textbf{Projektionszentrum:} Bei der perspektivischen Projektion treffen sich die Projektionsstrahlen in einem Punkt (Augpunkt/COP). Bei der parallelen Projektion verlaufen alle Strahlen parallel (DOP).
+  \item \textbf{Parallelität:} Bei der parallelen Projektion bleiben parallele Geraden im Raum auch im Bild parallel. Bei der perspektivischen Projektion ist dies nicht der Fall (Fluchtpunkte).
+  \item \textbf{Größenverhältnisse:} Perspektivische Projektion verkleinert entfernte Objekte (natürlicher Seheindruck), parallele Projektion erhält Größenverhältnisse (keine Tiefenverkürzung).
+\end{enumerate}
+
+\subsection*{d) Bevorzugte Projektion in der Medizin (Folie 59)}
+In der Medizin wird oft die \textbf{parallele Projektion} bevorzugt.
+\\
+\textbf{Grund:} Längen und Abstände bleiben vergleichbar und messbar. Perspektivische Verzerrungen würden Größenverhältnisse verfälschen, was für Diagnosen (z.B. Tumorgröße) problematisch wäre.
+
+\section*{Aufgabe 8.3: 2D/3D-Interaktion (Quelle: Folien 72-77)}
+
+\subsection*{a) Problem der 3D-Interaktion mit 2D-Geräten (Folie 72, 76)}
+Eine Bewegung auf dem Bildschirm kann unendlich vielen Bewegungen im 3D-Raum entsprechen.
+
+\subsection*{b) Ansätze zur Umsetzung (Folie 73)}
+\begin{itemize}
+  \item Multi-Window (Nutzung mehrerer Ansichten gleichzeitig, z.B. Draufsicht, Seitenansicht).
+  \item Direktes 2D-Maus-Mapping (z.B. Mausbewegung steuert x/y, Tastatur steuert z).
+  \item Manipulatoren (grafische Hilfselemente).
+\end{itemize}
+
+\subsection*{c) Hilfsmittel für 3D-Interaktion (Folie 74-77)}
+Das zentrale Hilfsmittel sind \textbf{Manipulatoren} (auch 3D-Widgets genannt).
+\\
+\textbf{Erläuterung:} Dies sind grafische Repräsentationen (z.B. Pfeile, Ringe, Würfel), die direkt am selektierten Objekt angezeigt werden. Sie erlauben es dem Nutzer, spezifische Transformationen (z.B. Rotation nur um die rote Achse) durch "Dragging" eines bestimmten Teils des Manipulators ("Handle") auszuführen. Dadurch wird die Mehrdeutigkeit der Mausbewegung aufgelöst, da die Interaktion auf eine Achse oder Ebene beschränkt wird.
+
+\end{document}

@@ -1,0 +1,269 @@
+ \documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics}}
+
+\begin{document}
+
+\section{Transformationen}
+
+In der Computergrafik durchlaufen 3D-Daten verschiedene Stufen (die Grafikpipeline), um schließlich als 2D-Bild auf dem Bildschirm zu erscheinen. Dabei spielen \defc{Koordinatensysteme} und \defc{Transformationen} eine zentrale Rolle.
+
+\subsection{Koordinatensysteme in der Pipeline}
+Um ein Bild zu erzeugen, müssen Objekte durch verschiedene Koordinatenräume transformiert werden. Die Reihenfolge ist essenziell:
+
+\begin{enumerate}
+  \item \defc{Objektkoordinaten (Object Coordinates)}: Lokales Koordinatensystem eines einzelnen 3D-Modells (z.B. Mittelpunkt einer Kugel im Ursprung).
+  \item \defc{Weltkoordinaten (World Coordinates)}: Beschreiben die gesamte Szene. Alle Objekte werden hier relativ zueinander platziert.
+  \item \defc{Augenkoordinaten (Eye/Camera Coordinates)}: Die Szene aus der Sicht der Kamera. Die Kamera liegt im Ursprung, Blickrichtung oft entlang der negativen Z-Achse.
+  \item \defc{Projektionskoordinaten (Clip Coordinates)}: Nach Anwendung der Projektion (perspektivisch oder parallel). Hier findet das \textit{Clipping} statt.
+  \item \defc{Normierte Gerätekoordinaten (Normalized Device Coordinates - NDC)}: Koordinatenbereich meist von $[-1, 1]$ oder $[0, 1]$.
+  \item \defc{Bildschirmkoordinaten (Window Coordinates)}: Tatsächliche Pixelpositionen im Ausgabefenster.
+\end{enumerate}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{vc_1_VC2025_08_Transformationen_page_8_1.png}}
+\end{center}
+
+\subsubsection{Transformationstypen}
+\begin{itemize}
+  \item \textbf{Modelling Transformations:} Anordnung von Objekten in der Welt (Rotation, Translation, Skalierung).
+  \item \textbf{Viewing Transformations:} Positionierung und Ausrichtung der Kamera.
+  \item \textbf{Projection Transformations:} Definition des Sichtvolumens (Viewing Volume) und Projektion auf 2D.
+  \item \textbf{Viewport Transformations:} Mapping auf die Pixelauflösung des Bildschirms.
+\end{itemize}
+
+\subsection{Mathematische Grundlagen: Homogene Koordinaten}
+
+Um Transformationen effizient zu berechnen, nutzen wir Matrizen. Ein Problem im herkömmlichen euklidischen Raum ($R^3$) ist, dass lineare Abbildungen (Rotation, Skalierung) den Ursprung fix lassen müssen. Eine \defc{Translation} (Verschiebung) ist jedoch eine affine Abbildung, keine lineare, und kann nicht durch eine $3 \times 3$-Matrix dargestellt werden.
+
+\begin{defbox}[Lösung: Homogene Koordinaten]
+  Wir erweitern den $n$-dimensionalen Raum auf $n+1$ Dimensionen.
+  Ein Punkt $(x, y, z)^T$ im 3D-Raum wird zu $(x, y, z, w)^T$ im homogenen Raum (meist ist $w=1$).
+
+  Die Rückumwandlung erfolgt durch Division durch $w$:
+  $$ \begin{pmatrix} x \\ y \\ z \\ w \end{pmatrix} \rightarrow \begin{pmatrix} x/w \\ y/w \\ z/w \end{pmatrix} $$
+\end{defbox}
+
+\textbf{Vorteile:}
+\begin{itemize}
+  \item Einheitliche Darstellung aller affinen Transformationen (inkl. Translation) als $4 \times 4$-Matrizen.
+  \item Hintereinanderausführung von Transformationen entspricht einfacher Matrixmultiplikation.
+  \item Ermöglicht perspektivische Projektionen (durch Manipulation von $w$).
+\end{itemize}
+
+\subsection{Affine Abbildungen}
+
+Eine \defc{Affine Abbildung} setzt sich aus einem linearen Teil (Matrix $A$) und einer Translation (Vektor $b$) zusammen: $\Phi(v) = A \cdot v + b$.
+
+\begin{defbox}[Eigenschaften affiner Abbildungen]
+  \begin{enumerate}
+    \item Geraden werden auf Geraden abgebildet.
+    \item Parallelität von Linien und Ebenen bleibt erhalten.
+    \item Verhältnisse von Längen, Flächen und Volumina bleiben erhalten (relative Abstände).
+  \end{enumerate}
+\end{defbox}
+
+In homogenen Koordinaten sieht die allgemeine Matrixform so aus:
+$$
+  M = \begin{pmatrix}
+    a_{11} & a_{12} & a_{13} & t_x \\
+    a_{21} & a_{22} & a_{23} & t_y \\
+    a_{31} & a_{32} & a_{33} & t_z \\
+    0      & 0      & 0      & 1
+  \end{pmatrix}
+$$
+Der $3 \times 3$-Block oben links ($a_{ij}$) steuert Rotation, Skalierung und Scherung. Die letzte Spalte ($t$) steuert die Translation.
+
+\subsubsection{Translation (Verschiebung)}
+Verschiebung eines Punktes um den Vektor $d = (x_0, y_0, z_0)^T$. Der lineare Teil ist die Einheitsmatrix.
+
+$$
+  T(d) = \begin{pmatrix}
+    1 & 0 & 0 & x_0 \\
+    0 & 1 & 0 & y_0 \\
+    0 & 0 & 1 & z_0 \\
+    0 & 0 & 0 & 1
+  \end{pmatrix}
+$$
+
+\subsubsection{Skalierung}
+Skalierung verändert die Größe entlang der Achsen. Sie wird durch eine Diagonalmatrix beschrieben.
+Mit den Faktoren $s_1, s_2, s_3$ für die x-, y- und z-Achse:
+
+$$
+  S(s_1, s_2, s_3) = \begin{pmatrix}
+    s_1 & 0   & 0   & 0 \\
+    0   & s_2 & 0   & 0 \\
+    0   & 0   & s_3 & 0 \\
+    0   & 0   & 0   & 1
+  \end{pmatrix}
+$$
+Ist $s_1 = s_2 = s_3 = s$, spricht man von einer \textit{uniformen Skalierung}.
+
+\subsubsection{Scherung (Shearing)}
+Verzerrt das Objekt, indem Koordinaten in Abhängigkeit von anderen Koordinaten verschoben werden. Beispiel einer Scherung entlang der x-Achse in Abhängigkeit von y:
+$$
+  SH_{xy} = \begin{pmatrix}
+    1 & s & 0 & 0 \\
+    0 & 1 & 0 & 0 \\
+    0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1
+  \end{pmatrix}
+$$
+
+\subsubsection{Rotation}
+Wir verwenden ein \defc{Rechtssystem} (Rechte-Hand-Regel). Positive Drehwinkel drehen gegen den Uhrzeigersinn, wenn man entlang der positiven Rotationsachse auf den Ursprung blickt.
+
+\textbf{Rotation um die Z-Achse (Winkel $\alpha$):}
+$$
+  R_z(\alpha) = \begin{pmatrix}
+    \cos\alpha & -\sin\alpha & 0 & 0 \\
+    \sin\alpha & \cos\alpha  & 0 & 0 \\
+    0          & 0           & 1 & 0 \\
+    0          & 0           & 0 & 1
+  \end{pmatrix}
+$$
+
+\textbf{Rotation um die X-Achse (Winkel $\alpha$):}
+$$
+  R_x(\alpha) = \begin{pmatrix}
+    1 & 0          & 0           & 0 \\
+    0 & \cos\alpha & -\sin\alpha & 0 \\
+    0 & \sin\alpha & \cos\alpha  & 0 \\
+    0 & 0          & 0           & 1
+  \end{pmatrix}
+$$
+
+\textbf{Rotation um die Y-Achse (Winkel $\alpha$):}
+$$
+  R_y(\alpha) = \begin{pmatrix}
+    \cos\alpha  & 0 & \sin\alpha & 0 \\
+    0           & 1 & 0          & 0 \\
+    -\sin\alpha & 0 & \cos\alpha & 0 \\
+    0           & 0 & 0          & 1
+  \end{pmatrix}
+$$
+\textit{Hinweis:} Bei der Y-Rotation scheinen die Vorzeichen des Sinus im Vergleich zu X und Z vertauscht. Das liegt an der zyklischen Permutation der Achsen ($x \to y \to z \to x$).
+
+\subsection{Komplexe Transformationen \& Komposition}
+
+\subsubsection{Matrix-Multiplikation und Reihenfolge}
+Die Matrix-Multiplikation ist \defc{nicht kommutativ} ($A \cdot B \neq B \cdot A$).
+Das bedeutet: \textbf{Die Reihenfolge der Transformationen ist wichtig!}
+Eine Rotation gefolgt von einer Translation ist etwas anderes als eine Translation gefolgt von einer Rotation.
+
+Mathematisch werden Transformationen von rechts nach links auf den Punktvektor $p$ angewendet:
+$$ p' = M_n \cdot \dots \cdot M_2 \cdot M_1 \cdot p $$
+Hier wird zuerst $M_1$, dann $M_2$, usw. ausgeführt.
+
+\subsubsection{Rotation um beliebigen Punkt / Achse}
+Die Standard-Rotationsmatrizen drehen immer um den Ursprung. Um ein Objekt um einen beliebigen Punkt $P_f$ (Fixed Point) zu drehen:
+\begin{enumerate}
+  \item Verschiebe das Objekt so, dass $P_f$ im Ursprung liegt ($T(-P_f)$).
+  \item Rotiere um den Ursprung ($R$).
+  \item Verschiebe das Objekt zurück ($T(P_f)$).
+\end{enumerate}
+Gesamtmatrix: $M = T(P_f) \cdot R \cdot T(-P_f)$.
+
+\textbf{Rotation um eine beliebige Achse $r$ (durch den Ursprung):}
+Man konstruiert eine orthonormale Basis $(r, s, t)$, wobei $r$ die normierte Rotationsachse ist.
+\begin{enumerate}
+  \item Bilde eine Basiswechselmatrix $R_{basis}$, die die Achse $r$ auf eine Hauptachse (z.B. x-Achse) abbildet. Dies geschieht, indem man die Basisvektoren in die Zeilen der Matrix schreibt.
+  \item Rotiere um diese Hauptachse ($R_\alpha^x$).
+  \item Wende die inverse Basiswechselmatrix an ($R_{basis}^{-1} = R_{basis}^T$).
+\end{enumerate}
+Dies ist oft effizienter als das Ausrechnen über Euler-Winkel.
+
+\subsection{Projektionen}
+
+Projektionen bilden den 3D-Raum auf eine 2D-Ebene ab. Dabei gehen Informationen (Tiefe) verloren.
+
+\subsubsection{Eigenschaften projektiver Abbildungen}
+Projektive Abbildungen sind eine allgemeinere Klasse von Transformationen als die affinen Abbildungen. Sie können ebenfalls durch homogene $4 \times 4$-Matrizen beschrieben werden, jedoch ist die letzte Zeile der Matrix nicht mehr zwingend $(0, 0, 0, 1)$.
+
+\begin{defbox}[Eigenschaften im Vergleich]
+  Im Gegensatz zu affinen Abbildungen gelten bei projektiven Abbildungen folgende Besonderheiten:
+  \begin{itemize}
+    \item \defc{Geradentreue:} Geraden werden weiterhin auf Geraden abgebildet.
+    \item \defc{Schnittpunkte:} Schnitte von Geraden bleiben erhalten.
+    \item \defc{Reihenfolge:} Die Reihenfolge von Punkten auf projektiven Geraden bleibt erhalten.
+    \item \defc{Parallelität geht verloren:} Parallele Geraden schneiden sich nach der Transformation oft in sogenannten \defc{Fluchtpunkten}.
+    \item \defc{Winkel und Längen:} Winkel werden verändert und Längenverhältnisse bleiben \textit{nicht} erhalten. Rechtecke werden zu allgemeinen Vierecken verzerrt.
+  \end{itemize}
+\end{defbox}
+\textbf{Fluchtpunkte:}
+Bei der perspektivischen Projektion treffen sich alle Geraden, die im 3D-Raum parallel sind (aber nicht parallel zur Bildebene liegen), in einem Punkt auf der Bildebene, dem Fluchtpunkt. Je nach Ausrichtung des Objekts zur Bildebene spricht man von einer 1-, 2- oder 3-Punkt-Perspektive.
+
+\subsubsection{Vergleich: Parallel vs. Perspektivisch}
+
+\begin{tabular}{|p{0.45\textwidth}|p{0.45\textwidth}|}
+  \hline
+  \textbf{Parallelprojektion} (Orthografisch)                                  & \textbf{Perspektivische Projektion}                                                       \\
+  \hline
+  Projektionsstrahlen sind parallel.                                           & Projektionsstrahlen treffen sich im Augpunkt (Center of Projection, COP).                 \\
+  \hline
+  Keine perspektivische Verkürzung (Größe unabhängig von Distanz).             & Objekte, die weiter weg sind, erscheinen kleiner.                                         \\
+  \hline
+  Winkel bleiben meist nicht erhalten, aber parallele Linien bleiben parallel. & Parallele Linien schneiden sich in Fluchtpunkten (außer sie sind parallel zur Bildebene). \\
+  \hline
+  Anwendung: Technische Zeichnungen, Medizin, Architektur (Grundriss).         & Anwendung: Realistische Darstellung, menschliches Sehen.                                  \\
+  \hline
+\end{tabular}
+
+\subsubsection{Perspektivische Transformation}
+Mathematisch wird die perspektivische Verkürzung durch den Strahlensatz hergeleitet.
+Ein Punkt $(x, y, z)$ wird auf die Bildebene im Abstand $d$ projiziert.
+Die projizierte Koordinate ist $y_p = y \cdot \frac{d}{d+z}$ (wobei hier oft $d$ als Position der Bildebene oder Abstand zum Augpunkt definiert wird).
+
+In homogenen Koordinaten wird dies erreicht, indem die $w$-Komponente verändert wird.
+Eine typische Projektionsmatrix schreibt $-z$ (oder einen Faktor davon) in die $w$-Komponente.
+
+Beispielmatrix für perspektivische Transformation (Zentrum im Ursprung, Bildebene bei $z=-d$):
+$$
+  P = \begin{pmatrix}
+    1 & 0 & 0    & 0 \\
+    0 & 1 & 0    & 0 \\
+    0 & 0 & 1    & 0 \\
+    0 & 0 & -1/d & 0
+  \end{pmatrix}
+$$
+Das Ergebnisvektor ist $(x, y, z, -z/d)^T$. Nach der Homogenisierung (Division durch $w = -z/d$) erhalten wir die skalierten Koordinaten.
+
+\subsubsection{Kanonisches Sichtvolumen (Canonical View Volume)}
+In der Pipeline wird die komplexe Pyramide des Sichtvolumens (Frustum) durch die Projektionsmatrix in einen achsenparallelen Einheitswürfel (das kanonische Sichtvolumen) transformiert.
+\begin{itemize}
+  \item \textbf{Parallelprojektion:} Das Sichtvolumen ist bereits ein Quader. Transformation ist Translation + Skalierung.
+  \item \textbf{Perspektive:} Das Sichtvolumen ist ein Pyramidenstumpf. Die Matrix verformt diesen Stumpf in einen Würfel. Dadurch wird das spätere Clipping und die Rasterisierung vereinheitlicht.
+\end{itemize}
+
+\subsection{3D-Interaktion}
+
+Ein fundamentales Problem bei der Interaktion mit 3D-Szenen ist die Nutzung von \defc{2D-Eingabegeräten} (Maus, Touchscreen).
+
+\begin{defbox}[Das Problem der Mehrdeutigkeit]
+  Eine Bewegung der Maus auf dem 2D-Bildschirm entspricht unendlich vielen möglichen Bewegungen im 3D-Raum (entlang des Sehstrahls).
+\end{defbox}
+
+\subsubsection{Lösungsansätze}
+\begin{itemize}
+  \item \textbf{Mehrfachansichten (Quad-View):} Gleichzeitige Darstellung von Oben, Vorne, Seite und Perspektive. Interaktion findet in den 2D-Ansichten statt.
+  \item \textbf{Modi-Umschaltung:} Mausbewegung wird je nach Taste/Modus unterschiedlich interpretiert (z.B. x/y Bewegung vs. z Bewegung).
+  \item \textbf{3D-Widgets / Manipulatoren:}
+        \begin{itemize}
+          \item Visuelle Hilfsobjekte, die in die Szene eingeblendet werden (z.B. Pfeile für Achsen, Ringe für Rotation).
+          \item Der Benutzer klickt auf einen bestimmten Teil des Manipulators (Handle).
+          \item Dadurch wird die Bewegungsfreiheit eingeschränkt (Constraint), z.B. "Rotation nur um die X-Achse".
+          \item \defc{Vorteil:} Intuitiv, reduziert Mauswege, löst Mehrdeutigkeit durch explizite Auswahl der Achse/Ebene.
+        \end{itemize}
+\end{itemize}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{vc_1_VC2025_08_Transformationen_page_77_2.png}}
+\end{center}
+
+\end{document}
