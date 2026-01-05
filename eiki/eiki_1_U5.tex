@@ -1,0 +1,136 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 4}
+\author{Niclas Kusenbach, 360227}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,british]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[final]{microtype} %Fix most of overfull hboxes
+\usepackage{xurl} % better line breaks for \url and plain URLs
+\usepackage{hyperref} % better line breaks for \url and plain URLs
+\usepackage{tabularx}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Aufgabe 1}
+
+\subsection*{Aufgabe 1a: Formalisierung als CSP}
+
+\textbf{Variablen:}
+Die Menge der Variablen ist $V = \{A, B, C, U\}$.
+\begin{itemize}
+  \item $A, B, C$: Repräsentieren die Ziffern der Gleichung.
+  \item $U$: Repräsentiert den Übertrag (Carry) von der Einer- in die Zehnerstelle.
+\end{itemize}
+\textbf{Wertebereiche (Domains):}
+\begin{itemize}
+  \item $D_A = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$
+  \item $D_B = \{1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \quad (Da $B$ führende Ziffer im Ergebnis ist, gilt $B \neq 0$)
+  \item $D_C = \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$
+  \item $D_U = \{0, 1\}$ \quad (Maximaler Übertrag bei $9+9$ ist $1$)
+\end{itemize}
+\textbf{Constraints:}
+\begin{enumerate}
+  \item \textbf{Alldiff-Constraint:} Jeder Buchstabe steht für eine unterschiedliche Ziffer.
+        \[ A \neq B \land A \neq C \land B \neq C \]
+  \item \textbf{Spalten-Constraints (Addition):}
+        \begin{itemize}
+          \item \textit{Einerstelle (Rechts):} $A + B = 10 \cdot U + C$
+          \item \textit{Zehnerstelle (Links):} $U = B$
+        \end{itemize}
+\end{enumerate}
+
+\vspace{0.5cm}
+
+\subsection*{Aufgabe 1b: Backtracking-Search}
+
+\textbf{Annahmen:}
+\begin{itemize}
+  \item Variablenreihenfolge: $C, B, A, U$.
+  \item Werteauswahl: Aufsteigend ($0 \to 9$).
+\end{itemize}
+
+\textbf{Ablauf:}
+
+\begin{enumerate}
+  \item \textbf{Variable C:} Wähle $C = 0$.
+        \begin{itemize}
+          \item Konsistenzprüfung: OK.
+        \end{itemize}
+
+  \item \textbf{Variable B:} Wähle $B = 1$ (0 nicht in $D_B$).
+        \begin{itemize}
+          \item Konsistenzprüfung ($alldiff$): $1 \neq 0$ $\rightarrow$ OK.
+        \end{itemize}
+
+  \item \textbf{Variable A:} Iteration durch $D_A = \{0, \dots, 9\}$.
+        \begin{itemize}
+          \item Versuch $A = 0$: Konflikt mit $C$ ($alldiff$). $\rightarrow$ Backtrack.
+          \item Versuch $A = 1$: Konflikt mit $B$ ($alldiff$). $\rightarrow$ Backtrack.
+          \item Versuch $A = 2$: $alldiff$ OK. $\rightarrow$ Weiter zu $U$.
+                \begin{enumerate}
+                  \item \textbf{Variable U:}
+                  \item Versuch $U = 0$: Constraint $U=B$ ($0=1$) verletzt.
+                  \item Versuch $U = 1$: Constraint $U=B$ ($1=1$) OK. \\
+                        Aber Addition: $A+B = 10U+C \Rightarrow 2+1 \neq 10(1)+0 \Rightarrow 3 \neq 10$. Verletzt.
+                  \item Keine Werte mehr für $U$. $\rightarrow$ Backtrack zu $A$.
+                \end{enumerate}
+          \item Versuche $A = 3$ bis $A = 8$: Scheitern analog im Schritt $U$ an der Summenbedingung.
+          \item Versuch $A = 9$: $alldiff$ OK. $\rightarrow$ Weiter zu $U$.
+                \begin{enumerate}
+                  \item \textbf{Variable U:}
+                  \item Versuch $U = 0$: Verletzt $U=B$.
+                  \item Versuch $U = 1$: Erfüllt $U=B$ ($1=1$). \\
+                        Prüfung Addition: $9+1 = 10(1) + 0 \Rightarrow 10 = 10$. OK.
+                \end{enumerate}
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Ergebnis:} Gefundene Belegung $\sigma = \{C=0, B=1, A=9, U=1\}$.
+
+\vspace{0.5cm}
+
+\subsection*{Aufgabe 1c: Forward-Checking und Constraint-Propagation}
+
+\textbf{Einsatz von Forward-Checking (FC):}
+Forward-Checking eliminiert inkonsistente Werte aus den Domains der \textit{noch nicht zugewiesenen} Variablen.
+
+\begin{enumerate}
+  \item Zuweisung $C = 0$: Entfernt 0 aus $D_A$ und $D_B$.
+  \item Zuweisung $B = 1$:
+        \begin{itemize}
+          \item Entfernt 1 aus $D_A$.
+          \item Durch Constraint $U=B$ reduziert sich $D_U$ auf $\{1\}$.
+        \end{itemize}
+  \item Zuweisung $A$:
+        \begin{itemize}
+          \item Bei Wahl von $A=2$: FC prüft Konsistenz mit verbleibender Variable $U$.
+          \item Gleichung $A+B = 10U+C$ ergibt $2+1 = 10U \Rightarrow U=0.3$.
+          \item Der Wert $0.3$ (bzw. 0) ist nicht in $D_U = \{1\}$. Die Domain $D_U$ läuft leer (Domain Wipeout).
+          \item \textbf{Effekt:} Der Algorithmus bricht für $A=2$ (und analog $A=3 \dots 8$) sofort ab, ohne die Variable $U$ überhaupt zu instanziieren.
+        \end{itemize}
+\end{enumerate}
+\textbf{Potenzial von Constraint-Propagation höherer Ordnung (Arc Consistency):}
+Forward-Checking prüft nur die Konsistenz zwischen der \textit{aktuellen} Variable und den \textit{zukünftigen}. Es prüft nicht die Beziehungen zwischen zwei zukünftigen Variablen (hier $A$ und $U$).
+
+\begin{itemize}
+  \item Nach der Zuweisung $C=0$ und $B=1$ sind $A$ und $U$ noch offen.
+  \item $D_A = \{2, \dots, 9\}$ und $D_U = \{1\}$.
+  \item Eine Prüfung der Kantenkonsistenz (Arc Consistency, z.B. AC-3) hätte erkannt:
+        \[ A + 1 = 10 \cdot U + 0 \]
+        Da $U$ zwingend 1 ist (wegen $B=1$), muss $A + 1 = 10$ sein, also $A=9$.
+  \item \textbf{Reduktion:} Alle Werte außer 9 wären aus $D_A$ entfernt worden, \textbf{bevor} die Suche für $A$ überhaupt begonnen hätte. Dies hätte die Fehlversuche für $A \in \{2..8\}$ komplett vermieden (Backtrack-free search in diesem Zweig).
+\end{itemize}
+
+\end{document}

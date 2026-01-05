@@ -67,33 +67,32 @@ However, CSPs are \defc{commutative}: The order in which we assign variables doe
 \end{itemize}
 
 \subsubsection{Backtracking Search}
-Backtracking is the fundamental uninformed algorithm for CSPs. It is a Depth-First Search (DFS) that checks constraints \textit{incrementally}.
-
-
+Backtracking Search is the fundamental algorithm for solving CSPs. It is essentially a Depth-First Search (DFS) that operates on partial assignments. Unlike standard search where actions lead to new states, here an action is the assignment of a value to a variable.
 
 \begin{defbox}[Backtracking Algorithm Logic]
-  Function \textsc{Backtrack}(assignment, csp):
-  \begin{enumerate}
-    \item \textbf{Base Case:} If assignment is complete, return assignment (Success).
-    \item \textbf{Variable Selection:} Select an unassigned variable $var$.
-    \item \textbf{Value Iteration:} For each value $val$ in \textsc{Order-Domain-Values}($var$):
-          \begin{itemize}
-            \item If $val$ is consistent with current assignment:
-                  \begin{enumerate}
-                    \item Add $\{var = val\}$ to assignment.
-                    \item \textbf{Inference (Optional):} Run Forward Checking or AC-3. If inference fails, skip step 3.
-                    \item result $\leftarrow$ \textsc{Backtrack}(assignment, csp).
-                    \item If result $\neq$ failure, return result.
-                    \item Remove $\{var = val\}$ from assignment (\textbf{backtrack}).
-                  \end{enumerate}
-          \end{itemize}
-    \item Return failure.
-  \end{enumerate}
+  The algorithm relies on the \textbf{commutativity} of assignments (the order in which we assign variables doesn't matter for the final solution). This allows us to consider only a single variable at each node of the search tree, drastically reducing the branching factor from $n! \cdot d^n$ to $d^n$.
 \end{defbox}
+
+\textbf{Algorithm Steps:}
+\begin{enumerate}
+  \item \textbf{Base Case:} If the assignment is complete (all variables have values), return the assignment as the solution.
+  \item \textbf{Variable Selection:} Select an unassigned variable using a specific strategy (see Heuristics).
+  \item \textbf{Value Iteration:} Iterate through the values in the domain of the selected variable.
+  \item \textbf{Consistency Check:} For each value, check if assigning it violates any constraints with currently assigned variables.
+  \item \textbf{Recursive Step:}
+        \begin{itemize}
+          \item If consistent: Add $\{var = value\}$ to the assignment.
+          \item Call \textsc{Recursive-Backtracking} again.
+          \item If the recursive call returns a success, return that result.
+          \item \textbf{Backtrack:} If the recursive call fails, remove $\{var = value\}$ from the assignment and try the next value in the domain.
+        \end{itemize}
+  \item \textbf{Failure:} If all values have been tried and none work, return failure.
+\end{enumerate}
 
 \subsection{Heuristics: Improving Backtracking}
 
-Standard backtracking is slow. To speed it up, we need "intelligence" at three key decision points:
+Pure backtracking is slow. We use heuristics to decide \textit{which} variable to pick and \textit{which} value to try, effectively pruning the tree.
+
 \begin{enumerate}
   \item Which variable to assign next? (\textit{Fail-First})
   \item In what order to try values? (\textit{Fail-Last})
@@ -136,54 +135,67 @@ Search implies "trying" values and undoing them if they fail. \defc{Propagation}
   \item \textbf{Path Consistency:} Ensures consistency for triples of variables.
 \end{itemize}
 
-
+Constraint propagation is the process of using constraints to reduce the legal domain of a variable, which in turn reduces the domains of its neighbors, and so on. This happens \textit{before} or \textit{during} search to reduce the search space.
 
 \subsubsection{Algorithms for Propagation}
 
 \paragraph{Forward Checking}
-Whenever a variable $X$ is assigned a value $v$:
-\begin{enumerate}
-  \item Identify all unassigned neighbors $Y$ connected to $X$.
-  \item Delete any value from $D_Y$ that conflicts with $X=v$.
-  \item \textbf{Fail:} If any $D_Y$ becomes empty, backtrack immediately.
-\end{enumerate}
-\textit{Limitation:} Forward checking is short-sighted. It checks $X \to Y$, but does not check if the changes in $Y$ cause issues for a third variable $Z$ (e.g., $Y$ and $Z$ might be forced to take the same value).
+Forward checking is a simple form of propagation performed during backtracking search.
 
+\textbf{Algorithm Steps:}
+\begin{enumerate}
+  \item When variable $X$ is assigned value $v$:
+  \item Look at all unassigned variables $Y$ that are connected to $X$ by a constraint.
+  \item Remove any value from $D_Y$ that conflicts with $X=v$.
+  \item \textbf{Early Termination:} If any domain $D_Y$ becomes empty, stop this branch immediately (backtrack).
+\end{enumerate}
+\textit{Limitation:} It only checks direct neighbors. It does not detect if the reduction in $Y$'s domain makes $Y$ incompatible with a third variable $Z$.
 \paragraph{Arc Consistency (AC-3 Algorithm)}
 AC-3 propagates constraints globally. It ensures that every arc in the graph is consistent.
 
 \begin{defbox}[AC-3 Algorithm]
+  AC-3 is a more powerful general-purpose algorithm that propagates constraints globally until the network is \defc{Arc Consistent}.
+  A variable $X$ is arc-consistent with respect to $Y$ if for every value $x \in D_X$, there is some allowed value $y \in D_Y$.
+
   \begin{enumerate}
-    \item \textbf{Queue Initialization:} Add all arcs $(X_i, X_j)$ in the CSP to a queue.
-    \item \textbf{Process Queue:} While the queue is not empty:
+    \item \textbf{Queue Initialization:} Create a queue containing all arcs (binary constraints) in the CSP: $\{(X_i, X_j), (X_j, X_i), \dots\}$.
+    \item \textbf{While Queue is not empty:}
           \begin{itemize}
-            \item Pop an arc $(X_i, X_j)$.
-            \item \textbf{Revise($X_i, X_j$):} Check if every value in $D_i$ has a valid support in $D_j$. Remove values in $D_i$ that do not.
-            \item \textbf{Cascade:} If $D_i$ was modified (values removed):
+            \item Pop an arc $(X_i, X_j)$ from the queue.
+            \item Call \textsc{Remove-Inconsistent-Values}($X_i, X_j$).
+            \item \textbf{If values were removed} from $D_i$:
                   \begin{itemize}
-                    \item If $D_i$ is empty, return Failure (no solution possible).
-                    \item Otherwise, add all neighbors $X_k$ of $X_i$ (arcs $(X_k, X_i)$) back to the queue.
-                    \item \textit{Reasoning:} Removing a value from $D_i$ might effectively remove the "support" it provided for a value in $D_k$, so we must re-check $X_k$.
+                    \item The domain of $X_i$ has become smaller. This might ruin consistency for its neighbors.
+                    \item Add all arcs $(X_k, X_i)$ (where $X_k$ is a neighbor of $X_i$) back into the queue.
                   \end{itemize}
           \end{itemize}
   \end{enumerate}
 \end{defbox}
 
+\textbf{Function \textsc{Remove-Inconsistent-Values}($X_i, X_j$):}
+\begin{itemize}
+  \item Iterate through every value $x$ in $D_i$.
+  \item Check if there exists a value $y$ in $D_j$ that satisfies the constraint between $X_i$ and $X_j$.
+  \item If no such $y$ exists, delete $x$ from $D_i$. Return \textit{true} (indicating change occurred).
+\end{itemize}
+
 \subsection{Local Search for CSPs}
 
-Constructive search (Backtracking) starts with empty states. \defc{Local Search} starts with a \textit{complete} but \textit{inconsistent} assignment and tries to fix the conflicts iteratively.
+Local Search algorithms (like Hill Climbing) operate on \defc{complete states}, meaning all variables are assigned a value at all times, even if the assignment is inconsistent (constraints are violated). The goal is to iteratively repair the assignment.
 
-\begin{itemize}
-  \item \textbf{State:} Complete assignment of all variables (some constraints violated).
-  \item \textbf{Goal:} Minimize the total number of conflicts (violated constraints).
-  \item \textbf{Min-Conflicts Heuristic:}
-        \begin{enumerate}
-          \item Pick a variable $var$ that is currently involved in a conflict (randomly).
-          \item Compute the number of conflicts for every possible value of $var$.
-          \item Reassign $var$ to the value that minimizes conflicts.
-        \end{enumerate}
-\end{itemize}
-This method is incredibly effective for problems like the N-Queens, capable of solving $N=1,000,000$ in near-constant time, though it is not guaranteed to find a solution (can get stuck in local minima).
+\textbf{Algorithm Steps:}
+\begin{enumerate}
+  \item \textbf{Initialization:} Start with a complete assignment for all variables (usually generated randomly).
+  \item \textbf{Loop} (until a solution is found or max steps reached):
+        \begin{itemize}
+          \item Check if the current assignment satisfies all constraints. If yes, return it.
+          \item \textbf{Variable Selection:} Randomly select a variable that is currently involved in a conflict (violating a constraint).
+          \item \textbf{Value Selection (Minimization):} Choose a new value for this variable that minimizes the number of conflicts with other variables.
+          \item Update the variable to this new value.
+        \end{itemize}
+\end{enumerate}
+
+\textit{Note:} Like other local search methods, this can get stuck in local optima (plateaus), specifically when the ratio of constraints to variables is critical.
 
 \subsection{Problem Structure and Decomposition}
 
@@ -194,19 +206,27 @@ If the constraint graph consists of connected components that are disjoint, we c
 \end{itemize}
 
 \subsubsection{Tree-Structured CSPs}
-If the constraint graph is a \defc{Tree} (no loops), the CSP can be solved in linear time $O(n \cdot d^2)$ rather than exponential time.
+If the constraint graph forms a tree (no loops), we can solve the CSP in linear time $O(n \cdot d^2)$ instead of exponential time.
 
-
-
-\textbf{Algorithm for Tree CSPs:}
+\textbf{Algorithm Steps:}
 \begin{enumerate}
-  \item \textbf{Topological Sort:} Linearize the variables such that every node appears after its parent ($X_1 \to X_2 \to \dots \to X_n$).
-  \item \textbf{Backward Pass (Cleanup):} Iterate from $X_n$ down to $X_2$. For each node, make its parent arc-consistent with it. This removes any values from parents that have no valid child.
-  \item \textbf{Forward Pass (Assignment):} Iterate from $X_1$ to $X_n$. Assign any value consistent with the parent's assignment. Because of the backward pass, we are guaranteed that a valid value exists. Backtracking is never needed.
+  \item \textbf{Topological Sort:} Linearlize the variables (order them $X_1, \dots, X_n$) such that every variable appears after its parent.
+  \item \textbf{Backward Pass (Consistency):}
+        \begin{itemize}
+          \item Iterate from $j = n$ down to $2$.
+          \item Apply arc consistency to the arc $(Parent(X_j), X_j)$.
+          \item This ensures that for every value in the parent's domain, there is a valid value in the child's domain.
+        \end{itemize}
+  \item \textbf{Forward Pass (Assignment):}
+        \begin{itemize}
+          \item Iterate from $i = 1$ to $n$.
+          \item Assign any value to $X_i$ that is consistent with the assignment of its parent.
+          \item Because of the backward pass, a valid assignment is guaranteed to exist. NO backtracking is required.
+        \end{itemize}
 \end{enumerate}
 
 \subsubsection{Nearly Tree-Structured Problems (Cutset Conditioning)}
-Most real-world problems are not trees, but often "close" to trees. We can exploit this via \defc{Cutset Conditioning}.
+Most real-world problems are not trees, but often "close" to trees. We can exploit this via \defc{Cutset Conditioning}. This technique is used for constraint graphs that are \textit{nearly} trees. It turns a cyclic graph into a tree by removing specific nodes.
 
 \begin{itemize}
   \item \textbf{Cycle Cutset:} A subset of variables $S$ such that removing them renders the remaining graph a tree.
