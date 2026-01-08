@@ -1,0 +1,162 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 6}
+\author{Niclas Kusenbach, 360227}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,british]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[final]{microtype} %Fix most of overfull hboxes
+\usepackage{xurl} % better line breaks for \url and plain URLs
+\usepackage{hyperref} % better line breaks for \url and plain URLs
+\usepackage{tabularx}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Task 1: Propositional Logic}
+
+\subsection*{1a) Logische Äquivalenzen}
+\textit{Beweisen Sie die Aussagen durch Umformung.}
+
+\begin{enumerate}[label=\alph*)]
+  \item $P \Rightarrow Q \equiv \neg(P \wedge \neg Q)$
+        \begin{align*}
+          \text{Rechte Seite: } & \neg(P \wedge \neg Q)                                            \\
+          \equiv \quad          & \neg P \vee \neg(\neg Q) \quad \text{(De Morgan)}                \\
+          \equiv \quad          & \neg P \vee Q \quad \text{(Doppelte Negation)}                   \\
+          \equiv \quad          & P \Rightarrow Q \quad \text{(Def. Implikation)} \quad \checkmark
+        \end{align*}
+
+  \item $(P \wedge Q) \Rightarrow R \equiv P \Rightarrow (Q \Rightarrow R)$
+        \begin{align*}
+          \text{Linke Seite: }  & (P \wedge Q) \Rightarrow R                         \\
+          \equiv \quad          & \neg(P \wedge Q) \vee R                            \\
+          \equiv \quad          & \neg P \vee \neg Q \vee R \quad \text{(De Morgan)} \\[1em]
+          \text{Rechte Seite: } & P \Rightarrow (Q \Rightarrow R)                    \\
+          \equiv \quad          & \neg P \vee (\neg Q \vee R)                        \\
+          \equiv \quad          & \neg P \vee \neg Q \vee R \quad \checkmark
+        \end{align*}
+\end{enumerate}
+
+\subsection*{1b) Logische Folgerung (Wahrheitstabellen)}
+\textit{Prüfen Sie die Folgerungen ($\models$).}
+
+\begin{enumerate}[label=\alph*)]
+  \item $P \wedge Q \models P \vee Q$ \\
+        \textbf{Gilt.} Wenn $P \wedge Q$ wahr ist ($P=1, Q=1$), dann ist $1 \vee 1 = 1$ (wahr).
+
+  \item $P \wedge \neg P \models Q$ \\
+        \textbf{Gilt.} Die Prämisse $P \wedge \neg P$ ist ein Widerspruch (immer falsch). Aus Falschem folgt Beliebiges (\textit{ex falso quodlibet}).
+
+  \item $P \Rightarrow (P \wedge Q) \models P \vee \neg Q$ \\
+        \textbf{Gilt NICHT.} Gegenbeispiel: $P=0, Q=1$.
+        \begin{itemize}
+          \item Prämisse: $0 \Rightarrow (0 \wedge 1) \equiv \text{Wahr}$.
+          \item Konklusion: $0 \vee \neg 1 \equiv 0 \vee 0 \equiv \text{Falsch}$.
+        \end{itemize}
+\end{enumerate}
+
+\subsection*{1c) Konjunktive Normalform (KNF)}
+\textit{Umwandlung in KNF.}
+
+\begin{enumerate}[label=\alph*)]
+  \item $(P \wedge Q) \Rightarrow (\neg P \Leftrightarrow Q)$
+        \begin{align*}
+                       & \neg(P \wedge Q) \vee ((\neg P \wedge Q) \vee (P \wedge \neg Q))   \\
+          \equiv \quad & (\neg P \vee \neg Q) \vee (\neg P \wedge Q) \vee (P \wedge \neg Q) \\
+          \equiv \quad & \neg P \vee \neg Q \quad \text{(Absorption)}
+        \end{align*}
+
+  \item $((P \Rightarrow Q) \wedge \neg Q) \Rightarrow \neg P$
+        \begin{align*}
+                       & \neg ((\neg P \vee Q) \wedge \neg Q) \vee \neg P                   \\
+          \equiv \quad & \neg (\neg P \wedge \neg Q) \vee \neg P                            \\
+          \equiv \quad & (P \vee Q) \vee \neg P \quad \equiv \quad \text{True (Tautologie)}
+        \end{align*}
+
+  \item $(( \neg P \wedge Q ) \vee (\neg R \wedge S)) \wedge (U \vee V)$
+        \begin{align*}
+          \text{Distributivgesetz: } & (A \wedge B) \vee (C \wedge D) \equiv (A \vee C) \wedge (A \vee D) \wedge (B \vee C) \wedge (B \vee D) \\
+          \text{Ergebnis: }          & (\neg P \vee \neg R) \wedge (\neg P \vee S) \wedge (Q \vee \neg R) \wedge (Q \vee S) \wedge (U \vee V)
+        \end{align*}
+
+  \item $((\neg P \vee Q) \wedge (\neg R \vee S)) \vee (U \wedge V)$
+        \begin{align*}
+          \text{Ergebnis: } & (\neg P \vee Q \vee U) \wedge (\neg P \vee Q \vee V) \wedge (\neg R \vee S \vee U) \wedge (\neg R \vee S \vee V)
+        \end{align*}
+\end{enumerate}
+
+\newpage
+
+\section*{Task 2: Resolution}
+\textit{Beweis durch Widerspruch: Füge $\neg \psi$ zur KB hinzu und leite die leere Klausel ($\square$) ab.}
+
+\subsection*{2a)}
+\textbf{Gegeben:} KB $= \{P \wedge Q\}$, $\psi = (P \vee Q)$ \\
+\textbf{Negiertes Ziel:} $\neg(P \vee Q) \equiv \neg P \wedge \neg Q$
+
+\textbf{Klauselmenge:}
+\begin{enumerate}
+  \item $P$
+  \item $Q$
+  \item $\neg P$ (aus negiertem Ziel)
+  \item $\neg Q$ (aus negiertem Ziel)
+\end{enumerate}
+
+\textbf{Resolution:}
+\begin{align*}
+  (1) \text{ und } (3) \quad \rightarrow \quad \square \quad \text{(Widerspruch)}
+\end{align*}
+
+\subsection*{2b)}
+\textbf{Gegeben:} KB $= \{P \vee Q, Q \Rightarrow (R \wedge S), (P \vee R) \Rightarrow U\}$, $\psi = U$ \\
+\textbf{Negiertes Ziel:} $\neg U$
+
+\textbf{Umwandlung in Klauseln:}
+\begin{itemize}
+  \item $Q \Rightarrow (R \wedge S) \equiv \neg Q \vee (R \wedge S) \rightarrow \{ \neg Q \vee R, \quad \neg Q \vee S \}$
+  \item $(P \vee R) \Rightarrow U \equiv (\neg P \wedge \neg R) \vee U \rightarrow \{ \neg P \vee U, \quad \neg R \vee U \}$
+\end{itemize}
+
+\textbf{Klauselmenge:}
+\begin{enumerate}
+  \item $P \vee Q$
+  \item $\neg Q \vee R$
+  \item $\neg Q \vee S$
+  \item $\neg P \vee U$
+  \item $\neg R \vee U$
+  \item $\neg U$ \quad (Negiertes Ziel)
+\end{enumerate}
+
+\textbf{Resolutionsbeweis:}
+\begin{align*}
+  1. \quad & \text{Res. (6) } \neg U \text{ mit (5) } \neg R \vee U & \rightarrow \quad & \mathbf{\neg R}  \\
+  2. \quad & \text{Res. (6) } \neg U \text{ mit (4) } \neg P \vee U & \rightarrow \quad & \mathbf{\neg P}  \\
+  3. \quad & \text{Res. (neu) } \neg P \text{ mit (1) } P \vee Q    & \rightarrow \quad & \mathbf{Q}       \\
+  4. \quad & \text{Res. (neu) } Q \text{ mit (2) } \neg Q \vee R    & \rightarrow \quad & \mathbf{R}       \\
+  5. \quad & \text{Res. (neu) } R \text{ mit (neu) } \neg R         & \rightarrow \quad & \mathbf{\square}
+\end{align*}
+
+\section*{Task 3: General Questions}
+
+\subsection*{3a) Probleme und Grenzen der Aussagenlogik}
+Haupteinschränkungen bei der Anwendung auf reale Probleme:
+
+\begin{itemize}
+  \item \textbf{Mangelnde Ausdrucksstärke:} Objekte, Relationen und Quantoren ("Alle Menschen sind sterblich") können nicht direkt modelliert werden. Jedes Faktum muss einzeln atomar definiert werden.
+  \item \textbf{Zustandsraum-Explosion:} Die Größe der Wahrheitstabellen wächst exponentiell ($2^n$). Bei vielen Variablen wird Inferenz unberechenbar (NP-vollständig).
+  \item \textbf{Statische Natur:} Zeitliche Veränderungen (Temporal) oder Unsicherheiten (Probabilistik) sind in der klassischen Aussagenlogik nicht abbildbar.
+  \item \textbf{Monotonie:} Annahmen können nicht zurückgenommen werden, wenn neue Informationen hinzukommen (kein "non-monotonic reasoning").
+\end{itemize}
+
+\end{document}
