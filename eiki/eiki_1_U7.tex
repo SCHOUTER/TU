@@ -1,0 +1,172 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 6}
+\author{Niclas Kusenbach, 360227}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,british]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[final]{microtype} %Fix most of overfull hboxes
+\usepackage{xurl} % better line breaks for \url and plain URLs
+\usepackage{hyperref} % better line breaks for \url and plain URLs
+\usepackage{tabularx}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Aufgabe 1: Logik erster Stufe}
+
+\subsection*{1a) Es gibt mindestens zwei Berge.}
+\textbf{Prädikat:} $Berg(x)$: $x$ ist ein Berg. \\
+Um „mindestens zwei“ auszudrücken, müssen zwei existieren, die nicht identisch sind.
+
+$$ \exists x \exists y (Berg(x) \land Berg(y) \land \neg(x = y)) $$
+
+\subsection*{1b) Es liegt genau eine Münze in der Kiste.}
+\textbf{Prädikate:} $Muenze(x)$: $x$ ist eine Münze, $InKiste(x)$: $x$ liegt in der Kiste. \\
+„Genau eine“ bedeutet: Es gibt eine (Existenz) und für alle anderen, die diese Eigenschaft haben, gilt, dass sie mit der ersten identisch sind (Einzigkeit).
+
+$$ \exists x (Muenze(x) \land InKiste(x) \land \forall y ((Muenze(y) \land InKiste(y)) \rightarrow x = y)) $$
+
+\subsection*{1c) Ein Rechtsgeschäft, das gegen die guten Sitten verstößt, ist nichtig.}
+\textbf{Prädikate:} $RG(x)$: $x$ ist Rechtsgeschäft, $Sittenwidrig(x)$: $x$ verstößt gegen Sitten, $Nichtig(x)$: $x$ ist nichtig. \\
+Dies ist eine All-Aussage.
+
+$$ \forall x ((RG(x) \land Sittenwidrig(x)) \rightarrow Nichtig(x)) $$
+
+\hrulefill
+
+\section*{Aufgabe 2: Resolution in FOL}
+
+\subsection*{2a) Formalisierung in FOL}
+\textbf{Prädikate:} $Hat(x,y)$, $Hund(x)$, $Heult(x)$, $Katze(x)$, $Maus(x)$, $LS(x)$ (Leichtschläfer). \\
+\textbf{Konstante:} $John$.
+
+\begin{enumerate}
+  \item[\textbf{i)}] Alle Hunde heulen in der Nacht.
+        $$ \forall x (Hund(x) \rightarrow Heult(x)) $$
+  \item[\textbf{ii)}] Jeder der Katzen hat, hat keine Mäuse.
+        $$ \forall x ((\exists y (Katze(y) \land Hat(x, y))) \rightarrow \neg \exists z (Maus(z) \land Hat(x, z))) $$
+  \item[\textbf{iii)}] Leichtschläfer haben nichts, was nachts heult.
+        $$ \forall x (LS(x) \rightarrow \neg \exists y (Hat(x, y) \land Heult(y))) $$
+  \item[\textbf{iv)}] John hat eine Katze oder einen Hund.
+        $$ \exists x (Hat(John, x) \land (Katze(x) \lor Hund(x))) $$
+  \item[\textbf{Ziel:}] Falls John ein Leichtschläfer ist, hat er keine Mäuse.
+        $$ LS(John) \rightarrow \neg \exists z (Maus(z) \land Hat(John, z)) $$
+\end{enumerate}
+
+\subsection*{2b) Umformung in Klauselnormalform (CNF)}
+
+Wir negieren zunächst die zu beweisende Schlussfolgerung für den Widerspruchsbeweis.
+
+\paragraph{Negierte Schlussfolgerung:}
+Negation von $A \rightarrow B$ ist $A \land \neg B$.
+$$ \neg (LS(John) \rightarrow \neg \exists z (Maus(z) \land Hat(John, z))) $$
+$$ \equiv LS(John) \land \exists z (Maus(z) \land Hat(John, z)) $$
+Skolemisierung: Wir ersetzen $\exists z$ durch die Skolem-Konstante $m_{aus}$.
+\begin{itemize}
+  \item $K_1: \{ LS(John) \}$
+  \item $K_2: \{ Maus(m_{aus}) \}$
+  \item $K_3: \{ Hat(John, m_{aus}) \}$
+\end{itemize}
+
+\paragraph{Umformung der Axiome:}
+
+\textbf{Zu i) Hunde heulen:}
+$$ \forall x (\neg Hund(x) \lor Heult(x)) $$
+\begin{itemize}
+  \item $K_4: \{ \neg Hund(x_1), Heult(x_1) \}$
+\end{itemize}
+
+\textbf{Zu ii) Katzenbesitzer haben keine Mäuse:}
+Implikation auflösen ($A \rightarrow B \equiv \neg A \lor B$):
+$$ \forall x (\neg (\exists y (Katze(y) \land Hat(x, y))) \lor \neg (\exists z (Maus(z) \land Hat(x, z)))) $$
+Negation reinziehen (De Morgan \& Quantorenwechsel):
+$$ \forall x ((\forall y (\neg Katze(y) \lor \neg Hat(x, y))) \lor (\forall z (\neg Maus(z) \lor \neg Hat(x, z)))) $$
+Variablen umbenennen und Quantoren droppen:
+\begin{itemize}
+  \item $K_5: \{ \neg Katze(y_2), \neg Hat(x_2, y_2), \neg Maus(z_2), \neg Hat(x_2, z_2) \}$
+\end{itemize}
+
+\textbf{Zu iii) Leichtschläfer:}
+$$ \forall x (\neg LS(x) \lor \neg \exists y (Hat(x, y) \land Heult(y))) $$
+$$ \forall x (\neg LS(x) \lor \forall y (\neg Hat(x, y) \lor \neg Heult(y))) $$
+\begin{itemize}
+  \item $K_6: \{ \neg LS(x_3), \neg Hat(x_3, y_3), \neg Heult(y_3) \}$
+\end{itemize}
+
+\textbf{Zu iv) Johns Tier:}
+Skolemisierung von $\exists x$: Wir ersetzen $x$ durch Skolem-Konstante $a$ (Animal).
+$$ Hat(John, a) \land (Katze(a) \lor Hund(a)) $$
+Dies ergibt zwei Klauseln:
+\begin{itemize}
+  \item $K_7: \{ Hat(John, a) \}$
+  \item $K_8: \{ Katze(a), Hund(a) \}$
+\end{itemize}
+
+\subsection*{2c) Resolutionsbeweis}
+
+Wir versuchen, die leere Klausel $\square$ abzuleiten.
+
+\begin{enumerate}
+  \item \textbf{Schritt 1:} Johns Tier $a$ heult nicht (aus Leichtschläfer-Eigenschaft). \\
+        Resolviere $K_6$ und $K_1$:
+        $$ \{\neg LS(x_3), \neg Hat(x_3, y_3), \neg Heult(y_3)\} + \{LS(John)\} $$
+        Unifikation: $\sigma = \{ x_3 / John \}$ \\
+        $\Rightarrow R_1: \{ \neg Hat(John, y_3), \neg Heult(y_3) \}$
+
+  \item \textbf{Schritt 2:} Verknüpfung mit Johns Tier $a$. \\
+        Resolviere $R_1$ und $K_7$:
+        $$ \{\neg Hat(John, y_3), \neg Heult(y_3)\} + \{Hat(John, a)\} $$
+        Unifikation: $\sigma = \{ y_3 / a \}$ \\
+        $\Rightarrow R_2: \{ \neg Heult(a) \}$
+
+  \item \textbf{Schritt 3:} Tier $a$ ist kein Hund (da Hunde heulen). \\
+        Resolviere $R_2$ und $K_4$:
+        $$ \{\neg Heult(a)\} + \{\neg Hund(x_1), Heult(x_1)\} $$
+        Unifikation: $\sigma = \{ x_1 / a \}$ \\
+        $\Rightarrow R_3: \{ \neg Hund(a) \}$
+
+  \item \textbf{Schritt 4:} Tier $a$ ist eine Katze (Disjunktion auflösen). \\
+        Resolviere $R_3$ und $K_8$:
+        $$ \{\neg Hund(a)\} + \{Katze(a), Hund(a)\} $$
+        Keine Unifikation nötig. \\
+        $\Rightarrow R_4: \{ Katze(a) \}$
+
+  \item \textbf{Schritt 5:} Widerspruch zur Maus (Katzenbesitzer-Regel). \\
+        Resolviere $R_4$ und $K_5$:
+        $$ \{Katze(a)\} + \{ \neg Katze(y_2), \neg Hat(x_2, y_2), \neg Maus(z_2), \neg Hat(x_2, z_2) \} $$
+        Unifikation: $\sigma = \{ y_2 / a \}$ \\
+        $\Rightarrow R_5: \{ \neg Hat(x_2, a), \neg Maus(z_2), \neg Hat(x_2, z_2) \}$
+
+  \item \textbf{Schritt 6:} Spezialisierung auf John (da John $a$ besitzt). \\
+        Resolviere $R_5$ und $K_7$:
+        $$ \{ \neg Hat(x_2, a), \neg Maus(z_2), \neg Hat(x_2, z_2) \} + \{ Hat(John, a) \} $$
+        Unifikation: $\sigma = \{ x_2 / John \}$ \\
+        $\Rightarrow R_6: \{ \neg Maus(z_2), \neg Hat(John, z_2) \}$ \\
+        (Bedeutung: John besitzt keine Maus).
+
+  \item \textbf{Schritt 7:} Kollision mit der Annahme, John habe Maus $m_{aus}$. \\
+        Resolviere $R_6$ und $K_2$:
+        $$ \{ \neg Maus(z_2), \neg Hat(John, z_2) \} + \{ Maus(m_{aus}) \} $$
+        Unifikation: $\sigma = \{ z_2 / m_{aus} \}$ \\
+        $\Rightarrow R_7: \{ \neg Hat(John, m_{aus}) \}$
+
+  \item \textbf{Schritt 8:} Abschluss. \\
+        Resolviere $R_7$ und $K_3$:
+        $$ \{ \neg Hat(John, m_{aus}) \} + \{ Hat(John, m_{aus}) \} $$
+        $\Rightarrow \square$ (Leere Klausel)
+\end{enumerate}
+
+Da die leere Klausel abgeleitet werden konnte, ist der Widerspruchsbeweis erbracht. Die ursprüngliche Behauptung ist wahr.
+
+\end{document}
