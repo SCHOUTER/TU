@@ -1,0 +1,237 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Uncertainty, Probability and Bayesian Networks}
+
+\subsection{Uncertainty and Probability}
+
+\subsubsection{Motivation: Why Uncertainty?}
+Classical logic assumes that agents know the "whole truth" (logical statements are true or false). However, in the real world, agents must deal with \defc{uncertainty} due to:
+\begin{itemize}
+  \item \textbf{Partial Observability:} We cannot see the state of the entire world (e.g., road state, other drivers' plans).
+  \item \textbf{Noisy Sensors:} Information received may be incorrect (e.g., wrong traffic reports).
+  \item \textbf{Uncertainty in Action Outcomes:} Actions are stochastic (e.g., a flat tire, accident).
+  \item \textbf{Modeling Complexity:} It is impossible to model every single factor (The \textit{Qualification Problem}).
+\end{itemize}
+
+\begin{defbox}[Ignorance Types]
+  \begin{itemize}
+    \item \defc{Laziness}: Listing all exceptions is too tedious.
+    \item \defc{Theoretical Ignorance}: The underlying mechanisms are not fully understood (e.g., perfect weather modeling).
+    \item \defc{Practical Ignorance}: The rules are known, but the specific data for a situation is missing.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Probability Theory Basics}
+Probability provides a way to summarize uncertainty. It represents a \defc{degree of belief}, not necessarily a degree of truth.
+
+\paragraph{Kolmogorov's Axioms}
+These axioms constrain the probabilistic beliefs an agent can reasonably hold.
+\begin{enumerate}
+  \item $0 \le P(a) \le 1$ (All probabilities are between 0 and 1).
+  \item $P(false) = 0$, $P(true) = 1$ (Necessarily true propositions have probability 1).
+  \item $P(a \lor b) = P(a) + P(b) - P(a \land b)$ (Probability of a disjunction).
+\end{enumerate}
+
+% GRAPHIC: Venn Diagram illustrating P(A or B) = P(A) + P(B) - P(A and B)
+
+\begin{defbox}[The Dutch Book Theorem]
+  Proposed by Bruno de Finetti (1931). It states that if an agent holds a set of beliefs that violate the axioms of probability, a betting strategy (a "Dutch Book") can be constructed against them such that the agent is \defc{guaranteed to lose money} regardless of the outcome.
+\end{defbox}
+
+\paragraph{Random Variables}
+Instead of dealing with raw events, we use \defc{Random Variables (RVs)} to describe the world.
+\begin{itemize}
+  \item \textbf{Boolean:} $X \in \{true, false\}$ (e.g., \textit{hasUmbrella}).
+  \item \textbf{Discrete:} Finite set of values (e.g., $Weather \in \{sunny, rain, cloudy\}$). Values must be \textit{exhaustive} and \textit{mutually exclusive}.
+  \item \textbf{Continuous:} Infinite domain (e.g., \textit{Temperature}).
+\end{itemize}
+
+\subsubsection{Distributions and Inference}
+
+\paragraph{Joint Probability Distribution}
+The joint distribution $P(X_1, \dots, X_n)$ assigns probabilities to every possible combination of values for all random variables.
+\begin{itemize}
+  \item It allows us to answer \textit{any} question about the domain.
+  \item \textbf{Problem:} The size of the table grows exponentially ($O(d^n)$ for $n$ variables of domain size $d$).
+\end{itemize}
+
+\paragraph{Marginalization (Summing Out)}
+We can extract the distribution of a subset of variables by summing out the others.
+\[
+  P(Y) = \sum_{z} P(Y, z)
+\]
+This is how we recover simple probabilities from the joint distribution.
+
+\paragraph{Conditional Probability}
+Represents beliefs given evidence.
+\[
+  P(a | b) = \frac{P(a \land b)}{P(b)}
+\]
+Using the \textbf{Product Rule}, we can rewrite the joint probability:
+\[
+  P(a, b) = P(a | b)P(b) = P(b | a)P(a)
+\]
+
+\begin{defbox}[The Chain Rule]
+  Used to decompose a joint distribution into a product of conditional probabilities:
+  \[
+    P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | X_1, \dots, X_{i-1})
+  \]
+\end{defbox}
+
+\subsubsection{Bayes' Rule}
+Derived from the product rule ($P(x,y) = P(x|y)P(y) = P(y|x)P(x)$).
+
+\[
+  P(Hypothesis | Evidence) = \frac{P(Evidence | Hypothesis) \cdot P(Hypothesis)}{P(Evidence)}
+\]
+\begin{itemize}
+  \item $P(H|E)$: \defc{Posterior} (Probability of hypothesis after seeing evidence).
+  \item $P(E|H)$: \defc{Likelihood} (Probability of evidence assuming hypothesis is true).
+  \item $P(H)$: \defc{Prior} (Initial probability of hypothesis).
+  \item $P(E)$: Marginal Likelihood (Normalization constant).
+\end{itemize}
+
+\paragraph{Example: The AIDS Test (Base Rate Fallacy)}
+Consider a test for a disease:
+\begin{itemize}
+  \item $P(pos|sick) = 0.99$ (Sensitivity)
+  \item $P(neg|healthy) = 0.995$ (Specificity), so $P(pos|healthy) = 0.005$.
+  \item $P(sick) = 0.0001$ (Prior - Base rate).
+\end{itemize}
+If you test positive ($pos$), what is the probability you are sick ($sick$)?
+\[
+  P(sick | pos) = \frac{P(pos | sick)P(sick)}{P(pos)}
+\]
+Where $P(pos) = P(pos|sick)P(sick) + P(pos|healthy)P(healthy)$.
+\[
+  P(sick | pos) = \frac{0.99 \cdot 0.0001}{(0.99 \cdot 0.0001) + (0.005 \cdot 0.9999)} \approx 0.0194
+\]
+\textit{Lesson: Even with a reliable test, if the disease is rare, a positive result often implies a low probability of actually having the disease.}
+
+\subsection{Bayesian Networks}
+
+\subsubsection{Independence}
+To avoid the exponential explosion of the joint distribution, we utilize \defc{Independence}.
+\begin{itemize}
+  \item \textbf{Independence:} $P(X, Y) = P(X)P(Y)$ or $P(X|Y) = P(X)$.
+  \item \textbf{Conditional Independence:} $X$ and $Y$ are independent given $Z$ if $P(X|Y, Z) = P(X|Z)$.
+\end{itemize}
+Example: \textit{Age} and \textit{Gender} are independent. \textit{Cancer} is independent of \textit{Age} and \textit{Gender} \textbf{given} \textit{Smoking}.
+
+\subsubsection{Bayesian Networks (BN)}
+A Bayesian Network is a data structure to represent dependencies compactly.
+\begin{itemize}
+  \item \textbf{Structure:} A Directed Acyclic Graph (DAG).
+  \item \textbf{Nodes:} Random variables $X_1, \dots, X_n$.
+  \item \textbf{Edges:} Directed edge $X_i \to X_j$ indicates direct influence.
+  \item \textbf{Parameters:} Each node $X_i$ has a Conditional Probability Table (CPT) quantifying $P(X_i | Parents(X_i))$.
+\end{itemize}
+
+% GRAPHIC: Example of a simple BN: Burglary -> Alarm <- Earthquake
+
+\paragraph{Semantics}
+The full joint distribution is defined as the product of the local conditional distributions:
+\[
+  P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | Parents(X_i))
+\]
+
+\begin{defbox}[Local Markov Assumption]
+  Each variable $X_i$ is conditionally independent of its non-descendants, given its parents.
+\end{defbox}
+
+\subsection{Exact Inference in Bayesian Networks}
+
+\subsubsection{The Inference Task}
+Given evidence $E=e$ and a query variable $X$, we want to compute $P(X|e)$.
+\[
+  P(X|e) = \frac{P(X, e)}{P(e)} \propto \sum_{y} P(X, e, y)
+\]
+Where $y$ are the \textit{hidden} variables (neither query nor evidence).
+
+\subsubsection{Variable Elimination}
+A systematic method to perform summation. Instead of computing the full joint (exponential) and then summing, we push sums inwards to factor out terms.
+
+\textbf{Algorithm Steps:}
+\begin{enumerate}
+  \item \textbf{Factorize:} Write the joint distribution as a product of CPTs.
+  \item \textbf{Order:} Choose an elimination order for hidden variables.
+  \item \textbf{Sum Out:} For each variable $Z$ to be eliminated:
+        \begin{itemize}
+          \item Collect all factors containing $Z$.
+          \item Multiply them.
+          \item Sum over the values of $Z$.
+          \item Replace the old factors with the new factor (result).
+        \end{itemize}
+\end{enumerate}
+
+\textbf{Example Walkthrough (Abstract):}
+Factors: $P(v)P(s)P(t|v)P(l|s)P(b|s)P(a|t,l)P(x|a)P(d|a,b)$.
+Eliminate $v$:
+\[ f_v(t) = \sum_v P(v)P(t|v) \]
+New set of factors: $f_v(t), P(s), P(l|s) \dots$
+Proceed sequentially.
+
+\subsubsection{Complexity}
+\begin{defbox}[NP-Hardness]
+  Inference in Bayesian Networks is \defc{NP-Hard}. This is proven via reduction to 3-SAT (Boolean Satisfiability). Even approximate inference with bounded error is NP-Hard.
+\end{defbox}
+
+\subsection{Approximate Inference: Sampling}
+
+Since exact inference is hard, we use stochastic simulation (Monte Carlo). We draw $N$ samples and estimate probabilities by counting.
+
+\subsubsection{Direct Sampling (Empty Network)}
+Used when there is no evidence.
+\begin{enumerate}
+  \item Sort variables topologically.
+  \item Sample $X_1$ from $P(X_1)$.
+  \item Sample $X_2$ from $P(X_2 | Parents(X_2))$ (using value sampled for parents).
+  \item Repeat until all variables are sampled.
+\end{enumerate}
+
+\subsubsection{Rejection Sampling}
+Used for computing $P(X|e)$.
+\begin{enumerate}
+  \item Generate samples from the empty network.
+  \item \defc{Reject} (discard) any sample that does not match the evidence $e$.
+  \item Estimate $P(X|e)$ by counting frequencies in the remaining samples.
+\end{enumerate}
+\textit{Drawback: If the evidence is rare, we reject almost all samples, making it inefficient.}
+
+\subsubsection{Markov Chain Monte Carlo (MCMC)}
+Instead of generating independent samples from scratch, the system wanders through the state space. The state is the current assignment of all variables.
+
+\begin{defbox}[Markov Blanket]
+  The Markov Blanket of a node consists of:
+  \begin{itemize}
+    \item Its Parents.
+    \item Its Children.
+    \item Its Children's Parents.
+  \end{itemize}
+  A node is conditionally independent of \textit{all other nodes} in the network given its Markov Blanket.
+\end{defbox}
+
+% GRAPHIC: Visual representation of a node X surrounded by parents, children, and co-parents.
+
+\paragraph{Gibbs Sampling Algorithm}
+To estimate $P(X|e)$:
+\begin{enumerate}
+  \item Fix evidence variables to their observed values $e$.
+  \item Initialize non-evidence variables randomly.
+  \item Loop:
+        \begin{itemize}
+          \item Pick a non-evidence variable $Z_i$.
+          \item Resample $Z_i$ from $P(Z_i | MarkovBlanket(Z_i))$.
+          \item Record the state.
+        \end{itemize}
+\end{enumerate}
+This process creates a Markov Chain that converges to the true posterior distribution (stationary distribution) if the chain is irreducible, aperiodic, and ergodic.
+
+\end{document}
