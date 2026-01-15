@@ -1,25 +1,29 @@
-Instructions:
+Anweisungen:
 
-Output only LaTeX code. Do not include any explanations outside the code.
+Geben Sie nur formatierten LaTeX-Code aus. Fügen Sie keine Erläuterungen außerhalb des Codes ein.
 
-The summary should be structured for efficient learning and exam preparation: concise yet detailed, covering all essential content.
+Die Zusammenfassung sollte für effizientes Lernen und die Prüfungsvorbereitung strukturiert sein: prägnant und dennoch detailliert, wobei alle wesentlichen Inhalte abgedeckt werden.
 
-If a concept in the slides is not well explained, clarify it fully in the summary, using examples if necessary.
+Wenn ein Konzept in den Folien nicht gut erklärt ist, erläutern Sie es in der Zusammenfassung ausführlich und verwenden Sie gegebenenfalls Beispiele.
 
-Use German for all text.
+Verwenden Sie für den gesamten Text Deutsch.
 
-Do not cite sources.
+Geben Sie keine Quellen an.
 
-Include formulas and important transformations in the same chapter if they are not already present.
+Fügen Sie Formeln und wichtige Umformungen in dasselbe Kapitel ein, sofern sie dort noch nicht vorhanden sind.
 
-For graphics referenced in the slides, comment in the code where they would go.
+Kommentieren Sie Grafiken, auf die in den Folien verwiesen wird, im Code an der Stelle, an der sie eingefügt werden sollen.
 
-Use the following predefined macros where appropriate:
+Verwenden Sie gegebenenfalls die folgenden vordefinierten Makros:
 
 \begin{defbox}[Header of Defbox] ... \end{defbox}
 
-\defc{this will be printed in red}
+\defc{dies wird in Rot gedruckt}
 
-Structure content chapter by chapter, and organize definitions, examples, and formulas clearly.
+Strukturieren Sie den Inhalt kapitelweise (verwenden Sie nicht Kapitel 1, Kapitel 2 usw.) und ordnen Sie Definitionen, Beispiele und Formeln übersichtlich an.
 
-Prioritize clarity, completeness, and exam relevance.
+Achten Sie vor allem auf Klarheit, Vollständigkeit und Relevanz für die Prüfung.
+
+Verwenden Sie genau einen \section, in den Sie den Titel der PDF-Datei einfügen, dieser wird in ein größeres Dokument eingefügt.
+
+Ignorieren Sie Zusammenfassungen oder Verweise auf das nächste Mal.

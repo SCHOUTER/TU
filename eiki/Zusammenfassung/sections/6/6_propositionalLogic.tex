@@ -6,194 +6,157 @@
 
 \begin{document}
 
-\section{Propositional Logic and AI}
+\section{AI101-06: Logik und KI 1 - Aussagenlogik}
 
-Artificial Intelligence aims to create agents that not only search for solutions but ``understand'' the world. While search algorithms generate successors and evaluate states, they lack a representation of knowledge. **Logic** provides the framework for this representation.
+\subsection{Einführung: Wissensbasierte Agenten}
+Während reflexbasierte Agenten oder Suchalgorithmen oft nur über begrenztes Verständnis ihrer Umgebung verfügen, nutzen wissensbasierte Agenten explizite Repräsentationen von Wissen, um Schlussfolgerungen zu ziehen und neue Fakten abzuleiten.
 
-\subsection{Knowledge-Based Agents}
-A \defc{Knowledge-Based Agent} maintains a representation of the world and uses logical reasoning to derive new information and make decisions. It operates on two main components:
-
-\begin{defbox}[Components of a Knowledge-Based System]
+\begin{defbox}[Komponenten eines wissensbasierten Agenten]
+  Das Herzstück ist die \defc{Knowledge Base (KB)}: Eine Menge von Sätzen (Sentences) in einer formalen Sprache, die Fakten über die Welt repräsentieren.
   \begin{itemize}
-    \item \textbf{Knowledge Base (KB)}: A set of sentences in a formal language representing facts about the world. It follows a declarative approach (TELL the agent what it needs to know).
-    \item \textbf{Inference Engine}: Domain-independent algorithms that derive new sentences (conclusions) from the KB.
+    \item \textbf{TELL:} Operation zum Hinzufügen neuen Wissens zur KB.
+    \item \textbf{ASK:} Operation zum Abfragen von Wissen. Der Agent muss ableiten können, was aus der KB folgt.
   \end{itemize}
 \end{defbox}
 
-The interaction loop of a KB-Agent involves:
-\begin{enumerate}
-  \item \textbf{TELL}: The agent incorporates new percepts into the KB.
-  \item \textbf{ASK}: The agent queries the KB to decide on an action.
-  \item \textbf{TELL}: The agent records the chosen action and updates the time.
-\end{enumerate}
-
-\subsection{The Wumpus World}
-The Wumpus World is a standard environment used to illustrate logical reasoning in AI. It is a grid-based cave where an agent must find gold while avoiding pits and a monster (Wumpus).
-
-\begin{center}
-  \vcentered{\includegraphics[width=0.6\textwidth]{eiki_1_AI101-06_page_11_2.png}}
-\end{center}
-
-\subsubsection{PEAS Description}
+\subsection{Die Wumpus-Welt}
+Die Wumpus-Welt ist eine Standardumgebung zur Illustration logischer Agenten.
 \begin{itemize}
-  \item \textbf{Performance}: $+1000$ for gold, $-1000$ for death, $-1$ per step, $-10$ for using the arrow.
-  \item \textbf{Environment}:
-        \begin{itemize}
-          \item Squares adjacent to the \defc{Wumpus} smell (Stench).
-          \item Squares adjacent to a \defc{Pit} are breezy (Breeze).
-          \item Gold glitters in its square.
-        \end{itemize}
-  \item \textbf{Sensors}: $[Stench, Breeze, Glitter, Bump, Scream]$.
-  \item \textbf{Actuators}: Turn Left/Right, Forward, Grab, Release, Shoot.
+  \item \textbf{Umgebung:} $4\times4$ Gitter, Start bei [1,1].
+  \item \textbf{Elemente:} Wumpus (stinkt), Gruben (erzeugen Luftzug), Gold (glitzert).
+  \item \textbf{Wahrnehmungen (Percepts):} $[Stench, Breeze, Glitter, Bump, Scream]$.
+  \item \textbf{Eigenschaften:} Deterministisch, diskret, statisch, partiell beobachtbar.
 \end{itemize}
 
-\subsubsection{Reasoning Example}
-If the agent is in $[1,1]$ and perceives no breeze and no stench, it knows $[1,2]$ and $[2,1]$ are safe (OK). If it moves to $[2,1]$ and perceives a breeze, it infers a pit must be in $[2,2]$ or $[3,1]$. Logic allows the agent to combine observations over time to build a map of safe and dangerous areas.
+% [GRAFIK EINFÜGEN: Abbildung der Wumpus-Welt, die Positionen von Pits, Wumpus und Gold sowie die entsprechenden Wahrnehmungen (Breeze, Stench) in benachbarten Feldern zeigt.]
 
-\subsection{Propositional Logic (PL)}
-
-Propositional logic is the simplest logic, where symbols represent whole propositions (facts) that can be true or false.
-
-\subsubsection{Syntax}
-Syntax defines the rules for constructing well-formed sentences. We use \defc{Backus-Naur Form (BNF)}:
+\subsection{Logik: Syntax und Semantik}
 
 \begin{itemize}
-  \item \textbf{Atomic Sentences}: Single symbols (e.g., $P$, $Q$, $RoommateWet$).
-  \item \textbf{Complex Sentences}: Constructed using logical connectives.
-        \begin{itemize}
-          \item $\neg P$ (Not/Negation)
-          \item $P \land Q$ (And/Conjunction)
-          \item $P \lor Q$ (Or/Disjunction)
-          \item $P \Rightarrow Q$ (Implication/If-Then)
-          \item $P \Leftrightarrow Q$ (Biconditional/If and only if)
-        \end{itemize}
+  \item \textbf{Syntax:} Definiert die zulässigen Sätze (Formeln) der Sprache.
+  \item \textbf{Semantik:} Definiert die "Wahrheit" von Sätzen in Bezug auf eine mögliche Welt.
+  \item \textbf{Modell ($m$):} Eine mathematische Abstraktion, die jedem Symbol einen Wahrheitswert zuweist.
 \end{itemize}
 
-\subsubsection{Semantics}
-Semantics defines the meaning of sentences, specifically their \defc{Truth Value} relative to a specific world configuration (Interpretation).
-
-\begin{defbox}[Model]
-  A \textbf{Model} is an interpretation (a specific setting of true/false values for all propositional symbols) in which a specific sentence or Knowledge Base is \textbf{True}.
+\begin{defbox}[Entailment (Logische Folgerung)]
+  Ein Satz $\alpha$ folgt logisch aus der Wissensbasis $KB$ (geschrieben $KB \models \alpha$), wenn in \textit{jedem} Modell, in dem $KB$ wahr ist, auch $\alpha$ wahr ist.
+  $$M(KB) \subseteq M(\alpha)$$
+  (Die Menge der Modelle, die die KB erfüllen, ist eine Teilmenge der Modelle, die $\alpha$ erfüllen.)
 \end{defbox}
 
-\paragraph{Truth Tables}
-The semantics are defined by truth tables. Key logical behaviors to remember:
+\subsection{Aussagenlogik (Propositional Logic)}
+
+Die Aussagenlogik ist die einfachste Form der Logik, basierend auf Fakten, die wahr oder falsch sein können.
+
+\subsubsection{Syntax der Aussagenlogik}
 \begin{itemize}
-  \item $P \land Q$ is true only if \emph{both} are true.
-  \item $P \lor Q$ is true if \emph{at least one} is true (inclusive OR).
-  \item $P \Rightarrow Q$ is true unless $P$ is true and $Q$ is false. (Note: $False \Rightarrow True$ is valid/True).
+  \item \textbf{Atomsätze:} Einzelne Symbole (z.B. $P, Q, W_{1,3}$), die für Propositionen stehen.
+  \item \textbf{Komplexe Sätze:} Werden durch logische Verknüpfungen gebildet.
 \end{itemize}
 
-\begin{center}
-  \vcentered{\includegraphics[width=0.8\textwidth]{eiki_1_AI101-06_page_21_1.png}}
-\end{center}
-
-\subsubsection{Logical Properties}
-
+\textbf{Operatoren (nach absteigender Präzedenz):}
 \begin{enumerate}
-  \item \defc{Tautology}: A sentence that is true in \emph{all} possible models (e.g., $P \lor \neg P$).
-  \item \defc{Satisfiability}: A sentence is satisfiable if it is true in \emph{at least one} model.
-  \item \defc{Contradiction}: A sentence that is false in all models (e.g., $P \land \neg P$).
-  \item \defc{Logical Equivalence}: Two sentences $\alpha$ and $\beta$ are equivalent ($\alpha \equiv \beta$) if they have the same truth value in every model.
+  \item $\neg$ (Negation / Nicht)
+  \item $\land$ (Konjunktion / Und)
+  \item $\lor$ (Disjunktion / Oder)
+  \item $\Rightarrow$ (Implikation / Wenn... dann)
+  \item $\Leftrightarrow$ (Bikonditional / Genau dann, wenn)
 \end{enumerate}
 
-\paragraph{Important Equivalences (for simplification)}
-\begin{itemize}
-  \item \textbf{Double Negation}: $\neg(\neg A) \equiv A$
-  \item \textbf{Contraposition}: $(A \Rightarrow B) \equiv (\neg B \Rightarrow \neg A)$
-  \item \textbf{Implication Elimination}: $(A \Rightarrow B) \equiv (\neg A \lor B)$
-  \item \textbf{De Morgan's Laws}:
-        \begin{itemize}
-          \item $\neg(A \land B) \equiv (\neg A \lor \neg B)$
-          \item $\neg(A \lor B) \equiv (\neg A \land \neg B)$
-        \end{itemize}
-  \item \textbf{Distributivity}: $A \land (B \lor C) \equiv (A \land B) \lor (A \land C)$
-\end{itemize}
+\subsubsection{Semantik: Wahrheitstabellen}
+Die Semantik wird durch Wahrheitstabellen definiert.
 
-\subsection{Inference and Entailment}
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c||c|c|c|c|c|}
+    \hline
+    $P$   & $Q$   & $\neg P$ & $P \land Q$ & $P \lor Q$ & $P \Rightarrow Q$ & $P \Leftrightarrow Q$ \\
+    \hline
+    false & false & true     & false       & false      & \textbf{true}     & true                  \\
+    false & true  & true     & false       & true       & \textbf{true}     & false                 \\
+    true  & false & false    & false       & true       & \textbf{false}    & false                 \\
+    true  & true  & false    & true        & true       & true              & true                  \\
+    \hline
+  \end{tabular}
+  \caption{Wahrheitstabelle. \textbf{Wichtig:} Die Implikation $P \Rightarrow Q$ ist nur falsch, wenn die Prämisse $P$ wahr und die Konklusion $Q$ falsch ist.}
+\end{table}
 
-The core goal of the Inference Engine is to determine if a sentence follows from the Knowledge Base.
-
-\begin{defbox}[Entailment ($KB \models \alpha$)]
-  We say the Knowledge Base $KB$ \textbf{entails} sentence $\alpha$ if and only if $\alpha$ is true in all models where $KB$ is true.
-\end{defbox}
+\subsection{Inferenz (Schlussfolgern)}
 
 \subsubsection{Model Checking}
-A simple algorithm to check entailment is \textbf{Truth Table Enumeration}:
-\begin{enumerate}
-  \item Enumerate all possible assignments of True/False to the symbols.
-  \item Check if the KB is true in that assignment.
-  \item If KB is true, check if $\alpha$ is also true.
-  \item If $\alpha$ is true in every model where KB is true, then $KB \models \alpha$.
-\end{enumerate}
-\textbf{Drawback}: The time complexity is $O(2^n)$, making it inefficient for large numbers of variables.
+Ein einfacher Inferenz-Algorithmus ist die \defc{Truth Table Enumeration}:
+1. Iteriere über alle möglichen Modelle (Belegungen der Variablen).
+2. Prüfe, ob in allen Modellen, in denen die KB wahr ist, auch $\alpha$ wahr ist.
+Dies ist \textit{sound} (korrekt) und \textit{complete} (vollständig), aber ineffizient ($O(2^n)$).
 
-\subsubsection{Consistency and The Principle of Explosion}
-It is critical that a Knowledge Base is \defc{Consistent}.
+\subsubsection{Logische Eigenschaften}
 \begin{itemize}
-  \item If a KB contains a contradiction (e.g., $P$ and $\neg P$), it is inconsistent.
-  \item An inconsistent KB entails \textbf{everything}.
-  \item \textit{Example}: If "The roommate flies" and "The roommate does not fly" are both in the KB, we can prove "The Moon is made of cheese."
-  \item This relies on the \textbf{Law of Non-Contradiction} (Aristotle): $A$ and $\neg A$ cannot both be true.
+  \item \textbf{Gültigkeit (Tautologie):} Ein Satz ist in \textit{allen} Modellen wahr (z.B. $P \lor \neg P$).
+  \item \textbf{Erfüllbarkeit (Satisfiability):} Ein Satz ist in \textit{mindestens einem} Modell wahr.
+  \item \textbf{Unerfüllbarkeit (Contradiction):} Ein Satz ist in \textit{keinem} Modell wahr (z.B. $P \land \neg P$).
 \end{itemize}
 
-\subsection{Resolution and Proof Systems}
+\textbf{Wichtiger Zusammenhang (Beweis durch Widerspruch):}
+$$KB \models \alpha \quad \text{genau dann, wenn} \quad (KB \land \neg \alpha) \text{ ist unerfüllbar.}$$
 
-To avoid enumerating truth tables, we use syntactic proof systems like \defc{Resolution}. To use resolution, sentences must be in a specific form.
+\subsubsection{Logische Äquivalenzen}
+Zwei Sätze sind äquivalent ($\alpha \equiv \beta$), wenn sie in denselben Modellen wahr sind.
+Wichtige Umformungen für die Prüfung:
+\begin{itemize}
+  \item \textbf{De Morgan:} $\neg(P \land Q) \equiv (\neg P \lor \neg Q)$ und $\neg(P \lor Q) \equiv (\neg P \land \neg Q)$
+  \item \textbf{Implikations-Eliminierung:} $P \Rightarrow Q \equiv \neg P \lor Q$
+  \item \textbf{Bikonditional-Eliminierung:} $P \Leftrightarrow Q \equiv (P \Rightarrow Q) \land (Q \Rightarrow P)$
+  \item \textbf{Distributivgesetze:} $(P \land (Q \lor R)) \equiv ((P \land Q) \lor (P \land R))$
+\end{itemize}
 
-\subsubsection{Conjunctive Normal Form (CNF)}
-Any sentence in propositional logic can be converted into CNF. A CNF formula is a conjunction (AND) of clauses, where each clause is a disjunction (OR) of literals.
-\begin{center}
-  $(L_{1,1} \lor \dots \lor L_{1,k}) \land (L_{2,1} \lor \dots) \land \dots$
-\end{center}
-where a literal is a symbol ($P$) or its negation ($\neg P$).
+\subsection{Resolution}
 
-\textbf{Conversion Steps (Example):}
-\begin{enumerate}
-  \item Eliminate $\Leftrightarrow$ and $\Rightarrow$ using $(A \Rightarrow B) \equiv (\neg A \lor B)$.
-  \item Move $\neg$ inwards using De Morgan's Laws.
-  \item Distribute $\lor$ over $\land$.
-\end{enumerate}
+Die Resolution ist ein Inferenzverfahren, das Widersprüche aufdeckt. Es arbeitet auf Sätzen in der \defc{Konjunktiven Normalform (CNF)}.
 
-\subsubsection{The Resolution Rule}
-The resolution inference rule takes two clauses and produces a new one:
-\begin{center}
-  $(P \lor A)$ and $(\neg P \lor B)$ derive $(A \lor B)$
-\end{center}
-Here, $P$ and $\neg P$ are complementary literals. They ``cancel out.''
-
-\begin{defbox}[Unit Resolution]
-  A simplified version where one clause is a single literal:
-  $$(l_1 \lor \dots \lor l_k) \text{ and } \neg l_i \implies (l_1 \lor \dots \lor l_{i-1} \lor l_{i+1} \dots)$$
-  This is effectively \textbf{Modus Ponens} in CNF form.
+\begin{defbox}[CNF (Conjunctive Normal Form)]
+  Eine Konjunktion von Klauseln. Jede Klausel ist eine Disjunktion von Literalen.
+  Beispiel: $(A \lor \neg B) \land (B \lor C \lor \neg D)$
 \end{defbox}
 
-\subsubsection{Proof by Refutation (Resolution Algorithm)}
-To prove that $KB \models \alpha$, we use \defc{Proof by Contradiction}:
-\begin{enumerate}
-  \item Assume $\neg \alpha$ (the negation of what we want to prove).
-  \item Add $\neg \alpha$ to the Knowledge Base.
-  \item Convert the entire set of sentences to CNF.
-  \item Repeatedly apply the Resolution Rule to pairs of clauses containing complementary literals.
-  \item If you derive the \textbf{Empty Clause} (a contradiction, e.g., resolving $P$ and $\neg P$), then the original assumption $\neg \alpha$ must be false, meaning $\alpha$ is true.
-\end{enumerate}
+\subsubsection{Umwandlung in CNF}
+Jeder aussagenlogische Satz kann in CNF umgewandelt werden:
+1. Eliminiere $\Leftrightarrow$.
+2. Eliminiere $\Rightarrow$ (ersetze $A \Rightarrow B$ durch $\neg A \lor B$).
+3. Verschiebe $\neg$ nach innen (De Morgan, doppelte Negation).
+4. Wende Distributivgesetz an ($\lor$ über $\land$).
 
-\subsection{Horn Clauses}
-Resolution is complete (can prove anything that is true) but can be slow (exponential in worst case). \defc{Horn Clauses} are a subset of PL that allows for more efficient inference.
+\subsubsection{Resolutions-Algorithmus}
+Um zu zeigen, dass $KB \models \alpha$:
+1. Füge $\neg \alpha$ zur KB hinzu: $KB \land \neg \alpha$.
+2. Wandle alles in CNF um.
+3. Wende wiederholt die \defc{Resolutionsregel} an:
+$$ \frac{l_1 \lor \dots \lor l_k, \quad m_1 \lor \dots \lor m_n}{l_1 \lor \dots \lor l_{i-1} \lor l_{i+1} \lor \dots \lor l_k \lor m_1 \lor \dots \lor m_{j-1} \lor m_{j+1} \lor \dots \lor m_n} $$
+wobei $l_i$ und $m_j$ komplementäre Literale sind (z.B. $P$ und $\neg P$).
+4. Wenn die \textbf{leere Klausel} (Widerspruch) abgeleitet wird, ist $\alpha$ bewiesen.
+
+% [GRAFIK EINFÜGEN: Beispiel eines Resolutionsbaums, der zeigt, wie Klauseln kombiniert werden, um zur leeren Menge zu gelangen.]
+
+\subsection{Horn-Klauseln und Chaining}
+
+Resolution ist mächtig, aber NP-vollständig. Für eingeschränkte Formen gibt es effizientere Algorithmen (lineare Zeit).
 
 \begin{itemize}
-  \item A Horn Clause is a disjunction of literals with \textbf{at most one positive literal}.
-  \item \textit{Example}: $\neg P \lor \neg Q \lor R$ is equivalent to $(P \land Q) \Rightarrow R$.
-  \item Inference with Horn Clauses can be done in linear time using \textbf{Forward Chaining}.
+  \item \textbf{Definite Klausel:} Genau ein positives Literal. (Äquivalent zu einer Implikation: $(A \land B) \Rightarrow C$).
+  \item \textbf{Horn-Klausel:} Höchstens ein positives Literal.
 \end{itemize}
 
-\subsection{Limitations of Propositional Logic}
-While powerful, PL has distinct limitations:
-\begin{enumerate}
-  \item \textbf{Lack of Objects and Relations}: In PL, ``Roommate carrying umbrella'' is a single atomic symbol. The logic does not understand that ``Roommate'' is a person or ``Umbrella'' is an object.
-  \item \textbf{Verbose}: To say ``All pits cause breezes,'' we must write a rule for every square: $B_{1,1} \Leftrightarrow (P_{1,2} \lor P_{2,1})$, $B_{1,2} \Leftrightarrow \dots$
-  \item \textbf{Variable Explosion}: In the Wumpus world alone, a small grid generates 64 distinct symbols and hundreds of sentences.
-\end{enumerate}
-These limitations lead to the development of \textbf{First-Order Logic} (not covered in this summary).
+\subsubsection{Algorithmen für Definite Klauseln}
+\begin{itemize}
+  \item \textbf{Forward Chaining:} Startet bei den bekannten Fakten in der KB und wendet Regeln an, um neue Fakten zu generieren, bis das Ziel (Query) erreicht ist. (Datengetrieben).
+  \item \textbf{Backward Chaining:} Startet beim Ziel (Query) und sucht rückwärts nach Regeln, die dieses Ziel beweisen können. (Zielgetrieben).
+\end{itemize}
+Beide basieren auf der \textit{Modus Ponens} Regel: $\frac{\alpha \Rightarrow \beta, \alpha}{\beta}$.
+
+\subsection{Grenzen der Aussagenlogik}
+\begin{itemize}
+  \item \textbf{Mangelnde Ausdruckskraft:} Keine Objekte oder Relationen.
+  \item \textbf{Regel-Explosion:} Für jede Instanz muss eine eigene Regel geschrieben werden (z.B. $Breeze_{1,1} \Leftrightarrow ...$, $Breeze_{1,2} \Leftrightarrow ...$).
+  \item \textbf{Lösung:} Prädikatenlogik erster Stufe (First-Order Logic).
+\end{itemize}
 
 \end{document}

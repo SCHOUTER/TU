@@ -7,316 +7,181 @@
 
 \begin{document}
 
-\section{Uninformed and Informed Search}
+\section{AI101-03 Uninformed and Informed Search}
 
-\subsection{Problem Formulation}
+\subsection{Einführung und Problemdefinition}
 
-Problem-solving agents are result-driven. They always focus on satisfying their goals, i.e., solving the problem. While problems are often given in a human-understandable way, we need to reformulate the problem for our agent. These agents employ algorithms to find solutions.
-
-Steps to formulate a solvable problem:
+Problemlösende Agenten sind zielbasierte Agenten, die atomare Repräsentationen verwenden (Zustände als Black Boxes). Der Prozess besteht aus vier Phasen:
 \begin{enumerate}
-  \item \textbf{Formulate the goal}
-  \item \textbf{Formulate the problem} given the goal
+  \item \textbf{Zielformulierung:} Definition des Ziels basierend auf der aktuellen Situation.
+  \item \textbf{Problemformulierung:} Entscheidung über zu betrachtende Aktionen und Zustände.
+  \item \textbf{Suche:} Prozess des Findens einer Aktionssequenz, die zum Ziel führt.
+  \item \textbf{Ausführung:} Durchführung der gefundenen Aktionen.
 \end{enumerate}
 
-\subsubsection{Key Terminology}
-
-\begin{defbox}[The State Space / States]
-  A state describes a possible situation in our environment. The \textbf{state space} is a set of all possible situations (states).
+\begin{defbox}[Wohlformuliertes Suchproblem]
+  Ein Suchproblem wird durch fünf Komponenten definiert:
+  \begin{enumerate}
+    \item \textbf{Initial State (Startzustand)} $s_0$: Der Zustand, in dem der Agent beginnt.
+    \item \textbf{Actions (Aktionen)} $A(s)$: Die Menge der möglichen Aktionen in einem Zustand $s$.
+    \item \textbf{Transition Model (Überführungsmodell)} $Result(s, a)$: Beschreibt, was eine Aktion tut. Rückgabe ist der Folgezustand.
+    \item \textbf{Goal Test (Zieltest)}: Bestimmt, ob ein Zustand ein Zielzustand ist.
+    \item \textbf{Path Cost (Pfadkosten)} $c(s, a, s')$: Additive Kostenfunktion. Meistens sind Schrittkosten nicht-negativ.
+  \end{enumerate}
 \end{defbox}
 
-\begin{defbox}[Transition / Action]
-  Transitions describe possible actions to take between one state and another. We only count direct transitions between two states (single actions).
-\end{defbox}
+\textbf{Lösung:} Eine Sequenz von Aktionen, die vom Startzustand zum Ziel führt.\\
+\textbf{Optimale Lösung:} Eine Lösung mit den geringsten Pfadkosten.
 
-\begin{defbox}[Costs]
-  Often transitions aren't alike and differ. We express this by adding a "cost" to each action. Often the goal in search algorithms is to \textbf{minimize the cost} to reach the goal.
-\end{defbox}
+\subsection{Suchalgorithmen: Tree Search vs. Graph Search}
 
-A \textbf{single state problem} is defined by 4 items:
-\begin{enumerate}
-  \item \textbf{State space and Initial state} \
-        Description of all possible states and the initial environment as state.
-  \item \textbf{Description of actions} \
-        Typically a function that maps a state to a set of possible actions in this state.
-  \item \textbf{Goal test} \
-        Typically a function to test if the current state fulfills the goal definition.
-  \item \textbf{Costs} \
-        A cost function that maps actions to its cost. An easy way is to have additive costs (sum of costs for all actions taken).
-\end{enumerate}
-
-\subsubsection{The State-Space Graph}
-The state space is the set of all states reachable from the initial state. It is implicitly defined by the initial state and the successor function, forming a \textbf{state-space graph}.
-
+Der Kern aller Suchalgorithmen ist die Expansion von Zuständen.
 \begin{itemize}
-  \item \textbf{Path:} A sequence of states connected by a sequence of actions.
-  \item \textbf{Solution:} A path that leads from the initial state to a goal state.
-  \item \textbf{Optimal Solution:} A solution with the minimum path cost.
+  \item \textbf{Frontier (Open List):} Menge der generierten, aber noch nicht expandierten Knoten.
+  \item \textbf{Expansion:} Anwenden der Aktionen auf einen Zustand, um Kindknoten zu generieren.
 \end{itemize}
 
-\subsubsection{Core Search Definitions}
-\begin{defbox}[Planning Problem]
-  A planning problem is one in which we have an initial state and want to transform it into a desired goal, considering future actions and their outcomes.
+% [Hier Grafik einfügen: Darstellung eines Suchbaums mit Frontier und expandierten Knoten]
+
+\begin{defbox}[Unterschied Tree vs. Graph Search]
+  \begin{itemize}
+    \item \textbf{Tree Search:} Verfolgt nicht, welche Zustände bereits besucht wurden. Kann in Schleifen geraten und redundante Pfade mehrfach besuchen.
+    \item \textbf{Graph Search:} Speichert besuchte Zustände in einer \textit{Explored Set} (Closed List), um Redundanz und Schleifen zu vermeiden.
+  \end{itemize}
 \end{defbox}
 
-\begin{defbox}[Search]
-  The process of finding the (optimal) solution for such a problem in the form of a sequence of actions.
-\end{defbox}
-
-\subsection{Search Fundamentals}
-
-\subsubsection{Tree Search vs. Graph Search}
-The state-space graph can be explored by building a \textbf{search tree}.
-
+\subsubsection{Bewertungskriterien für Suchstrategien}
 \begin{itemize}
-  \item \textbf{Tree Search:} Treats the state space as a tree. It does not keep track of visited states, so it might re-explore the same state via a different path. This can lead to exponential work for problems with loops or redundant paths.
-  \item \textbf{Graph Search:} Remembers states that have been visited in an \textbf{explored set} (or "closed set"). It avoids expanding states that are already in the explored set, thus handling loops and redundant paths efficiently.
+  \item \textbf{Completeness (Vollständigkeit):} Findet der Algorithmus garantiert eine Lösung, wenn eine existiert?
+  \item \textbf{Optimality (Optimalität):} Findet er die kostengünstigste Lösung?
+  \item \textbf{Time Complexity:} Wie lange dauert die Suche? (Anzahl generierter Knoten).
+  \item \textbf{Space Complexity:} Wie viel Speicher wird benötigt? (Maximale Anzahl Knoten im Speicher).
 \end{itemize}
 
-\subsubsection{States vs. Nodes}
-\begin{defbox}[State]
-  Representation of a physical configuration. Describes a specific situation in our environment (e.g., "in Arad").
-\end{defbox}
-
-\begin{defbox}[Node]
-  A data structure to represent a part of a search tree. It includes a \textbf{state}, a \textbf{parent node}, the \textbf{action} taken, the \textbf{path cost} ($g(n)$), and the \textbf{depth} (e.g., "the path Arad $\rightarrow$ Sibiu").
-\end{defbox}
-
-\subsubsection{Key Search Tree Terminology}
-\begin{defbox}[Fringe]
-  The set of all nodes at the end of all visited paths is called the fringe. (Also known as \textbf{frontier} or "open set"). These are the nodes available for expansion.
-\end{defbox}
-
-\begin{defbox}[Depth]
-  Number of levels in the search tree.
-\end{defbox}
-
-\subsubsection{Evaluating Search Strategies}
-Search strategies are evaluated along the following dimensions:
+\textbf{Parameter der Komplexität:}
 \begin{itemize}
-  \item \textbf{Completeness:} Does it always find a solution if one exists?
-  \item \textbf{Time Complexity:} Number of node expansions.
-  \item \textbf{Space Complexity:} Maximum number of nodes in memory.
-  \item \textbf{Optimality:} Does it always find the optimal (least-cost) solution?
-\end{itemize}
-Complexity is measured in terms of:
-\begin{itemize}
-  \item $b$: maximum \textbf{branching factor} of the search tree.
-  \item $d$: the \textbf{depth} of the optimal solution.
-  \item $m$: the \textbf{maximum depth} of the state space (may be $\infty$).
+  \item $b$: Verzweigungsfaktor (Branching factor) - max. Anzahl Nachfolger eines Knotens.
+  \item $d$: Tiefe des flachsten Zielknotens.
+  \item $m$: Maximale Tiefe des Suchraums (kann $\infty$ sein).
 \end{itemize}
 
-\subsection{Uninformed Search Strategies}
+\subsection{Uninformierte Suche (Blind Search)}
 
-\begin{defbox}[Uninformed Search]
-  Do not have any information about the problem except the problem definition. (Also called \textbf{Blind Search}).
-\end{defbox}
+Uninformierte Strategien haben keine Information darüber, wie nah ein Zustand am Ziel ist. Sie unterscheiden sich nur in der Reihenfolge der Knotencxpansion.
 
-\begin{defbox}[Breadth-First Search (BFS)]
-  A special case of Uniform-Cost Search where all step costs are equal. It starts at the tree root and explores the tree \textbf{level by level}. It uses a FIFO (First-In-First-Out) queue for the fringe.
-\end{defbox}
+\subsubsection{Breadth-First Search (BFS) - Breitensuche}
+Expandiert den flachsten Knoten in der Frontier zuerst (FIFO-Queue).
 \begin{itemize}
-  \item \textbf{Completeness:} Yes.
-  \item \textbf{Time:} $O(b^d)$ (The summary table uses $O(b^{d+1})$).
-  \item \textbf{Space:} $O(b^d)$. Memory consumption is its biggest drawback.
-  \item \textbf{Optimality:} Yes (if all costs are equal).
+  \item \defc{Vollständig}: Ja (wenn $b$ endlich).
+  \item \defc{Optimal}: Ja, aber nur wenn alle Schrittkosten gleich sind (z.B. 1). Sonst nicht.
+  \item \textbf{Zeit:} $O(b^d)$ (Exponentiell).
+  \item \textbf{Speicher:} $O(b^d)$ (Jeder generierte Knoten muss gespeichert werden).
+\end{itemize}
+\textit{Problem:} Speicherbedarf ist das größte Problem der BFS.
+
+\subsubsection{Uniform-Cost Search (UCS)}
+Expandiert den Knoten mit den geringsten Pfadkosten $g(n)$ zuerst (Priority Queue).
+\begin{itemize}
+  \item Äquivalent zu BFS, wenn alle Schrittkosten gleich sind.
+  \item \defc{Vollständig}: Ja (wenn Kosten $\epsilon > 0$).
+  \item \defc{Optimal}: Ja.
+  \item \textbf{Komplexität:} Hängt von den Kosten ab, kann schlechter als $b^d$ sein, wenn viele Schritte mit kleinen Kosten existieren.
 \end{itemize}
 
-\begin{defbox}[Uniform-Cost Search (UCS)]
-  Each node is associated with a cost, which accumulates over the path. UCS expands the node with the \textbf{lowest cumulative path cost} ($g(n)$). It is often implemented with a \textbf{priority queue}.
-\end{defbox}
+\subsubsection{Depth-First Search (DFS) - Tiefensuche}
+Expandiert den tiefsten Knoten in der Frontier zuerst (LIFO-Queue / Stack).
 \begin{itemize}
-  \item \textbf{Completeness:} Yes (if step costs are positive, i.e., $>\epsilon > 0$).
-  \item \textbf{Time:} $O(b^(1+\lfloor C^/\epsilon \rfloor))$, where $C^*$ is the cost of the optimal solution.
-  \item \textbf{Space:} $O(b^(1+\lfloor C^*/\epsilon \rfloor))$.
-  \item \textbf{Optimality:} Yes.
+  \item \defc{Vollständig}: Nein (kann in unendlichen Pfaden oder Schleifen hängen bleiben, außer bei Graph Search in endlichen Räumen).
+  \item \defc{Optimal}: Nein (findet irgendeinen Pfad, nicht zwingend den kürzesten).
+  \item \textbf{Zeit:} $O(b^m)$. Schlecht, wenn $m \gg d$.
+  \item \textbf{Speicher:} $O(b \cdot m)$ (Linear!). Nur der aktuelle Pfad und Geschwisterknoten werden gespeichert.
 \end{itemize}
 
-\begin{defbox}[Depth-First Search (DFS)]
-  Starts at the tree root and explores as far as possible along one branch before backtracking. It uses a LIFO (Last-In-First-Out) stack for the fringe.
-\end{defbox}
+\subsubsection{Depth-Limited Search (DLS)}
+DFS mit einem vordefinierten Tiefenlimit $l$.
 \begin{itemize}
-  \item \textbf{Completeness:} No. Fails in infinite-depth spaces or spaces with loops.
-  \item \textbf{Time:} $O(b^m)$, where $m$ is the max depth. Can be terrible if $m \gg d$.
-  \item \textbf{Space:} $O(b \times m)$. This linear space complexity is its key advantage.
-  \item \textbf{Optimality:} No.
+  \item Löst das Endlos-Pfad-Problem der DFS.
+  \item Unvollständig, wenn Lösung tiefer als $l$ ($d > l$).
+  \item Nicht optimal.
 \end{itemize}
 
-\begin{defbox}[Depth-limited Search (DLS)]
-  A variation of DFS where the search is limited to a predetermined depth $l$. Nodes at depth $l$ are not expanded.
-\end{defbox}
+\subsubsection{Iterative Deepening Search (IDS)}
+Kombiniert die Vorteile von BFS (Vollständigkeit) und DFS (Speichereffizienz). Führt DLS mit Limit $l=0, 1, 2, \dots$ nacheinander aus.
 \begin{itemize}
-  \item \textbf{Completeness:} No (if $l < d$).
-  \item \textbf{Time:} $O(b^l)$.
-  \item \textbf{Space:} $O(b \times l)$.
-  \item \textbf{Optimality:} No.
+  \item \defc{Vollständig}: Ja.
+  \item \defc{Optimal}: Ja (bei gleichen Schrittkosten).
+  \item \textbf{Zeit:} $O(b^d)$. Knoten werden mehrfach generiert, aber da die unterste Ebene die Mehrheit ausmacht, ist der Overhead gering (ca. 11\% mehr Aufwand bei $b=10$).
+  \item \textbf{Speicher:} $O(b \cdot d)$ (Linear).
+\end{itemize}
+\textbf{Fazit:} IDS ist oft die bevorzugte uninformierte Suchmethode für große Suchräume mit unbekannter Tiefe.
+
+\subsection{Informierte Suche (Heuristische Suche)}
+
+Nutzt problem spezifisches Wissen in Form einer \textbf{Heuristikfunktion} $h(n)$, um die Suche zu lenken.
+
+\begin{defbox}[Heuristik $h(n)$]
+  $h(n) = $ geschätzte Kosten vom Knoten $n$ zum Ziel.
+  \begin{itemize}
+    \item $h(n) \ge 0$
+    \item Für Zielknoten gilt $h(Goal) = 0$.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Greedy Best-First Search}
+Expandiert den Knoten, der dem Ziel am nächsten scheint.
+\begin{itemize}
+  \item \textbf{Bewertungsfunktion:} $f(n) = h(n)$.
+  \item \defc{Vollständig}: Nein (wie DFS, kann in Schleifen geraten).
+  \item \defc{Optimal}: Nein.
+  \item \textbf{Zeit/Speicher:} $O(b^m)$ im schlechtesten Fall. Gute Heuristiken können dies drastisch verbessern.
 \end{itemize}
 
-\begin{defbox}[Iterative Deepening Search (IDS)]
-  Combines the benefits of BFS and DFS. It runs DLS repeatedly with increasing depth limits: $l=0, 1, 2, \dots, d$.
-\end{defbox}
+\subsubsection{A* Search (A-Star)}
+Kombiniert UCS und Greedy. Minimiert die geschätzten Gesamtkosten des Pfades durch $n$.
 \begin{itemize}
-  \item \textbf{Completeness:} Yes.
-  \item \textbf{Time:} $O(b^d)$ (Despite re-generating upper levels, the overhead is small).
-  \item \textbf{Space:} $O(b \times d)$.
-  \item \textbf{Optimality:} Yes (if costs are uniform).
+  \item \textbf{Bewertungsfunktion:} $f(n) = g(n) + h(n)$
+  \item $g(n)$: Tatsächliche Kosten vom Start bis $n$.
+  \item $h(n)$: Geschätzte Kosten von $n$ bis zum Ziel.
+  \item $f(n)$: Geschätzte Gesamtkosten des Pfades durch $n$.
 \end{itemize}
 
-\begin{defbox}[Bidirectional Search]
-  Performs two searches simultaneously: one forward from the initial state, one backward from the goal state. Stops when the two searches meet.
-\end{defbox}
+\subsection{Heuristiken für A*}
+
+Damit A* optimal ist, muss die Heuristik bestimmte Eigenschaften erfüllen.
+
+\subsubsection{Admissibility (Zulässigkeit)}
+Eine Heuristik $h(n)$ ist \textbf{admissible}, wenn sie die Kosten zum Ziel \textit{niemals überschätzt}.
+$$0 \le h(n) \le h^*(n)$$
+(wobei $h^*(n)$ die wahren Kosten zum Ziel sind).
 \begin{itemize}
-  \item \textbf{Completeness:} Yes.
-  \item \textbf{Time:} $O(b^{d/2})$.
-  \item \textbf{Space:} $O(b^{d/2})$.
-  \item \textbf{Notes:} Only possible if actions can be reversed.
+  \item Notwendig für Optimalität bei \textbf{Tree Search}.
+  \item Beispiel Luftlinie: Die direkte Distanz ist immer kürzer oder gleich der Straßenentfernung.
 \end{itemize}
 
-\subsubsection{Summary of Uninformed Strategies}
-\begin{table}[h!]
-  \centering
-  \renewcommand{\arraystretch}{1.3}
-  \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{lccccc}
-    \hline
-    \textbf{Criterion} & \textbf{Breadth-First} & \textbf{Uniform-Cost}               & \textbf{Depth-First} & \textbf{Depth-Limited} & \textbf{Iterative Deepening} \\
-    \hline
-    Complete?          & Yes$^*$                & Yes$^*$                             & No                   & Yes, if $l \ge d$      & Yes                          \\
-    Time               & $O(b^{d+1})$           & $O(b^{\lceil C^*/\epsilon \rceil})$ & $O(b^m)$             & $O(b^l)$               & $O(b^d)$                     \\
-    Space              & $O(b^{d+1})$           & $O(b^{\lceil C^*/\epsilon \rceil})$ & $O(bm)$              & $O(bl)$                & $O(bd)$                      \\
-    Optimal?           & Yes$^*$                & Yes                                 & No                   & No                     & Yes$^*$                      \\
-    \hline
-  \end{tabular}
-  \caption{Comparison of uninformed search strategies. ($^*$Assumes uniform step costs or $l \ge d$ where applicable).}
-\end{table}
-
-\subsection{Informed Search Strategies}
-
-\begin{defbox}[Informed Search]
-  Have additional knowledge about the problem (beyond the definition) and an idea of where to "look" for solutions.
-\end{defbox}
-This "hint" is provided by a heuristic function.
-
-\subsubsection{Heuristics}
-\begin{defbox}[Heuristic $h(n)$]
-  Informally denotes a "rule of thumb". In tree-search, a heuristic is a function $h(n)$ that \textbf{estimates the remaining cost} to reach the goal from node $n$.
-\end{defbox}
-
-\subsubsection{Greedy Best-first Search}
-\begin{defbox}[Greedy Best-first Search]
-  Uses an evaluation function $f(n) = h(n)$ to estimate the cost from node $n$ to the goal. It expands the node that appears to be closest to the goal, according to the heuristic. It does not care about the actual cost/distance.
-\end{defbox}
+\subsubsection{Consistency (Konsistenz / Monotonie)}
+Eine Heuristik $h(n)$ ist \textbf{consistent}, wenn für jeden Knoten $n$ und jeden Nachfolger $n'$ gilt:
+$$h(n) \le c(n, a, n') + h(n')$$
+(Dreiecksungleichung).
 \begin{itemize}
-  \item \textbf{Completeness:} No. Can get stuck in loops. (Complete in finite spaces with loop detection).
-  \item \textbf{Time:} Worst case $O(b^m)$.
-  \item \textbf{Space:} Worst case $O(b^m)$ (keeps all nodes in memory).
-  \item \textbf{Optimality:} No. The solution depends entirely on the heuristic.
+  \item Notwendig für Optimalität bei \textbf{Graph Search}.
+  \item Konsistenz impliziert Admissibility.
+  \item Bei konsistenten Heuristiken steigen die $f(n)$-Werte entlang eines Pfades monoton an (oder bleiben gleich).
 \end{itemize}
 
-\subsubsection{A* Search}
-\begin{defbox}[A* Search]
-  An informed tree search algorithm, building on best-first search. It is the "best-known" form. It avoids expanding paths that are already expensive.
-\end{defbox}
-A* evaluates nodes using the function: $f(n) = g(n) + h(n)$.
+\subsubsection{Dominanz von Heuristiken}
+Wenn $h_2(n) \ge h_1(n)$ für alle $n$ (und beide zulässig sind), dann \textbf{dominiert} $h_2$ die Heuristik $h_1$.
 \begin{itemize}
-  \item $g(n) = $ \textbf{true cost} so far to reach node $n$.
-  \item $h(n) = $ \textbf{estimated cost} to get from $n$ to the goal.
-  \item $f(n) = $ \textbf{estimated cost} of the cheapest solution path that goes through node $n$.
-\end{itemize}
-\begin{itemize}
-  \item \textbf{Completeness:} Yes (unless there are infinitely many nodes with $f(n) \le f(G)$).
-  \item \textbf{Time:} Can be exponential unless the error of the heuristic $h(n)$ is bounded.
-  \item \textbf{Space:} Has to keep all nodes in memory. This is the primary drawback of A*.
-  \item \textbf{Optimality:} Yes, \textbf{if the heuristic $h(n)$ is admissible}.
+  \item $h_2$ ist näher an den wahren Kosten ($h^*$).
+  \item A* mit $h_2$ expandiert weniger Knoten als mit $h_1$ und ist effizienter.
 \end{itemize}
 
-\subsubsection{Heuristic Properties}
+% [Hier Grafik einfügen: Vergleich von Suchradien bei verschiedenen Heuristiken]
 
-\begin{defbox}[Admissible Heuristics]
-  A heuristic is \textbf{admissible} if it \textbf{never overestimates} the true cost to reach a goal.
-  Formally:
-  \[
-    h(n) \le h^*(n) \quad \text{for all nodes } n,
-  \]
-  where $h(n)$ is the heuristic estimate and $h^*(n)$ is the actual optimal cost from $n$ to the goal.
-  (For example, the straight-line distance heuristic $h_{\text{SLD}}$ is admissible in route-finding problems.)
-\end{defbox}
-
-\begin{defbox}[Consistent Heuristics]
-  A heuristic is \textbf{consistent} if for every node $n$ and every successor $n'$ generated by action $a$, the "triangle inequality" holds:
-  $h(n) \le c(n, a, n') + h(n')$.
-  This means the heuristic difference between adjacent nodes never overestimates the actual step cost.
-\end{defbox}
+\subsubsection{Beispiel: 8-Puzzle Heuristiken}
 \begin{itemize}
-  \item \textbf{Lemma 1:} Every \textbf{consistent} heuristic is also \textbf{admissible}.
-  \item \textbf{Lemma 2:} If $h(n)$ is consistent, then the values of $f(n)$ along any path are \textbf{non-decreasing}.
+  \item $h_{MIS}(n)$: Anzahl der falsch platzierten Kacheln (Misplaced Tiles).
+  \item $h_{MAN}(n)$: Summe der Manhattan-Distanzen aller Kacheln zu ihrer Zielposition.
 \end{itemize}
-
-\begin{defbox}[Relaxed Problems]
-  A problem with fewer restrictions on the actions is called a relaxed problem. The cost of an optimal solution to a relaxed problem is an \textbf{admissible heuristic} for the original problem.
-\end{defbox}
-Example (8-puzzle):
-\begin{itemize}
-  \item $h_1(n) = $ Number of misplaced tiles. (Relaxed rule: tile can move anywhere).
-  \item $h_2(n) = $ Total Manhattan distance. (Relaxed rule: tile can move to any adjacent square).
-  \item Both $h_1$ and $h_2$ are admissible.
-\end{itemize}
-
-\begin{defbox}[Dominance]
-  If $h_1$ and $h_2$ are both admissible and $h_2(n) \ge h_1(n)$ for all $n$, then $h_2$ \textbf{dominates} $h_1$.
-\end{defbox}
-A* will expand fewer nodes with a dominant heuristic. (e.g., for the 8-puzzle, $h_2$ (Manhattan) dominates $h_1$ (misplaced tiles)).
-
-\paragraph{Combining Heuristics}
-If we have several admissible heuristics $h_1(n), \dots, h_m(n)$, we can combine them.
-$h(n) = \max{h_1(n), h_2(n), \dots, h_m(n)}$ is also admissible and dominates all of its components.
-
-\subsubsection{Optimality of A}
-A (using Tree Search) is optimal if its heuristic $h(n)$ is admissible.
-
-\paragraph{Proof (Informal):}
-\begin{enumerate}
-  \item Let $G$ be an optimal goal state, with path cost $C^*$.
-  \item Assume for contradiction that A is about to return a suboptimal goal $G_2$, with path cost $g(G_2) > C^*$.
-  \item At this moment, $G_2$ is in the fringe. Because $A^*$ chose $G_2$, its $f$-value must be the lowest, so $f(G_2) \le f(n)$ for all other fringe nodes $n$.
-  \item Let $n$ be any unexpanded node on a true optimal path to $G$. This node $n$ must be in the fringe.
-  \item \textbf{Analyze $f(G_2)$:}
-        For a goal state, $h(G_2) = 0$.
-        So, $f(G_2) = g(G_2) + h(G_2) = g(G_2)$.
-        Since $G_2$ is suboptimal, $f(G_2) = g(G_2) > C^*$.
-  \item \textbf{Analyze $f(n)$:}
-        $f(n) = g(n) + h(n)$.
-        Because $h$ is admissible, $h(n) \le h^(n)$ (where $h^(n)$ is the true cost from $n$ to $G$).
-        The true cost of the optimal path is $C^ = g(n) + h^(n)$.
-        Therefore, $f(n) = g(n) + h(n) \le g(n) + h^(n) = C^*$.
-  \item \textbf{Contradiction:}
-        We have shown $f(n) \le C^*$ and $f(G_2) > C^*$.
-        This means $f(n) < f(G_2)$.
-        A would be forced to expand $n$ (on the optimal path) \textit{before} it could ever expand $G_2$.
-        Thus, A* can never select a suboptimal goal. It is optimal.
-\end{enumerate}
-
-\subsubsection{Memory-Bounded Heuristic Search}
-The main problem with A* is its space complexity. Alternatives include:
-\begin{enumerate}
-  \item \textbf{Iterative-deepening A* (IDA):} Like IDS, but the "depth" cutoff is the $f$-cost ($g+h$).
-  \item \textbf{Recursive best-first search (RBFS):} Mimics best-first search using linear space by recursively re-expanding nodes and updating $f$-values from ancestors.
-  \item \textbf{(Simple) Memory-bounded A ((S)MA*):} When memory is full, drops the worst (highest $f$-value) leaf node.
-\end{enumerate}
-
-\subsection{Tree Search vs. Graph Search (Revisited)}
-
-Failure to detect repeated states can turn a linear problem into an exponential one!
-
-\begin{defbox}[Graph Search]
-  Uses an \textbf{explored set} (or "closed set") to store all states that have been expanded. When expanding a node, its successors are only added to the fringe \textbf{if they are not in the fringe or explored set}.
-\end{defbox}
-
-\paragraph{Optimality of A* Graph Search}
-\begin{itemize}
-  \item If $h(n)$ is only \textbf{admissible}, Graph Search A* is not guaranteed to be optimal. It might find a suboptimal path to a node first, add it to the explored set, and never find the optimal path.
-  \item If $h(n)$ is \textbf{consistent}, Graph Search A* \textbf{is optimal}.
-  \item \textbf{Why?} A consistent heuristic guarantees that $f$-values are non-decreasing along any path. This means the \textit{first} time A* expands a node $n$, it is \textit{guaranteed} to have found the shortest possible path to it. Therefore, we never need to re-expand any node in the explored set.
-\end{itemize}
+Es gilt: $h_{MAN}(n) \ge h_{MIS}(n)$. Daher dominiert die Manhattan-Distanz die "Misplaced Tiles"-Heuristik und ist für A* besser geeignet.
 
 \end{document}

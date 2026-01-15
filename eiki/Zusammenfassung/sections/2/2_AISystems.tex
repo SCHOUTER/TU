@@ -6,174 +6,166 @@
 
 \begin{document}
 
-\section{AI Systems: Agents and Environments}
+\section{AI101-02: AI Systems}
 
-\begin{defbox}[Definition: AI System]
-    An AI system is defined as the study of (rational) \defc{agents} and their \defc{environments}. The system has two main parts:
-    \begin{enumerate}[noitemsep]
-        \item \textbf{Agent:} Anything that can be viewed as perceiving its environment through \defc{sensors} and acting upon that environment through \defc{actuators}.
-        \item \textbf{Environment:} The surroundings or conditions in which the agent lives or operates. This can be real (e.g., streets for a self-driving car) or artificial (e.g., a chessboard).
-    \end{enumerate}
+Dieses Kapitel behandelt die grundlegenden Bausteine von KI-Systemen: Agenten und ihre Umgebungen. Es definiert Rationalität und klassifiziert verschiedene Arten von Umgebungen und Agentenarchitekturen.
+
+\subsection{KI-Systeme und Agenten}
+
+Ein KI-System wird definiert durch die Interaktion zwischen einem Agenten und seiner Umgebung.
+
+\begin{defbox}[Definition: Agent]
+    Ein \defc{Agent} ist eine Entität, die ihre Umgebung durch \defc{Sensoren} wahrnimmt und auf diese Umgebung durch \defc{Aktuatoren} (Effektoren) einwirkt.
 \end{defbox}
-The agent follows a continuous \defc{Sense $\rightarrow$ Think $\rightarrow$ Act} loop.
 
-\begin{center}
-    \vcentered{\includegraphics[width=0.9\textwidth]{pics/eiki_1_AI101-02_page_15_1.png}}
-\end{center}
+% [Bild: Darstellung der Interaktion zwischen Agent und Umgebung: Sensoren nehmen Wahrnehmungen (Percepts) auf, Agent entscheidet, Aktuatoren führen Aktionen aus.]
 
-\subsection{Rationality}
+\begin{itemize}
+    \item \textbf{Wahrnehmung (Percept):} Der sensorische Input des Agenten zu einem bestimmten Zeitpunkt.
+    \item \textbf{Wahrnehmungssequenz (Percept Sequence):} Die vollständige Historie aller Wahrnehmungen, die der Agent bisher erhalten hat.
+    \item \textbf{Agentenfunktion:} Eine mathematische Abbildung von Wahrnehmungssequenzen auf Aktionen: $f: P^* \rightarrow A$.
+    \item \textbf{Agentenprogramm:} Die konkrete Implementierung der Agentenfunktion, die auf einer physischen Architektur läuft.
+\end{itemize}
 
-\begin{defbox}[Rationality]
-    \begin{itemize}[leftmargin=*, noitemsep]
-        \item A \defc{rational agent} is one that "does the right thing".
-        \item A \defc{rational action} is one that maximizes the agent's performance and yields the best positive outcome.
-        \item \textbf{Key Point:} Rationality maximizes \defc{expected} performance, not necessarily the \textit{optimal} outcome. E.g., not playing the lottery is rational (positive expected outcome), even if playing could lead to the optimal outcome (winning).
-        \item Rationality is \textbf{not} omniscient. An omniscient agent would know the \textit{actual} outcome of its actions, which is impossible in reality.
+\subsection{Rationalität}
+
+Ein rationaler Agent ist nicht zwangsläufig ein perfekter oder allwissender Agent. Rationalität bezieht sich auf die Qualität der Entscheidungsfindung basierend auf den verfügbaren Informationen.
+
+\begin{defbox}[Rationaler Agent]
+    Ein \defc{rationaler Agent} wählt für jede mögliche Wahrnehmungssequenz diejenige Aktion aus, die erwartungsgemäß sein Leistungsmaß (\textit{Performance Measure}) maximiert, unter Berücksichtigung der Wahrnehmungssequenz und des eingebauten Wissens.
+\end{defbox}
+
+Rationalität hängt von vier Faktoren ab:
+\begin{enumerate}
+    \item Dem \textbf{Leistungsmaß} (Performance Measure), das den Erfolg definiert.
+    \item Dem \textbf{Wissen}, das der Agent bereits besitzt (Prior Knowledge).
+    \item Den \textbf{Aktionen}, die der Agent ausführen kann.
+    \item Der bisherigen \textbf{Wahrnehmungssequenz}.
+\end{enumerate}
+
+\textbf{Wichtige Unterscheidung:}
+\begin{itemize}
+    \item \textbf{Allwissenheit (Omniscience):} Kennt das tatsächliche Ergebnis jeder Aktion (in der Realität unmöglich).
+    \item \textbf{Rationalität:} Maximiert das \textit{erwartete} Ergebnis basierend auf dem aktuellen Wissen.
+\end{itemize}
+
+\subsection{Task Environments (PEAS)}
+
+Um einen Agenten zu entwerfen, muss die Aufgabenstellung spezifiziert werden. Dies geschieht durch das PEAS-Modell.
+
+\begin{defbox}[PEAS]
+    \begin{itemize}
+        \item \textbf{P}erformance Measure (Leistungsmaß): Woran wird Erfolg gemessen?
+        \item \textbf{E}nvironment (Umgebung): Wo operiert der Agent?
+        \item \textbf{A}ctuators (Aktuatoren): Womit handelt der Agent?
+        \item \textbf{S}ensors (Sensoren): Womit nimmt der Agent wahr?
     \end{itemize}
 \end{defbox}
 
-A \defc{performance measure} is a function that evaluates a sequence of actions.\\
-\begin{tcolorbox}[definitionbox, title={General Rule for Design}]
-    Design the performance measure based on the \defc{desired outcome}, not the desired agent behaviour.
-\end{tcolorbox}
+\textbf{Beispiel: Autonomes Taxi}
+\begin{itemize}
+    \item \textbf{P:} Sicherheit, Schnelligkeit, Legalität, Komfort, Profit.
+    \item \textbf{E:} Straßen, anderer Verkehr, Fußgänger, Wetter.
+    \item \textbf{A:} Lenkung, Gaspedal, Bremse, Hupe, Blinker.
+    \item \textbf{S:} Kameras, Radar, Tacho, GPS, Motorensensoren.
+\end{itemize}
 
-\subsection{Characteristics of Environments}
+\subsection{Eigenschaften von Umgebungen}
 
-The design of an agent heavily depends on the type of environment it operates in. Environments are characterized along several key dimensions.
+Die Art der Umgebung bestimmt maßgeblich das Design des Agenten. Umgebungen werden anhand folgender Dimensionen klassifiziert:
 
-\begin{defbox}[Environment Dimensions]
-    \begin{itemize}[leftmargin=*, noitemsep]
-        \item \defc{Discrete vs. Continuous:} Does the environment have a limited, countable number of distinct states (e.g., chess) or is it continuous (e.g., position and speed of a self-driving car)?
+\begin{enumerate}
+    \item \textbf{Fully Observable (Vollständig beobachtbar) vs. Partially Observable:}
+          \begin{itemize}
+              \item \textit{Fully:} Die Sensoren geben zu jedem Zeitpunkt den kompletten Zustand der Umgebung wieder (kein interner Speicher nötig).
+              \item \textit{Partially:} Teile des Zustands sind verdeckt oder Sensoren sind ungenau (interner Zustand/Gedächtnis nötig).
+          \end{itemize}
 
-        \item \defc{Observable vs. Partially/Unobservable:} Can the agent's sensors determine the \textit{complete} state of the environment at each time point? If not, it is \defc{partially observable} (e.g., a taxi cannot know pedestrian intentions, poker agent cannot see opponent's cards).
+    \item \textbf{Single Agent vs. Multi-Agent:}
+          \begin{itemize}
+              \item \textit{Single:} Der Agent agiert allein (z.B. Kreuzworträtsel).
+              \item \textit{Multi:} Es gibt andere Agenten, die kooperativ oder kompetitiv sein können (z.B. Schach, Straßenverkehr).
+          \end{itemize}
 
-        \item \defc{Static vs. Dynamic:} Does the environment change while the agent is acting/deliberating? A crossword puzzle is \defc{static}; taxi driving is \defc{dynamic} (other cars move).
+    \item \textbf{Deterministic vs. Stochastic:}
+          \begin{itemize}
+              \item \textit{Deterministic:} Der nächste Zustand wird vollständig durch den aktuellen Zustand und die Aktion des Agenten bestimmt.
+              \item \textit{Stochastic:} Es gibt Unsicherheiten/Zufall (z.B. Wetter, Würfelglück). Wenn Wahrscheinlichkeiten unbekannt sind, nennt man es \textit{non-deterministic}.
+          \end{itemize}
 
-        \item \defc{Single Agent vs. Multiple Agents:} Is the agent operating by itself? Or does the environment contain other agents (e.g., other drivers, poker players)?
+    \item \textbf{Episodic vs. Sequential:}
+          \begin{itemize}
+              \item \textit{Episodic:} Die Erfahrung ist in atomare Episoden unterteilt. Eine Aktion in Episode $A$ hat keine Auswirkung auf Episode $B$ (z.B. Bildklassifizierung).
+              \item \textit{Sequential:} Die aktuelle Entscheidung beeinflusst alle zukünftigen Entscheidungen (z.B. Schach, Fahren).
+          \end{itemize}
 
-        \item \defc{Accessible vs. Inaccessible:} Can the agent obtain \textit{complete and accurate} information about the environment's state?
+    \item \textbf{Static vs. Dynamic:}
+          \begin{itemize}
+              \item \textit{Static:} Die Umgebung ändert sich nicht, während der Agent "nachdenkt" (z.B. Kreuzworträtsel).
+              \item \textit{Dynamic:} Die Umgebung ändert sich kontinuierlich (z.B. Taxi fahren).
+              \item \textit{Semi-dynamic:} Der Zustand ändert sich nicht, aber die Bewertung (Performance) ändert sich mit der Zeit (z.B. Schach mit Schachuhr).
+          \end{itemize}
 
-        \item \defc{Deterministic vs. Non-deterministic (Stochastic):} Is the next state of the environment completely determined by the current state and the agent's action? Chess is \defc{deterministic}. A self-driving car is \defc{non-deterministic} (turning the wheel can have slightly different effects due to road friction, wind, etc.).
+    \item \textbf{Discrete vs. Continuous:}
+          \begin{itemize}
+              \item Bezieht sich auf die Zustände, Zeit oder Aktionen. Schach ist diskret (feste Felder), Taxi fahren ist kontinuierlich.
+          \end{itemize}
+\end{enumerate}
 
-        \item \defc{Episodic vs. Sequential:} In an \defc{episodic} environment, the agent's experience is divided into "episodes". The quality of its action depends only on the current episode (perceive $\rightarrow$ act). In a \defc{sequential} environment, the agent requires memory of past actions to make the best decision.
+\subsection{Agententypen}
+
+Es gibt vier grundlegende Typen von Agentenprogrammen, aufsteigend nach Komplexität und Fähigkeit.
+
+\subsubsection{1. Simple Reflex Agents (Einfache Reflex-Agenten)}
+Diese Agenten entscheiden nur basierend auf der \textit{aktuellen} Wahrnehmung. Sie ignorieren die Wahrnehmungshistorie.
+\begin{itemize}
+    \item \textbf{Funktionsweise:} Condition-Action Rules (Wenn-Dann-Regeln).
+    \item \textbf{Formel:} Aktion = Funktion(Aktuelle Wahrnehmung).
+    \item \textbf{Einschränkung:} Funktionieren nur zuverlässig in \textit{fully observable} Umgebungen. Drohen in unendliche Schleifen zu geraten, wenn die Umgebung nur teilweise beobachtbar ist.
+\end{itemize}
+% [Bild: Diagramm eines Simple Reflex Agent: Percept -> Sensoren -> Was ist die Welt jetzt -> Bedingung-Aktion-Regeln -> Aktion -> Aktuatoren]
+
+\subsubsection{2. Model-based Reflex Agents (Modellbasierte Reflex-Agenten)}
+Diese Agenten besitzen einen internen Zustand (\textit{Internal State}), um mit partieller Beobachtbarkeit umzugehen.
+\begin{itemize}
+    \item \textbf{Interner Zustand:} Repräsentiert Wissen über die Welt, das aktuell nicht sichtbar ist (Gedächtnis).
+    \item \textbf{Modell der Welt:} Wissen darüber, wie die Welt funktioniert (Übergangsmodelle) und wie Aktionen die Welt verändern.
+    \item \textbf{Ablauf:} Update State $\rightarrow$ Wähle Regel $\rightarrow$ Aktion.
+\end{itemize}
+% [Bild: Diagramm Model-based Agent: Hinzugefügt ist 'State' und 'How the world evolves']
+
+\subsubsection{3. Goal-based Agents (Zielbasierte Agenten)}
+Wissen über den Zustand reicht nicht aus; der Agent benötigt ein Ziel (\textit{Goal}).
+\begin{itemize}
+    \item \textbf{Planung/Suche:} Der Agent simuliert verschiedene Sequenzen von Aktionen, um zu sehen, ob sie zum Ziel führen.
+    \item \textbf{Unterschied zum Reflex:} Der Reflex-Agent reagiert, der Goal-based Agent plant in die Zukunft.
+    \item \textbf{Flexibilität:} Ziele können sich ändern, der Agent passt sein Verhalten an.
+\end{itemize}
+% [Bild: Diagramm Goal-based Agent: 'What is the world like now' -> 'What it will be like if I do action A' -> 'Goals' -> Aktion]
+
+\subsubsection{4. Utility-based Agents (Nutzenbasierte Agenten)}
+Ziele sind oft binär (erreicht/nicht erreicht). Nutzen (\textit{Utility}) erlaubt eine feinere Unterscheidung.
+\begin{itemize}
+    \item \textbf{Utility Function:} Bildet einen Zustand auf eine reelle Zahl ab, die den Grad der "Zufriedenheit" des Agenten angibt.
+    \item \textbf{Vorteil:} Ermöglicht rationale Entscheidungen bei
+          \begin{itemize}
+              \item Zielkonflikten (z.B. Geschwindigkeit vs. Sicherheit).
+              \item Unsicherheit (Abwägung von Erfolgswahrscheinlichkeit und Nutzen).
+          \end{itemize}
+\end{itemize}
+% [Bild: Diagramm Utility-based Agent: Statt 'Goals' gibt es eine 'Utility'-Box, die den Nutzen maximiert]
+
+\subsubsection{5. Learning Agents (Lernende Agenten)}
+Jeder der obigen Agententypen kann lernfähig gemacht werden. Dies erlaubt dem Agenten, in unbekannten Umgebungen zu operieren und kompetenter zu werden.
+
+\begin{defbox}[Komponenten eines lernenden Agenten]
+    \begin{itemize}
+        \item \textbf{Performance Element:} Der eigentliche Agent (einer der 4 obigen Typen), der Entscheidungen trifft.
+        \item \textbf{Critic (Kritiker):} Bewertet, wie gut der Agent ist, basierend auf einem festen Leistungsstandard.
+        \item \textbf{Learning Element:} Nutzt das Feedback des Kritikers, um das Performance Element zu verbessern.
+        \item \textbf{Problem Generator:} Schlägt Aktionen vor, die zu neuen Erfahrungen führen (Exploration), auch wenn diese kurzfristig suboptimal sind.
     \end{itemize}
 \end{defbox}
-
-\begin{tcolorbox}[definitionbox, title={Key Distinction: Observable vs. Accessible}]
-    \begin{itemize}[leftmargin=*, noitemsep]
-        \item \defc{Accessibility} concerns the environment itself: whether the information exists and can \textit{in principle} be obtained.
-        \item \defc{Observability} concerns the agent's \textit{sensors}: whether they can actually perceive that information.
-    \end{itemize}
-\end{tcolorbox}
-
-\begin{center}
-    \begin{table}[h!]
-        \centering
-        \resizebox{\textwidth}{!}{%
-            \begin{tabular}{lccccccc}
-                \hline
-                \textbf{Environment} & \textbf{Discrete?} & \textbf{Observable?} & \textbf{Static?} & \textbf{Single Agent?} & \textbf{Accessible?} & \textbf{Deterministic?} & \textbf{Episodic?} \\ \hline
-                Chess                & Discrete           & Observable           & Static           & Multi-Agent            & Accessible           & Deterministic           & Sequential         \\
-                Solitaire            & Discrete           & Observable           & Static           & Single Agent           & Accessible           & Deterministic           & Sequential         \\
-                Poker                & Discrete           & Partially Observable & Static           & Multi-Agent            & Partially Accessible & Stochastic              & Sequential         \\
-                Self-Driving         & Continuous         & Partially Observable & Dynamic          & Single Agent           & Inaccessible         & Stochastic              & Sequential         \\
-                Medical Diagnosis    & Discrete           & Partially Observable & Static           & Single Agent           & Inaccessible         & Stochastic              & Episodic           \\ \hline
-            \end{tabular}
-        }
-        \caption{Characteristics of various environments}
-    \end{table}
-
-\end{center}
-
-\subsection{Types of Agents}
-
-Agents are categorized based on their perceived intelligence and complexity.
-
-\subsubsection{Reflex Agent}
-\begin{itemize}[leftmargin=*, noitemsep]
-    \item Selects actions based \textbf{only on the current percept}, ignoring the percept history.
-    \item Implemented with simple \defc{condition-action rules}.
-    \item Example: A thermostat (IF temp $<$ 20$^{\circ}$C $\rightarrow$ turn on heater).
-    \item \textbf{Problem:} Very limited. No knowledge of anything it cannot actively perceive.
-\end{itemize}
-\begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_20_1.png}}
-\end{center}
-
-\subsubsection{Model-based Agent}
-\begin{itemize}[leftmargin=*, noitemsep]
-    \item These agents \defc{keep track of the world state}.
-    \item They maintain an \defc{internal state (a world model)} that describes how the world evolves and how the agent's actions affect it.
-    \item This allows the agent to handle partially observable environments.
-    \item Example: A warehouse robot tracking inventory positions.
-\end{itemize}
-\begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_22_1.png}}
-\end{center}
-
-\subsubsection{Goal-based Agent}
-\begin{itemize}[leftmargin=*, noitemsep]
-    \item Builds on a model-based agent, but also knows what states are \defc{desirable} (i.e., it has \defc{goals}).
-    \item This allows the agent to make decisions by considering the future, asking "What will happen if I do action A?" and "Will that action achieve my goal?".
-    \item Example: A chess agent whose goal is to checkmate the opponent.
-\end{itemize}
-\begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_24_1.png}}
-\end{center}
-
-\subsubsection{Utility-based Agent}
-\begin{itemize}[leftmargin=*, noitemsep]
-    \item Goals provide a binary distinction (achieved / not-achieved). A \defc{utility function} provides a continuous scale, rating each state based on the desired result ("how happy" the agent is).
-    \item This is crucial for resolving \defc{conflicting goals} (e.g., is speed or safety more important for a self-driving car?).
-    \item Allows the agent to choose the action that maximizes its \defc{expected utility}.
-\end{itemize}
-\begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_26_1.png}}
-\end{center}
-
-\subsubsection{Learning Agent}
-\begin{itemize}[leftmargin=*, noitemsep]
-    \item Employs a \defc{learning element} to gradually improve and become more knowledgeable over time.
-    \item Can learn from its past experiences and adapt automatically.
-    \item More robust in unknown environments.
-\end{itemize}
-\begin{center}
-    \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_28_1.png}}
-\end{center}
-
-\begin{defbox}[Four Components of a Learning Agent]
-    \begin{enumerate}[noitemsep]
-        \item \defc{Learning Element:} Responsible for making improvements by learning from the environment.
-        \item \defc{Critic:} Gives feedback on how well the agent is doing with respect to a fixed performance standard.
-        \item \defc{Performance Element:} Responsible for selecting actions (this is the "agent" part).
-        \item \defc{Problem Generator:} Responsible for suggesting actions that will lead to new (and potentially informative) experiences.
-    \end{enumerate}
-\end{defbox}
-
-\begin{tcolorbox}[definitionbox, title={Agent Types Summary}]
-    \begin{itemize}[leftmargin=*, noitemsep]
-        \item \textbf{Reflex agent:} reacts.
-        \item \textbf{Model-based agent:} remembers.
-        \item \textbf{Goal-based agent:} plans.
-        \item \textbf{Utility-based agent:} optimizes.
-        \item \textbf{Learning agent:} improves itself over time.
-    \end{itemize}
-\end{tcolorbox}
-
-\subsection{How to Make Agents Intelligent}
-
-There are several high-level approaches to selecting intelligent actions:
-
-\begin{itemize}[leftmargin=*, noitemsep]
-    \item \defc{Search Algorithms:} Understand "finding a good action" as a search problem and use tree-based algorithms to find a solution (path to a goal).
-
-    \item \defc{Reinforcement Learning (RL):} Based on trial and error, similar to animal conditioning. The agent receives \defc{rewards} (positive) or \defc{pain/punishments} (negative) from the environment and learns to choose actions that maximize its cumulative reward.
-          \begin{center}
-              \vcentered{\includegraphics[width=0.7\textwidth]{pics/eiki_1_AI101-02_page_33_1.png}}
-          \end{center}
-
-    \item \defc{Genetic Algorithms (GAs):} Inspired by Darwinian evolution ("survival of the fittest"). A \defc{population} of agents is generated, evaluated by a \defc{performance function}, and the best ones are "bred" (using \defc{crossover} and \defc{mutation}) to create a new, potentially better, generation.
-
-\end{itemize}
+% [Bild: Diagramm Learning Agent, das die Interaktion der vier Komponenten zeigt]
 
 \end{document}
