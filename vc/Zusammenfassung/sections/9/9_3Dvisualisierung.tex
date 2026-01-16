@@ -1,0 +1,192 @@
+ \documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics}}
+
+\begin{document}
+
+\section{3D-Visualisierung}
+Dieses Kapitel behandelt die Grundlagen der Gewinnung, Verarbeitung und Visualisierung von 3D-Daten. Der Fokus liegt auf der Unterscheidung zwischen indirekter (Oberflächen-) und direkter (Volumen-) Visualisierung sowie den mathematischen und algorithmischen Grundlagen des Volume Renderings.
+
+\subsection{3D-Daten und Datengewinnung}
+3D-Daten bestehen aus Messwerten, die im dreidimensionalen Raum verteilt sind. Jeder Wert besitzt Koordinaten $(x, y, z)$ und kann skalar (z. B. Dichte, Temperatur) oder höherdimensional (z. B. Vektorfelder wie Windrichtung) sein.
+
+\begin{defbox}[Datenquellen]
+      \begin{itemize}
+            \item \defc{Terrain-Daten}:
+                  Höhenmessungen an Positionen $(x, y)$, oft ergänzt durch Satellitenbilder.
+            \item \defc{Laser Scanning}:
+                  Aktive Projektion eines Laserstrahls auf eine Oberfläche. Durch Triangulation (bekannter Abstand und Winkel zwischen Laser und Kamera) wird die Tiefe berechnet. Ergebnis: Unstrukturierte Punktwolke.
+            \item \defc{Range Images}:
+                  Bilder, bei denen jeder Pixel $(u, v)$ eine Tiefeninformation $r(u,v)$ speichert.
+            \item \defc{Medizinische Bilddaten (CT/MRI)}:
+                  Messung physikalischer Eigenschaften (Protonendichte bei MRI, Gewebedichte bei CT). Die Daten liegen meist als Stapel von 2D-Schichten (\textit{Slices}) vor, was ein reguläres 3D-Gitter bildet.
+            \item \defc{Simulation}:
+                  Numerische Simulationen (z. B. Wetter, Strömung), definiert auf Gittern.
+      \end{itemize}
+\end{defbox}
+\begin{center}
+      \includegraphics[width=0.49\textwidth]{vc_1_VC2025_09_3D-Visualisierung_page_6_3.png}
+      \includegraphics[width=0.49\textwidth]{vc_1_VC2025_09_3D-Visualisierung_page_25_1.png}
+\end{center}
+
+\subsection{Triangulation von Punktwolken}
+Um aus unstrukturierten Punktwolken (Menge von Punkten $s_i = (x_i, y_i, z_i)$) eine visualisierbare Oberfläche zu erzeugen, ist eine Triangulation notwendig.
+
+\subsubsection{Planare Triangulation}
+Bei einfachen Oberflächen (z. B. Terrain ohne Überhänge) können Punkte auf eine 2D-Ebene projiziert, dort trianguliert und das entstehende Netz anschließend anhand der $z$-Werte deformiert werden.
+
+\subsubsection{Voronoi-Diagramm und Delaunay-Triangulation}
+Diese Konzepte sind fundamental für die Vernetzung von Punkten.
+
+\begin{defbox}[Voronoi-Diagramm]
+      Für eine Menge von Punkten definiert die \defc{Voronoi-Zelle} eines Punktes $S_i$ den Bereich, der näher an $S_i$ liegt als an jedem anderen Punkt der Menge. Die Kanten sind die Orte, die zu zwei Punkten den gleichen Abstand haben; Knoten haben zu mindestens drei Punkten den gleichen Abstand.
+\end{defbox}
+% Grafik: Voronoi-Diagramm (Zellenaufteilung um Punkte)
+\begin{defbox}[Delaunay-Triangulation]
+      Der duale Graph des Voronoi-Diagramms. Verbindet die Zentren benachbarter Voronoi-Zellen.
+      \begin{itemize}
+            \item \textbf{Leer-Kreis-Eigenschaft}:
+                  Der Umkreis eines jeden Dreiecks in einer Delaunay-Triangulation enthält keine anderen Punkte der Punktmenge.
+            \item \textbf{Maximierung der kleinen Winkel}:
+                  Vermeidet schmale, langgestreckte Dreiecke (``Sliver Polygons''), was für die numerische Stabilität und das Rendering vorteilhaft ist.
+      \end{itemize}
+\end{defbox}
+\begin{center}
+      \includegraphics[width=0.7\textwidth]{vc_1_VC2025_09_3D-Visualisierung_page_19_1.png}
+      \vspace{0.5em}
+
+      Voronoi-Parkettierung (Tesselation) $\rightarrow$ Voronoi-Diagramm $\rightarrow$ Delaunay-Triangulation
+\end{center}
+\begin{center}
+      \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[height=0.2\textwidth]{vc_1_VC2025_09_3D-Visualisierung_page_20_1.png}
+
+            \vspace{0.5em}
+            \textbf{nicht erlaubt}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.45\textwidth}
+            \centering
+            \includegraphics[height=0.2\textwidth]{vc_1_VC2025_09_3D-Visualisierung_page_20_2.png}
+
+            \vspace{0.5em}
+            \textbf{Korrektur der Delaunay-Triangulation durch Umdrehen der
+                  Kanten („Edge Flipping“):}
+      \end{minipage}
+\end{center}
+
+\subsection{Indirekte Volumenvisualisierung (Oberflächenrendering)}
+Bei der indirekten Visualisierung wird aus den Volumendaten eine explizite geometrische Zwischenrepräsentation (meist Polygone) extrahiert.
+
+\subsubsection{Isoflächen (Isosurfaces)}
+Analog zu Konturlinien in 2D (Linien gleicher Höhe) sind Isoflächen in 3D Trennflächen zwischen Strukturen unterschiedlicher Dichte. Eine Isofläche ist definiert durch die implizite Gleichung: \[i(x) = V(x) - \tau = 0\]
+wobei $V(x)$ der Voxelwert und $\tau$ der Isowert (Schwellenwert) ist.
+
+\subsubsection{Marching Cubes Algorithmus}
+Der Standardalgorithmus zur Extraktion von Isoflächen aus Gitterdaten.
+\begin{enumerate}
+      \item Betrachte eine logische Volumenzelle, gebildet durch 8 Voxel-Nachbarn.
+      \item Klassifiziere jeden Eckpunkt als ``innen'' ($V \ge \tau$) oder ``außen'' ($V < \tau$).
+      \item Dies ergibt $2^8 = 256$ mögliche Konfigurationen.
+      \item Unter Ausnutzung von Symmetrien (Rotation, Invertierung) Reduktion auf 15 Basisfälle.
+      \item Generiere Dreiecke basierend auf der Konfiguration (Interpolation der Schnittpunkte auf den Kanten).
+\end{enumerate}
+Das 2D-Äquivalent hierzu ist der \defc{Marching Squares} Algorithmus (4 Pixel, 16 Fälle).
+% Grafik: Marching Squares Fälle (2D) und Marching Cubes Fälle (3D)
+
+\subsubsection{Optimierung der Rendering-Pipeline}
+Da Marching Cubes extrem viele Dreiecke erzeugen kann, sind Optimierungen notwendig:
+\begin{itemize}
+      \item \defc{Culling}:
+            Entfernen nicht sichtbarer Geometrie.
+            \begin{itemize}
+                  \item \textit{Backface-Culling}:
+                        Rückseiten ignorieren.
+                  \item \textit{View-Frustum-Culling}:
+                        Außerhalb des Sichtbereichs ignorieren.
+                  \item \textit{Occlusion-Culling}:
+                        Verdeckte Objekte ignorieren.
+            \end{itemize}
+      \item \defc{Meshreduktion}:
+            Vereinfachung des Netzes durch Zusammenfassen von Polygonen in flachen Bereichen, um die Anzahl der Primitive zu senken.
+      \item \defc{Mesh-Glättung}:
+            Entfernung von Artefakten und Rauschen (z. B. Laplacesche Glättung), wobei darauf geachtet werden muss, das Volumen nicht zu stark zu verfälschen (``Shrinking'').
+\end{itemize}
+
+\subsection{Direkte Volumenvisualisierung (Volume Rendering)}
+Im Gegensatz zur indirekten Methode wird hier keine Geometrie erzeugt. Das Bild wird direkt aus den Voxeldaten berechnet, indem physikalische Lichtinteraktion simuliert wird.
+
+\subsubsection{Physikalisches Modell: Density Emitter Model}
+Das Volumen wird als halbtransparente Wolke betrachtet, die Licht sowohl emittiert (leuchtet) als auch absorbiert (abschwächt).
+
+\subsubsection{Volumen-Rendering-Gleichung}
+Die Intensität $I(s)$ entlang eines Sichtstrahls berechnet sich aus dem Hintergrundlicht $I_{s_0}$, das durch das Volumen abgeschwächt wird, und dem kumulierten Licht, das von den Voxeln entlang des Strahls emittiert und wiederum abgeschwächt wird.
+
+\begin{defbox}[Integralform]
+      \[I(s) = I_{s_0} \cdot e^{-\int_{s_0}^{S} \tau(t) dt} + \int_{s_0}^{S} Q(\tilde{s}) \cdot e^{-\int_{\tilde{s}}^{S} \tau(t) dt} ds\]
+      \begin{itemize}
+            \item $\tau(t)$: Optische Dichte (Absorptionskoeffizient).
+            \item $Q(\tilde{s})$: Emission (Leuchtkraft) an der Stelle $\tilde{s}$.
+            \item Der Exponentialterm beschreibt die Transparenz (Transmission) über eine Strecke.
+      \end{itemize}
+\end{defbox}
+
+\subsubsection{Diskrete Näherung und Ray Casting Pipeline}
+Für die computergrafische Umsetzung wird das Integral durch eine Summe approximiert (Ray Casting). Der Strahl wird in Segmente $\Delta s$ unterteilt.
+\[I(S) \approx I_0 \prod_{k=0}^{n-1} t_k + \sum_{k=0}^{n-1} \left( Q_k \cdot \Delta s \cdot \prod_{j=k+1}^{n-1} t_j \right)\]
+Hierbei ist $t_k = e^{-\tau_k \Delta s}$ die Transparenz des $k$-ten Segments.
+Die Pipeline besteht aus vier Schritten:
+
+\textbf{1. Abtastung (Sampling):}
+Entlang des Sichtstrahls werden Werte in Abständen $\Delta s$ genommen. Da diese Positionen meist nicht exakt auf Voxelzentren fallen, ist \defc{Interpolation} nötig:
+\begin{itemize}
+      \item \textit{Nearest Neighbor}:
+            Blockartige Artefakte, schnell.
+      \item \textit{Trilinear}:
+            Glatter, Standardverfahren (interpoliert in x, y, z Richtung).
+      \item \textit{Shannon-Theorem}:
+            Die Abtastrate muss hoch genug sein (Nyquist-Frequenz), um Aliasing-Artefakte zu vermeiden ($\Delta s < 0.5 \times$ Voxelgröße).
+\end{itemize}
+% Grafik: Vergleich Nearest Neighbor vs. Trilineare Interpolation
+
+\textbf{2. Klassifikation und Beleuchtung (Shading):}
+Den interpolierten Skalarwerten müssen optische Eigenschaften zugeordnet werden.
+\begin{itemize}
+      \item \defc{Transferfunktionen}:
+            Bilden Dichtewerte auf Farbe ($Q$) und Opazität/Transparenz ($t$) ab.
+            \begin{itemize}
+                  \item \textit{Farbtransferfunktion}:
+                        Ordnet Farbe zu (z. B. Knochen = weiß, Muskel = rot).
+                  \item \textit{Opazitätstransferfunktion}:
+                        Bestimmt Sichtbarkeit (z. B. Luft = transparent).
+            \end{itemize}
+      \item \defc{Shading}: Um 3D-Strukturen besser erkennbar zu machen, wird eine Beleuchtung simuliert (z. B. Phong-Shading). Der Normalenvektor für das Shading wird meist aus dem Gradienten der Voxeldaten berechnet.
+\end{itemize}
+
+\textbf{3. Komposition (Compositing):}
+Das Aufsummieren der Farb- und Opazitätswerte entlang des Strahls.
+\begin{defbox}[Back-to-Front vs. Front-to-Back]
+      \begin{itemize}
+            \item \textbf{Back-to-Front} (vom Hintergrund zum Auge): Ähnlich dem Painter's Algorithm.
+                  \[I_k = I_{k-1} \cdot t_k + C_k\] wobei $C_k$ der emittierte Farbanteil ist.
+            \item \textbf{Front-to-Back} (vom Auge zum Hintergrund):
+                  Ermöglicht Optimierung. Man muss Intensität $I$ und akkumulierte Transparenz $\tau$ tracken.
+                  \[I_{k+1} = I_k + C_{k+1} \cdot \tau_k\]
+
+                  \[\tau_{k+1} = \tau_k \cdot t_{k+1}\]
+
+            \item \textbf{Early Ray Termination}: Wichtige Optimierung bei Front-to-Back. Wenn die akkumulierte Opazität fast 100\% erreicht (Transparenz $\approx 0$), kann der Strahl abgebrochen werden, da dahinterliegende Voxel nicht mehr sichtbar sind.
+
+      \end{itemize}
+\end{defbox}
+% Grafik: Prinzip des Ray Castings durch ein Voxelgitter
+% Grafik: Transferfunktions-Editor (Histogramm mit Farb-/Opazitätszuordnung)
+
+
+\end{document}

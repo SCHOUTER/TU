@@ -1,0 +1,137 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Encoding, Fonts, Typography
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ---------------------------------------------------------
+% Language
+% ---------------------------------------------------------
+\usepackage[ngerman,english]{babel}
+
+% ---------------------------------------------------------
+% Math
+% ---------------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+
+% ---------------------------------------------------------
+% Tables
+% ---------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------------------------------------------------------
+% Figures & Graphics
+% ---------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% ---------------------------------------------------------
+% Lists
+% ---------------------------------------------------------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------------------------------------------------------
+% Units & Numbers
+% ---------------------------------------------------------
+\usepackage{siunitx}
+
+% ---------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% ---------------------------------------------------------
+% Global layout improvements
+% ---------------------------------------------------------
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+
+% ---------------------------------------------------------
+% Title
+% ---------------------------------------------------------
+\title{Übung 9: Gruppe 28}
+\author{
+    Niclas Kusenbach, 360227 \and
+    Alicia Bayerl, 2633336 \and
+    Mohamed Naceur Hedhili, 2957151 \and
+    Selma Naz Öner, 2662640
+}
+
+\begin{document}
+\maketitle
+
+\section*{Aufgabe 9.1: 3D Daten}
+
+Unter 3D-Daten versteht man digitale Repräsentationen von Objekten oder Szenen im dreidimensionalen Raum. Sie bestehen grundlegend aus geometrischen Informationen (meist $x, y, z$-Koordinaten) und auch topologischen Informationen.
+
+Die Messwerte (Attribute) können verschiedene Eigenschaften besitzen:
+\begin{itemize}
+  \item \textbf{Skalare Werte:} Ein einzelner Wert pro Datenpunkt (z. B. Dichte, Temperatur, Druck in einer Volumensimulation).
+  \item \textbf{Vektorielle Werte:} Richtungs- und Größeninformationen (z. B. Strömungsgeschwindigkeit, Normalenvektoren).
+  \item \textbf{Farbinformationen:} RGB-Werte oder Texturkoordinaten.
+  \item \textbf{Struktur:} Die Daten können auf strukturierten Gittern (regulär) oder unstrukturierten Gittern (z. B. Punktwolken, Tetraeder-Netze) vorliegen.
+\end{itemize}
+
+\section*{Aufgabe 9.2: Triangulation von Punktwolken}
+
+\subsection*{a) Voronoi-Diagramm}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_HU_9_1.png}
+\end{center}
+
+\subsection*{b) Delaunay-Bedingung}
+Eine Triangulation ist eine Delaunay-Triangulation, wenn die \textbf{Leer-Kreis-Bedingung} erfüllt ist. Also, dass der Umkreis eines jeden Dreiecks keinen anderen Punkt der Punktwolke in seinem Inneren enthalten darf.
+
+\subsection*{c) Delaunay-Triangulation erstellen}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_HU_9_1.png}
+\end{center}
+
+\subsection*{d) Gleichseitige Dreiecke und kleine Innenwinkel}
+Gleichseitige Dreiecke sind ideal, da das Verhältnis von Fläche zu Umfang optimal ist und dadurch numerische Stabilität gewährleistet wird. Sie minimieren Verzerrungen bei der Rasterisierung. Sehr kleine Innenwinkel führen zu langen, schmalen Dreiecken (``Sliver Triangles''). Das lässt große Fehler bei der Interpolation von Werten innerhalb des Dreiecks und Visuelle Artefakte beim Rendering entstehen.
+
+\section*{Aufgabe 9.3: Indirekte Volumenvisualisierung}
+
+\subsection*{a) Marching Squares}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_HU_9_2.png}
+\end{center}
+
+\subsection*{b) Gitter füllen für Marching Squares}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_HU_9_3.png}
+\end{center}
+
+\subsection*{c) Geometrie-Culling}
+Beim Backface Culling werden Dreiecke, deren Normale von der Kamera wegzeigt, nicht gezeichnet, da diese Flächen bei geschlossenen Objekten von weiter vorne liegenden Flächen verdeckt wären, spart das Verwerfen dieser Geometrie Rechenleistung, ohne das sichtbare Ergebnis zu verändern.
+
+\section*{Aufgabe 9.4: Direkte Volumenvisualisierung}
+
+\subsection*{a) Interpolationsmethoden}
+\begin{itemize}
+  \item \textbf{Nearest-Neighbor Interpolation:} Es wird einfach der Wert des dem Abtastpunkt am nächsten liegenden Gitterpunktes übernommen. Dies ist sehr schnell, führt aber zu blockartigen Artefakten (``Treppchenbildung'').
+  \item \textbf{Linear Interpolation:} Der Wert wird als gewichteter Durchschnitt der umliegenden Gitterpunkte (bei 3D sind es 8 Nachbarn) berechnet. Das Ergebnis ist deutlich glatter, aber rechenintensiver als Nearest-Neighbor.
+\end{itemize}
+
+\subsection*{b) Basisoperatoren der Volumen-Rendering-Pipeline}
+Die drei Basisoperatoren in der korrekten Reihenfolge sind:
+\begin{enumerate}
+  \item \textbf{Klassifikation} (Zuordnung von physikalischen Werten zu optischen Eigenschaften wie Farbe und Opazität mittels Transferfunktionen).
+  \item \textbf{Shading / Beleuchtung} (Berechnung der Lichtinteraktion, oft unter Verwendung des Gradienten als Normale).
+  \item \textbf{Compositing} (Überlagerung der Farb- und Transparenzwerte entlang des Sichtstrahls zur Bildung des finalen Pixels).
+\end{enumerate}
+
+\end{document}
