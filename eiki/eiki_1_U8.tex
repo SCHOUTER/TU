@@ -1,0 +1,112 @@
+\documentclass[11pt,a4paper]{article}
+\title{\"Ubung 8}
+\author{Niclas Kusenbach, 360227}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,british]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[final]{microtype} %Fix most of overfull hboxes
+\usepackage{xurl} % better line breaks for \url and plain URLs
+\usepackage{hyperref} % better line breaks for \url and plain URLs
+\usepackage{tabularx}
+\setlist{nosep}
+
+\begin{document}
+
+\maketitle
+
+\section*{Aufgabe 1: Rationalität und Wahrscheinlichkeitsaxiome}
+
+\subsection*{1a) Überprüfung der Rationalität}
+Gegeben sind die Überzeugungen:
+\[ P(A) = 0.4, \quad P(B) = 0.3, \quad P(A \vee B) = 0.5 \]
+
+Wir prüfen dies mit dem \textbf{Additionssatz} (Inklusions-Exklusions-Prinzip):
+\[ P(A \vee B) = P(A) + P(B) - P(A \wedge B) \]
+Einsetzen der Werte:
+\[ 0.5 = 0.4 + 0.3 - P(A \wedge B) \]
+\[ 0.5 = 0.7 - P(A \wedge B) \]
+\[ P(A \wedge B) = 0.2 \]
+
+Da $0 \le P(A \wedge B) \le \min(P(A), P(B))$ gelten muss (und $0 \le 0.2 \le 0.3$ wahr ist), sind diese Überzeugungen \textbf{rational} und konsistent mit den Wahrscheinlichkeitsaxiomen.
+
+\textbf{Antwort:} Ja, es ist rational. Der angenommene Wert für $P(A \wedge B)$ ist exakt \textbf{0.2}. (Der ,,Bereich'' kollabiert hier zu einem Punktwert).
+
+\subsection*{1b) Fall $P(A \vee B) = 0.7$}
+Wir nehmen nun an $P(A \vee B) = 0.7$. Wir wenden erneut den Additionssatz an:
+\[ 0.7 = 0.4 + 0.3 - P(A \wedge B) \]
+\[ 0.7 = 0.7 - P(A \wedge B) \]
+\[ P(A \wedge B) = 0 \]
+
+\textbf{Erklärung:} Diese Wahrscheinlichkeit ist \textbf{ebenfalls rational}. Es bedeutet lediglich, dass die Ereignisse $A$ und $B$ \textbf{disjunkt} (einander ausschließend) sind. Es gibt keine Überschneidung der Ereignisse, was in der Wahrscheinlichkeitstheorie ein valider Zustand ist.
+
+\newpage
+
+\section*{Aufgabe 2: Wahrscheinlichkeitstheorie}
+
+\subsection*{2a) Äquivalenz der bedingten Unabhängigkeit}
+Zu zeigen ist die Äquivalenz von:
+\begin{itemize}
+  \item[(1)] $P(a, b|c) = P(a|c) \cdot P(b|c)$
+  \item[(2)] $P(a|b, c) = P(a|c)$
+  \item[(3)] $P(b|a, c) = P(b|c)$
+\end{itemize}
+
+\textbf{Beweis (1) $\Leftrightarrow$ (2):}
+Nach der Definition der bedingten Wahrscheinlichkeit gilt:
+\[ P(a|b, c) = \frac{P(a, b|c)}{P(b|c)} \]
+Setzt man (1) in den Zähler ein:
+\[ P(a|b, c) = \frac{P(a|c) \cdot P(b|c)}{P(b|c)} = P(a|c) \]
+Damit ist (2) gezeigt. Umgekehrt führt Multiplikation von (2) mit $P(b|c)$ direkt zu (1).
+
+\textbf{Beweis (1) $\Leftrightarrow$ (3):}
+Analog gilt:
+\[ P(b|a, c) = \frac{P(a, b|c)}{P(a|c)} \]
+Setzt man (1) ein:
+\[ P(b|a, c) = \frac{P(a|c) \cdot P(b|c)}{P(a|c)} = P(b|c) \]
+Damit ist die Äquivalenz aller drei Aussagen gezeigt.
+
+\subsection*{2b) Bestimmung von $P(h|e_1, e_2)$}
+Gesucht ist $P(h|e_1, e_2) = \frac{P(e_1, e_2|h)P(h)}{P(e_1, e_2)}$.
+
+\begin{enumerate}
+  \item \textbf{Gegeben:} $P(E_1, E_2), P(H), P(E_1|H), P(E_2|H)$ \\
+        \textbf{Nicht ausreichend.} Wir benötigen $P(e_1, e_2|h)$. Da wir ohne weitere Annahmen (wie bedingte Unabhängigkeit) nicht von den Randwahrscheinlichkeiten $P(E_1|H)$ und $P(E_2|H)$ auf die Verbundwahrscheinlichkeit $P(E_1, E_2|H)$ schließen können, fehlt Information.
+
+  \item \textbf{Gegeben:} $P(E_1, E_2), P(H), P(E_1, E_2|H)$ \\
+        \textbf{Ausreichend.} Wir haben alle Terme für den Satz von Bayes:
+        \[ P(h|e_1, e_2) = \frac{P(e_1, e_2|h) \cdot P(h)}{P(e_1, e_2)} \]
+
+  \item \textbf{Gegeben:} $P(E_1|H, E_2), P(E_1), P(E_2|H), P(H|E_1)$ \\
+        \textbf{Nicht ausreichend.} Es ist schwierig, den gemeinsamen Nenner $P(e_1, e_2)$ oder den Zähler konsistent zu konstruieren, ohne $P(h)$ direkt zu haben oder die Abhängigkeit zwischen $e_1$ und $e_2$ vollständig zu kennen.
+\end{enumerate}
+
+\subsection*{2c) Annahme: $P(E_1|H, E_2) = P(E_1|H)$}
+Dies impliziert bedingte Unabhängigkeit: $E_1 \perp E_2 \mid H$.
+Daraus folgt: $P(e_1, e_2|h) = P(e_1|h) \cdot P(e_2|h)$.
+
+\textbf{Neue Bewertung für 2b):}
+\begin{enumerate}
+  \item \textbf{Jetzt ausreichend.} Da $P(e_1, e_2|h)$ nun das Produkt $P(e_1|h)P(e_2|h)$ ist (beide gegeben), und $P(h)$ sowie $P(e_1, e_2)$ gegeben sind, ist die Berechnung möglich.
+
+  \item \textbf{Weiterhin ausreichend.} (Die zusätzliche Annahme schadet nicht).
+
+  \item \textbf{Jetzt ausreichend.}
+        Wir müssen $P(h|e_1, e_2) \propto P(h) P(e_1|h) P(e_2|h)$ berechnen.
+        \begin{itemize}
+          \item $P(e_2|h)$ ist gegeben.
+          \item $P(e_1|h)$ ist gegeben (da $P(e_1|H, E_2) = P(e_1|H)$).
+          \item $P(h)$ kann hergeleitet werden: Aus $P(h|e_1) = \frac{P(e_1|h)P(h)}{P(e_1)}$ folgt $P(h) = \frac{P(h|e_1)P(e_1)}{P(e_1|h)}$. Alle Terme rechts sind gegeben.
+          \item Der Nenner $P(e_1, e_2)$ ergibt sich durch Marginalisierung über $H$: $\sum_h P(h)P(e_1|h)P(e_2|h)$.
+        \end{itemize}
+\end{enumerate}
+
+\end{document}
