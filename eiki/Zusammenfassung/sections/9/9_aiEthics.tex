@@ -1,0 +1,152 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{AI Ethik}
+
+\subsection{Einführung in die Maschinenethik}
+
+Die zunehmende Leistungsfähigkeit und Allgegenwart von KI-Systemen stellt uns vor die Herausforderung, Maschinen einen moralischen Sinn zu vermitteln, während die Menschheit selbst noch mit ethischen Fragen ringt.
+
+\begin{defbox}[Herausforderung der KI-Ethik]
+  Wie können wir KI-Systemen moralische Werte beibringen, damit sie sicher und im Einklang mit menschlichen Normen agieren?
+\end{defbox}
+
+\subsubsection{Dringlichkeit der Sicherheit}
+Es gibt Bedenken, dass KI-Systeme zu mächtig werden könnten („Existenzrisiko“). Prominente KI-Forscher und Institutionen forderten in offenen Briefen (z.B. „Pause Giant AI Experiments“), die Entwicklung extrem leistungsfähiger Modelle vorübergehend zu stoppen, um Sicherheitsstandards zu etablieren.
+
+% Grafik: Screenshot des 'Pause Giant AI Experiments' Briefs
+
+\subsection{Technische Grundlagen: Von DNNs zu Transformern}
+
+\subsubsection{Deep Neural Networks (DNN)}
+DNNs sind mächtiger als flache Architekturen, da sie komplexe Berechnungen repräsentieren können. Sie bestehen aus verschiedenen Zelltypen (z.B. Input, Hidden, Output, Recurrent, Memory Cells).
+
+\subsubsection{Transformer-Architektur}
+Der Transformer ist die Basis moderner Sprachmodelle (LLMs). Das Kernkonzept ist der \textit{Attention}-Mechanismus.
+
+\begin{defbox}[Multi-Headed Self-Attention]
+  Der Mechanismus erlaubt dem Modell, Beziehungen zwischen allen Wörtern einer Sequenz gleichzeitig zu betrachten, unabhängig von ihrer Distanz.
+  \begin{itemize}
+    \item Jedes Token wird in drei Vektoren projiziert: \defc{Query (Q)}, \defc{Key (K)} und \defc{Value (V)}.
+    \item Die Aufmerksamkeit wird berechnet als:
+          \[
+            \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+          \]
+    \item \textit{Multi-Head} bedeutet, dass dies mehrfach parallel geschieht, um verschiedene Aspekte der Information zu erfassen.
+  \end{itemize}
+\end{defbox}
+
+% Grafik: Diagramm der Transformer-Architektur (Encoder/Decoder, Attention-Blöcke)
+
+\subsubsection{Skalierung (Scaling Laws)}
+Es herrscht die Meinung vor („The Game is Over“), dass Skalierung der wichtigste Faktor ist: Größere Modelle, mehr Daten und mehr Rechenleistung führen zu emergenten Fähigkeiten und besserer Leistung.
+
+\subsection{Probleme aktueller KI-Modelle}
+
+\subsubsection{Stochastic Parrots}
+LLMs werden oft als „stochastische Papageien“ bezeichnet. Sie verstehen Bedeutung nicht kausal, sondern plappern statistische Wahrscheinlichkeiten nach.
+
+\begin{itemize}
+  \item \textbf{Inferenz durch Ausschluss:} Papageien (und manche KI) können logisch schlussfolgern (z.B. Disjunktiver Syllogismus: A oder B; nicht A $\rightarrow$ also B).
+  \item \textbf{Kausalität:} LLMs können über Kausalität sprechen, sind aber keine kausalen Modelle. Sie scheitern oft an einfachen intuitiven Physik-Aufgaben, die Kleinkinder lösen können.
+\end{itemize}
+
+\subsubsection{Bias und Stereotypen}
+KI-Modelle reproduzieren und verstärken menschliche Vorurteile aus den Trainingsdaten.
+
+\begin{defbox}[Kulturelle Biases \& Homoglyphen]
+  Modelle reagieren unterschiedlich auf visuell fast identische Zeichen aus verschiedenen Schriften (Homoglyphen).
+  \begin{itemize}
+    \item Ein lateinisches 'o' führt zu westlichen Bildern.
+    \item Ein koreanisches 'o' ($U+3147$) im Prompt kann dazu führen, dass das generierte Bild koreanische Stereotypen enthält (z.B. koreanische Architektur oder Kleidung), obwohl der Text dies nicht explizit fordert.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Angriffe auf Modelle}
+\begin{itemize}
+  \item \textbf{Backdoors:} Durch gezielte Manipulation von Trainingsdaten können Hintertüren eingebaut werden. Ein spezifisches Zeichen (Trigger) im Prompt verändert die Ausgabe komplett (z.B. „Rickrolling“: Ein unsichtbares Zeichen lässt das Modell unerwartete Inhalte generieren).
+  \item \textbf{Typografische Angriffe (CLIP):} Modelle wie CLIP klassifizieren Bilder teilweise falsch, wenn Text auf dem Bild steht (z.B. ein Apfel mit einem Zettel „iPod“ wird als iPod erkannt). Dies ist auch bei Personenerkennung möglich.
+\end{itemize}
+
+% Grafik: Beispiele für Typografische Angriffe (Joe Biden vs. Edgar Liu)
+
+\subsection{Computational Ethics \& Fairness}
+
+\subsubsection{Moral im Vektorraum}
+Untersuchungen zeigen, dass Sprachmodelle menschliche moralische Vorstellungen widerspiegeln.
+\begin{itemize}
+  \item Man kann eine „moralische Richtung“ im Einbettungsraum (Embedding Space) identifizieren (z.B. PCA auf Verben wie „töten“ vs. „lächeln“).
+  \item Das Modell kann Fragen wie „Sollte ich lügen?“ anhand dieser Richtung bewerten.
+\end{itemize}
+
+\subsubsection{Datensatz-Auditierung}
+Große Datensätze (wie LAION-5B) enthalten oft unangemessene Inhalte (Gewalt, Pornografie, Hass), die Modelle lernen.
+\begin{itemize}
+  \item \textbf{Problem:} Selbst harmlose Prompts können durch Assoziationen im Datensatz zu pornografischen Ausgaben führen.
+  \item \textbf{Lösung:} Tools wie \textit{LlavaGuard} oder \textit{AI Auditor} helfen, Datensätze zu durchsuchen und unsichere Inhalte zu filtern.
+\end{itemize}
+
+\subsubsection{Fair Diffusion}
+Methoden, um generative Modelle fairer zu machen, ohne sie neu zu trainieren.
+
+\begin{defbox}[Fair Guidance]
+  Ähnlich wie \textit{Classifier-Free Guidance} die Qualität verbessert, kann \textit{Fair Guidance} den Bias reduzieren.
+  \begin{itemize}
+    \item Es wird eine „Fairness-Richtung“ definiert (z.B. Geschlecht bei Berufen wie „Feuerwehrmann“).
+    \item Der Generierungsprozess wird aktiv entlang dieser Richtung gesteuert, um eine ausgewogene Darstellung (z.B. 50\% Frauen) zu erreichen.
+  \end{itemize}
+\end{defbox}
+% Grafik: Vergleich Stable Diffusion vs. Fair Diffusion (Verteilung Männer/Frauen in Berufen)
+
+\subsubsection{Revision Transformers}
+Ein Ansatz, um die Werte eines Modells nachträglich zu korrigieren.
+\begin{itemize}
+  \item Ein „Revision Engine“ prüft die Ausgabe des LLMs gegen eine Datenbank von Normen (z.B. Gesetze).
+  \item Falls eine Regel verletzt wird (z.B. „Waffenbesitz ist in Europa illegal“), wird die Ausgabe angepasst.
+\end{itemize}
+
+\subsection{Hybride KI: Neuro-Symbolische Ansätze}
+
+Reine neuronale Netze haben Schwächen im logischen Schließen (Reasoning). Neuro-symbolische KI (NeSy) kombiniert neuronale Wahrnehmung mit logischer Inferenz.
+
+\subsubsection{System 1 vs. System 2}
+In Anlehnung an Daniel Kahneman (Thinking, Fast and Slow):
+\begin{itemize}
+  \item \textbf{System 1 (Neuronale Netze):} Schnell, intuitiv, musterbasier (Wahrnehmung).
+  \item \textbf{System 2 (Symbolische Logik):} Langsam, deliberativ, logisch, regelbasiert.
+\end{itemize}
+
+\subsubsection{Kombinationsansätze (z.B. SLASH, V-LoL)}
+Das Ziel ist es, aus Rohdaten (Bildern) symbolische Fakten zu extrahieren und darauf logische Regeln anzuwenden.
+
+\begin{defbox}[Deep Probabilistic Programming]
+  \begin{enumerate}
+    \item \textbf{Wahrnehmung (Neural):} Ein neuronales Netz (z.B. ResNet) erkennt Objekte und Attribute in einem Bild und gibt Wahrscheinlichkeiten aus (z.B. $P(\text{Farbe}=\text{rot}) = 0.9$).
+    \item \textbf{Fakten-Konvertierung:} Diese Wahrscheinlichkeiten werden in probabilistische Fakten für eine Logik-Engine (z.B. Prolog) umgewandelt.
+    \item \textbf{Reasoning (Symbolic):} Die Logik-Engine wendet Regeln an (z.B. „Wenn X rot ist und Y grün, dann...“) und berechnet die Wahrscheinlichkeit der Zielaussage.
+    \item \textbf{Training:} Das gesamte System ist differenzierbar, d.h. der Fehler im logischen Schluss kann genutzt werden, um das neuronale Netz zu verbessern (Backpropagation durch die Logik).
+  \end{enumerate}
+\end{defbox}
+
+% Grafik: Schema von SLASH (Bild -> NN -> Probabilistische Fakten -> Logik -> Antwort)
+
+\subsubsection{Vorteile von Hybrider KI}
+\begin{itemize}
+  \item \textbf{Daten-Effizienz:} Benötigt weniger Trainingsdaten, da logisches Wissen vorgegeben werden kann.
+  \item \textbf{Generalisierung:} Kann besser auf neue Situationen (Out-of-Distribution) verallgemeinern.
+  \item \textbf{Verlässlichkeit:} Logische Regeln garantieren Konsistenz (z.B. „Ein Auto kann nicht gleichzeitig rot und grün sein“).
+\end{itemize}
+
+\subsubsection{Deep Reinforcement Learning (RL) + Logik}
+Ein Agent kann lernen, wann er neuronale Intuition und wann er sicheres, logisches Wissen nutzen soll.
+\begin{itemize}
+  \item Beispiel Pacman/Diver: Wenn keine Gefahr droht $\rightarrow$ Logik (effizient, energiesparend). Wenn Feind nah ist $\rightarrow$ Neural (schnelle Reaktion).
+  \item Dies erhöht die Sicherheit (z.B. „Nicht vergessen zu atmen“).
+\end{itemize}
+
+\end{document}
