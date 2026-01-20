@@ -4,234 +4,165 @@
 % Set Graphics Path, so pictures load correctly
 \graphicspath{{../../pics/}}
 
+
 \begin{document}
 
-\section{Uncertainty, Probability and Bayesian Networks}
+\section{Umgang mit Unsicherheit und Probabilistisches Schließen}
 
-\subsection{Uncertainty and Probability}
+Dieses Kapitel behandelt die Grundlagen der Unsicherheit in der Künstlichen Intelligenz, die Wahrscheinlichkeitstheorie als Werkzeug zur Modellierung von Glaubensgraden (Degrees of Belief) sowie Bayesian Networks zur kompakten Repräsentation von Wissen und Inferenzmethoden.
 
-\subsubsection{Motivation: Why Uncertainty?}
-Classical logic assumes that agents know the "whole truth" (logical statements are true or false). However, in the real world, agents must deal with \defc{uncertainty} due to:
-\begin{itemize}
-  \item \textbf{Partial Observability:} We cannot see the state of the entire world (e.g., road state, other drivers' plans).
-  \item \textbf{Noisy Sensors:} Information received may be incorrect (e.g., wrong traffic reports).
-  \item \textbf{Uncertainty in Action Outcomes:} Actions are stochastic (e.g., a flat tire, accident).
-  \item \textbf{Modeling Complexity:} It is impossible to model every single factor (The \textit{Qualification Problem}).
-\end{itemize}
+\subsection{Einführung in Unsicherheit}
+In der klassischen Logik gehen Agenten davon aus, dass Aussagen entweder wahr oder falsch sind und Aktionen deterministische Ergebnisse haben. Die reale Welt ist jedoch oft unsicher.
 
-\begin{defbox}[Ignorance Types]
+\begin{defbox}[Gründe für Unsicherheit]
+
   \begin{itemize}
-    \item \defc{Laziness}: Listing all exceptions is too tedious.
-    \item \defc{Theoretical Ignorance}: The underlying mechanisms are not fully understood (e.g., perfect weather modeling).
-    \item \defc{Practical Ignorance}: The rules are known, but the specific data for a situation is missing.
+    \item \defc{Partielle Beobachtbarkeit}: Der Agent hat keinen Zugriff auf den vollständigen Zustand der Welt (z.B. unbekannte Verkehrslage).
+    \item \defc{Rauschende Sensoren}: Messwerte können fehlerhaft sein.
+    \item \defc{Unsicherheit in Aktionsergebnissen}: Aktionen gelingen nicht immer wie geplant (z.B. Reifenpanne).
+    \item \defc{Komplexität}: Es ist unmöglich, alle Eventualitäten (``Qualification Problem'') in logischen Regeln zu modellieren (z.B. ``Ich komme pünktlich an, außer\ldots'').
   \end{itemize}
 \end{defbox}
+Anstatt strikter logischer Wahrheit modellieren wir \defc{Wahrscheinlichkeiten} als Maß für den \defc{Glaubensgrad} (Degree of Belief) eines Agenten. Eine Wahrscheinlichkeit von 0.1 für einen Stau bedeutet nicht, dass die Straße zu 10\% verstopft ist, sondern dass der Agent in 10\% der Fälle an das Vorliegen eines Staus glaubt.
 
-\subsubsection{Probability Theory Basics}
-Probability provides a way to summarize uncertainty. It represents a \defc{degree of belief}, not necessarily a degree of truth.
+\subsection{Grundlagen der Wahrscheinlichkeitstheorie}
 
-\paragraph{Kolmogorov's Axioms}
-These axioms constrain the probabilistic beliefs an agent can reasonably hold.
-\begin{enumerate}
-  \item $0 \le P(a) \le 1$ (All probabilities are between 0 and 1).
-  \item $P(false) = 0$, $P(true) = 1$ (Necessarily true propositions have probability 1).
-  \item $P(a \lor b) = P(a) + P(b) - P(a \land b)$ (Probability of a disjunction).
-\end{enumerate}
+\subsubsection{Wahrscheinlichkeitsraum und Axiome}
+Ein Wahrscheinlichkeitsmodell besteht aus einem \defc{Stichprobenraum} $\Omega$ (Menge aller möglichen Welten/Ergebnisse). Ein Ereignis $A$ ist eine Teilmenge von $\Omega$.
 
-% GRAPHIC: Venn Diagram illustrating P(A or B) = P(A) + P(B) - P(A and B)
-
-\begin{defbox}[The Dutch Book Theorem]
-  Proposed by Bruno de Finetti (1931). It states that if an agent holds a set of beliefs that violate the axioms of probability, a betting strategy (a "Dutch Book") can be constructed against them such that the agent is \defc{guaranteed to lose money} regardless of the outcome.
+\begin{defbox}[Kolmogorov-Axiome]Diese Axiome beschränken die Menge rationaler Glaubenssätze:
+  \begin{enumerate}
+    \item Alle Wahrscheinlichkeiten liegen zwischen 0 und 1: $0 \le P(A) \le 1$.
+    \item Wahre Aussagen haben Wahrscheinlichkeit 1, falsche 0: $P(\text{true}) = 1,
+            P(\text{false}) = 0$.
+    \item Die Wahrscheinlichkeit einer Disjunktion (Vereinigung):\[P(A \lor B) = P(A) + P(B) - P(A \land B)\]
+  \end{enumerate}
 \end{defbox}
 
-\paragraph{Random Variables}
-Instead of dealing with raw events, we use \defc{Random Variables (RVs)} to describe the world.
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-08_page_12_1.png}}
+\end{center}
+
+Ein Verstoß gegen diese Axiome führt zu irrationalem Verhalten. Dies wird durch das \defc{Dutch Book Theorem} bewiesen: Wenn ein Agent Wahrscheinlichkeiten akzeptiert, die den Axiomen widersprechen, kann ein Gegner (Bookmaker)  eine Wette so konstruieren, dass der Agent garantiert Geld verliert, unabhängig vom Ausgang des Ereignisses.
+
+\subsubsection{Zufallsvariablen}
+Anstatt mit atomaren Ereignissen zu arbeiten, nutzen wir \defc{Zufallsvariablen} (Random Variables, RVs), um Komplexität zu reduzieren.
+
 \begin{itemize}
-  \item \textbf{Boolean:} $X \in \{true, false\}$ (e.g., \textit{hasUmbrella}).
-  \item \textbf{Discrete:} Finite set of values (e.g., $Weather \in \{sunny, rain, cloudy\}$). Values must be \textit{exhaustive} and \textit{mutually exclusive}.
-  \item \textbf{Continuous:} Infinite domain (e.g., \textit{Temperature}).
+  \item \defc{Diskret}: Endliche Menge von Werten (z.B. $Wetter \in \{sonnig, regen, schnee\}$). Werte müssen disjunkt und erschöpfend sein.
+        \defc{Kontinuierlich}: Unendlicher Wertebereich (z.B. Temperatur).
 \end{itemize}
 
-\subsubsection{Distributions and Inference}
+Eine Proposition (Aussage) wie $Wetter = regen$ entspricht der Menge aller atomaren Ereignisse, in denen diese Aussage wahr ist.
 
-\paragraph{Joint Probability Distribution}
-The joint distribution $P(X_1, \dots, X_n)$ assigns probabilities to every possible combination of values for all random variables.
-\begin{itemize}
-  \item It allows us to answer \textit{any} question about the domain.
-  \item \textbf{Problem:} The size of the table grows exponentially ($O(d^n)$ for $n$ variables of domain size $d$).
-\end{itemize}
+\subsection{Verteilungen und Rechenregeln}
 
-\paragraph{Marginalization (Summing Out)}
-We can extract the distribution of a subset of variables by summing out the others.
-\[
-  P(Y) = \sum_{z} P(Y, z)
-\]
-This is how we recover simple probabilities from the joint distribution.
+\subsubsection{Joint Distribution (Verbundwahrscheinlichkeit)}
+Die \defc{Joint Distribution} $P(X_1, \dots, X_n)$ weist jeder möglichen Kombination von Werten aller Zufallsvariablen eine Wahrscheinlichkeit zu.\[P(x,  y) = P(X=x \land Y=y)\] Die Tabelle der Joint Distribution wächst exponentiell mit der Anzahl der Variablen ($O(2^n)$ bei binären Variablen), erlaubt aber die Beantwortung jeder beliebigen Wahrscheinlichkeitsanfrage.
 
-\paragraph{Conditional Probability}
-Represents beliefs given evidence.
-\[
-  P(a | b) = \frac{P(a \land b)}{P(b)}
-\]
-Using the \textbf{Product Rule}, we can rewrite the joint probability:
-\[
-  P(a, b) = P(a | b)P(b) = P(b | a)P(a)
-\]
-
-\begin{defbox}[The Chain Rule]
-  Used to decompose a joint distribution into a product of conditional probabilities:
-  \[
-    P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | X_1, \dots, X_{i-1})
-  \]
+\subsubsection{Marginalisierung und Bedingte Wahrscheinlichkeit}
+\begin{defbox}[Marginalisierung]
+  Man kann Wahrscheinlichkeiten von Teilmengen von Variablen berechnen, indem man über die nicht interessierenden Variablen summiert (``Summing Out''):\[P(Y) = \sum_{x \in X} P(x, Y)\]
 \end{defbox}
 
-\subsubsection{Bayes' Rule}
-Derived from the product rule ($P(x,y) = P(x|y)P(y) = P(y|x)P(x)$).
+\begin{defbox}[Bedingte Wahrscheinlichkeit]
+  Die Wahrscheinlichkeit von $X$, gegeben Evidenz $Y$:\[P(X|Y) = \frac{P(X, Y)}{P(Y)}\]Daraus folgt die \defc{Produktregel}:\[P(X, Y) = P(X|Y)P(Y) = P(Y|X)P(X)\]
+\end{defbox}
+Die \defc{Kettenregel} (Chain Rule) erlaubt die Zerlegung einer Joint Distribution in bedingte Wahrscheinlichkeiten:\[P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | X_1, \dots, X_{i-1})\]
 
-\[
-  P(Hypothesis | Evidence) = \frac{P(Evidence | Hypothesis) \cdot P(Hypothesis)}{P(Evidence)}
-\]
-\begin{itemize}
-  \item $P(H|E)$: \defc{Posterior} (Probability of hypothesis after seeing evidence).
-  \item $P(E|H)$: \defc{Likelihood} (Probability of evidence assuming hypothesis is true).
-  \item $P(H)$: \defc{Prior} (Initial probability of hypothesis).
-  \item $P(E)$: Marginal Likelihood (Normalization constant).
-\end{itemize}
+\subsubsection{Satz von Bayes}
+Der Satz von Bayes ist fundamental für das Lernen aus Beobachtungen. Er erlaubt die Inversion von bedingten Wahrscheinlichkeiten.
+\[\underbrace{P(H|E)}_{\text{Posterior}} = \frac{\underbrace{P(E|H)}_{\text{Likelihood}} \cdot \underbrace{P(H)}_{\text{Prior}}}{\underbrace{P(E)}_{\text{Evidenz/Marginalisierung}}}\]
 
-\paragraph{Example: The AIDS Test (Base Rate Fallacy)}
-Consider a test for a disease:
+Erweitert mit Marginalisierung im Nenner: \[P(H|E) = \frac{P(E|H)P(H)}{P(E|H)P(H) + P(E|\neg H)P(\neg H)}\]
+
 \begin{itemize}
-  \item $P(pos|sick) = 0.99$ (Sensitivity)
-  \item $P(neg|healthy) = 0.995$ (Specificity), so $P(pos|healthy) = 0.005$.
-  \item $P(sick) = 0.0001$ (Prior - Base rate).
+  \item \defc{Prior}: Wahrscheinlichkeit der Hypothese vor Evidenz.
+  \item \defc{Likelihood}: Wahrscheinlichkeit der Evidenz, angenommen die Hypothese ist wahr.
+  \item \defc{Posterior}: Neue Wahrscheinlichkeit der Hypothese nach Beobachtung der Evidenz.
 \end{itemize}
-If you test positive ($pos$), what is the probability you are sick ($sick$)?
-\[
-  P(sick | pos) = \frac{P(pos | sick)P(sick)}{P(pos)}
-\]
-Where $P(pos) = P(pos|sick)P(sick) + P(pos|healthy)P(healthy)$.
-\[
-  P(sick | pos) = \frac{0.99 \cdot 0.0001}{(0.99 \cdot 0.0001) + (0.005 \cdot 0.9999)} \approx 0.0194
-\]
-\textit{Lesson: Even with a reliable test, if the disease is rare, a positive result often implies a low probability of actually having the disease.}
 
 \subsection{Bayesian Networks}
+Da die vollständige Joint Distribution ($O(2^n)$) speicher- und rechenintensiv ist, nutzen wir Unabhängigkeiten zur kompakten Darstellung.
 
-\subsubsection{Independence}
-To avoid the exponential explosion of the joint distribution, we utilize \defc{Independence}.
-\begin{itemize}
-  \item \textbf{Independence:} $P(X, Y) = P(X)P(Y)$ or $P(X|Y) = P(X)$.
-  \item \textbf{Conditional Independence:} $X$ and $Y$ are independent given $Z$ if $P(X|Y, Z) = P(X|Z)$.
-\end{itemize}
-Example: \textit{Age} and \textit{Gender} are independent. \textit{Cancer} is independent of \textit{Age} and \textit{Gender} \textbf{given} \textit{Smoking}.
+\subsubsection{Unabhängigkeit}
+Zwei Variablen $X$ und $Y$ sind \defc{unabhängig}, wenn $P(X|Y) = P(X)$ bzw. $P(X,Y) = P(X)P(Y)$.Viel häufiger ist die \defc{bedingte Unabhängigkeit}: $X$ und $Y$ sind unabhängig gegeben $Z$, wenn $P(X|Y,Z) = P(X|Z)$.
 
-\subsubsection{Bayesian Networks (BN)}
-A Bayesian Network is a data structure to represent dependencies compactly.
+\subsubsection{Definition und Semantik}
+Ein \defc{Bayesian Network (BN)} ist ein gerichteter azyklischer Graph (DAG), bestehend aus:
 \begin{itemize}
-  \item \textbf{Structure:} A Directed Acyclic Graph (DAG).
-  \item \textbf{Nodes:} Random variables $X_1, \dots, X_n$.
-  \item \textbf{Edges:} Directed edge $X_i \to X_j$ indicates direct influence.
-  \item \textbf{Parameters:} Each node $X_i$ has a Conditional Probability Table (CPT) quantifying $P(X_i | Parents(X_i))$.
+  \item \defc{Knoten}: Zufallsvariablen.
+  \item \defc{Kanten}: Direkte Abhängigkeiten ($X \to Y$ bedeutet $X$ beeinflusst $Y$).
+  \item \defc{CPTs (Conditional Probability Tables)}: Jeder Knoten $X_i$ hat eine Wahrscheinlichkeitsverteilung $P(X_i | Pa(X_i))$, wobei $Pa(X_i)$ die Elternknoten sind.
 \end{itemize}
 
-% GRAPHIC: Example of a simple BN: Burglary -> Alarm <- Earthquake
-
-\paragraph{Semantics}
-The full joint distribution is defined as the product of the local conditional distributions:
-\[
-  P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | Parents(X_i))
-\]
-
-\begin{defbox}[Local Markov Assumption]
-  Each variable $X_i$ is conditionally independent of its non-descendants, given its parents.
+\begin{defbox}[BN Semantik]
+  Ein BN definiert die Joint Distribution als Produkt der lokalen bedingten Wahrscheinlichkeiten:\[P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | Pa(X_i))\]
 \end{defbox}
 
-\subsection{Exact Inference in Bayesian Networks}
+\defc{Lokale Markov-Annahme}: Ein Knoten ist bedingt unabhängig von all seinen Nicht-Nachfahren (Non-Descendants), gegeben seine Eltern.
 
-\subsubsection{The Inference Task}
-Given evidence $E=e$ and a query variable $X$, we want to compute $P(X|e)$.
-\[
-  P(X|e) = \frac{P(X, e)}{P(e)} \propto \sum_{y} P(X, e, y)
-\]
-Where $y$ are the \textit{hidden} variables (neither query nor evidence).
+\subsection{Inferenz in Bayesian Networks}Inferenz beantwortet Anfragen der Form $P(Query | Evidence)$.
 
-\subsubsection{Variable Elimination}
-A systematic method to perform summation. Instead of computing the full joint (exponential) and then summing, we push sums inwards to factor out terms.
+\subsubsection{Exakte Inferenz: Variable Elimination}
+Variable Elimination vermeidet die Berechnung der vollen Joint Distribution, indem Summen ``nach innen gezogen'' werden. Der Prozess eliminiert Variablen, die weder Query noch Evidenz sind, nacheinander.
 
-\textbf{Algorithm Steps:}
+\textbf{Algorithmus:}
 \begin{enumerate}
-  \item \textbf{Factorize:} Write the joint distribution as a product of CPTs.
-  \item \textbf{Order:} Choose an elimination order for hidden variables.
-  \item \textbf{Sum Out:} For each variable $Z$ to be eliminated:
+  \item Schreibe die Joint Distribution als Produkt der Faktoren (CPTs).
+  \item Wähle eine Eliminationsreihenfolge für die versteckten Variablen.
+  \item Für jede zu eliminierende Variable $Z$:
         \begin{itemize}
-          \item Collect all factors containing $Z$.
-          \item Multiply them.
-          \item Sum over the values of $Z$.
-          \item Replace the old factors with the new factor (result).
+          \item Sammle alle Faktoren, die $Z$ enthalten.
+          \item Multipliziere diese Faktoren zu einem neuen temporären Faktor.
+          \item Summiere $Z$ aus diesem Faktor heraus (Marginalisierung).
+          \item Ersetze die alten Faktoren durch den neuen Faktor.
         \end{itemize}
-\end{enumerate}
+  \item Normalisiere das Ergebnis am Ende.
+\end{enumerate}Die Operationen sind:
 
-\textbf{Example Walkthrough (Abstract):}
-Factors: $P(v)P(s)P(t|v)P(l|s)P(b|s)P(a|t,l)P(x|a)P(d|a,b)$.
-Eliminate $v$:
-\[ f_v(t) = \sum_v P(v)P(t|v) \]
-New set of factors: $f_v(t), P(s), P(l|s) \dots$
-Proceed sequentially.
+\begin{itemize}
+  \item \defc{Faktor-Produkt}: $f_3(A,B,C) = f_1(A,B) \cdot f_2(B,C)$.
+  \item \defc{Summing Out}: $f_{new}(B) = \sum_a f(a, B)$.
+\end{itemize}
 
-\subsubsection{Complexity}
-\begin{defbox}[NP-Hardness]
-  Inference in Bayesian Networks is \defc{NP-Hard}. This is proven via reduction to 3-SAT (Boolean Satisfiability). Even approximate inference with bounded error is NP-Hard.
-\end{defbox}
+\subsubsection{Komplexität}
+Exakte Inferenz in Bayesian Networks ist \defc{NP-hard} (bewiesen durch Reduktion auf 3-SAT). In einfach verbundenen Netzen (Polytrees) ist die Komplexität linear, im schlimmsten Fall jedoch exponentiell.
 
-\subsection{Approximate Inference: Sampling}
+\subsection{Approximative Inferenz: Sampling}
+Da exakte Inferenz oft zu aufwendig ist, nutzen wir stochastische Verfahren (Monte Carlo Methoden), die gegen die wahre Wahrscheinlichkeit konvergieren.
 
-Since exact inference is hard, we use stochastic simulation (Monte Carlo). We draw $N$ samples and estimate probabilities by counting.
-
-\subsubsection{Direct Sampling (Empty Network)}
-Used when there is no evidence.
-\begin{enumerate}
-  \item Sort variables topologically.
-  \item Sample $X_1$ from $P(X_1)$.
-  \item Sample $X_2$ from $P(X_2 | Parents(X_2))$ (using value sampled for parents).
-  \item Repeat until all variables are sampled.
-\end{enumerate}
+\subsubsection{Direct Sampling (ohne Evidenz)}
+Man zieht Stichproben in topologischer Reihenfolge (von Eltern zu Kindern) entsprechend der CPTs.\[P(X) \approx \frac{N(X)}{N_{total}}\]
 
 \subsubsection{Rejection Sampling}
-Used for computing $P(X|e)$.
-\begin{enumerate}
-  \item Generate samples from the empty network.
-  \item \defc{Reject} (discard) any sample that does not match the evidence $e$.
-  \item Estimate $P(X|e)$ by counting frequencies in the remaining samples.
-\end{enumerate}
-\textit{Drawback: If the evidence is rare, we reject almost all samples, making it inefficient.}
+Um $P(X|e)$ zu berechnen: Generiere Samples wie oben. Verwirf (reject) alle Samples, die der Evidenz $e$ widersprechen. Zähle die verbleibenden Samples. Problem: Bei unwahrscheinlicher Evidenz werden fast alle Samples verworfen (ineffizient).
 
 \subsubsection{Markov Chain Monte Carlo (MCMC)}
-Instead of generating independent samples from scratch, the system wanders through the state space. The state is the current assignment of all variables.
+MCMC-Verfahren wie \defc{Gibbs Sampling} wandern durch den Zustandsraum, anstatt Samples unabhängig zu generieren.
 
 \begin{defbox}[Markov Blanket]
-  The Markov Blanket of a node consists of:
+  Der \defc{Markov Blanket} einer Variable $X$ besteht aus:
   \begin{itemize}
-    \item Its Parents.
-    \item Its Children.
-    \item Its Children's Parents.
-  \end{itemize}
-  A node is conditionally independent of \textit{all other nodes} in the network given its Markov Blanket.
+    \item Eltern von $X$
+    \item Kindern von $X$
+    \item Anderen Eltern der Kinder von $X$
+  \end{itemize}$X$ ist bedingt unabhängig von allen anderen Knoten im Netzwerk, gegeben seinen Markov Blanket.
 \end{defbox}
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-09_page_34_1.png}}
+\end{center}
 
-% GRAPHIC: Visual representation of a node X surrounded by parents, children, and co-parents.
-
-\paragraph{Gibbs Sampling Algorithm}
-To estimate $P(X|e)$:
 \begin{enumerate}
-  \item Fix evidence variables to their observed values $e$.
-  \item Initialize non-evidence variables randomly.
-  \item Loop:
+  \item Initialisiere alle Variablen mit zufälligen Werten (Evidenz fixieren).
+  \item Wiederhole für viele Schritte:
         \begin{itemize}
-          \item Pick a non-evidence variable $Z_i$.
-          \item Resample $Z_i$ from $P(Z_i | MarkovBlanket(Z_i))$.
-          \item Record the state.
+          \item Wähle eine Nicht-Evidenz-Variable $X_i$.
+          \item Ziehe einen neuen Wert für $X_i$ aus der Verteilung $P(X_i | \text{Markov
+                    Blanket}(X_i))$.
         \end{itemize}
-\end{enumerate}
-This process creates a Markov Chain that converges to the true posterior distribution (stationary distribution) if the chain is irreducible, aperiodic, and ergodic.
+  \item Schätze die Wahrscheinlichkeit basierend auf der Häufigkeit der Zustände in den
+        gesammelten Samples.
+\end{enumerate}Dies erzeugt eine Markov-Kette, deren stationäre Verteilung der gesuchten Posterior-Verteilung entspricht (unter der Bedingung, dass die Kette irreduzibel und ergodisch ist).
 
 \end{document}

@@ -6,243 +6,113 @@
 
 \begin{document}
 
-\section{Constraint Satisfaction Problems (CSPs)}
+\section{Constraint Satisfaction Problems (CSPs)}Constraint Satisfaction Problems (CSPs) stellen einen Paradigmenwechsel gegenüber der klassischen Pfadsuche dar. Während bei Planungsproblemen der Pfad zum Ziel entscheidend ist, interessiert bei CSPs nur der Zielzustand selbst (Identifikationsproblem). Der Zustand ist dabei nicht mehr atomar ("Blackbox"), sondern faktorisiert, d. h. er besteht aus Variablen und Werten.
 
-Standard search algorithms (like A* or BFS) treat states as atomic black boxes—they search for a \textit{sequence} of actions (a path) to a goal. In \defc{Constraint Satisfaction Problems (CSPs)}, the path is irrelevant. We treat states as \textbf{factored representations} (sets of variables and values) and simply search for a \defc{goal state} that satisfies all requirements.
-
-\begin{defbox}[Definition: CSP]
-  A CSP is defined by a triplet $(X, D, C)$:
-  \begin{itemize}
-    \item \textbf{Variables ($X$):} A finite set of variables $\{X_1, \dots, X_n\}$.
-    \item \textbf{Domains ($D$):} A set of domains $\{D_1, \dots, D_n\}$, where each variable $X_i$ must take a value from the discrete set $D_i$.
-    \item \textbf{Constraints ($C$):} A set of constraints specifying allowable combinations of values for subsets of variables.
+\subsection{Definition und Komponenten}Ein CSP wird durch drei Komponenten definiert:
+\begin{enumerate}
+  \item \textbf{Variablen} $X = \{X_1, X_2, ..., X_n\}$: Die Objekte, denen Werte zugewiesen werden müssen.
+  \item \textbf{Domänen} (Wertebereiche) $D = \{D_1, D_2, ..., D_n\}$: Für jede Variable $X_i$ gibt es eine Menge $D_i$ von möglichen Werten.
+  \item \textbf{Constraints} (Beschränkungen) $C$: Eine Menge von Regeln, die spezifizieren, welche Kombinationen von Werten für Teilmengen der Variablen zulässig sind.\end{enumerate}\begin{defbox}[Zustandszuweisungen]\begin{itemize}
+    \item \textbf{Partielle Zuweisung:} Nur einigen Variablen wurden Werte zugewiesen (z. B. $X_1 = v_1$).
+    \item \textbf{Konsistente (legale) Zuweisung:} Eine Zuweisung, die keinen Constraint verletzt.
+    \item \textbf{Vollständige Zuweisung:} Jeder Variablen ist ein Wert zugewiesen.
+    \item \textbf{Lösung:} Eine vollständige und konsistente Zuweisung.
   \end{itemize}
 \end{defbox}
 
-\subsection{Types of Assignments}
-\begin{itemize}
-  \item \textbf{Partial Assignment:} A state where values are assigned to only a subset of variables.
-  \item \textbf{Consistent (Legal) Assignment:} An assignment that does not violate any constraints among the assigned variables.
-  \item \textbf{Complete Assignment:} Every variable in $X$ is assigned a value.
-  \item \defc{Solution:} A \textbf{complete} and \textbf{consistent} assignment.
-\end{itemize}
-
 \begin{center}
-  \vcentered{\includegraphics[width=0.8\textwidth]{eiki_1_AI101-05_page_22_2.png}}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_22_2.png}}
 \end{center}
+Knoten = Variablen (Regionen), Kanten = Constraints (benachbart)
 
-\subsection{Constraint Graphs}
-To visualize the structure of a CSP, we use a \defc{Constraint Graph}. This abstraction is crucial because the topology of the graph (e.g., whether it contains loops or is a tree) dictates the complexity of solving it.
+\subsection{Arten von Constraints}Constraints schränken die möglichen Belegungen der Variablen ein:
+
 \begin{itemize}
-  \item \textbf{Nodes:} Represent the variables $X_i$.
-  \item \textbf{Edges:} Connect any two variables that participate in the same constraint.
+  \item \textbf{Unäre Constraints:} Betreffen eine einzelne Variable (z. B. $SA \neq \text{green}$).
+  \item \textbf{Binäre Constraints:} Betreffen Paare von Variablen (z. B. $SA \neq WA$). Dies ist die häufigste Form und kann durch einen \defc{Constraint-Graphen} dargestellt werden.
+  \item \textbf{Constraints höherer Ordnung:} Betreffen 3 oder mehr Variablen (z. B. bei Kryptogrammen wie $TWO + TWO = FOUR$).
+  \item \textbf{Soft Constraints (Präferenzen):} Dienen der Optimierung (z. B. "Rot ist besser als Grün"). Diese wandeln das CSP oft in ein \textit{Constrained Optimization Problem} um.
 \end{itemize}
 
-
-
-\subsection{Types of Constraints}
-\begin{enumerate}
-  \item \textbf{Unary Constraint:} Restricts the value of a single variable (e.g., $SA \neq \text{green}$). These can often be processed simply by filtering the domain $D_i$ before search begins.
-  \item \textbf{Binary Constraint:} Relates two variables (e.g., $SA \neq WA$). These form the edges of the Constraint Graph.
-  \item \textbf{Higher-order Constraint:} Involves 3 or more variables (e.g., Cryptarithmetic puzzles like $TWO + TWO = FOUR$, where columns depend on carry bits).
-  \item \textbf{Soft Constraints (Preferences):} Constraints that are not mandatory but preferred (e.g., "Red is better than Green"). This shifts the problem from standard CSP to \defc{Constrained Optimization}, often solved via cost functions.
-\end{enumerate}
-
-\subsection{Solving CSPs: Search Strategies}
-
-We can model a CSP as a standard search problem:
-\begin{itemize}
-  \item \textbf{Initial State:} Empty assignment $\{\}$.
-  \item \textbf{Successor Function:} Assign a value to an unassigned variable.
-  \item \textbf{Goal Test:} Current assignment is complete and consistent.
-\end{itemize}
-
-\subsubsection{Commutativity and Search Space}
-A naïve Breadth-First or Depth-First search would branch on every variable and every value in every order, creating a factorial search space ($n! \cdot d^n$).
-
-However, CSPs are \defc{commutative}: The order in which we assign variables does not change the final state (assigning $WA=\text{red}$ then $NT=\text{green}$ leads to the same state as $NT=\text{green}$ then $WA=\text{red}$).
-\begin{itemize}
-  \item \textbf{Implication:} We fix the order of variables or choose only \textit{one} variable to branch on at each depth.
-  \item \textbf{Benefit:} The search tree depth is fixed at $n$ (number of variables). The search space reduces to $d^n$.
-\end{itemize}
+\subsection{Lösungsansätze: Suche und Backtracking}
+Da die Reihenfolge der Zuweisungen bei CSPs keine Rolle spielt (Kommutativität), muss nicht der gesamte Zustandsraum als Baum mit $n! \cdot v^n$ Blättern durchsucht werden. Es reicht aus, pro Ebene eine Variable zu betrachten. Dies reduziert den Suchraum auf $v^n$ Blätter.
 
 \subsubsection{Backtracking Search}
-Backtracking Search is the fundamental algorithm for solving CSPs. It is essentially a Depth-First Search (DFS) that operates on partial assignments. Unlike standard search where actions lead to new states, here an action is the assignment of a value to a variable.
+Backtracking ist eine Tiefensuche (Depth-First Search), die für CSPs optimiert
+ist.
+\begin{itemize}
+  \item Wähle eine unzugewiesene Variable.
+  \item Probiere nacheinander alle Werte aus der Domäne.
+  \item Wenn ein Wert konsistent ist: Weise ihn zu und rekursiere.
+  \item Wenn ein Wert inkonsistent ist oder die Rekursion fehlschlägt: Mache die
+        Zuweisung rückgängig (Backtrack) und versuche den nächsten Wert.
+\end{itemize}
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_53_1.png}}
+\end{center}
+Ohne Heuristiken entspricht dies einer uninformierten Suche. Um die Effizienz zu steigern (z. B. Lösung des $n$-Damen-Problems für $n>25$), werden Heuristiken für die Auswahl von Variablen und Werten sowie Inferenzmethoden (Propagation) benötigt.\subsection{Heuristiken für Backtracking}Um die Suche zu beschleunigen, müssen an jedem Entscheidungspunkt drei Fragen beantwortet werden:
 
-\begin{defbox}[Backtracking Algorithm Logic]
-  The algorithm relies on the \textbf{commutativity} of assignments (the order in which we assign variables doesn't matter for the final solution). This allows us to consider only a single variable at each node of the search tree, drastically reducing the branching factor from $n! \cdot d^n$ to $d^n$.
+\subsubsection{1. Welche Variable soll als nächste belegt werden?}
+Hier gilt das Prinzip: \textit{Fail-first} (Scheitere so früh wie möglich, um große Teile des Suchbaums abzuschneiden).
+\begin{defbox}[Variablen-Auswahl]
+  \begin{itemize}
+    \item \defc{Minimum Remaining Values (MRV):} Wähle die Variable mit den \textit{wenigsten} verbleibenden legalen Werten. Dies führt am schnellsten zu einem Fehler, wenn ein Zweig keine Lösung enthält.
+    \item \defc{Degree Heuristic:} (Wird oft als Tie-Breaker für MRV genutzt). Wähle die Variable, die an den \textit{meisten} Constraints mit anderen \textit{noch nicht zugewiesenen} Variablen beteiligt ist.
+  \end{itemize}
 \end{defbox}
 
-\textbf{Algorithm Steps:}
-\begin{enumerate}
-  \item \textbf{Base Case:} If the assignment is complete (all variables have values), return the assignment as the solution.
-  \item \textbf{Variable Selection:} Select an unassigned variable using a specific strategy (see Heuristics).
-  \item \textbf{Value Iteration:} Iterate through the values in the domain of the selected variable.
-  \item \textbf{Consistency Check:} For each value, check if assigning it violates any constraints with currently assigned variables.
-  \item \textbf{Recursive Step:}
-        \begin{itemize}
-          \item If consistent: Add $\{var = value\}$ to the assignment.
-          \item Call \textsc{Recursive-Backtracking} again.
-          \item If the recursive call returns a success, return that result.
-          \item \textbf{Backtrack:} If the recursive call fails, remove $\{var = value\}$ from the assignment and try the next value in the domain.
-        \end{itemize}
-  \item \textbf{Failure:} If all values have been tried and none work, return failure.
-\end{enumerate}
+\subsubsection{2. Welchen Wert soll die Variable annehmen?}
+Hier gilt das Prinzip: \textit{Fail-last} (Lasse möglichst viele Optionen für die Zukunft offen).
+\begin{defbox}[Werte-Auswahl]
+  \defc{Least Constraining Value (LCV):} Wähle den Wert, der die \textit{wenigsten} Werte in den Domänen der benachbarten Variablen ausschließt. Dies erhöht die Chance, direkt eine Lösung zu finden.
+\end{defbox}
 
-\subsection{Heuristics: Improving Backtracking}
+\subsection{Constraint Propagation (Inferenz)}
+Anstatt nur zu suchen und bei Konflikten zurückzugehen, kann man durch Inferenz den Suchraum proaktiv verkleinern, indem man Werte ausschließt, die unmöglich Teil einer Lösung sein können.
 
-Pure backtracking is slow. We use heuristics to decide \textit{which} variable to pick and \textit{which} value to try, effectively pruning the tree.
-
-\begin{enumerate}
-  \item Which variable to assign next? (\textit{Fail-First})
-  \item In what order to try values? (\textit{Fail-Last})
-  \item Can we detect inevitable failure early? (\textit{Inference})
-\end{enumerate}
-
-\subsubsection{Variable Selection (Which variable next?)}
-\begin{enumerate}
-  \item \defc{Minimum Remaining Values (MRV):}
-        \begin{itemize}
-          \item \textbf{Strategy:} Choose the variable with the \textit{fewest} legal values remaining.
-          \item \textbf{Intuition ("Fail-First"):} If a variable has only 1 legal value left, we must assign it now. If we wait, it might become 0, causing a failure deeper in the tree. We want to force failures as high up in the tree as possible to prune large branches.
-        \end{itemize}
-
-  \item \defc{Degree Heuristic:}
-        \begin{itemize}
-          \item \textbf{Strategy:} Choose the variable involved in the largest number of constraints with \textit{other unassigned} variables.
-          \item \textbf{Usage:} Often used as a tie-breaker for MRV.
-          \item \textbf{Intuition:} Assigning the most connected variable exerts the maximum "pressure" on the rest of the graph, reducing the branching factor for future steps.
-        \end{itemize}
-\end{enumerate}
-
-\subsubsection{Value Selection (Which value first?)}
-\begin{enumerate}
-  \item \defc{Least Constraining Value (LCV):}
-        \begin{itemize}
-          \item \textbf{Strategy:} Given a variable, try the value that rules out the \textit{fewest} values in the domains of neighboring variables.
-          \item \textbf{Intuition ("Fail-Last"):} We want to find \textit{a} solution, not all solutions. Therefore, we should pick the path most likely to succeed by leaving the maximum flexibility for the remaining variables.
-        \end{itemize}
-\end{enumerate}
-
-\subsection{Constraint Propagation (Inference)}
-
-Search implies "trying" values and undoing them if they fail. \defc{Propagation} implies logically deducing which values are impossible and removing them \textit{before} we try them.
-
-\subsubsection{Levels of Consistency}
+\subsubsection{Konsistenzarten}
 \begin{itemize}
-  \item \textbf{Node Consistency:} Every variable satisfies its unary constraints.
-  \item \textbf{Arc Consistency:} A variable $X$ is arc-consistent with respect to $Y$ if, for every value $x \in D_X$, there is some value $y \in D_Y$ satisfying the binary constraint $(X, Y)$.
-  \item \textbf{Path Consistency:} Ensures consistency for triples of variables.
-\end{itemize}
+  \item \textbf{Node Consistency (Knotenkonsistenz):} Jede Variable erfüllt ihre unären Constraints.
+  \item \textbf{Arc Consistency (Kantenkonsistenz):} Eine Variable $X$ ist kantenkonsistent zu einer Variable $Y$, wenn für \textit{jeden} Wert $x \in D_X$ mindestens ein Wert $y \in D_Y$ existiert, der den binären Constraint zwischen $X$ und $Y$ erfüllt.
+  \item \textbf{Path Consistency / k-Consistency:} Verallgemeinerung auf Tripel oder $k$ Variablen. Stärkere Konsistenz prüft mehr, ist aber rechenaufwendiger.\end{itemize}
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_37_1.png}}
+\end{center}
 
-Constraint propagation is the process of using constraints to reduce the legal domain of a variable, which in turn reduces the domains of its neighbors, and so on. This happens \textit{before} or \textit{during} search to reduce the search space.
-
-\subsubsection{Algorithms for Propagation}
-
-\paragraph{Forward Checking}
-Forward checking is a simple form of propagation performed during backtracking search.
-
-\textbf{Algorithm Steps:}
-\begin{enumerate}
-  \item When variable $X$ is assigned value $v$:
-  \item Look at all unassigned variables $Y$ that are connected to $X$ by a constraint.
-  \item Remove any value from $D_Y$ that conflicts with $X=v$.
-  \item \textbf{Early Termination:} If any domain $D_Y$ becomes empty, stop this branch immediately (backtrack).
-\end{enumerate}
-\textit{Limitation:} It only checks direct neighbors. It does not detect if the reduction in $Y$'s domain makes $Y$ incompatible with a third variable $Z$.
-\paragraph{Arc Consistency (AC-3 Algorithm)}
-AC-3 propagates constraints globally. It ensures that every arc in the graph is consistent.
-
-\begin{defbox}[AC-3 Algorithm]
-  AC-3 is a more powerful general-purpose algorithm that propagates constraints globally until the network is \defc{Arc Consistent}.
-  A variable $X$ is arc-consistent with respect to $Y$ if for every value $x \in D_X$, there is some allowed value $y \in D_Y$.
-
-  \begin{enumerate}
-    \item \textbf{Queue Initialization:} Create a queue containing all arcs (binary constraints) in the CSP: $\{(X_i, X_j), (X_j, X_i), \dots\}$.
-    \item \textbf{While Queue is not empty:}
-          \begin{itemize}
-            \item Pop an arc $(X_i, X_j)$ from the queue.
-            \item Call \textsc{Remove-Inconsistent-Values}($X_i, X_j$).
-            \item \textbf{If values were removed} from $D_i$:
-                  \begin{itemize}
-                    \item The domain of $X_i$ has become smaller. This might ruin consistency for its neighbors.
-                    \item Add all arcs $(X_k, X_i)$ (where $X_k$ is a neighbor of $X_i$) back into the queue.
-                  \end{itemize}
-          \end{itemize}
+\subsubsection{Forward Checking vs. Arc Consistency}
+\begin{itemize}
+  \item \textbf{Forward Checking:} Sobald $X$ ein Wert zugewiesen wird, werden alle inkonsistenten Werte aus den Domänen der direkten Nachbarn entfernt. Wenn eine Domäne leer wird, backtrackt der Algorithmus.\textit{Nachteil:} Erkennt Konflikte nicht früh genug (sieht z. B. nicht, dass zwei zukünftige Variablen inkonsistent zueinander geworden sind).
+  \item \textbf{Arc Consistency (AC-3 Algorithmus):} Propagiert Constraints durch das gesamte Netzwerk. Wenn aus $D_X$ ein Wert entfernt wird, müssen alle Nachbarn von $X$ erneut geprüft werden, da deren Unterstützung verloren gegangen sein könnte.\end{itemize}\begin{defbox}[AC-3 Algorithmus Kernidee]Verwende eine Warteschlange (Queue) aller Kanten (Arcs).Solange die Queue nicht leer ist:\begin{enumerate}
+    \item Entnimm Kante $(X_i, X_j)$.
+    \item Entferne alle Werte aus $D_i$, die keinen Partner in $D_j$ haben.
+    \item Wenn Werte aus $D_i$ entfernt wurden: Füge alle Kanten $(X_k, X_i)$ (Nachbarn, die von $X_i$ abhängen) wieder zur Queue hinzu.
   \end{enumerate}
 \end{defbox}
+Die Kombination aus Backtracking und AC-3 wird als \defc{MAC} (Maintaining Arc Consistency) bezeichnet.
 
-\textbf{Function \textsc{Remove-Inconsistent-Values}($X_i, X_j$):}
+\subsection{Lokale Suche für CSPs}Für Probleme, bei denen der Pfad egal ist, kann auch Lokale Suche (Hill Climbing, Simulated Annealing) auf \textit{vollständigen} (aber inkonsistenten) Zuweisungen arbeiten.
+
+\textbf{Min-Conflicts Heuristik:}
 \begin{itemize}
-  \item Iterate through every value $x$ in $D_i$.
-  \item Check if there exists a value $y$ in $D_j$ that satisfies the constraint between $X_i$ and $X_j$.
-  \item If no such $y$ exists, delete $x$ from $D_i$. Return \textit{true} (indicating change occurred).
+  \item Wähle zufällig eine Variable, die einen Constraint verletzt.
+  \item Wähle für diese Variable den Wert, der die \textit{Anzahl der verletzten Constraints} minimiert.
 \end{itemize}
 
-\subsection{Local Search for CSPs}
+Diese Methode ist erstaunlich effizient (z. B. Million-Queens in Minuten), außer in einem kritischen Bereich des Verhältnisses von Constraints zu Variablen (\textit{Critical Ratio}).
 
-Local Search algorithms (like Hill Climbing) operate on \defc{complete states}, meaning all variables are assigned a value at all times, even if the assignment is inconsistent (constraints are violated). The goal is to iteratively repair the assignment.
+\subsection{Struktur von CSPs}
+Die Struktur des Constraint-Graphen beeinflusst die Komplexität der Lösung massiv.
 
-\textbf{Algorithm Steps:}
-\begin{enumerate}
-  \item \textbf{Initialization:} Start with a complete assignment for all variables (usually generated randomly).
-  \item \textbf{Loop} (until a solution is found or max steps reached):
-        \begin{itemize}
-          \item Check if the current assignment satisfies all constraints. If yes, return it.
-          \item \textbf{Variable Selection:} Randomly select a variable that is currently involved in a conflict (violating a constraint).
-          \item \textbf{Value Selection (Minimization):} Choose a new value for this variable that minimizes the number of conflicts with other variables.
-          \item Update the variable to this new value.
-        \end{itemize}
-\end{enumerate}
+\subsubsection{Problem-Dekomposition}
+Wenn ein Graph in unabhängige Teilgraphen zerfällt, kann die Komplexität von $O(d^n)$ auf $O(n/c \cdot d^c)$ reduziert werden (lineare Skalierung in $n$)
 
-\textit{Note:} Like other local search methods, this can get stuck in local optima (plateaus), specifically when the ratio of constraints to variables is critical.
+\subsubsection{Baumstrukturierte CSPs}
+Wenn der Constraint-Graph ein Baum ist (keine Zyklen), kann das CSP in linearer Zeit $O(n \cdot d^2)$ gelöst werden.
+\textbf{Algorithmus für Bäume:}
+\textit{Topologische Sortierung:} Ordne Variablen so, dass jeder Knoten nach seinem Elternknoten kommt (Wurzel bis Blätter).
+\textit{Rückwärts-Pass (Konsistenz):} Mache von den Blättern zur Wurzel hin alle Kanten gerichtete kantenkonsistent (entferne Werte im Elternknoten, die keine Entsprechung im Kind haben).
+\textit{Vorwärts-Pass (Zuweisung):} Weise von der Wurzel zu den Blättern Werte zu. Da die Konsistenz hergestellt wurde, gibt es kein Backtracking.
 
-\subsection{Problem Structure and Decomposition}
-
-\subsubsection{Independent Subproblems}
-If the constraint graph consists of connected components that are disjoint, we can solve each component independently.
-\begin{itemize}
-  \item \textbf{Impact:} Reduces complexity from exponential in total variables $O(d^n)$ to exponential in the size of the largest component $O(d^c)$.
-\end{itemize}
-
-\subsubsection{Tree-Structured CSPs}
-If the constraint graph forms a tree (no loops), we can solve the CSP in linear time $O(n \cdot d^2)$ instead of exponential time.
-
-\textbf{Algorithm Steps:}
-\begin{enumerate}
-  \item \textbf{Topological Sort:} Linearlize the variables (order them $X_1, \dots, X_n$) such that every variable appears after its parent.
-  \item \textbf{Backward Pass (Consistency):}
-        \begin{itemize}
-          \item Iterate from $j = n$ down to $2$.
-          \item Apply arc consistency to the arc $(Parent(X_j), X_j)$.
-          \item This ensures that for every value in the parent's domain, there is a valid value in the child's domain.
-        \end{itemize}
-  \item \textbf{Forward Pass (Assignment):}
-        \begin{itemize}
-          \item Iterate from $i = 1$ to $n$.
-          \item Assign any value to $X_i$ that is consistent with the assignment of its parent.
-          \item Because of the backward pass, a valid assignment is guaranteed to exist. NO backtracking is required.
-        \end{itemize}
-\end{enumerate}
-
-\subsubsection{Nearly Tree-Structured Problems (Cutset Conditioning)}
-Most real-world problems are not trees, but often "close" to trees. We can exploit this via \defc{Cutset Conditioning}. This technique is used for constraint graphs that are \textit{nearly} trees. It turns a cyclic graph into a tree by removing specific nodes.
-
-\begin{itemize}
-  \item \textbf{Cycle Cutset:} A subset of variables $S$ such that removing them renders the remaining graph a tree.
-\end{itemize}
-
-\textbf{Algorithm:}
-\begin{enumerate}
-  \item Identify the Cutset $S$.
-  \item Iterate through all possible consistent assignments for variables in $S$.
-  \item For each assignment of $S$, the values are fixed. This simplifies the constraints on the remaining variables.
-  \item Solve the remaining variables (which now form a tree) using the efficient Tree CSP algorithm.
-  \item \textbf{Complexity:} $O(d^{|S|} \cdot (n-|S|)d^2)$. Efficient if the cutset $|S|$ is small.
-\end{enumerate}
-
-\begin{center}
-  \vcentered{\includegraphics[width=0.8\textwidth]{eiki_1_AI101-05_page_53_1.png}}
-\end{center}
+\subsubsection{Fast-Baum-Strukturen (Cutset Conditioning)}Für Graphen, die "fast" Bäume sind:Identifiziere ein \defc{Cycle Cutset} (Menge von Variablen, deren Entfernung den Graphen zum Baum macht).Instantiiere die Variablen im Cutset (probiere alle Kombinationen).Löse den verbleibenden Baum für jede Instantiierung ("Residual CSP").Die Laufzeit ist exponentiell nur in der Größe des Cutsets, nicht in $n$.
 
 \end{document}
