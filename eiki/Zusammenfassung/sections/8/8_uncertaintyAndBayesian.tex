@@ -9,14 +9,10 @@
 
 \section{Umgang mit Unsicherheit und Probabilistisches Schließen}
 
-Dieses Kapitel behandelt die Grundlagen der Unsicherheit in der Künstlichen
-Intelligenz, die Wahrscheinlichkeitstheorie als Werkzeug zur Modellierung von
-Glaubensgraden (Degrees of Belief) sowie Bayesian Networks zur kompakten
-Repräsentation von Wissen und Inferenzmethoden.
+Dieses Kapitel behandelt die Grundlagen der Unsicherheit in der Künstlichen Intelligenz, die Wahrscheinlichkeitstheorie als Werkzeug zur Modellierung von Glaubensgraden (Degrees of Belief) sowie Bayesian Networks zur kompakten Repräsentation von Wissen und Inferenzmethoden.
 
-\subsection{Einführung in Unsicherheit}In der klassischen Logik gehen Agenten davon aus, dass Aussagen entweder wahr
-oder falsch sind und Aktionen deterministische Ergebnisse haben. Die reale Welt
-ist jedoch oft unsicher.
+\subsection{Einführung in Unsicherheit}
+In der klassischen Logik gehen Agenten davon aus, dass Aussagen entweder wahr oder falsch sind und Aktionen deterministische Ergebnisse haben. Die reale Welt ist jedoch oft unsicher.
 
 \begin{defbox}[Gründe für Unsicherheit]
 
@@ -27,16 +23,12 @@ ist jedoch oft unsicher.
     \item \defc{Komplexität}: Es ist unmöglich, alle Eventualitäten (``Qualification Problem'') in logischen Regeln zu modellieren (z.B. ``Ich komme pünktlich an, außer\ldots'').
   \end{itemize}
 \end{defbox}
-Anstatt strikter logischer Wahrheit modellieren wir \defc{Wahrscheinlichkeiten} als Maß für den \defc{Glaubensgrad} (Degree of Belief) eines Agenten. Eine Wahrscheinlichkeit von 0.1 für einen Stau bedeutet nicht, dass die Straße zu 10
-
-% verstopft ist, sondern dass der Agent in 10% der Fälle an das Vorliegen eines Staus glaubt.
+Anstatt strikter logischer Wahrheit modellieren wir \defc{Wahrscheinlichkeiten} als Maß für den \defc{Glaubensgrad} (Degree of Belief) eines Agenten. Eine Wahrscheinlichkeit von 0.1 für einen Stau bedeutet nicht, dass die Straße zu 10\% verstopft ist, sondern dass der Agent in 10\% der Fälle an das Vorliegen eines Staus glaubt.
 
 \subsection{Grundlagen der Wahrscheinlichkeitstheorie}
 
 \subsubsection{Wahrscheinlichkeitsraum und Axiome}
-Ein Wahrscheinlichkeitsmodell besteht aus einem \defc{Stichprobenraum} $\Omega$
-(Menge aller möglichen Welten/Ergebnisse). Ein Ereignis $A$ ist eine Teilmenge
-von $\Omega$.
+Ein Wahrscheinlichkeitsmodell besteht aus einem \defc{Stichprobenraum} $\Omega$ (Menge aller möglichen Welten/Ergebnisse). Ein Ereignis $A$ ist eine Teilmenge von $\Omega$.
 
 \begin{defbox}[Kolmogorov-Axiome]Diese Axiome beschränken die Menge rationaler Glaubenssätze:
   \begin{enumerate}
@@ -47,16 +39,14 @@ von $\Omega$.
   \end{enumerate}
 \end{defbox}
 
-% Hier Grafik einfügen: Venn-Diagramm zur Veranschaulichung der Mengenoperationen (Schnittmenge, Vereinigung).
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-08_page_12_1.png}}
+\end{center}
 
-Ein Verstoß gegen diese Axiome führt zu irrationalem Verhalten. Dies wird durch
-das \defc{Dutch Book Theorem} bewiesen: Wenn ein Agent Wahrscheinlichkeiten
-akzeptiert, die den Axiomen widersprechen, kann ein Gegner (Bookmaker) eine
-Wette so konstruieren, dass der Agent garantiert Geld verliert, unabhängig vom
-Ausgang des Ereignisses.
+Ein Verstoß gegen diese Axiome führt zu irrationalem Verhalten. Dies wird durch das \defc{Dutch Book Theorem} bewiesen: Wenn ein Agent Wahrscheinlichkeiten akzeptiert, die den Axiomen widersprechen, kann ein Gegner (Bookmaker)  eine Wette so konstruieren, dass der Agent garantiert Geld verliert, unabhängig vom Ausgang des Ereignisses.
 
-\subsubsection{Zufallsvariablen}Anstatt mit atomaren Ereignissen zu arbeiten, nutzen wir
-\defc{Zufallsvariablen} (Random Variables, RVs), um Komplexität zu reduzieren.
+\subsubsection{Zufallsvariablen}
+Anstatt mit atomaren Ereignissen zu arbeiten, nutzen wir \defc{Zufallsvariablen} (Random Variables, RVs), um Komplexität zu reduzieren.
 
 \begin{itemize}
   \item \defc{Diskret}: Endliche Menge von Werten (z.B. $Wetter \in \{sonnig, regen, schnee\}$). Werte müssen disjunkt und erschöpfend sein.
@@ -68,14 +58,15 @@ Eine Proposition (Aussage) wie $Wetter = regen$ entspricht der Menge aller atoma
 \subsection{Verteilungen und Rechenregeln}
 
 \subsubsection{Joint Distribution (Verbundwahrscheinlichkeit)}
-Die \defc{Joint Distribution} $P(X_1, \dots, X_n)$ weist jeder möglichen Kombination von Werten aller Zufallsvariablen eine Wahrscheinlichkeit zu.\[P(x,  y) = P(X=x \land Y=y)\]
-Die Tabelle der Joint Distribution wächst exponentiell mit der Anzahl der Variablen ($O(2^n)$ bei binären Variablen), erlaubt aber die Beantwortung jeder beliebigen Wahrscheinlichkeitsanfrage.
+Die \defc{Joint Distribution} $P(X_1, \dots, X_n)$ weist jeder möglichen Kombination von Werten aller Zufallsvariablen eine Wahrscheinlichkeit zu.\[P(x,  y) = P(X=x \land Y=y)\] Die Tabelle der Joint Distribution wächst exponentiell mit der Anzahl der Variablen ($O(2^n)$ bei binären Variablen), erlaubt aber die Beantwortung jeder beliebigen Wahrscheinlichkeitsanfrage.
 
 \subsubsection{Marginalisierung und Bedingte Wahrscheinlichkeit}
-\begin{defbox}[Marginalisierung]Man kann Wahrscheinlichkeiten von Teilmengen von Variablen berechnen, indem man über die nicht interessierenden Variablen summiert (``Summing Out''):\[P(Y) = \sum_{x \in X} P(x, Y)\]
+\begin{defbox}[Marginalisierung]
+  Man kann Wahrscheinlichkeiten von Teilmengen von Variablen berechnen, indem man über die nicht interessierenden Variablen summiert (``Summing Out''):\[P(Y) = \sum_{x \in X} P(x, Y)\]
 \end{defbox}
 
-\begin{defbox}[Bedingte Wahrscheinlichkeit]Die Wahrscheinlichkeit von $X$, gegeben Evidenz $Y$:\[P(X|Y) = \frac{P(X, Y)}{P(Y)}\]Daraus folgt die \defc{Produktregel}:\[P(X, Y) = P(X|Y)P(Y) = P(Y|X)P(X)\]
+\begin{defbox}[Bedingte Wahrscheinlichkeit]
+  Die Wahrscheinlichkeit von $X$, gegeben Evidenz $Y$:\[P(X|Y) = \frac{P(X, Y)}{P(Y)}\]Daraus folgt die \defc{Produktregel}:\[P(X, Y) = P(X|Y)P(Y) = P(Y|X)P(X)\]
 \end{defbox}
 Die \defc{Kettenregel} (Chain Rule) erlaubt die Zerlegung einer Joint Distribution in bedingte Wahrscheinlichkeiten:\[P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | X_1, \dots, X_{i-1})\]
 
@@ -95,21 +86,26 @@ Erweitert mit Marginalisierung im Nenner: \[P(H|E) = \frac{P(E|H)P(H)}{P(E|H)P(H
 Da die vollständige Joint Distribution ($O(2^n)$) speicher- und rechenintensiv ist, nutzen wir Unabhängigkeiten zur kompakten Darstellung.
 
 \subsubsection{Unabhängigkeit}
-Zwei Variablen $X$ und $Y$ sind \defc{unabhängig}, wenn $P(X|Y) = P(X)$ bzw. $P(X,Y) = P(X)P(Y)$.Viel häufiger ist die \defc{bedingte Unabhängigkeit}: $X$ und $Y$ sind unabhängig gegeben $Z$, wenn $P(X|Y,Z) = P(X|Z)$.\subsubsection{Definition und Semantik}Ein \defc{Bayesian Network (BN)} ist ein gerichteter azyklischer Graph (DAG), bestehend aus:
+Zwei Variablen $X$ und $Y$ sind \defc{unabhängig}, wenn $P(X|Y) = P(X)$ bzw. $P(X,Y) = P(X)P(Y)$.Viel häufiger ist die \defc{bedingte Unabhängigkeit}: $X$ und $Y$ sind unabhängig gegeben $Z$, wenn $P(X|Y,Z) = P(X|Z)$.
+
+\subsubsection{Definition und Semantik}
+Ein \defc{Bayesian Network (BN)} ist ein gerichteter azyklischer Graph (DAG), bestehend aus:
 \begin{itemize}
   \item \defc{Knoten}: Zufallsvariablen.
   \item \defc{Kanten}: Direkte Abhängigkeiten ($X \to Y$ bedeutet $X$ beeinflusst $Y$).
   \item \defc{CPTs (Conditional Probability Tables)}: Jeder Knoten $X_i$ hat eine Wahrscheinlichkeitsverteilung $P(X_i | Pa(X_i))$, wobei $Pa(X_i)$ die Elternknoten sind.
-\end{itemize}% Hier Grafik einfügen: Beispiel eines einfachen Bayesian Networks (z.B. Smoking -> Cancer).
-\begin{defbox}[BN Semantik]Ein BN definiert die Joint Distribution als Produkt der lokalen bedingten Wahrscheinlichkeiten:\[P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | Pa(X_i))\]
+\end{itemize}
+
+\begin{defbox}[BN Semantik]
+  Ein BN definiert die Joint Distribution als Produkt der lokalen bedingten Wahrscheinlichkeiten:\[P(X_1, \dots, X_n) = \prod_{i=1}^{n} P(X_i | Pa(X_i))\]
 \end{defbox}
 
 \defc{Lokale Markov-Annahme}: Ein Knoten ist bedingt unabhängig von all seinen Nicht-Nachfahren (Non-Descendants), gegeben seine Eltern.
 
 \subsection{Inferenz in Bayesian Networks}Inferenz beantwortet Anfragen der Form $P(Query | Evidence)$.
-\subsubsection{Exakte Inferenz: Variable Elimination}Variable Elimination vermeidet die Berechnung der vollen Joint Distribution,
-indem Summen ``nach innen gezogen'' werden. Der Prozess eliminiert Variablen, die
-weder Query noch Evidenz sind, nacheinander.
+
+\subsubsection{Exakte Inferenz: Variable Elimination}
+Variable Elimination vermeidet die Berechnung der vollen Joint Distribution, indem Summen ``nach innen gezogen'' werden. Der Prozess eliminiert Variablen, die weder Query noch Evidenz sind, nacheinander.
 
 \textbf{Algorithmus:}
 \begin{enumerate}
@@ -124,39 +120,39 @@ weder Query noch Evidenz sind, nacheinander.
         \end{itemize}
   \item Normalisiere das Ergebnis am Ende.
 \end{enumerate}Die Operationen sind:
+
 \begin{itemize}
   \item \defc{Faktor-Produkt}: $f_3(A,B,C) = f_1(A,B) \cdot f_2(B,C)$.
   \item \defc{Summing Out}: $f_{new}(B) = \sum_a f(a, B)$.
 \end{itemize}
 
 \subsubsection{Komplexität}
-Exakte Inferenz in Bayesian Networks ist \defc{NP-hard} (bewiesen durch
-Reduktion auf 3-SAT). In einfach verbundenen Netzen (Polytrees) ist die
-Komplexität linear, im schlimmsten Fall jedoch exponentiell.
+Exakte Inferenz in Bayesian Networks ist \defc{NP-hard} (bewiesen durch Reduktion auf 3-SAT). In einfach verbundenen Netzen (Polytrees) ist die Komplexität linear, im schlimmsten Fall jedoch exponentiell.
 
 \subsection{Approximative Inferenz: Sampling}
-Da exakte Inferenz oft zu aufwendig ist, nutzen wir stochastische Verfahren
-(Monte Carlo Methoden), die gegen die wahre Wahrscheinlichkeit konvergieren.
+Da exakte Inferenz oft zu aufwendig ist, nutzen wir stochastische Verfahren (Monte Carlo Methoden), die gegen die wahre Wahrscheinlichkeit konvergieren.
 
-\subsubsection{Direct Sampling (ohne Evidenz)}Man zieht Stichproben in topologischer Reihenfolge (von Eltern zu Kindern)
-entsprechend der CPTs.\[P(X) \approx \frac{N(X)}{N_{total}}\]
+\subsubsection{Direct Sampling (ohne Evidenz)}
+Man zieht Stichproben in topologischer Reihenfolge (von Eltern zu Kindern) entsprechend der CPTs.\[P(X) \approx \frac{N(X)}{N_{total}}\]
 
 \subsubsection{Rejection Sampling}
-Um $P(X|e)$ zu berechnen: Generiere Samples wie oben. Verwirf (reject) alle
-Samples, die der Evidenz $e$ widersprechen. Zähle die verbleibenden Samples.
-Problem: Bei unwahrscheinlicher Evidenz werden fast alle Samples verworfen
-(ineffizient).
+Um $P(X|e)$ zu berechnen: Generiere Samples wie oben. Verwirf (reject) alle Samples, die der Evidenz $e$ widersprechen. Zähle die verbleibenden Samples. Problem: Bei unwahrscheinlicher Evidenz werden fast alle Samples verworfen (ineffizient).
 
 \subsubsection{Markov Chain Monte Carlo (MCMC)}
-MCMC-Verfahren wie \defc{Gibbs Sampling} wandern durch den Zustandsraum,
-anstatt Samples unabhängig zu generieren.
-\begin{defbox}[Markov Blanket]Der \defc{Markov Blanket} einer Variable $X$ besteht aus:
+MCMC-Verfahren wie \defc{Gibbs Sampling} wandern durch den Zustandsraum, anstatt Samples unabhängig zu generieren.
+
+\begin{defbox}[Markov Blanket]
+  Der \defc{Markov Blanket} einer Variable $X$ besteht aus:
   \begin{itemize}
     \item Eltern von $X$
     \item Kindern von $X$
     \item Anderen Eltern der Kinder von $X$
   \end{itemize}$X$ ist bedingt unabhängig von allen anderen Knoten im Netzwerk, gegeben seinen Markov Blanket.
-\end{defbox}% Hier Grafik einfügen: Darstellung des Markov Blankets (Knoten X zentriert, umgeben von Eltern, Kindern und Eltern der Kinder).\textbf{Gibbs Sampling Algorithmus:}
+\end{defbox}
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-09_page_34_1.png}}
+\end{center}
+
 \begin{enumerate}
   \item Initialisiere alle Variablen mit zufälligen Werten (Evidenz fixieren).
   \item Wiederhole für viele Schritte:

@@ -45,9 +45,6 @@ Hill Climbing ist der einfachste lokale Suchalgorithmus ("Gierige lokale Suche")
 \textbf{Probleme des Hill Climbing:}
 Der Algorithmus garantiert nicht das Finden des globalen Optimums, da er in lokalen Optima stecken bleiben kann.
 
-% Grafik: Landschaft der Zielfunktion mit lokalem Maximum, globalem Maximum, Schulter und flachem Maximum.
-% [Hier sollte eine Grafik der 'Objective Function Landscape' eingefügt werden]
-
 \begin{itemize}
   \item \defc{Lokales Maximum}: Ein Gipfel, der höher ist als alle direkten Nachbarn, aber niedriger als das globale Maximum.
   \item \defc{Plateau}: Ein flacher Bereich, in dem alle Nachbarn den gleichen Wert haben. Der Algorithmus hat keine Richtungsinformation (Random Walk notwendig).
@@ -138,8 +135,9 @@ Der Minimax-Algorithmus berechnet den optimalen Zug durch rekursive Suche im Spi
   \item \textbf{MIN-Knoten:} $\min( \text{Werte der Nachfolger} )$.
 \end{itemize}
 
-% Grafik: Ein Spielbaum für Tic-Tac-Toe oder ein abstrakter Baum mit MAX/MIN Ebenen und propagierten Werten.
-% [Hier sollte eine Grafik eines Minimax-Baums eingefügt werden]
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-04_page_53_1.png}}
+\end{center}
 
 \textbf{Eigenschaften:}
 \begin{itemize}

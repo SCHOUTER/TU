@@ -28,7 +28,9 @@ Die Wumpus-Welt ist eine Standardumgebung zur Illustration logischer Agenten.
   \item \textbf{Eigenschaften:} Deterministisch, diskret, statisch, partiell beobachtbar.
 \end{itemize}
 
-% [GRAFIK EINFÜGEN: Abbildung der Wumpus-Welt, die Positionen von Pits, Wumpus und Gold sowie die entsprechenden Wahrnehmungen (Breeze, Stench) in benachbarten Feldern zeigt.]
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-06_page_11_2.png}}
+\end{center}
 
 \subsection{Logik: Syntax und Semantik}
 
@@ -40,7 +42,7 @@ Die Wumpus-Welt ist eine Standardumgebung zur Illustration logischer Agenten.
 
 \begin{defbox}[Entailment (Logische Folgerung)]
   Ein Satz $\alpha$ folgt logisch aus der Wissensbasis $KB$ (geschrieben $KB \models \alpha$), wenn in \textit{jedem} Modell, in dem $KB$ wahr ist, auch $\alpha$ wahr ist.
-  $$M(KB) \subseteq M(\alpha)$$
+  \[M(KB) \subseteq M(\alpha)\]
   (Die Menge der Modelle, die die KB erfüllen, ist eine Teilmenge der Modelle, die $\alpha$ erfüllen.)
 \end{defbox}
 
@@ -97,7 +99,7 @@ Dies ist \textit{sound} (korrekt) und \textit{complete} (vollständig), aber ine
 \end{itemize}
 
 \textbf{Wichtiger Zusammenhang (Beweis durch Widerspruch):}
-$$KB \models \alpha \quad \text{genau dann, wenn} \quad (KB \land \neg \alpha) \text{ ist unerfüllbar.}$$
+\[KB \models \alpha \quad \text{genau dann, wenn} \quad (KB \land \neg \alpha) \text{ ist unerfüllbar.}\]
 
 \subsubsection{Logische Äquivalenzen}
 Zwei Sätze sind äquivalent ($\alpha \equiv \beta$), wenn sie in denselben Modellen wahr sind.
@@ -130,11 +132,12 @@ Um zu zeigen, dass $KB \models \alpha$:
 1. Füge $\neg \alpha$ zur KB hinzu: $KB \land \neg \alpha$.
 2. Wandle alles in CNF um.
 3. Wende wiederholt die \defc{Resolutionsregel} an:
-$$ \frac{l_1 \lor \dots \lor l_k, \quad m_1 \lor \dots \lor m_n}{l_1 \lor \dots \lor l_{i-1} \lor l_{i+1} \lor \dots \lor l_k \lor m_1 \lor \dots \lor m_{j-1} \lor m_{j+1} \lor \dots \lor m_n} $$
+\[ \frac{l_1 \lor \dots \lor l_k, \quad m_1 \lor \dots \lor m_n}{l_1 \lor \dots \lor l_{i-1} \lor l_{i+1} \lor \dots \lor l_k \lor m_1 \lor \dots \lor m_{j-1} \lor m_{j+1} \lor \dots \lor m_n} \]
 wobei $l_i$ und $m_j$ komplementäre Literale sind (z.B. $P$ und $\neg P$).
 4. Wenn die \textbf{leere Klausel} (Widerspruch) abgeleitet wird, ist $\alpha$ bewiesen.
-
-% [GRAFIK EINFÜGEN: Beispiel eines Resolutionsbaums, der zeigt, wie Klauseln kombiniert werden, um zur leeren Menge zu gelangen.]
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-06_page_44_1.png}}
+\end{center}
 
 \subsection{Horn-Klauseln und Chaining}
 

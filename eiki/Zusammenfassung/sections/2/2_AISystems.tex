@@ -18,7 +18,9 @@ Ein KI-System wird definiert durch die Interaktion zwischen einem Agenten und se
     Ein \defc{Agent} ist eine Entität, die ihre Umgebung durch \defc{Sensoren} wahrnimmt und auf diese Umgebung durch \defc{Aktuatoren} (Effektoren) einwirkt.
 \end{defbox}
 
-% [Bild: Darstellung der Interaktion zwischen Agent und Umgebung: Sensoren nehmen Wahrnehmungen (Percepts) auf, Agent entscheidet, Aktuatoren führen Aktionen aus.]
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-02_page_15_1.png}}
+\end{center}
 
 \begin{itemize}
     \item \textbf{Wahrnehmung (Percept):} Der sensorische Input des Agenten zu einem bestimmten Zeitpunkt.
@@ -123,7 +125,9 @@ Diese Agenten entscheiden nur basierend auf der \textit{aktuellen} Wahrnehmung. 
     \item \textbf{Formel:} Aktion = Funktion(Aktuelle Wahrnehmung).
     \item \textbf{Einschränkung:} Funktionieren nur zuverlässig in \textit{fully observable} Umgebungen. Drohen in unendliche Schleifen zu geraten, wenn die Umgebung nur teilweise beobachtbar ist.
 \end{itemize}
-% [Bild: Diagramm eines Simple Reflex Agent: Percept -> Sensoren -> Was ist die Welt jetzt -> Bedingung-Aktion-Regeln -> Aktion -> Aktuatoren]
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-02_page_20_1.png}}
+\end{center}
 
 \subsubsection{2. Model-based Reflex Agents (Modellbasierte Reflex-Agenten)}
 Diese Agenten besitzen einen internen Zustand (\textit{Internal State}), um mit partieller Beobachtbarkeit umzugehen.
@@ -132,7 +136,9 @@ Diese Agenten besitzen einen internen Zustand (\textit{Internal State}), um mit 
     \item \textbf{Modell der Welt:} Wissen darüber, wie die Welt funktioniert (Übergangsmodelle) und wie Aktionen die Welt verändern.
     \item \textbf{Ablauf:} Update State $\rightarrow$ Wähle Regel $\rightarrow$ Aktion.
 \end{itemize}
-% [Bild: Diagramm Model-based Agent: Hinzugefügt ist 'State' und 'How the world evolves']
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-02_page_22_1.png}}
+\end{center}
 
 \subsubsection{3. Goal-based Agents (Zielbasierte Agenten)}
 Wissen über den Zustand reicht nicht aus; der Agent benötigt ein Ziel (\textit{Goal}).
@@ -141,7 +147,9 @@ Wissen über den Zustand reicht nicht aus; der Agent benötigt ein Ziel (\textit
     \item \textbf{Unterschied zum Reflex:} Der Reflex-Agent reagiert, der Goal-based Agent plant in die Zukunft.
     \item \textbf{Flexibilität:} Ziele können sich ändern, der Agent passt sein Verhalten an.
 \end{itemize}
-% [Bild: Diagramm Goal-based Agent: 'What is the world like now' -> 'What it will be like if I do action A' -> 'Goals' -> Aktion]
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-02_page_24_1.png}}
+\end{center}
 
 \subsubsection{4. Utility-based Agents (Nutzenbasierte Agenten)}
 Ziele sind oft binär (erreicht/nicht erreicht). Nutzen (\textit{Utility}) erlaubt eine feinere Unterscheidung.
@@ -153,7 +161,9 @@ Ziele sind oft binär (erreicht/nicht erreicht). Nutzen (\textit{Utility}) erlau
               \item Unsicherheit (Abwägung von Erfolgswahrscheinlichkeit und Nutzen).
           \end{itemize}
 \end{itemize}
-% [Bild: Diagramm Utility-based Agent: Statt 'Goals' gibt es eine 'Utility'-Box, die den Nutzen maximiert]
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-02_page_26_1.png}}
+\end{center}
 
 \subsubsection{5. Learning Agents (Lernende Agenten)}
 Jeder der obigen Agententypen kann lernfähig gemacht werden. Dies erlaubt dem Agenten, in unbekannten Umgebungen zu operieren und kompetenter zu werden.
@@ -166,6 +176,8 @@ Jeder der obigen Agententypen kann lernfähig gemacht werden. Dies erlaubt dem A
         \item \textbf{Problem Generator:} Schlägt Aktionen vor, die zu neuen Erfahrungen führen (Exploration), auch wenn diese kurzfristig suboptimal sind.
     \end{itemize}
 \end{defbox}
-% [Bild: Diagramm Learning Agent, das die Interaktion der vier Komponenten zeigt]
+\begin{center}
+    \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-02_page_28_1.png}}
+\end{center}
 
 \end{document}

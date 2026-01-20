@@ -20,7 +20,9 @@
   \end{itemize}
 \end{defbox}
 
-% Hier Grafik des Constraint-Graphen (z.B. Australien-Karte als Graph) einfügen% 
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_22_2.png}}
+\end{center}
 Knoten = Variablen (Regionen), Kanten = Constraints (benachbart)
 
 \subsection{Arten von Constraints}Constraints schränken die möglichen Belegungen der Variablen ein:
@@ -45,7 +47,9 @@ ist.
   \item Wenn ein Wert inkonsistent ist oder die Rekursion fehlschlägt: Mache die
         Zuweisung rückgängig (Backtrack) und versuche den nächsten Wert.
 \end{itemize}
-% Hier Grafik des Suchbaums für Map-Coloring einfügen
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_53_1.png}}
+\end{center}
 Ohne Heuristiken entspricht dies einer uninformierten Suche. Um die Effizienz zu steigern (z. B. Lösung des $n$-Damen-Problems für $n>25$), werden Heuristiken für die Auswahl von Variablen und Werten sowie Inferenzmethoden (Propagation) benötigt.\subsection{Heuristiken für Backtracking}Um die Suche zu beschleunigen, müssen an jedem Entscheidungspunkt drei Fragen beantwortet werden:
 
 \subsubsection{1. Welche Variable soll als nächste belegt werden?}
@@ -71,7 +75,9 @@ Anstatt nur zu suchen und bei Konflikten zurückzugehen, kann man durch Inferenz
   \item \textbf{Node Consistency (Knotenkonsistenz):} Jede Variable erfüllt ihre unären Constraints.
   \item \textbf{Arc Consistency (Kantenkonsistenz):} Eine Variable $X$ ist kantenkonsistent zu einer Variable $Y$, wenn für \textit{jeden} Wert $x \in D_X$ mindestens ein Wert $y \in D_Y$ existiert, der den binären Constraint zwischen $X$ und $Y$ erfüllt.
   \item \textbf{Path Consistency / k-Consistency:} Verallgemeinerung auf Tripel oder $k$ Variablen. Stärkere Konsistenz prüft mehr, ist aber rechenaufwendiger.\end{itemize}
-% Hier Grafik zur Kantenkonsistenz einfügen (z.B. Farbkonflikt zwischen zwei Knoten)
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_37_1.png}}
+\end{center}
 
 \subsubsection{Forward Checking vs. Arc Consistency}
 \begin{itemize}

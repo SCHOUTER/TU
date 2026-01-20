@@ -37,11 +37,14 @@ Problemlösende Agenten sind zielbasierte Agenten, die atomare Repräsentationen
 
 Der Kern aller Suchalgorithmen ist die Expansion von Zuständen.
 \begin{itemize}
-  \item \textbf{Frontier (Open List):} Menge der generierten, aber noch nicht expandierten Knoten.
+  \item \textbf{Fringe (Open List):} Menge der generierten, aber noch nicht expandierten Knoten.
   \item \textbf{Expansion:} Anwenden der Aktionen auf einen Zustand, um Kindknoten zu generieren.
 \end{itemize}
 
-% [Hier Grafik einfügen: Darstellung eines Suchbaums mit Frontier und expandierten Knoten]
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-03_page_23_2.png}}
+\end{center}
+
 
 \begin{defbox}[Unterschied Tree vs. Graph Search]
   \begin{itemize}
@@ -70,7 +73,7 @@ Der Kern aller Suchalgorithmen ist die Expansion von Zuständen.
 Uninformierte Strategien haben keine Information darüber, wie nah ein Zustand am Ziel ist. Sie unterscheiden sich nur in der Reihenfolge der Knotencxpansion.
 
 \subsubsection{Breadth-First Search (BFS) - Breitensuche}
-Expandiert den flachsten Knoten in der Frontier zuerst (FIFO-Queue).
+Expandiert den flachsten Knoten in der Fringe zuerst (FIFO-Queue).
 \begin{itemize}
   \item \defc{Vollständig}: Ja (wenn $b$ endlich).
   \item \defc{Optimal}: Ja, aber nur wenn alle Schrittkosten gleich sind (z.B. 1). Sonst nicht.
@@ -89,7 +92,7 @@ Expandiert den Knoten mit den geringsten Pfadkosten $g(n)$ zuerst (Priority Queu
 \end{itemize}
 
 \subsubsection{Depth-First Search (DFS) - Tiefensuche}
-Expandiert den tiefsten Knoten in der Frontier zuerst (LIFO-Queue / Stack).
+Expandiert den tiefsten Knoten in der Fringe zuerst (LIFO-Queue / Stack).
 \begin{itemize}
   \item \defc{Vollständig}: Nein (kann in unendlichen Pfaden oder Schleifen hängen bleiben, außer bei Graph Search in endlichen Räumen).
   \item \defc{Optimal}: Nein (findet irgendeinen Pfad, nicht zwingend den kürzesten).
@@ -174,8 +177,10 @@ Wenn $h_2(n) \ge h_1(n)$ für alle $n$ (und beide zulässig sind), dann \textbf{
   \item $h_2$ ist näher an den wahren Kosten ($h^*$).
   \item A* mit $h_2$ expandiert weniger Knoten als mit $h_1$ und ist effizienter.
 \end{itemize}
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-03_page_55_1.png}}
+\end{center}
 
-% [Hier Grafik einfügen: Vergleich von Suchradien bei verschiedenen Heuristiken]
 
 \subsubsection{Beispiel: 8-Puzzle Heuristiken}
 \begin{itemize}
