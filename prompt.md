@@ -6,7 +6,7 @@ Die Zusammenfassung sollte für effizientes Lernen und die Prüfungsvorbereitung
 
 Wenn ein Konzept in den Folien nicht gut erklärt ist, erläutern Sie es in der Zusammenfassung ausführlich und verwenden Sie gegebenenfalls Beispiele.
 
-Verwenden Sie für den gesamten Text Deutsch.
+Verwenden Sie für den gesamten Text Deutsch, ausser bei Fachbegriffe, die mehr Sinn im Englischen machen.
 
 Geben Sie keine Quellen an.
 
