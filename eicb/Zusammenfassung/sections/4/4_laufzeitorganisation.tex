@@ -66,7 +66,7 @@ aufeinander zu (siehe Speicherverwaltung).
 
 \subsubsection{Instruktionen}
 TAM-Instruktionen sind 32-bit breit und haben folgendes Format:
-$$ \text{Instruktion} = \underbrace{\text{op (4 Bit)}}_{\text{Opcode}} \mid \underbrace{\text{r (4 Bit)}}_{\text{Register}} \mid \underbrace{\text{n (8 Bit)}}_{\text{Größe}} \mid \underbrace{\text{d (16 Bit)}}_{\text{Displacement}} $$
+\[ \text{Instruktion} = \underbrace{\text{op (4 Bit)}}_{\text{Opcode}} \mid \underbrace{\text{r (4 Bit)}}_{\text{Register}} \mid \underbrace{\text{n (8 Bit)}}_{\text{Größe}} \mid \underbrace{\text{d (16 Bit)}}_{\text{Displacement}} \]
 
 Beispiel: \texttt{LOAD (1) 3[ST]} lädt ein Wort von der Adresse $ST + 3$.
 
@@ -109,7 +109,7 @@ Die Felder eines Records werden im Speicher nacheinander (sequenziell) abgelegt.
 \end{wrapfigure}
 \begin{itemize}
   \item \textbf{Statische Arrays}: Größe zur Compile-Zeit bekannt. Elemente liegen direkt hintereinander.
-        $$ address[me[i]] = address[me] + i \times size[Element] $$
+        \[ address[me[i]] = address[me] + i \times size[Element] \]
   \item \textbf{Dynamische Arrays}: Größe erst zur Laufzeit bekannt.
   \item \textbf{Repräsentation}: Indirekt über einen \defc{Deskriptor} (Dope Vector). Dieser enthält einen Zeiger auf die Daten (im Heap) und die aktuelle Größe.
 \end{itemize}

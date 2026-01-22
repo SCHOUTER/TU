@@ -143,8 +143,8 @@ Expandiert den Knoten, der dem Ziel am nächsten scheint.
 Kombiniert UCS und Greedy. Minimiert die geschätzten Gesamtkosten des Pfades durch $n$.
 \begin{itemize}
   \item \textbf{Bewertungsfunktion:} $f(n) = g(n) + h(n)$
-  \item $g(n)$: Tatsächliche Kosten vom Start bis $n$.
-  \item $h(n)$: Geschätzte Kosten von $n$ bis zum Ziel.
+  \item $g(n)$: Tatsächliche Kosten vom Start bis $n$ -> Vergangenheit.
+  \item $h(n)$: Geschätzte Kosten von $n$ bis zum Ziel -> Zukunft.
   \item $f(n)$: Geschätzte Gesamtkosten des Pfades durch $n$.
 \end{itemize}
 
@@ -154,7 +154,7 @@ Damit A* optimal ist, muss die Heuristik bestimmte Eigenschaften erfüllen.
 
 \subsubsection{Admissibility (Zulässigkeit)}
 Eine Heuristik $h(n)$ ist \textbf{admissible}, wenn sie die Kosten zum Ziel \textit{niemals überschätzt}.
-$$0 \le h(n) \le h^*(n)$$
+\[0 \le h(n) \le h^*(n)\]
 (wobei $h^*(n)$ die wahren Kosten zum Ziel sind).
 \begin{itemize}
   \item Notwendig für Optimalität bei \textbf{Tree Search}.
@@ -163,8 +163,8 @@ $$0 \le h(n) \le h^*(n)$$
 
 \subsubsection{Consistency (Konsistenz / Monotonie)}
 Eine Heuristik $h(n)$ ist \textbf{consistent}, wenn für jeden Knoten $n$ und jeden Nachfolger $n'$ gilt:
-$$h(n) \le c(n, a, n') + h(n')$$
-(Dreiecksungleichung).
+\[h(n) \le c(n, a, n') + h(n')\]
+(Dreiecksungleichung). $a$ ist die angewandte Aktion ($c(n, a, n')$: die Kosten genau dieses Schritts vom Zustand $n$ nach $n'$ unter Verwendung der Aktion $a$)
 \begin{itemize}
   \item Notwendig für Optimalität bei \textbf{Graph Search}.
   \item Konsistenz impliziert Admissibility.

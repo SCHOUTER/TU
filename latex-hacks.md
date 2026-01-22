@@ -132,6 +132,10 @@ To break long inline math:
 A = B + \allowbreak C + D
 ```
 
+To change from $$ to \[]\:
+\$\$([\s\S]\*?)\$\$
+\\[$1\\]
+
 ### Define your operators
 
 ```tex
