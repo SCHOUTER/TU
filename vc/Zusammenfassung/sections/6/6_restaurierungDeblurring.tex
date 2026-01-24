@@ -19,10 +19,10 @@ Diese Zusammenfassung behandelt die Methoden zur Wiederherstellung von Bildern, 
 Ein aufgenommenes Bild ist selten perfekt. Es wird mathematisch oft als eine Faltung des Originalbildes mit einem Kern (Blur-Kernel) plus Rauschen modelliert.
 
 \begin{defbox}[Das Degradationsmodell]
-  Sei $f$ das Originalbild, $a$ der Faltungskern (z.B. eine Gaußglocke für Unschärfe) und $n$ das additive Rauschen. Das beobachtete Bild $g$ ist:
-  \[ g = a(f) + n \]
-  Im Fourierraum (Faltung wird zur Multiplikation) gilt ohne Rauschen:
-  \[ G = A \cdot F \]
+   Sei $f$ das Originalbild, $a$ der Faltungskern (z.B. eine Gaußglocke für Unschärfe) und $n$ das additive Rauschen. Das beobachtete Bild $g$ ist:
+   \[ g = a(f) + n \]
+   Im Fourierraum (Faltung wird zur Multiplikation) gilt ohne Rauschen:
+   \[ G = A \cdot F \]
 \end{defbox}
 
 \subsubsection{Der naive Ansatz: Inverser Filter}
@@ -30,23 +30,23 @@ Theoretisch könnte man das Originalbild $F$ einfach durch Division zurückgewin
 \[ F = \frac{G}{A} \]
 \defc{Problem:} Dieser Ansatz ist in der Praxis instabil (Cheating).
 \begin{enumerate}
-  \item Der Kernel $A$ (oft ein Tiefpassfilter wie Gauß) hat bei hohen Frequenzen Werte nahe 0.
-  \item Division durch sehr kleine Zahlen führt zu riesigen Werten.
-  \item Da $G$ auch Rauschen enthält ($G = A \cdot F + N$), wird das Rauschen $N$ durch die Division mit kleinen Werten von $A$ massiv verstärkt.
-  \item Das Ergebnis enthält oft komplexe Zahlen und ist unbrauchbar.
+   \item Der Kernel $A$ (oft ein Tiefpassfilter wie Gauß) hat bei hohen Frequenzen Werte nahe 0.
+   \item Division durch sehr kleine Zahlen führt zu riesigen Werten.
+   \item Da $G$ auch Rauschen enthält ($G = A \cdot F + N$), wird das Rauschen $N$ durch die Division mit kleinen Werten von $A$ massiv verstärkt.
+   \item Das Ergebnis enthält oft komplexe Zahlen und ist unbrauchbar.
 \end{enumerate}
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=.8\linewidth]{vc_1_VC2025_06_Bildverarbeitung_page_26_1.png}
+   \centering
+   \includegraphics[width=.8\linewidth]{vc_1_VC2025_06_Bildverarbeitung_page_26_1.png}
 \end{figure}
 
 \subsubsection{Exkurs: Korrekt gestellte Probleme (Hadamard)}
 Ein mathematisches Problem ist \defc{korrekt gestellt} (well-posed), wenn:
 \begin{enumerate}
-  \item Eine Lösung existiert.
-  \item Die Lösung eindeutig ist.
-  \item Die Lösung stetig von den Daten abhängt (Stabilität).
+   \item Eine Lösung existiert.
+   \item Die Lösung eindeutig ist.
+   \item Die Lösung stetig von den Daten abhängt (Stabilität).
 \end{enumerate}
 
 \defc{Deblurring ist ein nicht korrekt gestelltes Problem (ill-posed).}
@@ -58,27 +58,27 @@ Kleine Änderungen im Input (Rauschen) führen zu riesigen Änderungen im Output
 Der Wiener Filter ist die Standardlösung für das Problem des Inversen Filters. Er versucht, den Fehler zwischen dem geschätzten und dem echten Bild statistisch zu minimieren.
 
 \begin{defbox}[Wiener Filter]
-  Anstatt einfach durch $A$ zu teilen, wird der Ausdruck regularisiert:
-  \[ F = \frac{A^*}{|A|^2 + R^2} \cdot G \]
-  Dabei ist:
-  \begin{itemize}
-    \item $A^*$: Die komplex konjugierte Matrix von $A$.
-    \item $|A|^2 = A^* A$: Das Leistungsdichtespektrum des Kernels.
-    \item $R$: Ein Parameter, der das Signal-Rausch-Verhältnis (SNR) repräsentiert.
-  \end{itemize}
+   Anstatt einfach durch $A$ zu teilen, wird der Ausdruck regularisiert:
+   \[ F = \frac{A^*}{|A|^2 + R^2} \cdot G \]
+   Dabei ist:
+   \begin{itemize}
+      \item $A^*$: Die komplex konjugierte Matrix von $A$.
+      \item $|A|^2 = A^* A$: Das Leistungsdichtespektrum des Kernels.
+      \item $R$: Ein Parameter, der das Signal-Rausch-Verhältnis (SNR) repräsentiert.
+   \end{itemize}
 \end{defbox}
 
 \subsubsection{Funktionsweise und Interpretation von R}
 Der Term $R^2$ im Nenner verhindert die Division durch Null.
 \begin{itemize}
-  \item \textbf{$R$ ist groß (viel Rauschen/unsicheres Signal):} Der Filter wirkt wie ein \defc{Tiefpass}. Er glättet das Bild, um das Rauschen zu unterdrücken, verliert aber Details. Der Term $|A|^2$ wird gegenüber $R^2$ vernachlässigbar.
-  \item \textbf{$R$ ist klein (wenig Rauschen):} Der Filter nähert sich dem \defc{inversen Filter} an ($R \approx 0 \Rightarrow \frac{A^*}{|A|^2} = \frac{1}{A}$). Er schärft das Bild stark (Hochpass), verstärkt aber Rauschen, falls vorhanden.
-  \item \textbf{$R$ optimal gewählt:} Der Filter agiert als \defc{Bandpass}. Er entfernt Rauschen in Frequenzen, wo das Signal schwach ist, und invertiert den Blur dort, wo das Signal stark ist.
+   \item \textbf{$R$ ist groß (viel Rauschen/unsicheres Signal):} Der Filter wirkt wie ein \defc{Tiefpass}. Er glättet das Bild, um das Rauschen zu unterdrücken, verliert aber Details. Der Term $|A|^2$ wird gegenüber $R^2$ vernachlässigbar.
+   \item \textbf{$R$ ist klein (wenig Rauschen):} Der Filter nähert sich dem \defc{inversen Filter} an ($R \approx 0 \Rightarrow \frac{A^*}{|A|^2} = \frac{1}{A}$). Er schärft das Bild stark (Hochpass), verstärkt aber Rauschen, falls vorhanden.
+   \item \textbf{$R$ optimal gewählt:} Der Filter agiert als \defc{Bandpass}. Er entfernt Rauschen in Frequenzen, wo das Signal schwach ist, und invertiert den Blur dort, wo das Signal stark ist.
 \end{itemize}
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=.8\linewidth]{vc_1_VC2025_06_Bildverarbeitung_page_37_1.png}
+   \centering
+   \includegraphics[width=.8\linewidth]{vc_1_VC2025_06_Bildverarbeitung_page_37_1.png}
 \end{figure}
 
 \textbf{Vorteil:} Schnell und einfach zu implementieren (ein globaler Filter). \\
@@ -91,12 +91,12 @@ Um lokale Verbesserungen zu ermöglichen, nutzen wir iterative Verfahren im Orts
 \subsection{Scale-Space und Diffusionsgleichung}
 Deblurring kann als Umkehrung von Blurring verstanden werden.
 \begin{itemize}
-  \item \textbf{Blurring:} Entspricht physikalisch der Wärmeleitungsgleichung (Heat Equation) oder \defc{linearen Diffusion}.
-        \[ \frac{\partial L}{\partial t} = \Delta L = L_{xx} + L_{yy} \]
-        Die Lösung dieser Gleichung über die Zeit $t$ ist die Faltung des Bildes mit einem Gauß-Kern. Das Bild wird unschärfer.
-  \item \textbf{Deblurring (Schärfen):} Man kann versuchen, den Laplace-Operator ($\Delta L$) zu subtrahieren (ähnlich „Unsharp Masking“).
-        \[ L_{neu} = L_{alt} - t \cdot \Delta L \]
-        Fügt man höhere Ableitungen (Taylor-Reihe) hinzu, kann man das Bild theoretisch rekonstruieren, aber das Verfahren ist instabil (Rauschen wird verstärkt).
+   \item \textbf{Blurring:} Entspricht physikalisch der Wärmeleitungsgleichung (Heat Equation) oder \defc{linearen Diffusion}.
+         \[ \frac{\partial L}{\partial t} = \Delta L = L_{xx} + L_{yy} \]
+         Die Lösung dieser Gleichung über die Zeit $t$ ist die Faltung des Bildes mit einem Gauß-Kern. Das Bild wird unschärfer.
+   \item \textbf{Deblurring (Schärfen):} Man kann versuchen, den Laplace-Operator ($\Delta L$) zu subtrahieren (ähnlich „Unsharp Masking“).
+         \[ L_{neu} = L_{alt} - t \cdot \Delta L \]
+         Fügt man höhere Ableitungen (Taylor-Reihe) hinzu, kann man das Bild theoretisch rekonstruieren, aber das Verfahren ist instabil (Rauschen wird verstärkt).
 \end{itemize}
 
 \subsection{Nichtlineare Diffusion (Perona-Malik)}
@@ -106,38 +106,38 @@ Die lineare Diffusion ($\partial_t L = \Delta L$) glättet alles gleichmäßig �
 Dazu führen wir einen variablen Diffusionskoeffizienten $c$ ein.
 
 \begin{defbox}[Perona-Malik Gleichung]
-  \[ \partial_t L = \nabla \cdot (c(|\nabla L|^2) \nabla L) \]
+   \[ \partial_t L = \nabla \cdot (c(|\nabla L|^2) \nabla L) \]
 \end{defbox}
 
 \subsubsection{Der Koeffizient c}
 Die Funktion $c(\cdot)$ steuert die Diffusion abhängig von der lokalen Kantenstärke (Gradientenbetrag $|\nabla L|$).
 \begin{itemize}
-  \item \textbf{Flache Regionen (kleiner Gradient):} $c \approx 1$. Wir wollen maximale Diffusion zur Rauschunterdrückung.
-  \item \textbf{Kanten (großer Gradient):} $c \approx 0$. Die Diffusion wird gestoppt, um die Kante nicht zu verwischen.
+   \item \textbf{Flache Regionen (kleiner Gradient):} $c \approx 1$. Wir wollen maximale Diffusion zur Rauschunterdrückung.
+   \item \textbf{Kanten (großer Gradient):} $c \approx 0$. Die Diffusion wird gestoppt, um die Kante nicht zu verwischen.
 \end{itemize}
 
 Ein typisches Modell für $c$:
 \[ c(|\nabla L|^2) = \frac{1}{1 + \frac{|\nabla L|^2}{k^2}} \quad \text{oder} \quad c = e^{-\frac{|\nabla L|^2}{k^2}} \]
 
 \subsubsection{Der Parameter k (Contrast Parameter)}
-$k$ fungiert als Schwellenwert ("Soft-Threshold"):
+$k$ fungiert als Schwellenwert (``Soft-Threshold''):
 \begin{itemize}
-  \item Gradienten $< k$: Werden als Rauschen interpretiert $\rightarrow$ \defc{Glättung (Blurring)}.
-  \item Gradienten $> k$: Werden als Kanten interpretiert $\rightarrow$ \defc{Schärfung (Deblurring/Inverse Diffusion)}.
+   \item Gradienten $< k$: Werden als Rauschen interpretiert $\rightarrow$ \defc{Glättung (Blurring)}.
+   \item Gradienten $> k$: Werden als Kanten interpretiert $\rightarrow$ \defc{Schärfung (Deblurring/Inverse Diffusion)}.
 \end{itemize}
 Dies führt zu einer Kantenverstärkung, da an der Kante Material „wegdiffundiert“ und sich aufstaut (Schockfilter-Effekt).
 
 \begin{figure}[H]
-  \centering
-  \includegraphics[width=.8\linewidth]{vc_1_VC2025_06_Bildverarbeitung_page_70_1.png}
+   \centering
+   \includegraphics[width=.8\linewidth]{vc_1_VC2025_06_Bildverarbeitung_page_70_1.png}
 \end{figure}
 
 \subsubsection{Probleme (Perona-Malik Paradox)}
 Das Modell ist mathematisch „ill-posed“ (inverser Diffusionsanteil ist instabil).
 \begin{itemize}
-  \item Es entsteht ein „Staircasing“-Effekt (Bild wirkt blockig).
-  \item Man benötigt eine \defc{Stoppzeit}, da das Bild sonst in triviale Zustände degeneriert.
-  \item Regularisierung ist nötig (z.B. Glättung des Gradienten vor der Berechnung von $c$).
+   \item Es entsteht ein „Staircasing“-Effekt (Bild wirkt blockig).
+   \item Man benötigt eine \defc{Stoppzeit}, da das Bild sonst in triviale Zustände degeneriert.
+   \item Regularisierung ist nötig (z.B. Glättung des Gradienten vor der Berechnung von $c$).
 \end{itemize}
 
 \subsection{Variationsmethoden: Totale Variation (TV)}
@@ -145,46 +145,46 @@ Das Modell ist mathematisch „ill-posed“ (inverser Diffusionsanteil ist insta
 Anstatt eine PDE (Partielle Differentialgleichung) ad-hoc zu definieren (wie Perona-Malik), definieren wir zuerst eine \defc{Energie}, die minimiert werden soll. Das Minimum dieser Energie ist unser gewünschtes Bild.
 
 \begin{defbox}[Energie-Funktional]
-  Wir suchen ein Bild $L$, das die Energie $E(L)$ minimiert:
-  \[ E(L) = \underbrace{\int |\nabla L| \, dxdy}_{\text{Regularisierung}} + \underbrace{\frac{\lambda}{2} \int (g - L)^2 \, dxdy}_{\text{Datentreue}} \]
+   Wir suchen ein Bild $L$, das die Energie $E(L)$ minimiert:
+   \[ E(L) = \underbrace{\int |\nabla L| \, dxdy}_{\text{Regularisierung}} + \underbrace{\frac{\lambda}{2} \int (g - L)^2 \, dxdy}_{\text{Datentreue}} \]
 \end{defbox}
 
 \begin{itemize}
-  \item \textbf{Datentreue-Term (Data Fidelity):} $\lambda(g-L)^2$. Zwingt das Ergebnis $L$ dazu, nahe am verrauschten Input-Bild $g$ zu bleiben.
-  \item \textbf{Regularisierungs-Term:} $\int |\nabla L|$. Dies ist die \defc{Totale Variation (TV)}.
+   \item \textbf{Datentreue-Term (Data Fidelity):} $\lambda(g-L)^2$. Zwingt das Ergebnis $L$ dazu, nahe am verrauschten Input-Bild $g$ zu bleiben.
+   \item \textbf{Regularisierungs-Term:} $\int |\nabla L|$. Dies ist die \defc{Totale Variation (TV)}.
 \end{itemize}
 
 \subsubsection{Warum Totale Variation?}
 Im Gegensatz zur Tikhonov-Regularisierung ($\int |\nabla L|^2$), die quadratisch bestraft und zu glatten Kanten führt (Blurring), bestraft die TV-Norm ($\int |\nabla L|$) lineare Anstiege weniger stark.
 \begin{itemize}
-  \item TV erlaubt \defc{sprunghafte Änderungen} (Kanten) im Bild.
-  \item Es favorisiert stückweise konstante Bilder („Cartoon-Look“).
-  \item Rauschen (kleine Oszillationen) erhöht die TV enorm und wird daher entfernt.
-  \item Kanten (einmaliger Sprung) erhöhen die TV nur moderat und bleiben erhalten.
+   \item TV erlaubt \defc{sprunghafte Änderungen} (Kanten) im Bild.
+   \item Es favorisiert stückweise konstante Bilder („Cartoon-Look“).
+   \item Rauschen (kleine Oszillationen) erhöht die TV enorm und wird daher entfernt.
+   \item Kanten (einmaliger Sprung) erhöhen die TV nur moderat und bleiben erhalten.
 \end{itemize}
 
 \subsubsection{Anwendungen}
 \begin{itemize}
-  \item \textbf{Denoising:} Entfernt Rauschen extrem effektiv ohne Kanten zu verwischen.
-  \item \textbf{Inpainting:} Kann fehlende Bildteile (Löcher, Schriftzüge) rekonstruieren, indem die Kanten in den fehlenden Bereich „hineinpropagiert“ werden (Level-Lines-Fortsetzung).
+   \item \textbf{Denoising:} Entfernt Rauschen extrem effektiv ohne Kanten zu verwischen.
+   \item \textbf{Inpainting:} Kann fehlende Bildteile (Löcher, Schriftzüge) rekonstruieren, indem die Kanten in den fehlenden Bereich „hineinpropagiert“ werden (Level-Lines-Fortsetzung).
 \end{itemize}
 
 \subsection{Zusammenfassung der Verfahren}
 
 \begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|}
-  \hline
-  \textbf{Methode}                      & \textbf{Vorteil}                                  & \textbf{Nachteil}                                           \\
-  \hline
-  \textbf{Inverser Filter}              & Theoretisch exakt ohne Rauschen                   & Extrem instabil bei Rauschen (nicht nutzbar)                \\
-  \hline
-  \textbf{Wiener Filter}                & Stabil, berücksichtigt SNR, schnell               & Globaler Filter, verwischt Kanten oder lässt Rauschen übrig \\
-  \hline
-  \textbf{Lineare Diffusion} (Heat Eq.) & Entfernt Rauschen sehr gut                        & Verwische alle Kanten (Tiefpass)                            \\
-  \hline
-  \textbf{Perona-Malik}                 & Kantenerhaltend, lokal adaptiv                    & Instabil (Paradox), benötigt Stoppzeit, Staircasing         \\
-  \hline
-  \textbf{Totale Variation}             & Exzellente Kantenerhaltung, keine Stoppzeit nötig & Bevorzugt stückweise konstante Areale (Cartoon-Effekt)      \\
-  \hline
+   \hline
+   \textbf{Methode}                      & \textbf{Vorteil}                                  & \textbf{Nachteil}                                           \\
+   \hline
+   \textbf{Inverser Filter}              & Theoretisch exakt ohne Rauschen                   & Extrem instabil bei Rauschen (nicht nutzbar)                \\
+   \hline
+   \textbf{Wiener Filter}                & Stabil, berücksichtigt SNR, schnell               & Globaler Filter, verwischt Kanten oder lässt Rauschen übrig \\
+   \hline
+   \textbf{Lineare Diffusion} (Heat Eq.) & Entfernt Rauschen sehr gut                        & Verwische alle Kanten (Tiefpass)                            \\
+   \hline
+   \textbf{Perona-Malik}                 & Kantenerhaltend, lokal adaptiv                    & Instabil (Paradox), benötigt Stoppzeit, Staircasing         \\
+   \hline
+   \textbf{Totale Variation}             & Exzellente Kantenerhaltung, keine Stoppzeit nötig & Bevorzugt stückweise konstante Areale (Cartoon-Effekt)      \\
+   \hline
 \end{tabular}
 
 \end{document}

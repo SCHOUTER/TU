@@ -14,8 +14,8 @@
 Verschlüsselung allein reicht für sichere Kommunikation nicht aus. Ein Angreifer könnte sich in den Kanal einklinken (Man-in-the-Middle). Daher ist die \defc{Authentifikation} des Kommunikationspartners essenziell.
 
 \begin{itemize}
-  \item \textbf{Das Problem:} Woher weiß ich, dass der öffentliche Schlüssel (Public Key), den ich erhalte, wirklich zu der Person/Webseite gehört, mit der ich kommunizieren will?
-  \item \textbf{Die Lösung:} Eine Infrastruktur, die Schlüssel an Identitäten bindet.
+   \item \textbf{Das Problem:} Woher weiß ich, dass der öffentliche Schlüssel (Public Key), den ich erhalte, wirklich zu der Person/Webseite gehört, mit der ich kommunizieren will?
+   \item \textbf{Die Lösung:} Eine Infrastruktur, die Schlüssel an Identitäten bindet.
 \end{itemize}
 
 \subsection{Vertrauensmodelle (Trust Models)}
@@ -26,39 +26,39 @@ Es gibt drei fundamentale Ansätze, um Vertrauen in öffentliche Schlüssel zu e
 Dies ist das einfachste Modell, bei dem Schlüssel direkt zwischen den Parteien ausgetauscht werden.
 
 \begin{defbox}[Direct Trust]
-  Direkter, manueller Austausch von öffentlichen Schlüsseln oder Fingerprints. Vertrauen entsteht durch persönliche Überprüfung.
+   Direkter, manueller Austausch von öffentlichen Schlüsseln oder Fingerprints. Vertrauen entsteht durch persönliche Überprüfung.
 \end{defbox}
 
 \begin{itemize}
-  \item \textbf{Beispiel SSH:} Beim ersten Verbinden ("Trust on First Use" - TOFU) zeigt der Client den Fingerprint des Servers.
-  \item \textit{Warnmeldung:} "The authenticity of host... can't be established." Der Nutzer muss den Fingerprint manuell verifizieren (z.B. über einen sicheren zweiten Kanal).
-  \item \textbf{Nachteil:} Skaliert nicht. Man kann nicht mit jedem Webseiten-Betreiber der Welt persönlich Schlüssel tauschen.
+   \item \textbf{Beispiel SSH:} Beim ersten Verbinden (``Trust on First Use'' - TOFU) zeigt der Client den Fingerprint des Servers.
+   \item \textit{Warnmeldung:} ``The authenticity of host... can't be established.'' Der Nutzer muss den Fingerprint manuell verifizieren (z.B. über einen sicheren zweiten Kanal).
+   \item \textbf{Nachteil:} Skaliert nicht. Man kann nicht mit jedem Webseiten-Betreiber der Welt persönlich Schlüssel tauschen.
 \end{itemize}
 
 \subsubsection{2. Hierarchical Trust (WebPKI)}
 Dieses Modell nutzt eine vertrauenswürdige dritte Partei, die als Mittelsmann fungiert. Dies ist der Standard im Web (HTTPS).
 
 \begin{defbox}[Certificate Authority (CA)]
-  Eine \defc{Zertifizierungsstelle} (CA) prüft die Identität eines Antragstellers und signiert dessen öffentlichen Schlüssel kryptographisch. Diese Signatur bildet ein Zertifikat.
+   Eine \defc{Zertifizierungsstelle} (CA) prüft die Identität eines Antragstellers und signiert dessen öffentlichen Schlüssel kryptographisch. Diese Signatur bildet ein Zertifikat.
 \end{defbox}
 
 \begin{itemize}
-  \item \textbf{Funktionsweise:} Alice vertraut der CA. Die CA bürgt für Bob. Folglich vertraut Alice Bob.
-  \item \textbf{Verteilung:} Die Root-Zertifikate der CAs sind im Betriebssystem oder Browser vorinstalliert (Trust Store).
+   \item \textbf{Funktionsweise:} Alice vertraut der CA. Die CA bürgt für Bob. Folglich vertraut Alice Bob.
+   \item \textbf{Verteilung:} Die Root-Zertifikate der CAs sind im Betriebssystem oder Browser vorinstalliert (Trust Store).
 \end{itemize}
 
 \begin{center}
-  \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_8_1.png}
+   \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_8_1.png}
 \end{center}
 
 \subsubsection{3. Web of Trust}
 Ein dezentraler Ansatz, der oft bei PGP (E-Mail-Verschlüsselung) genutzt wird.
 
 \begin{itemize}
-  \item Es gibt keine zentralen CAs.
-  \item Teilnehmer signieren gegenseitig ihre Schlüssel (\defc{Keysigning}).
-  \item \textbf{Transitives Vertrauen:} Alice vertraut Bob. Bob hat Carols Schlüssel signiert. Wenn Alice Bobs Urteilsvermögen vertraut, vertraut sie auch Carol.
-  \item \textbf{Keyserver:} Dienen als Telefonbuch zum Hochladen von Schlüsseln und Signaturen.
+   \item Es gibt keine zentralen CAs.
+   \item Teilnehmer signieren gegenseitig ihre Schlüssel (\defc{Keysigning}).
+   \item \textbf{Transitives Vertrauen:} Alice vertraut Bob. Bob hat Carols Schlüssel signiert. Wenn Alice Bobs Urteilsvermögen vertraut, vertraut sie auch Carol.
+   \item \textbf{Keyserver:} Dienen als Telefonbuch zum Hochladen von Schlüsseln und Signaturen.
 \end{itemize}
 
 \subsection{WebPKI im Detail}
@@ -68,9 +68,9 @@ Das WebPKI-System bildet das Rückgrat des sicheren Browsings.
 \subsubsection{Chain of Trust (Zertifikatskette)}
 Browser vertrauen einer Menge an \defc{Root CAs} (Wurzelzertifikate). Eine Webseite sendet jedoch meist nicht das Root-Zertifikat, sondern eine Kette:
 \begin{enumerate}
-  \item \textbf{Root Certificate:} Selbstsigniert, im Browser hinterlegt (Trust Anchor).
-  \item \textbf{Intermediate Certificate:} Von der Root CA (oder einer anderen Intermediate) signiert.
-  \item \textbf{Leaf Certificate (End-Entity):} Das eigentliche Zertifikat der Webseite, signiert von der Intermediate CA.
+   \item \textbf{Root Certificate:} Selbstsigniert, im Browser hinterlegt (Trust Anchor).
+   \item \textbf{Intermediate Certificate:} Von der Root CA (oder einer anderen Intermediate) signiert.
+   \item \textbf{Leaf Certificate (End-Entity):} Das eigentliche Zertifikat der Webseite, signiert von der Intermediate CA.
 \end{enumerate}
 Der Browser validiert die Signaturen vom Leaf bis hoch zur Root.
 
@@ -78,22 +78,22 @@ Der Browser validiert die Signaturen vom Leaf bis hoch zur Root.
 Bevor eine CA ein Zertifikat ausstellt, muss sie prüfen, ob der Antragsteller berechtigt ist.
 
 \begin{enumerate}
-  \item \textbf{Domain Validation (DV):}
-        \begin{itemize}
-          \item Prüft nur die technische Kontrolle über die Domain.
-          \item \textit{Methoden:}
-                \begin{itemize}
-                  \item \textbf{HTTP Challenge:} CA gibt einen Token, Server muss ihn unter \texttt{http://domain/.well-known/acme-challenge/} bereitstellen.
-                  \item \textbf{DNS Challenge:} Token muss als TXT-Record im DNS hinterlegt werden.
-                  \item \textbf{Email Challenge:} Bestätigungslink an \texttt{admin@domain.com}.
-                \end{itemize}
-          \item \textit{Vorteil:} Schnell, automatisierbar (z.B. Let's Encrypt), kostenlos.
-          \item \textit{Nachteil:} Keine Prüfung der Identität der Firma dahinter.
-        \end{itemize}
+   \item \textbf{Domain Validation (DV):}
+         \begin{itemize}
+            \item Prüft nur die technische Kontrolle über die Domain.
+            \item \textit{Methoden:}
+                  \begin{itemize}
+                     \item \textbf{HTTP Challenge:} CA gibt einen Token, Server muss ihn unter \texttt{http://domain/.well-known/acme-challenge/} bereitstellen.
+                     \item \textbf{DNS Challenge:} Token muss als TXT-Record im DNS hinterlegt werden.
+                     \item \textbf{Email Challenge:} Bestätigungslink an \texttt{admin@domain.com}.
+                  \end{itemize}
+            \item \textit{Vorteil:} Schnell, automatisierbar (z.B. Let's Encrypt), kostenlos.
+            \item \textit{Nachteil:} Keine Prüfung der Identität der Firma dahinter.
+         \end{itemize}
 
-  \item \textbf{Organization Validation (OV):} Prüft zusätzlich, ob die Organisation existiert und rechtmäßiger Besitzer der Domain ist.
+   \item \textbf{Organization Validation (OV):} Prüft zusätzlich, ob die Organisation existiert und rechtmäßiger Besitzer der Domain ist.
 
-  \item \textbf{Extended Validation (EV):} Sehr strenge Prüfung offizieller Dokumente/Register. Früher durch "grüne Adressleiste" im Browser angezeigt (heute meist entfernt, da Nutzer den Unterschied nicht verstehen).
+   \item \textbf{Extended Validation (EV):} Sehr strenge Prüfung offizieller Dokumente/Register. Früher durch ``grüne Adressleiste'' im Browser angezeigt (heute meist entfernt, da Nutzer den Unterschied nicht verstehen).
 \end{enumerate}
 
 \subsection{Angriffe auf die WebPKI}
@@ -104,14 +104,14 @@ Das System ist nur so sicher wie das schwächste Glied (die CA) und der Validier
 Da DV oft automatisiert abläuft, versuchen Angreifer, die Validierung (Challenge) zu manipulieren, um Zertifikate für fremde Domains zu erhalten.
 
 \begin{itemize}
-  \item \textbf{Netzwerk-Angriffe:} Wenn der Angreifer den Traffic zwischen der CA und dem Server des Opfers abfangen kann (Man-in-the-Middle).
-  \item \textbf{BGP Hijacking:} Der Angreifer lenkt den Internetverkehr für die IP-Adresse des Opfers auf seinen eigenen Server um. Die CA verbindet sich zur Überprüfung (HTTP Challenge) mit dem Angreifer statt dem Opfer.
-  \item \textbf{DNS Cache Poisoning:} Der Angreifer manipuliert die DNS-Antworten, die die CA erhält, sodass die Domain auf die IP des Angreifers zeigt.
+   \item \textbf{Netzwerk-Angriffe:} Wenn der Angreifer den Traffic zwischen der CA und dem Server des Opfers abfangen kann (Man-in-the-Middle).
+   \item \textbf{BGP Hijacking:} Der Angreifer lenkt den Internetverkehr für die IP-Adresse des Opfers auf seinen eigenen Server um. Die CA verbindet sich zur Überprüfung (HTTP Challenge) mit dem Angreifer statt dem Opfer.
+   \item \textbf{DNS Cache Poisoning:} Der Angreifer manipuliert die DNS-Antworten, die die CA erhält, sodass die Domain auf die IP des Angreifers zeigt.
 \end{itemize}
 
 \begin{center}
-  \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_17_1.png}
-  \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_18_1.png}
+   \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_17_1.png}
+   \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_18_1.png}
 \end{center}
 
 \paragraph{Gegenmaßnahme: Verteilte Validierung}
@@ -122,25 +122,25 @@ Die CA sollte die Validierung (z.B. den HTTP-Request) nicht nur von einem Stando
 Ein großes Problem der klassischen PKI war, dass eine korrumpierte CA unbemerkt falsche Zertifikate (z.B. für google.com) ausstellen konnte.
 
 \begin{defbox}[Certificate Transparency]
-  Ein System öffentlich einsehbarer, manipulationssicherer Logs, in denen alle ausgestellten Zertifikate verzeichnet werden müssen.
+   Ein System öffentlich einsehbarer, manipulationssicherer Logs, in denen alle ausgestellten Zertifikate verzeichnet werden müssen.
 \end{defbox}
 
 \subsubsection{Funktionsweise}
 \begin{enumerate}
-  \item CA reicht ein "Pre-Certificate" bei einem CT-Log ein.
-  \item Das Log antwortet mit einem \defc{SCT} (Signed Certificate Timestamp). Das ist eine kryptographische Quittung: "Ich habe dieses Zertifikat gesehen und werde es loggen."
-  \item Das finale Zertifikat enthält diesen SCT.
-  \item Browser (wie Chrome) lehnen Zertifikate ohne SCT oft ab.
+   \item CA reicht ein ``Pre-Certificate'' bei einem CT-Log ein.
+   \item Das Log antwortet mit einem \defc{SCT} (Signed Certificate Timestamp). Das ist eine kryptographische Quittung: ``Ich habe dieses Zertifikat gesehen und werde es loggen.''
+   \item Das finale Zertifikat enthält diesen SCT.
+   \item Browser (wie Chrome) lehnen Zertifikate ohne SCT oft ab.
 \end{enumerate}
 
 \subsubsection{Komponenten}
 \begin{itemize}
-  \item \textbf{Logs:} Nutzen \defc{Merkle Trees}, um Append-Only-Eigenschaften zu garantieren (Inhalte können nicht nachträglich gelöscht/geändert werden).
-  \item \textbf{Monitors:} Dienste, die die Logs überwachen und Domain-Inhaber warnen, wenn unerwartet ein Zertifikat für ihre Domain auftaucht.
+   \item \textbf{Logs:} Nutzen \defc{Merkle Trees}, um Append-Only-Eigenschaften zu garantieren (Inhalte können nicht nachträglich gelöscht/geändert werden).
+   \item \textbf{Monitors:} Dienste, die die Logs überwachen und Domain-Inhaber warnen, wenn unerwartet ein Zertifikat für ihre Domain auftaucht.
 \end{itemize}
 
 \begin{center}
-  \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_22_1.png}
+   \includegraphics[width=0.7\textwidth]{css_1_09_01PublicKeyInfrastructure_page_22_1.png}
 \end{center}
 
 \subsection{Zertifikatsstruktur (X.509)}
@@ -149,28 +149,28 @@ Zertifikate folgen dem X.509 Standard und werden mittels \defc{ASN.1} (Abstract 
 
 \subsubsection{Wichtige Felder}
 \begin{itemize}
-  \item \textbf{Subject:} Für wen ist das Zertifikat? (Common Name / Domain).
-  \item \textbf{Issuer:} Wer hat es ausgestellt? (Die CA).
-  \item \textbf{Validity:} \texttt{Not Before} und \texttt{Not After} (Gültigkeitsdauer).
-  \item \textbf{Subject Public Key Info:} Der eigentliche Schlüssel und der Algorithmus (z.B. RSA, ECC).
-  \item \textbf{Signature Algorithm:} Algorithmus, mit dem die CA unterschrieben hat (z.B. SHA256withRSA).
+   \item \textbf{Subject:} Für wen ist das Zertifikat? (Common Name / Domain).
+   \item \textbf{Issuer:} Wer hat es ausgestellt? (Die CA).
+   \item \textbf{Validity:} \texttt{Not Before} und \texttt{Not After} (Gültigkeitsdauer).
+   \item \textbf{Subject Public Key Info:} Der eigentliche Schlüssel und der Algorithmus (z.B. RSA, ECC).
+   \item \textbf{Signature Algorithm:} Algorithmus, mit dem die CA unterschrieben hat (z.B. SHA256withRSA).
 \end{itemize}
 
 \subsubsection{Extensions}
 \begin{itemize}
-  \item \textbf{Key Usage / Basic Constraints:} Legt fest, was mit dem Zertifikat getan werden darf.
-        \begin{itemize}
-          \item Wichtig: \texttt{CA: FALSE} verhindert, dass ein normales Webseiten-Zertifikat genutzt wird, um weitere Zertifikate zu signieren (verhindert, dass jeder User zur CA wird).
-        \end{itemize}
-  \item \textbf{Subject Alternative Name (SAN):} Hier werden alle gültigen Domains (auch Subdomains) aufgelistet.
+   \item \textbf{Key Usage / Basic Constraints:} Legt fest, was mit dem Zertifikat getan werden darf.
+         \begin{itemize}
+            \item Wichtig: \texttt{CA: FALSE} verhindert, dass ein normales Webseiten-Zertifikat genutzt wird, um weitere Zertifikate zu signieren (verhindert, dass jeder User zur CA wird).
+         \end{itemize}
+   \item \textbf{Subject Alternative Name (SAN):} Hier werden alle gültigen Domains (auch Subdomains) aufgelistet.
 \end{itemize}
 
 \subsubsection{Widerruf (Revocation) und Gültigkeit}
 Wenn ein Private Key gestohlen wird, muss das Zertifikat ungültig gemacht werden.
 \begin{itemize}
-  \item \textbf{CRL (Certificate Revocation List):} Liste gesperrter Zertifikate. Wird oft nicht frisch heruntergeladen (zu groß).
-  \item \textbf{OCSP (Online Certificate Status Protocol):} Live-Abfrage bei der CA. Problem: "Fail Open" (wenn CA nicht erreichbar, akzeptiert der Browser oft trotzdem).
-  \item \textbf{Trend:} Verkürzung der Laufzeiten (Vorschlag von Google: 90 Tage). Ersetzt komplexes Revocation-Management durch häufige Erneuerung (Automation nötig).
+   \item \textbf{CRL (Certificate Revocation List):} Liste gesperrter Zertifikate. Wird oft nicht frisch heruntergeladen (zu groß).
+   \item \textbf{OCSP (Online Certificate Status Protocol):} Live-Abfrage bei der CA. Problem: ``Fail Open'' (wenn CA nicht erreichbar, akzeptiert der Browser oft trotzdem).
+   \item \textbf{Trend:} Verkürzung der Laufzeiten (Vorschlag von Google: 90 Tage). Ersetzt komplexes Revocation-Management durch häufige Erneuerung (Automation nötig).
 \end{itemize}
 
 \subsection{Alternative: DNSSEC / DANE}
@@ -178,11 +178,11 @@ Wenn ein Private Key gestohlen wird, muss das Zertifikat ungültig gemacht werde
 Statt einer WebPKI mit hunderten CAs könnte man die Hierarchie des DNS nutzen.
 
 \begin{itemize}
-  \item \textbf{Idee:} Die "Chain of Trust" folgt der DNS-Delegation (. $\rightarrow$ .de $\rightarrow$ tu-darmstadt.de).
-  \item \textbf{TLSA Records:} Der Fingerprint des Zertifikats wird direkt im DNS hinterlegt und per DNSSEC signiert.
-  \item \textbf{Vorteil:} Kein "CA-Markt", logische Struktur.
-  \item \textbf{Nachteil:} Ein einziger \defc{Root Key} (verwaltet von der ICANN) ist der "Single Point of Failure".
-  \item \textbf{Root Signing Ceremony:} Hochsichere Zeremonie zur Verwaltung dieses Schlüssels (Safe deposit boxes, Zeugen, physische Sicherheit).
+   \item \textbf{Idee:} Die ``Chain of Trust'' folgt der DNS-Delegation (. $\rightarrow$ .de $\rightarrow$ tu-darmstadt.de).
+   \item \textbf{TLSA Records:} Der Fingerprint des Zertifikats wird direkt im DNS hinterlegt und per DNSSEC signiert.
+   \item \textbf{Vorteil:} Kein ``CA-Markt'', logische Struktur.
+   \item \textbf{Nachteil:} Ein einziger \defc{Root Key} (verwaltet von der ICANN) ist der ``Single Point of Failure''.
+   \item \textbf{Root Signing Ceremony:} Hochsichere Zeremonie zur Verwaltung dieses Schlüssels (Safe deposit boxes, Zeugen, physische Sicherheit).
 \end{itemize}
 
 \subsection{Angriffe auf Nutzer (Typosquatting)}
@@ -190,9 +190,9 @@ Statt einer WebPKI mit hunderten CAs könnte man die Hierarchie des DNS nutzen.
 Selbst bei perfekter Technik (valides Zertifikat) kann der Nutzer getäuscht werden, wenn er auf der falschen Seite landet.
 
 \begin{itemize}
-  \item \textbf{Homograph Attack:} Nutzung ähnlich aussehender Zeichen (z.B. kyrillisches 'a' statt lateinisches 'a').
-  \item \textbf{Combo-Squatting:} Zusätze im Namen (\texttt{paypal-support.com}).
-  \item \textbf{Homophon:} Ähnlich klingende Namen.
+   \item \textbf{Homograph Attack:} Nutzung ähnlich aussehender Zeichen (z.B. kyrillisches 'a' statt lateinisches 'a').
+   \item \textbf{Combo-Squatting:} Zusätze im Namen (\texttt{paypal-support.com}).
+   \item \textbf{Homophon:} Ähnlich klingende Namen.
 \end{itemize}
-\textit{Hinweis:} Da WebPKI (DV) nur den Besitz der Domain prüft, erhält auch der Angreifer ein völlig valides, "grünes" Schloss-Symbol für seine Phishing-Seite \texttt{goggle.com}.
+\textit{Hinweis:} Da WebPKI (DV) nur den Besitz der Domain prüft, erhält auch der Angreifer ein völlig valides, ``grünes'' Schloss-Symbol für seine Phishing-Seite \texttt{goggle.com}.
 \end{document}

@@ -1,0 +1,178 @@
+\documentclass[
+../../css_summary.tex,
+]{subfiles}
+
+\externaldocument[ext:]
+{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Censorship (\& Privacy)}
+
+\subsection{Einführung in Internetzensur}
+
+Internetzensur beschränkt, welche Informationen im Internet veröffentlicht oder abgerufen werden können. Sie wird von Regierungen und Organisationen eingesetzt.
+
+\begin{defbox}[Ziele der Zensur]
+  \begin{itemize}
+    \item \textbf{Schutz von Rechten:} Blockierung urheberrechtlich geschützter Inhalte.
+    \item \textbf{Sicherheit:} Schutz vor schädlichen oder sensiblen Inhalten (z. B. Malware, illegale Pornografie).
+    \item \textbf{Politische Kontrolle:} Einsatz als Propagandamethode zur Förderung spezifischer religiöser oder politischer Agenden.
+  \end{itemize}
+\end{defbox}
+
+Die Umsetzung erfolgt in vier Hauptkategorien:
+\begin{enumerate}
+  \item \textbf{Drosselung (Throttling):} Verlangsamung des Datenverkehrs.
+  \item \textbf{Blockierung:} Verhindern des Zugriffs auf spezifische Ressourcen.
+  \item \textbf{Entfernung:} Löschung von Inhalten an der Quelle.
+  \item \textbf{Abschaltung:} Vollständiges Kappen des Internets (Internet Shutdown).
+\end{enumerate}
+
+% Hier Grafik einfügen: 
+\subsection{Drosselung des Datenverkehrs (Throttling)}
+
+Die Drosselung reduziert die Bandbreite für spezifischen Netzwerkverkehr. Sie ist diskreter als eine vollständige Blockierung und oft schwerer als absichtliche Zensur zu erkennen (könnte wie eine schlechte Verbindung wirken). Sie kann geografisch oder anwendungsbasiert (z. B. Verlangsamung von YouTube) erfolgen.
+
+Es gibt zwei technische Hauptmethoden zur Durchsetzung von Ratenlimits:
+
+\begin{itemize}
+  \item \defc{Traffic Shaping}: Hierbei werden Pakete, die das Ratenlimit überschreiten, \textbf{verzögert}. Sie werden in einem Puffer zwischengespeichert und später gesendet. Dies glättet den Datenstrom, verursacht aber Latenz.
+  \item \defc{Traffic Policing}: Hierbei werden Pakete, die das Ratenlimit überschreiten, rigoros \textbf{verworfen} (dropped). Dies führt zu Paketverlusten und zwingt das TCP-Protokoll, die Übertragungsrate drastisch zu senken.
+\end{itemize}
+
+\begin{center}
+  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_7_1.png}
+  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_7_2.png}
+\end{center}
+
+\subsection{Blockierung von Verbindungen}
+
+Behörden nutzen verschiedene Techniken, um den Zugriff auf Ressourcen zu unterbinden:
+
+\subsubsection{Domain-Entfernung}
+Behörden zwingen Registrare oder Nameserver, Domains aus ihren Verzeichnissen zu löschen. Die Seite existiert technisch noch, ist aber über ihren Namen nicht mehr auffindbar.
+
+\subsubsection{DNS-Manipulation}
+Da Browser IP-Adressen benötigen, ist das Domain Name System (DNS) ein häufiger Angriffspunkt.
+
+\begin{itemize}
+  \item \textbf{DNS Injection (via Man-on-the-Side):} Dies ist eine Variante des \textit{Man-on-the-Side} (MotS) Angriffs.
+        \begin{enumerate}
+          \item Der Zensor liest den Verkehr mit, befindet sich aber nicht zwingend direkt im Pfad (``on-path'').
+          \item Erkennt der Zensor eine DNS-Anfrage für eine verbotene Domain, sendet er sofort eine gefälschte Antwort (Spoofed Response) mit einer falschen IP-Adresse zurück.
+          \item \textit{Race Condition:} Da die gefälschte Antwort meist schneller beim Client ankommt als die legitime Antwort des echten DNS-Servers, akzeptiert der Client die falsche IP. Die echte Antwort wird später verworfen.
+        \end{enumerate}
+  \item \textbf{DNS Filtering:}
+        Hier steht der DNS-Server selbst unter der Kontrolle des Zensors (z. B. beim ISP). Er liefert direkt die falsche IP-Adresse oder einen Fehlercode (NXDOMAIN) zurück. Keine Race Condition erforderlich.
+\end{itemize}
+
+\begin{figure}
+  \center
+  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_10_1.png}
+  \caption{Injection}
+  \center
+  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_11_1.png}
+  \caption{Filtering}
+\end{figure}
+
+\subsubsection{Man-on-the-Side (MotS) für HTTP}
+MotS kann auch für direkte Webzugriffe genutzt werden, nicht nur für DNS.
+\begin{defbox}[Ablauf eines MotS-Angriffs]
+  \begin{enumerate}
+    \item Client sendet legitime HTTP-Anfrage (GET).
+    \item Zensor (liest mit) erkennt verbotenen Inhalt/URL.
+    \item Zensor injiziert ein TCP-RST (Reset) Paket oder ein injiziertes Redirect-Paket, das so aussieht, als käme es vom Server.
+    \item Der Client bricht die Verbindung ab oder wird auf eine Warnseite/Malware-Seite umgeleitet.
+    \item Die echte Antwort des Webservers kommt zu spät an und wird vom Client verworfen.
+  \end{enumerate}
+\end{defbox}
+
+\subsubsection{BGP Hijacking}
+Das Border Gateway Protocol (BGP) steuert das Routing im Internet. Behörden können den Verkehr für bestimmte IP-Präfixe umleiten oder in ein ``schwarzes Loch'' führen.
+
+\textbf{Beispiel Pakistan/YouTube (2008):} Pakistan Telecom wollte YouTube (IP-Bereich z. B. \texttt{208.65.152.0/22}) blockieren. Sie kündigten jedoch versehentlich eine spezifischere Route an (\texttt{208.65.152.0/24}). \textit{Erklärung:} Im Internet-Routing gewinnt immer die spezifischere Route (``Longest Prefix Match''). Da \texttt{/24} genauer ist als \texttt{/22}, leitete das gesamte Internet den YouTube-Verkehr nach Pakistan, wo er verworfen wurde. Dies führte zu einem weltweiten YouTube-Ausfall.
+
+\begin{center}
+  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_12_1.png}
+\end{center}
+
+\subsubsection{IP-Blocking}
+Direktes Blockieren von IP-Adressen durch Firewalls beim ISP oder auf dem Endgerät.
+\begin{itemize}
+  \item \textbf{Problem:} Viele Websites teilen sich dieselbe IP-Adresse (z. B. durch CDNs wie Cloudflare oder Virtual Hosting). IP-Blocking führt oft zu \textit{Overblocking}, bei dem auch unschuldige Dienste blockiert werden.
+\end{itemize}
+
+\subsection{Entfernung von Inhalten}
+
+Anstatt den Zugang zu blockieren, fordern Regierungen Plattformen (wie Google, Facebook) auf, Inhalte zu löschen.
+\begin{itemize}
+  \item \textbf{Gründe:} Nationale Sicherheit, Urheberrecht, Privatsphäre, Diffamierung.
+  \item \textbf{Requesters:} Gerichte (Judicial), Exekutive, Polizei.
+  \item \textbf{Trend:} Die Anzahl der Anfragen steigt weltweit kontinuierlich an (siehe Google Transparency Reports).
+\end{itemize}
+
+\subsection{Zensur-Werkzeuge und Technologien}
+
+\subsubsection{Deep Packet Inspection (DPI)}
+DPI ist eine fortgeschrittene Methode zur Filterung, die nicht nur den Header (IP/Port), sondern auch den \textbf{Payload} (Inhalt) des Pakets analysiert. DPI-Systeme befinden sich meist direkt im Datenpfad (``on-path'').
+
+\begin{defbox}[Funktionsweise von DPI]
+  \begin{itemize}
+    \item Sucht nach Signaturen, Mustern und Schlüsselwörtern.
+    \item Kann Protokolle identifizieren, auch wenn sie nicht auf Standard-Ports laufen.
+    \item Ermöglicht granulare Steuerung (z. B. ``Skype blockieren, aber HTTPS erlauben'').
+  \end{itemize}
+\end{defbox}
+
+\textbf{DPI und Verschlüsselung (TLS/SSL):} DPI kann verschlüsselte Inhalte (Payload) ohne den privaten Schlüssel nicht lesen. Dennoch ist eine Zensur möglich durch:
+\begin{itemize}
+  \item \textbf{SNI (Server Name Indication):} Der angefragte Hostname wird im TLS-Handshake oft unverschlüsselt übertragen (Client Hello).
+  \item \textbf{Metadaten-Analyse:} Timing, Paketgrößen und Flow-Statistiken verraten oft die Art der Anwendung.
+  \item \textbf{Fingerprinting (z. B. JA4+):} Analyse der TLS-Handshake-Parameter (Cipher Suites, Extensions), um den verwendeten Client (z. B. Tor-Browser vs. Chrome) zu identifizieren.
+\end{itemize}
+
+\textbf{Nachteile von DPI:} Rechenintensiv, zeitaufwendig (Latenz), fehleranfällig bei unbekannten Angriffsmustern.
+
+\subsubsection{Zwangsfilterung (Mandatory Filtering)}
+Dies bezieht sich auf gesetzlich oder technisch erzwungene Filtermaßnahmen:
+\begin{itemize}
+  \item \textbf{Infrastruktur:} Filterung durch ISPs oder DNS-Server.
+  \item \textbf{Geräte:} Vorinstallierte Software (Spyware/Filter) auf Smartphones/PCs.
+  \item \textbf{Anwendungen:} ``SafeSearch''-Zwang in Suchmaschinen.
+  \item \textbf{EU-Regulierung:}
+        \begin{itemize}
+          \item \textit{Urheberrechtsrichtlinie (Art. 17):} Plattformen müssen proaktiv Copyright-Verstöße verhindern (Upload-Filter).
+          \item \textit{Digital Services Act (DSA):} Reguliert illegale Inhalte und Transparenz auf Online-Plattformen.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Fallstudie: China}
+
+China betreibt das weltweit komplexeste Zensursystem.
+
+\subsubsection{Great Firewall of China (GFW)} Das primäre \textbf{defensive} System. Es kontrolliert den Datenverkehr an den Internet-Gateways zwischen China und der Welt.
+\begin{itemize}
+  \item \textbf{Methoden:} DNS Hijacking, IP Blocking, Keyword Filtering, RST-Injection (Abbruch von TCP-Verbindungen bei Erkennung verbotener Muster).
+  \item \textbf{Anti-Umgehung:} Die GFW nutzt Machine Learning und ``Active Probing'' (aktives Verbinden zu verdächtigen Servern), um VPN- und Tor-Server zu erkennen und zu blockieren.
+\end{itemize}
+
+\begin{center}
+  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_26_1.png}
+\end{center}
+
+\subsubsection{Great Cannon (GC)}
+Ein \textbf{offensives} Werkzeug, das sich von der GFW unterscheidet.
+\begin{itemize}
+  \item \textbf{Funktion:} Man-in-the-Middle (MitM) Angriffssystem.
+  \item \textbf{Vorgehensweise:} Es fängt den Datenverkehr unbeteiligter Nutzer ab, die chinesische Webseiten (z. B. Baidu) aufrufen. Es injiziert bösartigen JavaScript-Code in die Antworten dieser legitimen Seiten.
+  \item \textbf{Ziel:} Der Browser des unschuldigen Nutzers führt das Skript aus und nimmt (ohne Wissen des Nutzers) an einem DDoS-Angriff gegen Zensurgegner teil (z. B. Angriff auf GitHub 2015).
+\end{itemize}
+
+\begin{center}
+  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_27_1.png}
+\end{center}
+
+\end{document}

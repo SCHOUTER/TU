@@ -1,0 +1,193 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Machine Learning and Neural Networks}
+
+\subsection{Introduction}
+
+\subsubsection{Grundlagen des Lernens}
+
+Lernen ist ein fundamentaler Prozess für intelligente Agenten, um in unbekannten Umgebungen zu agieren und die Leistung basierend auf Erfahrungen zu verbessern.
+
+\begin{defbox}[Definition: Machine Learning (Tom Mitchell, 1997)]
+  Ein Computerprogramm lernt aus Erfahrung $E$ im Hinblick auf eine Klasse von Aufgaben $T$ und ein Leistungsmaß $P$, wenn sich seine Leistung bei Aufgaben in $T$, gemessen an $P$, mit der Erfahrung $E$ verbessert.
+\end{defbox}
+
+\paragraph{Induktives Lernen}
+Induktives Lernen ist die einfachste Form des Lernens, bei der eine Funktion aus Beispielen abgeleitet wird.
+
+\begin{itemize}
+  \item \textbf{Ziel:} Finden einer Hypothese $h$, die die unbekannte Zielfunktion $f$ approximiert ($h \approx f$).
+  \item \textbf{Gegeben:} Ein Trainingsset von Beispielen $(x, f(x))$, wobei $x$ der Input und $f(x)$ das Label (Target) ist.
+  \item \textbf{Konsistenz:} Eine Hypothese $h$ ist konsistent, wenn sie für alle Trainingsbeispiele mit $f$ übereinstimmt.
+\end{itemize}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-11_page_29_1.png}}
+\end{center}
+
+\begin{defbox}[Ockham's Razor]
+  Die beste Erklärung ist die einfachste Erklärung, die zu den Daten passt. Im Kontext von Machine Learning bedeutet dies, dass bei gleicher Genauigkeit einfachere Modelle bevorzugt werden sollten, um Overfitting zu vermeiden.
+\end{defbox}
+
+\subsubsection{Machine Learning vs. Traditionelle Programmierung}
+
+\begin{itemize}
+  \item \textbf{Traditionelle Programmierung:} Daten + Programm $\rightarrow$ Output. Der Mensch formuliert die Regeln explizit.
+  \item \textbf{Machine Learning:} Daten + Output $\rightarrow$ Programm (Modell). Der Algorithmus lernt die Regeln (``Rule Set'') aus den Daten.
+\end{itemize}
+
+\subsubsection{Arten des Lernens}
+
+\begin{itemize}
+  \item \defc{Supervised Learning (Überwachtes Lernen)}: Das Modell lernt aus gelabelten Daten (Input-Output-Paare). Ziel ist es, eine Abbildung von Eingabe zu Ausgabe zu lernen.
+        \begin{itemize}
+          \item \textbf{Regression:} Vorhersage eines kontinuierlichen Wertes (z.B. Temperatur).
+          \item \textbf{Klassifikation:} Vorhersage einer diskreten Klassenbezeichnung (z.B. ``Regen'' oder ``Sonne'').
+        \end{itemize}
+  \item \defc{Unsupervised Learning (Unüberwachtes Lernen)}: Das Modell lernt aus ungelabelten Daten. Ziel ist es, Muster, Strukturen oder Ähnlichkeiten in den Daten zu finden (z.B. Clustering).
+  \item \defc{Reinforcement Learning (Bestärkendes Lernen)}: Ein Agent lernt durch Interaktion mit der Umgebung und erhält positives oder negatives Feedback (Reward).
+  \item \textbf{Semi-supervised Learning:} Eine Kombination, bei der nur ein kleiner Teil der Daten gelabelt ist.
+\end{itemize}
+
+\subsubsection{Datenrepräsentation und Feature Engineering}
+
+Algorithmen benötigen Daten in einer verarbeitbaren Form, meist als \defc{Feature-Vektoren} im $\mathbb{R}^n$.
+
+\begin{itemize}
+  \item \textbf{Feature Engineering:} Der Prozess der Auswahl, Manipulation und Transformation von Rohdaten in Features, die für das Modell nutzbar sind.
+  \item \textbf{Prinzip ``Garbage In, Garbage Out'':} Schlechte Datenqualität oder irrelevante Features führen zu schlechten Modellen, unabhängig von der Qualität des Algorithmus.
+  \item \textbf{Preprocessing:} Wichtige Schritte umfassen den Umgang mit Ausreißern, fehlenden Werten und Bias in den Daten.
+\end{itemize}
+
+\subsubsection{Modell-Evaluierung}
+
+Um die Qualität eines Modells zu messen, wird eine Metrik benötigt, die zum Ziel passt (z.B. Accuracy, Precision, Recall). Für Regressionsprobleme wird häufig der \defc{Mean Squared Error (MSE)} verwendet.
+
+\[ MSE = \frac{1}{n}\sum_{i=1}^{n}(y_{i}-\hat{y_{i}})^{2} \]
+
+wobei $y_i$ der wahre Wert und $\hat{y}_i$ der vorhergesagte Wert ist.
+
+\paragraph{Generalisierung und Overfitting}
+
+Das Ziel von Machine Learning ist \defc{Generalisierung} (Leistung auf neuen, unbekannten Daten), nicht bloßes Auswendiglernen (\defc{Memorization}).
+
+\begin{itemize}
+  \item \defc{Overfitting}: Das Modell hat die Trainingsdaten ``auswendig gelernt'' (inklusive Rauschen) und performt schlecht auf neuen Daten. Das Modell ist zu komplex.
+  \item \defc{Underfitting}: Das Modell ist zu einfach, um die zugrunde liegende Struktur der Daten zu erfassen.
+\end{itemize}
+
+\textbf{Lösung (Train-Test-Split):}
+Die Daten werden in ein \textbf{Training Set} (zum Lernen) und ein \textbf{Test Set} (zur Evaluation) unterteilt. Overfitting liegt vor, wenn der Trainingsfehler niedrig, der Testfehler aber hoch ist.
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-11_page_31_1.png}}
+\end{center}
+
+\subsubsection{Künstliche Neuronale Netze (ANNs)}
+
+Neuronale Netze sind inspiriert von biologischen Gehirnen, versuchen diese aber nicht exakt nachzubilden. Sie sind besonders effektiv bei komplexen Inputs wie Bildern oder Sprache (Deep Learning).
+
+\paragraph{Das Perzeptron (Künstliches Neuron)}
+
+Das Perzeptron ist die Grundeinheit eines neuronalen Netzes. Es berechnet eine gewichtete Summe der Eingaben, addiert einen Bias und wendet eine Aktivierungsfunktion an.
+
+\[ \hat{y} = g\left(w_{0} + \sum_{i=1}^{m} x_{i} w_{i}\right) \]
+
+\begin{itemize}
+  \item $x_i$: Inputs
+  \item $w_i$: Gewichte (bestimmen Stärke und Vorzeichen der Verbindung)
+  \item $w_0$: Bias (Verschiebung der Aktivierungsschwelle)
+  \item $\Sigma$: Lineare Kombination (Summe)
+  \item $g$: Nicht-lineare Aktivierungsfunktion
+  \item $\hat{y}$: Output
+\end{itemize}
+
+\paragraph{Aktivierungsfunktionen}
+
+Aktivierungsfunktionen entscheiden, ob ein Neuron ``feuert''. Sie sind essenziell, um \defc{Nicht-Linearität} in das Netzwerk zu bringen. Ohne sie wäre jedes neuronale Netz, egal wie tief, mathematisch äquivalent zu einer einfachen linearen Regression.
+
+Gängige Funktionen:
+\begin{itemize}
+  \item \textbf{Sigmoid:} $\sigma(x)=\frac{1}{1+e^{-x}}$ (Wertebereich $0$ bis $1$, oft für Wahrscheinlichkeiten).
+  \item \textbf{ReLU (Rectified Linear Unit):} $\max(0,x)$ (Löst das Problem verschwindender Gradienten, sehr verbreitet).
+  \item \textbf{Tanh:} $\tanh(x)$ (Wertebereich $-1$ bis $1$).
+\end{itemize}
+
+\paragraph{Multilayer Perceptron (MLP)}
+
+Ein MLP besteht aus mehreren Schichten von Neuronen:
+\begin{enumerate}
+  \item \textbf{Input Layer:} Nimmt die Feature-Vektoren auf.
+  \item \textbf{Hidden Layers:} Verarbeiten Informationen, extrahieren Features.
+  \item \textbf{Output Layer:} Liefert das Endergebnis.
+\end{enumerate}
+
+Die Information fließt unidirektional von Input zu Output (\textbf{Forward Propagation}).
+
+\subsubsection{Training neuronaler Netze}
+
+Das Training ist ein Optimierungsprozess, um die Gewichte $W$ so anzupassen, dass der Fehler (Loss) minimiert wird.
+
+\paragraph{Loss Function (Verlustfunktion)}
+Die Loss Function $J(W)$ misst die Diskrepanz zwischen Vorhersage $\hat{y}$ und wahrem Label $y$. Ziel ist:
+
+\[ W^{*} = \text{argmin}_{W} \frac{1}{n}\sum_{i=1}^{n}\mathcal{L}(f(x^{(i)};W),y^{(i)}) \]
+
+\paragraph{Gradient Descent (Gradientenabstieg)}
+Ein iterativer Algorithmus zur Minimierung der Loss Function. Man bewegt sich im ``Gewichtsraum'' in Richtung des steilsten Abstiegs.
+
+\[ W \leftarrow W - \alpha \frac{\partial J(W)}{\partial W} \]
+
+\begin{itemize}
+  \item $\frac{\partial J(W)}{\partial W}$: Der Gradient (Steigung) des Fehlers bezüglich der Gewichte.
+  \item $\alpha$ (\defc{Learning Rate}): Schrittweite.
+        \begin{itemize}
+          \item Zu klein: Konvergenz dauert sehr lange.
+          \item Zu groß: Gefahr der Divergenz (man springt über das Minimum).
+        \end{itemize}
+\end{itemize}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-11_page_55_1.png}}
+\end{center}
+
+\paragraph{Backpropagation}
+Backpropagation ist der Algorithmus zur effizienten Berechnung der Gradienten $\frac{\partial J(W)}{\partial W}$ durch Anwendung der \textbf{Kettenregel}. Der Fehler wird vom Output Layer rückwärts durch das Netz propagiert.
+
+\textbf{Beispielrechnung (Kettenregel):}
+Gegeben sei ein einfaches Netz $x \rightarrow z \rightarrow \hat{y}$ und Loss $J(W) = (\hat{y}-y)^2$.
+Der Einfluss eines Gewichts $w$ auf den Fehler ist:
+
+\[ \frac{\partial J(W)}{\partial w} = \frac{\partial J(W)}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial z} \cdot \frac{\partial z}{\partial w} \]
+
+\begin{enumerate}
+  \item Wie ändert sich der Fehler mit dem Output? ($\frac{\partial J}{\partial \hat{y}}$)
+  \item Wie ändert sich der Output mit der Aktivierung? ($\frac{\partial \hat{y}}{\partial z} = g'(z)$)
+  \item Wie ändert sich die Aktivierung mit dem Gewicht? ($\frac{\partial z}{\partial w} = x$)
+\end{enumerate}
+
+\subsubsection{Regularisierung}
+
+Methoden zur Vermeidung von Overfitting in neuronalen Netzen:
+\begin{itemize}
+  \item \textbf{Early Stopping:} Training beenden, sobald der Fehler auf dem Test-Set wieder ansteigt.
+  \item \textbf{Dropout:} Zufälliges Deaktivieren von Neuronen während des Trainings, um Robustheit zu erzwingen.
+  \item \textbf{Data Augmentation:} Künstliche Vergrößerung des Datensatzes (z.B. durch Rauschen oder Rotation bei Bildern).
+\end{itemize}
+
+\subsubsection{Convolutional Neural Networks (CNNs)}
+
+CNNs sind spezialisierte Architekturen für grid-artige Daten (z.B. Bilder).
+\begin{itemize}
+  \item \textbf{Convolutional Layers:} Verwenden Filter, um lokale Features (Kanten, Formen) zu extrahieren.
+  \item \textbf{Pooling Layers:} Reduzieren die Dimensionalität (z.B. Max Pooling) und machen das Modell robuster gegenüber Verschiebungen.
+  \item Tiefe Schichten erkennen komplexere Objekte (Hierarchie der Features).
+\end{itemize}
+
+\end{document}

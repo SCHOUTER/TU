@@ -1,0 +1,186 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+
+
+\begin{document}
+
+\section{Planning}
+
+\subsection{Einführung in Classical Planning}
+Planung (Planning) ist der Prozess, eine Sequenz von Aktionen zu finden, die einen Ausgangszustand in einen Zielzustand überführt, wobei logisches Schließen (Reasoning) verwendet wird, anstatt durch Versuch und Irrtum zu lernen (wie beim Reinforcement Learning).
+
+\begin{defbox}[Definition: Planning]
+  Planning ist die Aufgabe, eine \defc{Sequenz von Aktionen} zu erstellen, die ein \defc{Ziel} (Goal) erreicht, ausgehend von einem \defc{Initialzustand} (Initial State).
+\end{defbox}
+
+\subsubsection{Eigenschaften der Umgebung}
+In der klassischen Planung (Classical Planning) gehen wir von einer spezifischen Umgebung aus:
+
+\begin{itemize}
+  \item \textbf{Fully observable (Vollständig beobachtbar):} Der Agent kennt den kompletten Zustand der Welt.
+  \item \textbf{Deterministic (Deterministisch):} Das Ergebnis einer Aktion ist genau vorherbestimmbar (kein Zufall).
+  \item \textbf{Finite (Endlich):} Es gibt eine endliche Anzahl an Zuständen und Aktionen.
+  \item \textbf{Static (Statisch):} Die Welt ändert sich nur durch die Aktionen des Agenten.
+  \item \textbf{Discrete (Diskret):} Zustände und Zeitschritte sind diskret.
+\end{itemize}
+
+\subsection{Planning vs. Problem Solving}
+Klassische Suchalgorithmen (Problem Solving) und Planung lösen ähnliche Probleme, unterscheiden sich jedoch fundamental in der Repräsentation.
+
+\begin{itemize}
+  \item \textbf{Problem Solving:} Betrachtet Zustände, Ziele und Aktionen als \textit{Black Boxes}. Der Agent versteht die innere Struktur der Zustände nicht.
+  \item \textbf{Planning:} Nutzt \defc{explizite Repräsentationen} (meist in First-Order Logic). Zustände, Ziele und Aktionen werden durch logische Sätze beschrieben.
+\end{itemize}\textbf{Vorteile der Planung:}
+
+\begin{itemize}
+  \item \textbf{Reasoning:} Der Planer kann die Effekte von Aktionen analysieren.
+  \item \textbf{Dekomposition:} Probleme können in Teilprobleme zerlegt werden, was die Komplexität drastisch reduziert (von exponentiell auf linear oder polynomial, je nach Abhängigkeit).
+\end{itemize}
+
+\subsubsection{Problem-Dekomposition}
+
+\begin{enumerate}
+  \item \textbf{Decomposable Problems:} Teilziele sind komplett unabhängig (z. B. \textit{have(milk)} und \textit{have(bread)}). Sie können separat gelöst werden.
+  \item \textbf{Nearly Decomposable Problems:} Teilziele interagieren, aber die Interaktionen sind handhabbar (z. B. Routenplanung für Pakete: Erst Verteilung auf Flughäfen, dann lokale Auslieferung).
+\end{enumerate}
+
+\subsection{Logische Grundlagen und Notation}
+Die Planung verwendet oft eine Prolog-ähnliche Notation der Prädikatenlogik (First-Order Logic - FOL).
+
+\begin{itemize}
+  \item \textbf{Konstanten:} Objekte (beginnen mit Kleinbuchstaben oder Zahlen), z. B. \texttt{bob}, \texttt{1}.
+  \item \textbf{Variablen:} Platzhalter für Objekte (beginnen mit Großbuchstaben), z. B. \texttt{X}, \texttt{Person}.
+  \item \textbf{Prädikate:} Relationen zwischen Objekten, z. B. \texttt{parent(pam, bob)}.
+  \item \textbf{Regeln:} Implikationen, z. B. \texttt{Head :- Cond1, Cond2}.
+\end{itemize}
+
+\subsection{Situation Calculus}
+Der Situation Calculus ist ein Ansatz, um Veränderungen in der Welt mittels Logik zu modellieren.
+
+\subsubsection{Kernkonzepte}
+
+\begin{itemize}
+  \item \textbf{Situation ($s$):} Ein Schnappschuss der Welt zu einem bestimmten Zeitpunkt.
+  \item \textbf{Situations-Variable:} Jedes Prädikat, das sich ändern kann, erhält ein zusätzliches Argument für die Situation.
+  \item \textbf{Result-Funktion:} $result(a, s)$ gibt die neue Situation zurück, die entsteht, wenn Aktion $a$ in Situation $s$ ausgeführt wird.
+\end{itemize}Beispiel für eine logische Regel im Situation Calculus:
+\[at(A, Y, result(walk(Y), S)) \leftarrow at(A, X, S)\]
+\textit{Bedeutung: Agent A ist am Ort Y in der Situation, die aus dem Gehen nach Y resultiert, falls A vorher in Situation S am Ort X war.}
+
+\subsubsection{Probleme des Situation Calculus}
+
+\begin{defbox}[The Frame Problem]
+  Das \defc{Frame Problem} beschreibt die Schwierigkeit, auszudrücken, was sich durch eine Aktion \textit{nicht} ändert. In der klassischen Logik muss explizit gesagt werden, dass alles, was nicht durch die Aktion verändert wird, gleich bleibt (Frame Axioms).
+\end{defbox}
+
+\begin{itemize}
+  \item \textbf{Representational Frame Problem:} Man müsste für jede Kombination aus Aktion und Prädikat eine Regel schreiben, die besagt, dass das Prädikat unverändert bleibt. Dies führt zu einer riesigen Wissensbasis.
+  \item \textbf{Inferential Frame Problem:} Der Beweiser (Theorem Prover) verschwendet die meiste Zeit damit, zu beweisen, dass sich Dinge \textit{nicht} geändert haben.
+\end{itemize}
+
+Weitere Probleme:
+
+\begin{itemize}
+  \item \textbf{Qualification Problem:} Schwierigkeit, \textit{alle} Bedingungen zu nennen, die erfüllt sein müssen, damit eine Aktion erfolgreich ist (z. B. ``Auto springt an'' $\rightarrow$ Batterie voll, Tank voll, Zündkerzen okay, keine Banane im Auspuff...).
+  \item \textbf{Ramification Problem:} Schwierigkeit, alle impliziten Seiteneffekte einer Aktion zu beschreiben (z. B. wenn ich einen Koffer bewege, bewegen sich auch die Socken darin).
+\end{itemize}
+
+\subsection{STRIPS (Stanford Research Institute Problem Solver)}
+STRIPS ist eine Restriktion der allgemeinen Logik, um Planung effizienter zu machen und das Frame Problem zu umgehen.
+
+\subsubsection{Repräsentation}
+
+\begin{itemize}
+  \item \textbf{Zustand (State):} Konjunktion von positiven, funktionsfreien Literalen (Ground Literals).
+        \begin{itemize}
+          \item \textbf{Closed World Assumption (CWA):} Alles, was nicht explizit im Zustand als wahr aufgeführt ist, ist falsch.
+        \end{itemize}
+  \item \textbf{Ziel (Goal):} Konjunktion von Literalen. Ein Zustand erfüllt das Ziel, wenn er alle Ziel-Literale enthält.
+  \item \textbf{Aktion (Action):} Definiert durch drei Komponenten:
+        \begin{itemize}
+          \item \textbf{Preconditions (Vorbedingungen):} Konjunktion von Literalen, die wahr sein müssen, damit die Aktion ausführbar ist.
+          \item \textbf{ADD-List:} Literale, die nach der Aktion wahr werden (zum Zustand hinzugefügt werden).
+          \item \textbf{DELETE-List:} Literale, die nach der Aktion falsch werden (aus dem Zustand entfernt werden).
+        \end{itemize}
+\end{itemize}
+
+\begin{defbox}[STRIPS Assumption]
+  Um das Frame Problem zu lösen, nimmt STRIPS an, dass jedes Literal, das \textbf{nicht} in der ADD- oder DELETE-Liste einer Aktion erwähnt wird, \textbf{unverändert} bleibt.
+\end{defbox}
+
+\subsubsection{Beispiel: Blocks World}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.5\textwidth]{eiki_1_AI101-13_page_29_1.png}}
+\end{center}
+
+\begin{itemize}
+  \item \textbf{Prädikate:} $on(x, y)$, $on(x, table)$, $clear(x)$, $holding(x)$, $handempty$.
+  \item \textbf{Aktionen:}
+
+        \begin{itemize}
+          \item $stack(x, y)$: Lege x auf y.
+          \item $unstack(x, y)$: Nimm x von y.
+          \item $pickup(x)$: Nimm x vom Tisch auf.
+          \item $putdown(x)$: Lege x auf den Tisch.
+        \end{itemize}
+\end{itemize}
+
+Beispiel einer Aktion $stack(x, y)$ in STRIPS:
+
+\begin{itemize}
+  \item \textbf{Precond:} $holding(x) \land clear(y)$
+  \item \textbf{Add:} $handempty \land on(x, y) \land clear(x)$
+  \item \textbf{Delete:} $holding(x) \land clear(y)$
+\end{itemize}
+
+\subsection{Planungs-Algorithmen}
+Da STRIPS-Probleme als Zustandsraumsuche formuliert werden können, können Standard-Suchalgorithmen (wie A*) verwendet werden. Es gibt zwei Hauptrichtungen:
+
+\subsubsection{Progression (Forward Planning)}
+Suche vom Initialzustand zum Ziel.
+
+\begin{enumerate}
+  \item Start: Initialzustand.
+  \item Finde alle anwendbaren Aktionen (deren Preconditions im aktuellen Zustand erfüllt sind).
+  \item Generiere Nachfolgezustände durch Anwenden von ADD- und DELETE-Listen.
+  \item Prüfe, ob der neue Zustand das Ziel erfüllt.
+\end{enumerate}\textit{Nachteil:} Hoher Verzweigungsfaktor, da viele irrelevante Aktionen möglich sind.
+
+\subsubsection{Regression (Backward Planning)}
+Suche vom Ziel rückwärts zum Initialzustand. Dies ist oft effizienter, da nur \defc{relevante} Aktionen betrachtet werden.\linebreak
+\textbf{Relevant Action:} Eine Aktion ist relevant für ein Ziel $G$, wenn sie mindestens ein Literal aus $G$ in ihrer ADD-Liste hat und keines der Literale in $G$ in ihrer DELETE-Liste steht (Konsistenz).\linebreak
+\textbf{Inverse Action Application:}Wenn wir ein Ziel $G$ haben und eine Aktion $A$ rückwärts anwenden, berechnet sich das neue Teilziel (Predecessor Goal) $G'$ wie folgt:
+
+\[G' = (G \setminus \text{ADD}(A)) \cup \text{PRECOND}(A)\]
+
+Das bedeutet:
+
+\begin{enumerate}
+  \item Entferne die Effekte der Aktion, da diese durch die Aktion selbst erfüllt wurden (wir brauchen sie nicht mehr zu suchen).
+  \item Füge die Vorbedingungen der Aktion hinzu, da diese \textit{vorher} erfüllt sein mussten, damit die Aktion überhaupt stattfinden kann.
+\end{enumerate}
+
+\subsection{Heuristiken für die Planung}
+Da die exakte Lösung NP-schwer ist, benötigen wir Heuristiken für die Suche.
+
+\subsubsection{Relaxed Problem}
+Man vereinfacht das Problem, um eine Abschätzung der Kosten (Anzahl Schritte) zu erhalten.
+
+\begin{itemize}
+  \item \textbf{Ignore Preconditions:} Man nimmt an, jede Aktion sei immer ausführbar.
+  \item \textbf{Ignore Delete Lists:} Man nimmt an, Aktionen machen nichts ``kaputt''.
+\end{itemize}
+
+Die Lösung dieses entspannten Problems dient als heuristischer Wert für das echte Problem.
+
+\subsubsection{Subgoal Independence Assumption}
+Man nimmt an, dass die Kosten, um eine Konjunktion von Zielen zu erreichen, gleich der Summe der Kosten der einzelnen Ziele sind.
+\[ Cost(G_1 \land G_2) \approx Cost(G_1) + Cost(G_2) \]
+\textit{Achtung:} Diese Heuristik ist nicht zulässig (not admissible), wenn positive Interaktionen existieren (eine Aktion erfüllt beide Ziele), und sie unterschätzt die Kosten massiv, wenn negative Interaktionen existieren (Aktionen für $G_1$ zerstören $G_2$).
+
+\end{document}

@@ -1,0 +1,170 @@
+\documentclass[../../eiki_summary.tex]{subfiles}
+
+\externaldocument[ext:]{../../eiki_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Reinforcement Learning and AlphaZero}
+
+\subsection{Grundlagen des Reinforcement Learning}
+Reinforcement Learning (RL) ist ein Ansatz des maschinellen Lernens, bei dem ein \defc{Agent} durch Interaktion mit einer \defc{Umgebung} lernt, eine Aufgabe zu lösen. Im Gegensatz zum Supervised Learning erhält der Agent keine korrekten Input-Output-Paare, sondern muss durch Ausprobieren (Trial-and-Error) und Feedback in Form von \defc{Rewards} (Belohnungen) lernen.
+
+\begin{defbox}[Der RL-Zyklus]
+  Der Agent und die Umgebung interagieren in diskreten Zeitschritten $t$:
+  \begin{enumerate}
+    \item Der Agent beobachtet den aktuellen Zustand (State) $S_t$.
+    \item Basierend auf $S_t$ wählt der Agent eine Aktion (Action) $A_t$.
+    \item Die Umgebung geht in einen neuen Zustand $S_{t+1}$ über und gibt einen Reward $R_{t+1}$ zurück.
+    \item Das Ziel des Agenten ist die Maximierung der kumulativen Belohnung über die Zeit (Return).
+  \end{enumerate}
+\end{defbox}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-12_page_6_1.png}}
+\end{center}
+
+\subsection{Markov Decision Processes (MDP)}
+Um RL-Probleme mathematisch zu formalisieren, werden \defc{Markov Decision Processes} (MDPs) verwendet.
+\begin{defbox}[Definition MDP]
+  Ein MDP ist ein Tupel $(S, A, T, R, \gamma)$:
+  \begin{itemize}
+    \item $S$: Menge aller möglichen Zustände.
+    \item $A$: Menge aller möglichen Aktionen.
+    \item $T$: Die \defc{Transition Function} (oder das Modell) $T(s, a, s') = P(s' | s, a)$. Sie gibt die Wahrscheinlichkeit an, von Zustand $s$ mit Aktion $a$ in den Zustand $s'$ zu gelangen.
+    \item $R$: Die \defc{Reward Function} $R(s, a, s')$. Die Belohnung für den Übergang von $s$ nach $s'$ mittels $a$.
+    \item $\gamma$: Der \defc{Discount Factor} (Diskontierungsfaktor) mit $0 \le \gamma \le 1$.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Markov-Eigenschaft}
+Ein Prozess ist \defc{Markovian}, wenn der zukünftige Zustand nur vom aktuellen Zustand und der gewählten Aktion abhängt, nicht aber von der Vergangenheit (Gedächtnislosigkeit):
+\[P(S_{t+1} | S_t, A_t, S_{t-1}, A_{t-1}, \dots) = P(S_{t+1} | S_t, A_t)\]
+
+
+\subsubsection{Credit Assignment Problem}
+Eine zentrale Herausforderung im RL ist das \defc{Temporal Credit Assignment Problem}: Da Belohnungen oft verzögert auftreten (z.B. erst am Ende eines Spiels), muss der Algorithmus herausfinden, welche vergangenen Aktionen für den Erfolg (oder Misserfolg) verantwortlich waren.
+
+\subsubsection{Discounted Rewards}
+Um unendliche Horizonte zu handhaben und sofortige Belohnungen gegenüber späteren zu bevorzugen, werden zukünftige Rewards mit $\gamma$ diskontiert. Der \defc{Return} $G_t$ ist die Summe der diskontierten Rewards:
+\[G_t = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots\]
+
+
+\subsection{Optimalität und Value Functions}
+Das Ziel ist es, eine \defc{Policy} (Strategie) $\pi$ zu finden, die den erwarteten Return maximiert.
+\begin{itemize}
+  \item \textbf{Deterministische Policy:} $a = \pi(s)$
+  \item \textbf{Stochastische Policy:} $\pi(a|s) = P(a|s)$
+\end{itemize}
+\begin{defbox}[Value Functions]
+  \begin{itemize}
+    \item \textbf{State-Value Function $V^\pi(s)$:} Der erwartete Return, wenn man in Zustand $s$ startet und danach der Policy $\pi$ folgt.
+    \item \textbf{Action-Value Function $Q^\pi(s, a)$:} Der erwartete Return, wenn man in Zustand $s$ startet, Aktion $a$ wählt und danach der Policy $\pi$ folgt.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Bellman-Gleichungen}
+Die Werte von Zuständen lassen sich rekursiv durch die Bellman-Gleichung beschreiben. Für die optimale Value Function $V^*$ gilt:
+\[V^*(s) = \max_{a} \sum_{s'} T(s, a, s') [R(s, a, s') + \gamma V^*(s')]\]
+
+Dies bedeutet: Der Wert eines Zustands ist die bestmögliche Aktion, die zum sofortigen Reward plus dem diskontierten Wert des Folgezustands führt.
+
+\subsection{Lösen von MDPs: Value Iteration}
+Wenn das Modell ($T$ und $R$) bekannt ist, spricht man von \defc{Planning} (nicht Lernen). Ein klassischer Algorithmus hierfür ist die \defc{Value Iteration} (Dynamische Programmierung).
+\begin{defbox}[Value Iteration Algorithmus]
+  \begin{enumerate}
+    \item Initialisiere $V_0(s) = 0$ für alle Zustände.
+    \item Wiederhole bis zur Konvergenz (Update-Regel):
+          \[V_{k+1}(s) \leftarrow \max_{a} \sum_{s'} T(s, a, s') [R(s, a, s') + \gamma V_k(s')]\]
+
+  \end{enumerate}
+\end{defbox}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.5\textwidth]{eiki_1_AI101-12_page_18_1.png}}
+\end{center}
+
+\subsection{Reinforcement Learning Arten}
+Wenn das Modell ($T, R$) \textit{nicht} bekannt ist, muss der Agent durch Interaktion lernen.
+
+\subsubsection{Model-Based vs. Model-Free}
+\begin{itemize}
+  \item \textbf{Model-Based:} Der Agent lernt zunächst ein Modell der Umgebung ($T$ und $R$ schätzen durch Zählen von Übergängen) und nutzt dieses dann zur Planung (z.B. mittels Value Iteration).
+  \item \textbf{Model-Free:} Der Agent lernt direkt die Value Function oder die Policy, ohne die Übergangswahrscheinlichkeiten explizit zu modellieren.
+\end{itemize}
+
+\subsubsection{Passive vs. Active Learning}
+\begin{itemize}
+  \item \textbf{Passive Learning:} Der Agent folgt einer festen Policy $\pi$ und lernt dabei die Nutzenwerte $V^\pi(s)$ (Policy Evaluation).
+  \item \textbf{Active Learning:} Der Agent muss selbst entscheiden, welche Aktionen er wählt, um die optimale Policy zu finden. Hier entsteht das \defc{Exploration vs. Exploitation} Dilemma.
+\end{itemize}
+
+\subsection{Model-Free Learning Methoden}
+
+\subsubsection{Temporal-Difference (TD) Learning}
+TD-Learning ist eine Methode für \textit{Passive Learning}. Anstatt bis zum Ende einer Episode zu warten (wie bei Monte Carlo), wird die Schätzung $V(s)$ nach jedem Schritt basierend auf dem beobachteten Reward und der Schätzung des nächsten Zustands $V(s')$ aktualisiert.Update-Regel (Running Average):
+\[V(s) \leftarrow (1-\alpha)V(s) + \alpha \underbrace{[R(s, a, s') + \gamma V(s')]}_{\text{Sample}}\]
+
+Oder umgeformt:
+\[V(s) \leftarrow V(s) + \alpha ( \underbrace{R + \gamma V(s') - V(s)}_{\text{TD Error}} )\]
+
+Dabei ist $\alpha$ die Lernrate (Learning Rate).
+
+\subsubsection{Q-Learning}
+Q-Learning ist eine \textit{Active Learning} Methode. Da wir kein Modell $T$ haben, können wir aus $V(s)$ allein keine Policy ableiten. Daher lernen wir direkt $Q$-Werte (Q-Table).Q-Learning ist ein \defc{Off-Policy} Algorithmus: Der Agent lernt den Wert der optimalen Policy, auch wenn er sich beim Sammeln der Daten anders (z.B. explorativ) verhält.
+\begin{defbox}[Q-Learning Update]
+
+  \[Q(s, a) \leftarrow (1-\alpha)Q(s, a) + \alpha [R + \gamma \max_{a'} Q(s', a')]\]
+
+\end{defbox}
+
+Der Term $\max_{a'} Q(s', a')$ impliziert, dass wir vom Folgezustand aus die beste Aktion annehmen, unabhängig davon, welche Aktion der Agent tatsächlich als nächstes ausführt.
+
+\subsubsection{Exploration vs. Exploitation}
+Damit Q-Learning konvergiert, muss der Agent alle Zustands-Aktions-Paare ausreichend oft besuchen.
+\begin{itemize}
+  \item \textbf{Exploitation:} Wähle die Aktion mit dem höchsten bekannten Q-Wert (Greedy).
+  \item \textbf{Exploration:} Wähle eine zufällige Aktion, um neues Wissen zu sammeln.
+  \item \textbf{$\epsilon$-Greedy:} Mit Wahrscheinlichkeit $\epsilon$ wähle eine zufällige Aktion, sonst die beste bekannte ($1-\epsilon$). $\epsilon$ wird oft über die Zeit verringert.
+\end{itemize}
+
+\subsection{Deep Reinforcement Learning}
+Klassisches Q-Learning speichert Werte in einer Tabelle. Bei komplexen Problemen (z.B. Bildschirminput) ist der Zustandsraum zu groß.
+\begin{itemize}
+  \item \textbf{Deep Q-Networks (DQN):} Ein neuronales Netz approximiert die Q-Funktion: $Q(s, a; \theta) \approx Q^*(s, a)$.
+  \item \textbf{Policy Search / Policy Gradients:} Anstatt Value-Funktionen zu lernen, wird die Policy $\pi_\theta(a|s)$ direkt parametrisiert und mittels Gradientenaufstieg auf den erwarteten Reward optimiert (z.B. REINFORCE).
+\end{itemize}
+
+\subsection{AlphaZero}
+AlphaZero kombiniert \defc{Monte-Carlo Tree Search (MCTS)} mit tiefen neuronalen Netzen und Self-Play. Es benötigt kein bereichsspezifisches Wissen (außer den Spielregeln).
+
+\subsubsection{Netzwerk-Architektur}
+Ein einzelnes tiefes neuronales Netz $f_\theta$ wird verwendet, das zwei Ausgaben liefert:
+\begin{itemize}
+  \item \textbf{Policy Head $\mathbf{p}$:} Eine Wahrscheinlichkeitsverteilung über mögliche Züge ($p_a \approx \pi(a|s)$).
+  \item \textbf{Value Head $v$:} Eine skalare Bewertung des Zustands ($v \approx V(s)$) im Intervall $[-1, 1]$ (Sieg/Niederlage).
+\end{itemize}
+
+\subsubsection{MCTS und PUCT}
+AlphaZero nutzt MCTS zur Planung. In jedem Schritt der Simulation wählt es Kanten basierend auf dem \defc{PUCT-Algorithmus} (Predictor Upper Confidence Bounds for Trees):
+\[a_t = \text{argmax}_a (Q(s, a) + U(s, a))\]
+
+\[U(s, a) = c_{\text{puct}} P(s, a) \frac{\sqrt{\sum_b N(s, b)}}{1 + N(s, a)}\]
+Hierbei dient $Q$ der Exploitation (Wertschätzung) und $U$ der Exploration (gesteuert durch die Prior-Wahrscheinlichkeit $P$ aus dem neuronalen Netz und der Besuchshäufigkeit $N$).
+\begin{center}
+  \vcentered{\includegraphics[width=0.5\textwidth]{eiki_1_AI101-12_page_50_1.png}}
+\end{center}
+
+\subsubsection{Training und Loss-Funktion}
+Das Netzwerk lernt aus den durch MCTS verbesserten Politiken ($\pi_{\text{MCTS}}$) und den tatsächlichen Spielergebnissen ($z$). Das Training minimiert folgenden Loss:
+\[l = {(z - v)}^2 - \pi_{\text{MCTS}}^T \log \mathbf{p} + c ||\theta||^2\]
+
+\begin{itemize}
+  \item ${(z-v)}^2$: Mean Squared Error für den Value Head (soll das echte Endergebnis vorhersagen).
+  \item $-\pi^T \log p$: Cross-Entropy für den Policy Head (das Netz soll die MCTS-Verteilung vorhersagen).
+  \item $c ||\theta||^2$: Regularisierungsterm.
+\end{itemize}
+Das System verbessert sich iterativ durch \defc{Self-Play}: Das aktuelle beste Netzwerk generiert Trainingsdaten, die genutzt werden, um eine neue Version des Netzwerks zu trainieren.
+
+\end{document}

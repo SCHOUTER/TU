@@ -31,11 +31,11 @@ Wenn die Wahrscheinlichkeit der beobachteten Evidenz $P(E=e)$ sehr klein ist, we
 
 \subsection*{b) Wie addressiert Likelihood Weighting dieses Problem? Wie Gibbs Sampling?}
 \begin{itemize}
-  \item \textbf{Likelihood Weighting:}
-        Bei diesem Verfahren werden Samples, die der Evidenz widersprechen, nicht verworfen. Stattdessen werden die Evidenzvariablen auf ihre beobachteten Werte fixiert. Um die dadurch entstehende Verzerrung auszugleichen, wird jedem Sample ein \textbf{Gewicht} ($w$) zugewiesen. Dieses Gewicht entspricht der Wahrscheinlichkeit ("Likelihood") der Evidenzvariablen gegeben den Werten ihrer Elternknoten im aktuellen Sample. Dadurch wird jedes generierte Sample genutzt.
+   \item \textbf{Likelihood Weighting:}
+         Bei diesem Verfahren werden Samples, die der Evidenz widersprechen, nicht verworfen. Stattdessen werden die Evidenzvariablen auf ihre beobachteten Werte fixiert. Um die dadurch entstehende Verzerrung auszugleichen, wird jedem Sample ein \textbf{Gewicht} ($w$) zugewiesen. Dieses Gewicht entspricht der Wahrscheinlichkeit (``Likelihood'') der Evidenzvariablen gegeben den Werten ihrer Elternknoten im aktuellen Sample. Dadurch wird jedes generierte Sample genutzt.
 
-  \item \textbf{Gibbs Sampling:}
-        Gibbs Sampling ist ein Markov-Chain-Monte-Carlo (MCMC) Verfahren. Anstatt unabhängige Samples zu generieren und zu prüfen, wandert der Algorithmus durch den Zustandsraum. Die Evidenzvariablen bleiben fixiert. Die Nicht-Evidenzvariablen werden iterativ neu gesampelt, basierend auf der bedingten Wahrscheinlichkeit gegeben ihrer Markov Blanket (Eltern, Kinder, Eltern der Kinder). Da man sich so im Bereich der Posterior-Verteilung bewegt, müssen keine Samples aufgrund von falscher Evidenz verworfen werden (nach der Burn-In-Phase).
+   \item \textbf{Gibbs Sampling:}
+         Gibbs Sampling ist ein Markov-Chain-Monte-Carlo (MCMC) Verfahren. Anstatt unabhängige Samples zu generieren und zu prüfen, wandert der Algorithmus durch den Zustandsraum. Die Evidenzvariablen bleiben fixiert. Die Nicht-Evidenzvariablen werden iterativ neu gesampelt, basierend auf der bedingten Wahrscheinlichkeit gegeben ihrer Markov Blanket (Eltern, Kinder, Eltern der Kinder). Da man sich so im Bereich der Posterior-Verteilung bewegt, müssen keine Samples aufgrund von falscher Evidenz verworfen werden (nach der Burn-In-Phase).
 \end{itemize}
 
 \section*{Aufgabe 2: Bayesische Netze und Variablenelimination}
@@ -47,7 +47,7 @@ Ein Bayesisches Netz faktorisiert als das Produkt der bedingten Wahrscheinlichke
 \[P(A, B, C, D) = P(A) \cdot P(B|A) \cdot P(C|A) \cdot P(D|B, C)\]
 
 \subsection*{2b) Bedingte Unabhängigkeit}
-Die Struktur zeigt, dass $B$ und $C$ bedingt unabhängig sind, wenn $A$ gegeben ist (divergierende Verbindung / "Common Cause").
+Die Struktur zeigt, dass $B$ und $C$ bedingt unabhängig sind, wenn $A$ gegeben ist (divergierende Verbindung / ``Common Cause'').
 Formal:
 \[P(C \mid B, A) = P(C \mid A) \quad \text{bzw.} \quad B \perp C \mid A\]
 Das Wissen über $B$ liefert keine neuen Informationen über $C$, wenn die gemeinsame Ursache $A$ bereits bekannt ist.

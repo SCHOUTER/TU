@@ -6,7 +6,7 @@
 
 \begin{document}
 
-\section{Constraint Satisfaction Problems (CSPs)}Constraint Satisfaction Problems (CSPs) stellen einen Paradigmenwechsel gegenüber der klassischen Pfadsuche dar. Während bei Planungsproblemen der Pfad zum Ziel entscheidend ist, interessiert bei CSPs nur der Zielzustand selbst (Identifikationsproblem). Der Zustand ist dabei nicht mehr atomar ("Blackbox"), sondern faktorisiert, d. h. er besteht aus Variablen und Werten.
+\section{Constraint Satisfaction Problems (CSPs)}Constraint Satisfaction Problems (CSPs) stellen einen Paradigmenwechsel gegenüber der klassischen Pfadsuche dar. Während bei Planungsproblemen der Pfad zum Ziel entscheidend ist, interessiert bei CSPs nur der Zielzustand selbst (Identifikationsproblem). Der Zustand ist dabei nicht mehr atomar (``Blackbox''), sondern faktorisiert, d. h. er besteht aus Variablen und Werten.
 
 \subsection{Definition und Komponenten}Ein CSP wird durch drei Komponenten definiert:
 \begin{enumerate}
@@ -31,7 +31,7 @@ Knoten = Variablen (Regionen), Kanten = Constraints (benachbart)
   \item \textbf{Unäre Constraints:} Betreffen eine einzelne Variable (z. B. $SA \neq \text{green}$).
   \item \textbf{Binäre Constraints:} Betreffen Paare von Variablen (z. B. $SA \neq WA$). Dies ist die häufigste Form und kann durch einen \defc{Constraint-Graphen} dargestellt werden.
   \item \textbf{Constraints höherer Ordnung:} Betreffen 3 oder mehr Variablen (z. B. bei Kryptogrammen wie $TWO + TWO = FOUR$).
-  \item \textbf{Soft Constraints (Präferenzen):} Dienen der Optimierung (z. B. "Rot ist besser als Grün"). Diese wandeln das CSP oft in ein \textit{Constrained Optimization Problem} um.
+  \item \textbf{Soft Constraints (Präferenzen):} Dienen der Optimierung (z. B. ``Rot ist besser als Grün''). Diese wandeln das CSP oft in ein \textit{Constrained Optimization Problem} um.
 \end{itemize}
 
 \subsection{Lösungsansätze: Suche und Backtracking}
@@ -47,9 +47,7 @@ ist.
   \item Wenn ein Wert inkonsistent ist oder die Rekursion fehlschlägt: Mache die
         Zuweisung rückgängig (Backtrack) und versuche den nächsten Wert.
 \end{itemize}
-\begin{center}
-  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_53_1.png}}
-\end{center}
+
 Ohne Heuristiken entspricht dies einer uninformierten Suche. Um die Effizienz zu steigern (z. B. Lösung des $n$-Damen-Problems für $n>25$), werden Heuristiken für die Auswahl von Variablen und Werten sowie Inferenzmethoden (Propagation) benötigt.\subsection{Heuristiken für Backtracking}Um die Suche zu beschleunigen, müssen an jedem Entscheidungspunkt drei Fragen beantwortet werden:
 
 \subsubsection{1. Welche Variable soll als nächste belegt werden?}
@@ -63,6 +61,7 @@ Hier gilt das Prinzip: \textit{Fail-first} (Scheitere so früh wie möglich, um 
 
 \subsubsection{2. Welchen Wert soll die Variable annehmen?}
 Hier gilt das Prinzip: \textit{Fail-last} (Lasse möglichst viele Optionen für die Zukunft offen).
+
 \begin{defbox}[Werte-Auswahl]
   \defc{Least Constraining Value (LCV):} Wähle den Wert, der die \textit{wenigsten} Werte in den Domänen der benachbarten Variablen ausschließt. Dies erhöht die Chance, direkt eine Lösung zu finden.
 \end{defbox}
@@ -113,6 +112,18 @@ Wenn der Constraint-Graph ein Baum ist (keine Zyklen), kann das CSP in linearer 
 \textit{Rückwärts-Pass (Konsistenz):} Mache von den Blättern zur Wurzel hin alle Kanten gerichtete kantenkonsistent (entferne Werte im Elternknoten, die keine Entsprechung im Kind haben).
 \textit{Vorwärts-Pass (Zuweisung):} Weise von der Wurzel zu den Blättern Werte zu. Da die Konsistenz hergestellt wurde, gibt es kein Backtracking.
 
-\subsubsection{Fast-Baum-Strukturen (Cutset Conditioning)}Für Graphen, die "fast" Bäume sind:Identifiziere ein \defc{Cycle Cutset} (Menge von Variablen, deren Entfernung den Graphen zum Baum macht).Instantiiere die Variablen im Cutset (probiere alle Kombinationen).Löse den verbleibenden Baum für jede Instantiierung ("Residual CSP").Die Laufzeit ist exponentiell nur in der Größe des Cutsets, nicht in $n$.
+\subsubsection{Fast-Baum-Strukturen (Cutset Conditioning)}
+Für Graphen, die ``fast'' Bäume sind:
+
+\begin{enumerate}
+  \item Identifiziere ein \defc{Cycle Cutset} (Menge von Variablen, deren Entfernung den Graphen zum Baum macht).
+  \item Instantiiere die Variablen im Cutset (probiere alle Kombinationen).
+  \item Löse den verbleibenden Baum für jede Instantiierung (``Residual CSP'').
+  \item Die Laufzeit ist exponentiell nur in der Größe des Cutsets, nicht in $n$.
+\end{enumerate}
+
+\begin{center}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-05_page_53_1.png}}
+\end{center}
 
 \end{document}

@@ -11,8 +11,8 @@
 
 Diese Einheit behandelt Suchstrategien für zwei spezielle Problemklassen:
 \begin{itemize}
-  \item \textbf{Lokale Suche:} Optimierungsprobleme, bei denen der Pfad zur Lösung irrelevant ist und nur der Endzustand zählt (z.B. N-Damen-Problem, Chip-Design).
-  \item \textbf{Adversarial Search:} Probleme, bei denen ein Agent gegen einen Gegner agiert (Spiele wie Schach oder Go).
+   \item \textbf{Lokale Suche:} Optimierungsprobleme, bei denen der Pfad zur Lösung irrelevant ist und nur der Endzustand zählt (z.B. N-Damen-Problem, Chip-Design).
+   \item \textbf{Adversarial Search:} Probleme, bei denen ein Agent gegen einen Gegner agiert (Spiele wie Schach oder Go).
 \end{itemize}
 
 \subsection{Lokale Suche (Local Search)}
@@ -20,24 +20,24 @@ Diese Einheit behandelt Suchstrategien für zwei spezielle Problemklassen:
 Bei vielen Optimierungsproblemen ist der Zustandsraum riesig oder unendlich, aber der Weg zum Ziel ist unwichtig. Lokale Suchalgorithmen operieren auf einem einzelnen aktuellen Zustand (oder einer kleinen Menge) und bewegen sich nur zu dessen Nachbarn.
 
 \begin{defbox}[Eigenschaften der Lokalen Suche]
-  \begin{itemize}
-    \item \textbf{Speichereffizienz:} Verbraucht meist konstanten Speicher ($O(1)$ oder $O(k)$).
-    \item \textbf{Anwendung:} Geeignet für riesige oder kontinuierliche Zustandsräume.
-    \item \textbf{Ziel:} Finden des globalen Optimums einer \defc{Zielfunktion} (Objective Function).
-  \end{itemize}
+   \begin{itemize}
+      \item \textbf{Speichereffizienz:} Verbraucht meist konstanten Speicher ($O(1)$ oder $O(k)$).
+      \item \textbf{Anwendung:} Geeignet für riesige oder kontinuierliche Zustandsräume.
+      \item \textbf{Ziel:} Finden des globalen Optimums einer \defc{Zielfunktion} (Objective Function).
+   \end{itemize}
 \end{defbox}
 
 \subsubsection{Hill Climbing (Bergsteigen)}
 
-Hill Climbing ist der einfachste lokale Suchalgorithmus ("Gierige lokale Suche"). Er versucht kontinuierlich, den aktuellen Zustand zu verbessern, indem er zum besten Nachbarn wechselt.
+Hill Climbing ist der einfachste lokale Suchalgorithmus (``Gierige lokale Suche''). Er versucht kontinuierlich, den aktuellen Zustand zu verbessern, indem er zum besten Nachbarn wechselt.
 
 \textbf{Algorithmus:}
 \begin{enumerate}
-  \item Starte mit einem zufälligen Zustand.
-  \item Generiere alle Nachbarn des aktuellen Zustands.
-  \item Wähle den Nachbarn mit der besten Bewertung (höchster Wert der Zielfunktion).
-  \item Wenn der beste Nachbar besser ist als der aktuelle Zustand: Gehe dorthin.
-  \item Sonst: Terminiere (Gipfel erreicht).
+   \item Starte mit einem zufälligen Zustand.
+   \item Generiere alle Nachbarn des aktuellen Zustands.
+   \item Wähle den Nachbarn mit der besten Bewertung (höchster Wert der Zielfunktion).
+   \item Wenn der beste Nachbar besser ist als der aktuelle Zustand: Gehe dorthin.
+   \item Sonst: Terminiere (Gipfel erreicht).
 \end{enumerate}
 
 \textbf{Metapher:} „Das Erklimmen des Mount Everest bei dichtem Nebel und Amnesie.“
@@ -46,22 +46,22 @@ Hill Climbing ist der einfachste lokale Suchalgorithmus ("Gierige lokale Suche")
 Der Algorithmus garantiert nicht das Finden des globalen Optimums, da er in lokalen Optima stecken bleiben kann.
 
 \begin{itemize}
-  \item \defc{Lokales Maximum}: Ein Gipfel, der höher ist als alle direkten Nachbarn, aber niedriger als das globale Maximum.
-  \item \defc{Plateau}: Ein flacher Bereich, in dem alle Nachbarn den gleichen Wert haben. Der Algorithmus hat keine Richtungsinformation (Random Walk notwendig).
-        \begin{itemize}
-          \item \textbf{Flat Local Maximum:} Ein Plateau, das ein lokales Maximum ist.
-          \item \textbf{Shoulder:} Ein Plateau, von dem aus es noch weiter bergauf gehen könnte.
-        \end{itemize}
-  \item \defc{Ridge (Grat)}: Eine schmale Erhebung, die ansteigt, bei der aber alle direkten Nachbarn (z.B. Norden, Süden, Osten, Westen) bergab führen. Der Anstieg verläuft oft diagonal, was für einfache Bewegungsoperatoren schwer zu erkennen ist.
+   \item \defc{Lokales Maximum}: Ein Gipfel, der höher ist als alle direkten Nachbarn, aber niedriger als das globale Maximum.
+   \item \defc{Plateau}: Ein flacher Bereich, in dem alle Nachbarn den gleichen Wert haben. Der Algorithmus hat keine Richtungsinformation (Random Walk notwendig).
+         \begin{itemize}
+            \item \textbf{Flat Local Maximum:} Ein Plateau, das ein lokales Maximum ist.
+            \item \textbf{Shoulder:} Ein Plateau, von dem aus es noch weiter bergauf gehen könnte.
+         \end{itemize}
+   \item \defc{Ridge (Grat)}: Eine schmale Erhebung, die ansteigt, bei der aber alle direkten Nachbarn (z.B. Norden, Süden, Osten, Westen) bergab führen. Der Anstieg verläuft oft diagonal, was für einfache Bewegungsoperatoren schwer zu erkennen ist.
 \end{itemize}
 
 \textbf{Varianten zur Verbesserung:}
 \begin{itemize}
-  \item \textbf{Stochastic Hill Climbing:} Wählt zufällig einen der besseren Nachbarn aus (nicht zwingend den besten). Dies erhöht die Chance, lokale Maxima zu umgehen oder Plateaus zu überwinden.
-  \item \textbf{Random-Restart Hill Climbing:} Führt den Algorithmus mehrfach mit unterschiedlichen zufälligen Startzuständen aus.
-        \begin{itemize}
-          \item Wenn die Anzahl der Versuche gegen unendlich geht, nähert sich die Wahrscheinlichkeit, das globale Optimum zu finden, 1 an (asymptotisch vollständig).
-        \end{itemize}
+   \item \textbf{Stochastic Hill Climbing:} Wählt zufällig einen der besseren Nachbarn aus (nicht zwingend den besten). Dies erhöht die Chance, lokale Maxima zu umgehen oder Plateaus zu überwinden.
+   \item \textbf{Random-Restart Hill Climbing:} Führt den Algorithmus mehrfach mit unterschiedlichen zufälligen Startzuständen aus.
+         \begin{itemize}
+            \item Wenn die Anzahl der Versuche gegen unendlich geht, nähert sich die Wahrscheinlichkeit, das globale Optimum zu finden, 1 an (asymptotisch vollständig).
+         \end{itemize}
 \end{itemize}
 
 \subsubsection{Simulated Annealing}
@@ -69,31 +69,31 @@ Der Algorithmus garantiert nicht das Finden des globalen Optimums, da er in loka
 Inspiriert vom physikalischen Prozess des Ausglühens in der Metallurgie (Erhitzen und langsames Abkühlen, um stabile Kristallstrukturen zu bilden). Ziel ist es, lokale Maxima zu verlassen, indem man \textit{schlechte} Züge mit einer gewissen Wahrscheinlichkeit zulässt.
 
 \begin{defbox}[Funktionsweise]
-  Kombiniert Hill Climbing (Effizienz) mit Random Walk (Exploration).
-  \begin{itemize}
-    \item Es gibt einen Temperaturparameter $T$, der gemäß einem Abkühlungsplan (\textit{schedule}) sinkt.
-    \item Ein zufälliger Nachbar wird gewählt.
-    \item Ist der Nachbar besser ($\Delta E > 0$): Der Zug wird immer akzeptiert.
-    \item Ist der Nachbar schlechter ($\Delta E < 0$): Der Zug wird mit Wahrscheinlichkeit $P$ akzeptiert:
-          \[ P = e^{\frac{\Delta E}{T}} \]
-  \end{itemize}
+   Kombiniert Hill Climbing (Effizienz) mit Random Walk (Exploration).
+   \begin{itemize}
+      \item Es gibt einen Temperaturparameter $T$, der gemäß einem Abkühlungsplan (\textit{schedule}) sinkt.
+      \item Ein zufälliger Nachbar wird gewählt.
+      \item Ist der Nachbar besser ($\Delta E > 0$): Der Zug wird immer akzeptiert.
+      \item Ist der Nachbar schlechter ($\Delta E < 0$): Der Zug wird mit Wahrscheinlichkeit $P$ akzeptiert:
+            \[ P = e^{\frac{\Delta E}{T}} \]
+   \end{itemize}
 \end{defbox}
 
 \textbf{Interpretation:}
 \begin{itemize}
-  \item Hohes $T$: Hohe Wahrscheinlichkeit, schlechte Züge zu akzeptieren (ähnlich Random Walk).
-  \item $T \to 0$: Wahrscheinlichkeit sinkt gegen 0 (ähnlich Hill Climbing).
-  \item Wird $T$ langsam genug gesenkt, findet der Algorithmus garantiert das globale Optimum.
+   \item Hohes $T$: Hohe Wahrscheinlichkeit, schlechte Züge zu akzeptieren (ähnlich Random Walk).
+   \item $T \to 0$: Wahrscheinlichkeit sinkt gegen 0 (ähnlich Hill Climbing).
+   \item Wird $T$ langsam genug gesenkt, findet der Algorithmus garantiert das globale Optimum.
 \end{itemize}
 
 \subsubsection{Local Beam Search}
 
 Statt nur einen Zustand zu betrachten, verfolgt dieser Algorithmus $k$ Zustände parallel.
 \begin{itemize}
-  \item Starte mit $k$ zufälligen Zuständen.
-  \item Generiere in jedem Schritt alle Nachfolger aller $k$ Zustände.
-  \item Wenn einer davon das Ziel ist: Stopp.
-  \item Sonst: Wähle die $k$ besten Nachfolger aus der \textit{gesamten} Menge aller Nachfolger aus.
+   \item Starte mit $k$ zufälligen Zuständen.
+   \item Generiere in jedem Schritt alle Nachfolger aller $k$ Zustände.
+   \item Wenn einer davon das Ziel ist: Stopp.
+   \item Sonst: Wähle die $k$ besten Nachfolger aus der \textit{gesamten} Menge aller Nachfolger aus.
 \end{itemize}
 \textit{Unterschied zu $k$ mal Random-Restart:} Die $k$ Zustände sind nicht unabhängig. Informationen werden geteilt, da sich die Suche auf vielversprechende Regionen des Zustandsraums konzentriert („Wo ein guter Zustand ist, sind oft auch andere“).
 
@@ -105,23 +105,23 @@ Viele reale Probleme (z.B. Training neuronaler Netze) haben kontinuierliche Zust
 Wenn die Zielfunktion $f(\mathbf{x})$ differenzierbar ist, nutzen wir den Gradienten $\nabla f$, um die Richtung des steilsten Anstiegs/Abstiegs zu finden.
 
 \begin{defbox}[Update-Regel]
-  Um eine Kostenfunktion $L(\mathbf{\theta})$ zu minimieren, aktualisieren wir die Parameter $\mathbf{\theta}$ iterativ:
-  \[ \mathbf{\theta} \leftarrow \mathbf{\theta} - \alpha \nabla L(\mathbf{\theta}) \]
-  Dabei ist $\alpha$ die \defc{Lernrate} (Step Size).
+   Um eine Kostenfunktion $L(\mathbf{\theta})$ zu minimieren, aktualisieren wir die Parameter $\mathbf{\theta}$ iterativ:
+   \[ \mathbf{\theta} \leftarrow \mathbf{\theta} - \alpha \nabla L(\mathbf{\theta}) \]
+   Dabei ist $\alpha$ die \defc{Lernrate} (Step Size).
 \end{defbox}
 
 \textbf{Wahl der Lernrate $\alpha$:}
 \begin{itemize}
-  \item \textbf{Zu klein:} Konvergenz ist sehr langsam, viele Iterationen nötig.
-  \item \textbf{Zu groß:} Der Algorithmus kann über das Ziel hinausschießen, oszillieren oder sogar divergieren.
+   \item \textbf{Zu klein:} Konvergenz ist sehr langsam, viele Iterationen nötig.
+   \item \textbf{Zu groß:} Der Algorithmus kann über das Ziel hinausschießen, oszillieren oder sogar divergieren.
 \end{itemize}
 
 \subsection{Adversarial Search (Spiele)}
 
 In Multi-Agenten-Umgebungen beeinflussen die Aktionen anderer Agenten das Ergebnis. Wir betrachten \defc{Nullsummenspiele} (Zero-Sum Games) mit perfekter Information (z.B. Schach, Tic-Tac-Toe).
 \begin{itemize}
-  \item \textbf{MAX:} Unser Agent, möchte den Nutzen (Utility) maximieren.
-  \item \textbf{MIN:} Der Gegner, möchte den Nutzen minimieren (bzw. seinen eigenen maximieren).
+   \item \textbf{MAX:} Unser Agent, möchte den Nutzen (Utility) maximieren.
+   \item \textbf{MIN:} Der Gegner, möchte den Nutzen minimieren (bzw. seinen eigenen maximieren).
 \end{itemize}
 
 \subsubsection{Minimax-Algorithmus}
@@ -130,21 +130,21 @@ Der Minimax-Algorithmus berechnet den optimalen Zug durch rekursive Suche im Spi
 
 \textbf{Minimax-Wert eines Knotens:}
 \begin{itemize}
-  \item \textbf{Terminal-Knoten (Blatt):} Utility-Wert des Zustands (z.B. +1 Sieg, -1 Niederlage, 0 Unentschieden).
-  \item \textbf{MAX-Knoten:} $\max( \text{Werte der Nachfolger} )$.
-  \item \textbf{MIN-Knoten:} $\min( \text{Werte der Nachfolger} )$.
+   \item \textbf{Terminal-Knoten (Blatt):} Utility-Wert des Zustands (z.B. +1 Sieg, -1 Niederlage, 0 Unentschieden).
+   \item \textbf{MAX-Knoten:} $\max( \text{Werte der Nachfolger} )$.
+   \item \textbf{MIN-Knoten:} $\min( \text{Werte der Nachfolger} )$.
 \end{itemize}
 
 \begin{center}
-  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-04_page_53_1.png}}
+   \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-04_page_53_1.png}}
 \end{center}
 
 \textbf{Eigenschaften:}
 \begin{itemize}
-  \item \textbf{Vollständig:} Ja, bei endlichem Baum.
-  \item \textbf{Optimal:} Ja, gegen einen optimalen Gegner.
-  \item \textbf{Zeitkomplexität:} $O(b^m)$ (exponentiell), mit Verzweigungsfaktor $b$ und Tiefe $m$.
-  \item \textbf{Platzkomplexität:} $O(b \cdot m)$ (bei Tiefensuche).
+   \item \textbf{Vollständig:} Ja, bei endlichem Baum.
+   \item \textbf{Optimal:} Ja, gegen einen optimalen Gegner.
+   \item \textbf{Zeitkomplexität:} $O(b^m)$ (exponentiell), mit Verzweigungsfaktor $b$ und Tiefe $m$.
+   \item \textbf{Platzkomplexität:} $O(b \cdot m)$ (bei Tiefensuche).
 \end{itemize}
 
 \subsubsection{Alpha-Beta Pruning}
@@ -154,41 +154,41 @@ Alpha-Beta Pruning ist eine Optimierung des Minimax-Algorithmus, die irrelevante
 \textbf{Idee:} Wenn wir bereits einen Zug gefunden haben, der uns einen gewissen Wert garantiert, und wir in einem anderen Zweig sehen, dass der Gegner uns dort auf einen schlechteren Wert zwingen kann, müssen wir diesen Zweig nicht weiter untersuchen.
 
 \begin{defbox}[Parameter $\alpha$ und $\beta$]
-  Wir führen zwei Werte durch die Rekursion mit:
-  \begin{itemize}
-    \item \defc{$\alpha$ (Alpha)}: Der Wert der besten Alternative für MAX, die bisher auf dem Pfad gefunden wurde (untere Schranke für MAX). Initial: $-\infty$.
-    \item \defc{$\beta$ (Beta)}: Der Wert der besten Alternative für MIN, die bisher auf dem Pfad gefunden wurde (obere Schranke für MIN). Initial: $+\infty$.
-  \end{itemize}
+   Wir führen zwei Werte durch die Rekursion mit:
+   \begin{itemize}
+      \item \defc{$\alpha$ (Alpha)}: Der Wert der besten Alternative für MAX, die bisher auf dem Pfad gefunden wurde (untere Schranke für MAX). Initial: $-\infty$.
+      \item \defc{$\beta$ (Beta)}: Der Wert der besten Alternative für MIN, die bisher auf dem Pfad gefunden wurde (obere Schranke für MIN). Initial: $+\infty$.
+   \end{itemize}
 \end{defbox}
 
 \textbf{Pruning-Regeln:}
 \begin{enumerate}
-  \item \textbf{MIN-Knoten (Update $\beta$):}
-        \begin{itemize}
-          \item Berechne Wert $v$ des Kindknotens.
-          \item Wenn $v \le \alpha$: \textbf{Pruning!} (MAX wird diesen Ast nie wählen, da er $\alpha$ bereits sicher hat).
-          \item Sonst: $\beta = \min(\beta, v)$.
-        \end{itemize}
-  \item \textbf{MAX-Knoten (Update $\alpha$):}
-        \begin{itemize}
-          \item Berechne Wert $v$ des Kindknotens.
-          \item Wenn $v \ge \beta$: \textbf{Pruning!} (MIN wird diesen Ast nie zulassen, da er $\beta$ bereits sicher hat).
-          \item Sonst: $\alpha = \max(\alpha, v)$.
-        \end{itemize}
+   \item \textbf{MIN-Knoten (Update $\beta$):}
+         \begin{itemize}
+            \item Berechne Wert $v$ des Kindknotens.
+            \item Wenn $v \le \alpha$: \textbf{Pruning!} (MAX wird diesen Ast nie wählen, da er $\alpha$ bereits sicher hat).
+            \item Sonst: $\beta = \min(\beta, v)$.
+         \end{itemize}
+   \item \textbf{MAX-Knoten (Update $\alpha$):}
+         \begin{itemize}
+            \item Berechne Wert $v$ des Kindknotens.
+            \item Wenn $v \ge \beta$: \textbf{Pruning!} (MIN wird diesen Ast nie zulassen, da er $\beta$ bereits sicher hat).
+            \item Sonst: $\alpha = \max(\alpha, v)$.
+         \end{itemize}
 \end{enumerate}
 
 \textbf{Effizienz:}
 \begin{itemize}
-  \item Im besten Fall (perfekte Sortierung der Züge): Komplexität reduziert sich auf $O(b^{m/2})$. Das bedeutet effektiv eine Verdopplung der durchsuchbaren Tiefe.
-  \item Im schlechtesten Fall (schlechteste Sortierung): Keine Verbesserung, $O(b^m)$.
-  \item \textit{Move Ordering} ist daher entscheidend (z.B. Schlagen von Figuren zuerst prüfen).
+   \item Im besten Fall (perfekte Sortierung der Züge): Komplexität reduziert sich auf $O(b^{m/2})$. Das bedeutet effektiv eine Verdopplung der durchsuchbaren Tiefe.
+   \item Im schlechtesten Fall (schlechteste Sortierung): Keine Verbesserung, $O(b^m)$.
+   \item \textit{Move Ordering} ist daher entscheidend (z.B. Schlagen von Figuren zuerst prüfen).
 \end{itemize}
 
 \subsubsection{Umgang mit Ressourcenbeschränkungen}
 Da komplette Suchbäume für komplexe Spiele (Schach: $10^{40}$ Zustände, Go: $10^{170}$) zu groß sind, wird die Suche oft bei einer Tiefe $d$ abgebrochen.
 \begin{itemize}
-  \item \defc{Heuristische Evaluierungsfunktion (H-Minimax):} Schätzt den Wert einer Position an den Blättern der begrenzten Suche (z.B. Materialwert im Schach: Bauer=1, Dame=9).
-  \item \defc{Horizon Effect:} Ein unvermeidbarer negativer Event (z.B. Verlust der Dame) wird durch „Verzögerungstaktiken“ aus dem Suchhorizont geschoben, sodass die Evaluierung fälschlicherweise positiv wirkt.
+   \item \defc{Heuristische Evaluierungsfunktion (H-Minimax):} Schätzt den Wert einer Position an den Blättern der begrenzten Suche (z.B. Materialwert im Schach: Bauer=1, Dame=9).
+   \item \defc{Horizon Effect:} Ein unvermeidbarer negativer Event (z.B. Verlust der Dame) wird durch „Verzögerungstaktiken“ aus dem Suchhorizont geschoben, sodass die Evaluierung fälschlicherweise positiv wirkt.
 \end{itemize}
 
 \end{document}

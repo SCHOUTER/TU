@@ -16,27 +16,27 @@
 \subsubsection{Herausforderungen der Erkennung}
 Menschliche Wahrnehmung ist Computern weit überlegen. Die Erkennung ist schwierig aufgrund von:
 \begin{itemize}
-    \item \textbf{Mehrdeutigkeit \& Illusionen:} (z.B. Don Quixote-Gesicht, Mona Lisa-Mosaik, ambivalente Elefantenbeine).
-    \item \textbf{Tarnung \& Verdeckung:} (z.B. Bev Doolittles Pferde im Schnee).
-    \item \textbf{Kontext:} Die Interpretation von Teilen hängt stark vom Gesamtkontext ab (z.B. verschwommene Straßenszene, Punktewolken-Wörter).
-    \item \textbf{Fehler im Kontext:} M.C. Escher-Bilder sind \emph{lokal} konsistent, aber \emph{global} unmöglich.
+   \item \textbf{Mehrdeutigkeit \& Illusionen:} (z.B. Don Quixote-Gesicht, Mona Lisa-Mosaik, ambivalente Elefantenbeine).
+   \item \textbf{Tarnung \& Verdeckung:} (z.B. Bev Doolittles Pferde im Schnee).
+   \item \textbf{Kontext:} Die Interpretation von Teilen hängt stark vom Gesamtkontext ab (z.B. verschwommene Straßenszene, Punktewolken-Wörter).
+   \item \textbf{Fehler im Kontext:} M.C. Escher-Bilder sind \emph{lokal} konsistent, aber \emph{global} unmöglich.
 \end{itemize}
 
 \subsubsection{Intuition: Wie funktioniert Erkennung?}
 Objekterkennung basiert auf zwei Hauptkomponenten:
 \begin{enumerate}
-    \item \defc{Lokale Beschreibung / Merkmale:} (z.B. Augen, Nase, Mund bei einem Gesicht).
-    \item \defc{Globale Anordnung der Merkmale:} (z.B. relative Positionen und Größen der Merkmale zueinander).
+   \item \defc{Lokale Beschreibung / Merkmale:} (z.B. Augen, Nase, Mund bei einem Gesicht).
+   \item \defc{Globale Anordnung der Merkmale:} (z.B. relative Positionen und Größen der Merkmale zueinander).
 \end{enumerate}
 Weitere wichtige Aspekte sind Segmentierung und Szenenkontext.
 
 \begin{defbox}{Pictorial Structure (Fischler \& Elschlager, 1973)}
-    Ein klassisches Modell zur Objekterkennung, das diese Intuition formalisiert.
-    \begin{itemize}
-        \item \textbf{Teile (Parts):} 2D-Bildfragmente (lokale Merkmale).
-        \item \textbf{Aufbau (Structure):} Die Anordnung der Teile, oft modelliert durch "Federn", die die relative Position und Deformation beschränken.
-    \end{itemize}
-    Herausforderungen für dieses Modell sind \defc{Deformationen} (Teile ändern ihre Position) und \defc{Durcheinander} (Clutter, irrelevante Merkmale im Hintergrund).
+   Ein klassisches Modell zur Objekterkennung, das diese Intuition formalisiert.
+   \begin{itemize}
+      \item \textbf{Teile (Parts):} 2D-Bildfragmente (lokale Merkmale).
+      \item \textbf{Aufbau (Structure):} Die Anordnung der Teile, oft modelliert durch ``Federn'', die die relative Position und Deformation beschränken.
+   \end{itemize}
+   Herausforderungen für dieses Modell sind \defc{Deformationen} (Teile ändern ihre Position) und \defc{Durcheinander} (Clutter, irrelevante Merkmale im Hintergrund).
 \end{defbox}
 
 \subsection{Bayes Decision Theory (BDT)}
@@ -44,47 +44,47 @@ Die BDT ist ein mathematisches Framework zur optimalen Entscheidungsfindung unte
 Sie nutzt dazu Wahrscheinlichkeiten als formale Beschreibung von Unsicherheit.
 
 \begin{defbox}{Die drei Kernkonzepte der BDT}
-    \begin{enumerate}
-        \item \textbf{A Priori (Prior) $P(C_k)$:}
-              Die Wahrscheinlichkeit einer Klasse $C_k$, \emph{bevor} wir Daten $x$ beobachtet haben.
-              Der Prior kodiert unser Vorwissen oder unsere Erwartungen über die Häufigkeit von Klassen.
-              Wichtig: Priors wirken wie ein "Bias" zugunsten bestimmter Klassen.
+   \begin{enumerate}
+      \item \textbf{A Priori (Prior) $P(C_k)$:}
+            Die Wahrscheinlichkeit einer Klasse $C_k$, \emph{bevor} wir Daten $x$ beobachtet haben.
+            Der Prior kodiert unser Vorwissen oder unsere Erwartungen über die Häufigkeit von Klassen.
+            Wichtig: Priors wirken wie ein ``Bias'' zugunsten bestimmter Klassen.
 
-        \item \textbf{Klassenspezifische Dichte (Likelihood) $p(x|C_k)$:}
-              Die Wahrscheinlichkeit (genauer: Wahrscheinlichkeitsdichte), die Merkmalsausprägung $x$ zu beobachten, \emph{unter der Annahme}, dass die wahre Klasse $C_k$ ist.
-              Sie beschreibt also, wie typisch ein bestimmtes Datenmuster $x$ für eine Klasse ist.
-              Hinweis: Likelihood ist eine Funktion in $x$, nicht in der Klasse.
+      \item \textbf{Klassenspezifische Dichte (Likelihood) $p(x|C_k)$:}
+            Die Wahrscheinlichkeit (genauer: Wahrscheinlichkeitsdichte), die Merkmalsausprägung $x$ zu beobachten, \emph{unter der Annahme}, dass die wahre Klasse $C_k$ ist.
+            Sie beschreibt also, wie typisch ein bestimmtes Datenmuster $x$ für eine Klasse ist.
+            Hinweis: Likelihood ist eine Funktion in $x$, nicht in der Klasse.
 
-        \item \textbf{A Posteriori (Posterior) $P(C_k|x)$:}
-              Nachbeobachtete Wahrscheinlichkeit einer Klasse, \emph{nachdem} wir $x$ kennen.
-              Dies ist genau die Größe, die wir für die eigentliche Entscheidung benötigen.
-    \end{enumerate}
+      \item \textbf{A Posteriori (Posterior) $P(C_k|x)$:}
+            Nachbeobachtete Wahrscheinlichkeit einer Klasse, \emph{nachdem} wir $x$ kennen.
+            Dies ist genau die Größe, die wir für die eigentliche Entscheidung benötigen.
+   \end{enumerate}
 \end{defbox}
 
 \begin{defbox}{Bayes' Theorem (Verbindung der Konzepte)}
-    \[
-        P(C_k|x) = \frac{p(x|C_k)\,P(C_k)}{p(x)}
-    \]
-    Die Evidenz
-    \[
-        p(x) = \sum_j p(x|C_j)\,P(C_j)
-    \]
-    stellt sicher, dass die Posterior-Wahrscheinlichkeiten normiert sind.
-    Wichtig: Für die Entscheidung ist $p(x)$ oft irrelevant, da es für alle Klassen gleich ist.
+   \[
+      P(C_k|x) = \frac{p(x|C_k)\,P(C_k)}{p(x)}
+   \]
+   Die Evidenz
+   \[
+      p(x) = \sum_j p(x|C_j)\,P(C_j)
+   \]
+   stellt sicher, dass die Posterior-Wahrscheinlichkeiten normiert sind.
+   Wichtig: Für die Entscheidung ist $p(x)$ oft irrelevant, da es für alle Klassen gleich ist.
 
-    \[
-        \text{Posterior} = \frac{\defc{\text{Likelihood}}\;\times\;\defc{\text{Prior}}}{\text{Evidenz}}
-    \]
+   \[
+      \text{Posterior} = \frac{\defc{\text{Likelihood}}\;\times\;\defc{\text{Prior}}}{\text{Evidenz}}
+   \]
 \end{defbox}
 
 \subsubsection{Bayes-Entscheidungsregel (Fehlerminimierung)}
 Wir wählen die Klasse mit der größten posterioren Wahrscheinlichkeit:
 \[
-    C^*(x) = \arg\max_k P(C_k|x).
+   C^*(x) = \arg\max_k P(C_k|x).
 \]
 Da der Nenner $p(x)$ konstant ist, genügt:
 \[
-    C^*(x) = \arg\max_k p(x|C_k)\,P(C_k).
+   C^*(x) = \arg\max_k p(x|C_k)\,P(C_k).
 \]
 
 \textbf{Intuition:}
@@ -93,22 +93,22 @@ Die Likelihood misst, wie gut die Daten zu einer Klasse passen; der Prior berüc
 \subsubsection{Likelihood Ratio Test (Spezialfall 2 Klassen)}
 Für zwei Klassen $C_1$ und $C_2$:
 \[
-    \text{Entscheide } C_1 \text{ wenn: }
-    \frac{p(x|C_1)}{p(x|C_2)} > \frac{P(C_2)}{P(C_1)}.
+   \text{Entscheide } C_1 \text{ wenn: }
+   \frac{p(x|C_1)}{p(x|C_2)} > \frac{P(C_2)}{P(C_1)}.
 \]
 Links: datengetriebene Evidenz, Rechts: Schwellwert aus Vorwissen.
-So sieht man explizit, wie ein starker Prior eine Entscheidung "umkippen" kann.
+So sieht man explizit, wie ein starker Prior eine Entscheidung ``umkippen'' kann.
 
 \subsubsection{Prior und Likelihood in der Praxis}
 Die Trennung zwischen Datenmodell (Likelihood) und Vorwissen (Prior) ermöglicht robuste Modelle:
 
 \begin{itemize}
-    \item \textbf{Spracherkennung:}
-          Likelihood = akustisches Modell; Prior = Sprachmodell.
-          Das Sprachmodell zieht uns aus akustischen Mehrdeutigkeiten heraus.
+   \item \textbf{Spracherkennung:}
+         Likelihood = akustisches Modell; Prior = Sprachmodell.
+         Das Sprachmodell zieht uns aus akustischen Mehrdeutigkeiten heraus.
 
-    \item \textbf{Bildverarbeitung:}
-          Likelihood = Appearance Model; Prior = Kontextwissen über sinnvolle Objekte am Ort.
+   \item \textbf{Bildverarbeitung:}
+         Likelihood = Appearance Model; Prior = Kontextwissen über sinnvolle Objekte am Ort.
 \end{itemize}
 
 \subsection{Naive Bayes Klassifikator}
@@ -116,42 +116,42 @@ Die Trennung zwischen Datenmodell (Likelihood) und Vorwissen (Prior) ermöglicht
 \subsubsection{Das Problem hoher Dimensionen}
 Für $d$ Merkmale:
 \[
-    x = (x_1,\ldots,x_d)
+   x = (x_1,\ldots,x_d)
 \]
 müssten wir die gemeinsame Dichte $p(x|C_k)$ im $d$-dimensionalen Raum schätzen.
 Dies benötigt exponentiell viele Daten: \defc{Fluch der Dimensionalität}.
 Schon wenige Dutzend Dimensionen machen klassische Dichteschätzung praktisch unmöglich.
 
 \begin{defbox}{Die Naive-Unabhängigkeitsannahme}
-    Um das Problem zu umgehen, wird angenommen:
-    \[
-        p(x|C_k) = p(x_1,\ldots,x_d|C_k) \approx \prod_{i=1}^d p(x_i|C_k).
-    \]
-    Das heißt: Die Merkmale sind \emph{bedingt unabhängig} gegeben die Klasse.
-    Diese Annahme ist oft falsch, aber in vielen Anwendungen erstaunlich effektiv, weil:
+   Um das Problem zu umgehen, wird angenommen:
+   \[
+      p(x|C_k) = p(x_1,\ldots,x_d|C_k) \approx \prod_{i=1}^d p(x_i|C_k).
+   \]
+   Das heißt: Die Merkmale sind \emph{bedingt unabhängig} gegeben die Klasse.
+   Diese Annahme ist oft falsch, aber in vielen Anwendungen erstaunlich effektiv, weil:
 
-    \begin{itemize}
-        \item Abhängigkeiten zwischen Merkmalen sich teilweise gegenseitig ausgleichen,
-        \item Die Entscheidung meist nur eine Rangordnung braucht (MAP), nicht exakte Wahrscheinlichkeiten.
-    \end{itemize}
+   \begin{itemize}
+      \item Abhängigkeiten zwischen Merkmalen sich teilweise gegenseitig ausgleichen,
+      \item Die Entscheidung meist nur eine Rangordnung braucht (MAP), nicht exakte Wahrscheinlichkeiten.
+   \end{itemize}
 \end{defbox}
 
 \subsubsection{Naive Bayes Entscheidungsregel}
 Durch Einsetzen der Zerlegung:
 \[
-    C^*(x) = \arg\max_k P(C_k)\prod_{i=1}^d p(x_i|C_k).
+   C^*(x) = \arg\max_k P(C_k)\prod_{i=1}^d p(x_i|C_k).
 \]
 
 \textbf{Lernen bedeutet:}
 \begin{enumerate}
-    \item Schätzen der Priors $P(C_k)$ (Häufigkeiten).
-    \item Schätzen der eindimensionalen Dichten $p(x_i|C_k)$ für alle Merkmale und Klassen.
+   \item Schätzen der Priors $P(C_k)$ (Häufigkeiten).
+   \item Schätzen der eindimensionalen Dichten $p(x_i|C_k)$ für alle Merkmale und Klassen.
 \end{enumerate}
 
 \paragraph{Log-Space (Numerische Stabilität)}
 Da Produkte kleiner Wahrscheinlichkeiten numerisch instabil sind:
 \[
-    C^*(x) = \arg\max_k \left[ \log P(C_k) + \sum_{i=1}^d \log p(x_i|C_k) \right].
+   C^*(x) = \arg\max_k \left[ \log P(C_k) + \sum_{i=1}^d \log p(x_i|C_k) \right].
 \]
 Logarithmen ersetzen Multiplikationen durch Additionen, ohne die Entscheidung zu verändern.
 
@@ -160,46 +160,46 @@ Ein Beispiel für \defc{Appearance-Based Methods}: Modelle werden direkt aus (gr
 
 \subsubsection{Sliding Window Ansatz}
 \begin{itemize}
-    \item Ein Fenster (z.B. $19 \times 19$ Pixel) wird über das gesamte Bild geschoben.
-    \item Bei jeder Position wird entschieden: "Gesicht" ($C_1$) oder "Kein Gesicht" ($C_2$).
-    \item Das Bild wird skaliert (z.B. Faktor 1.2 verkleinert) und der Vorgang wiederholt sich, um Gesichter aller Größen zu finden.
+   \item Ein Fenster (z.B. $19 \times 19$ Pixel) wird über das gesamte Bild geschoben.
+   \item Bei jeder Position wird entschieden: ``Gesicht'' ($C_1$) oder ``Kein Gesicht'' ($C_2$).
+   \item Das Bild wird skaliert (z.B. Faktor 1.2 verkleinert) und der Vorgang wiederholt sich, um Gesichter aller Größen zu finden.
 \end{itemize}
 
 \begin{defbox}{Fallstudie: Schneiderman \& Kanade (1998)}
-    Ein sehr erfolgreicher Gesichtdetektor, der auf Naive Bayes basiert.
-    \begin{itemize}
-        \item \textbf{1. Repräsentation (Merkmale $x_i$):}
-              \defc{Wavelet-Koeffizienten} an bestimmten Frequenzen, Orientierungen und \defc{Positionen} $(f_i, u_i, v_i)$. Dies kodiert sowohl lokale Merkmale (Kanten) als auch deren globale Anordnung (Position).
+   Ein sehr erfolgreicher Gesichtdetektor, der auf Naive Bayes basiert.
+   \begin{itemize}
+      \item \textbf{1. Repräsentation (Merkmale $x_i$):}
+            \defc{Wavelet-Koeffizienten} an bestimmten Frequenzen, Orientierungen und \defc{Positionen} $(f_i, u_i, v_i)$. Dies kodiert sowohl lokale Merkmale (Kanten) als auch deren globale Anordnung (Position).
 
-        \item \textbf{2. Trainingsdaten:}
-              \begin{itemize}
-                  \item \emph{Positive Beispiele ($C_1$):} Tausende von Bildern, die Gesichter enthalten (normalisiert).
-                  \item \emph{Negative Beispiele ($C_2$):} Tausende von Bildern, die \emph{keine} Gesichter enthalten.
-              \end{itemize}
+      \item \textbf{2. Trainingsdaten:}
+            \begin{itemize}
+               \item \emph{Positive Beispiele ($C_1$):} Tausende von Bildern, die Gesichter enthalten (normalisiert).
+               \item \emph{Negative Beispiele ($C_2$):} Tausende von Bildern, die \emph{keine} Gesichter enthalten.
+            \end{itemize}
 
-        \item \textbf{3. Klassifikator \& Lernen:}
-              Naive Bayes. Das "Lernen" besteht darin, die Wahrscheinlichkeiten $P(x_i|C_{\text{face}})$ und $P(x_i|C_{\text{non-face}})$ für jedes Merkmal $x_i$ zu schätzen. Dies geschieht durch \defc{Zählen (Erstellen von Histogrammen)} in den positiven und negativen Trainingsdatensätzen.
+      \item \textbf{3. Klassifikator \& Lernen:}
+            Naive Bayes. Das ``Lernen'' besteht darin, die Wahrscheinlichkeiten $P(x_i|C_{\text{face}})$ und $P(x_i|C_{\text{non-face}})$ für jedes Merkmal $x_i$ zu schätzen. Dies geschieht durch \defc{Zählen (Erstellen von Histogrammen)} in den positiven und negativen Trainingsdatensätzen.
 
-        \item \textbf{Multi-View:} Um Gesichter aus verschiedenen Winkeln zu erkennen, werden separate Detektoren trainiert (z.B. Frontal, Linksprofil, Rechtsprofil) und die Ergebnisse kombiniert.
-    \end{itemize}
+      \item \textbf{Multi-View:} Um Gesichter aus verschiedenen Winkeln zu erkennen, werden separate Detektoren trainiert (z.B. Frontal, Linksprofil, Rechtsprofil) und die Ergebnisse kombiniert.
+   \end{itemize}
 \end{defbox}
 
 \subsection{Erkennungsarten (Biometrie)}
 Gesichtserkennung ist ein biometrisches Verfahren. Man muss zwischen verschiedenen Aufgaben unterscheiden:
 \begin{itemize}
-    \item \textbf{Detektion:} (Face vs. Non-Face) Ist überhaupt ein Objekt (Gesicht) vorhanden?
-    \item \textbf{Verifikation (1:1):} "Bin ich das?" (z.B. Smartphone entsperren).
-          \begin{itemize}
-              \item Eine Person gibt ihre Identität an (z.B. Nutzer-ID).
-              \item Das System vergleicht die aktuelle Probe \defc{nur mit dem einen} gespeicherten Template dieser ID.
-              \item Ausgabe: Ja / Nein.
-          \end{itemize}
-    \item \textbf{Identifikation (1:n):} "Wer ist das?" (z.B. Überwachung).
-          \begin{itemize}
-              \item Eine Person zeigt nur ihr Merkmal (Gesicht).
-              \item Das System vergleicht die Probe mit \defc{allen $n$} Templates in der Datenbank.
-              \item Ausgabe: Eine Kandidatenliste (die $m$ besten Treffer, $m \ll n$).
-          \end{itemize}
+   \item \textbf{Detektion:} (Face vs. Non-Face) Ist überhaupt ein Objekt (Gesicht) vorhanden?
+   \item \textbf{Verifikation (1:1):} ``Bin ich das?'' (z.B. Smartphone entsperren).
+         \begin{itemize}
+            \item Eine Person gibt ihre Identität an (z.B. Nutzer-ID).
+            \item Das System vergleicht die aktuelle Probe \defc{nur mit dem einen} gespeicherten Template dieser ID.
+            \item Ausgabe: Ja / Nein.
+         \end{itemize}
+   \item \textbf{Identifikation (1:n):} ``Wer ist das?'' (z.B. Überwachung).
+         \begin{itemize}
+            \item Eine Person zeigt nur ihr Merkmal (Gesicht).
+            \item Das System vergleicht die Probe mit \defc{allen $n$} Templates in der Datenbank.
+            \item Ausgabe: Eine Kandidatenliste (die $m$ besten Treffer, $m \ll n$).
+         \end{itemize}
 \end{itemize}
 
 \end{document}

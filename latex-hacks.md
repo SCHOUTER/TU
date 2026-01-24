@@ -115,6 +115,22 @@ Examples:
 
 ---
 
+### Suchen und ersetzen aus KI
+
+To change from $$ to \[]\:
+
+```regex
+\$\$([\s\S]*?)\$\$
+\\[$1\\]
+```
+
+To change from "..." to ``...'':
+
+```
+"(.*?)"
+``$1''
+```
+
 ## 4. Math Hacks
 
 ### Best environments (forget `eqnarray`!)
@@ -131,10 +147,6 @@ To break long inline math:
 ```tex
 A = B + \allowbreak C + D
 ```
-
-To change from $$ to \[]\:
-\$\$([\s\S]\*?)\$\$
-\\[$1\\]
 
 ### Define your operators
 

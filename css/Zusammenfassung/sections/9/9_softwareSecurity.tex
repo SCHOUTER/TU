@@ -16,7 +16,7 @@
 \subsubsection{Definition und Zielsetzung}
 
 \begin{defbox}[Software Security]
-  Software Security bezeichnet die Absicherung von Software (oft nicht sicherheitskritischer Anwendungen) gegen die Ausnutzung von Schwachstellen. Ziel ist es, Angriffe zu verhindern, die Eigenschaften von Programmiersprachen, Systemarchitekturen oder Ausführungsumgebungen missbrauchen.
+   Software Security bezeichnet die Absicherung von Software (oft nicht sicherheitskritischer Anwendungen) gegen die Ausnutzung von Schwachstellen. Ziel ist es, Angriffe zu verhindern, die Eigenschaften von Programmiersprachen, Systemarchitekturen oder Ausführungsumgebungen missbrauchen.
 \end{defbox}
 
 Angreifer versuchen häufig, durch Ausnutzung dieser Schwachstellen (z.,B. Memory Corruption) schrittweise ihre Rechte zu erweitern (\defc{Privilege Escalation}) und die Kontrolle über das System zu übernehmen.
@@ -25,10 +25,10 @@ Angreifer versuchen häufig, durch Ausnutzung dieser Schwachstellen (z.,B. Memor
 Der Weg vom Quellcode bis zum laufenden Prozess bietet verschiedene Angriffsvektoren:
 
 \begin{itemize}
-  \item \textbf{Source Code:} Bugs, Logikfehler, Undefined Behavior.
-  \item \textbf{Kompilierung:} Compiler-Optimierungen, die Sicherheitschecks entfernen könnten.
-  \item \textbf{Binary (ELF):} Manipulation, Reverse Engineering.
-  \item \textbf{Laufzeit (Prozess):} Injection, Exploits, Timing-Attacken.
+   \item \textbf{Source Code:} Bugs, Logikfehler, Undefined Behavior.
+   \item \textbf{Kompilierung:} Compiler-Optimierungen, die Sicherheitschecks entfernen könnten.
+   \item \textbf{Binary (ELF):} Manipulation, Reverse Engineering.
+   \item \textbf{Laufzeit (Prozess):} Injection, Exploits, Timing-Attacken.
 \end{itemize}% [HIER DIAGRAMM EINFÜGEN: Programm-Lifecycle von Source über Compiler/Linker zu Prozess]
 
 
@@ -36,11 +36,11 @@ Der Weg vom Quellcode bis zum laufenden Prozess bietet verschiedene Angriffsvekt
 Das Verständnis des virtuellen Speichers ist essenziell für Exploits. Ein Prozessspeicher ist typischerweise wie folgt aufgebaut (von niedrigen zu hohen Adressen):
 
 \begin{enumerate}
-  \item \textbf{Text Segment (.text):} Ausführbarer Maschinencode (Read-Only).
-  \item \textbf{Data Segments (.data, .bss):} Globale/statische Variablen.
-  \item \textbf{Heap:} Dynamischer Speicher (wächst nach oben, verwaltet durch \texttt{malloc/free}).
-  \item \textbf{Memory Mapping Segment (mmap):} Dynamische Bibliotheken (.so), Thread Stacks.
-  \item \textbf{Stack:} Lokale Variablen, Rücksprungadressen (wächst nach unten Richtung Heap).
+   \item \textbf{Text Segment (.text):} Ausführbarer Maschinencode (Read-Only).
+   \item \textbf{Data Segments (.data, .bss):} Globale/statische Variablen.
+   \item \textbf{Heap:} Dynamischer Speicher (wächst nach oben, verwaltet durch \texttt{malloc/free}).
+   \item \textbf{Memory Mapping Segment (mmap):} Dynamische Bibliotheken (.so), Thread Stacks.
+   \item \textbf{Stack:} Lokale Variablen, Rücksprungadressen (wächst nach unten Richtung Heap).
 \end{enumerate}% [HIER DIAGRAMM EINFÜGEN: Virtuelles Speichermodell Linux x86_64 mit Stack, Heap, Text Segment]
 
 
@@ -48,9 +48,9 @@ Das Verständnis des virtuellen Speichers ist essenziell für Exploits. Ein Proz
 Bei jedem Funktionsaufruf wird ein neuer Stack Frame angelegt. Dieser enthält:
 
 \begin{itemize}
-  \item \textbf{Return Address (RIP):} Wohin springt das Programm nach der Funktion zurück?
-  \item \textbf{Saved Frame Pointer (RBP):} Referenz auf den vorherigen Stack Frame.
-  \item \textbf{Lokale Variablen:} Puffer und Variablen der Funktion.
+   \item \textbf{Return Address (RIP):} Wohin springt das Programm nach der Funktion zurück?
+   \item \textbf{Saved Frame Pointer (RBP):} Referenz auf den vorherigen Stack Frame.
+   \item \textbf{Lokale Variablen:} Puffer und Variablen der Funktion.
 \end{itemize}
 
 \textbf{Gefahr:} Da Metadaten (Return Address) und Benutzerdaten (lokale Puffer) auf dem Stack benachbart liegen, kann ein Überlauf der Daten die Steuerdaten überschreiben.
@@ -63,9 +63,9 @@ Schwachstellen werden oft nach \textit{CWE (Common Weakness Enumeration)} klassi
 Programmiersprachen wie C prüfen Rechenoperationen nicht standardmäßig auf Gültigkeit.
 
 \begin{itemize}
-  \item \textbf{Integer Overflow/Underflow:} Ein Wert überschreitet das Maximum (Wrap-around). Dies kann bei der Berechnung von Puffergrößen fatal sein.
-  \item \textbf{Off-By-One:} Ein Schleifendurchlauf zu viel oder zu wenig (oft bei String-Grenzen oder Array-Indizes).
-  \item \textbf{Pointer-Arithmetik:} In C ist \texttt{array[i]} äquivalent zu \texttt{*(array + i)}. Eine falsche Berechnung von \texttt{i} oder des Typs führt zu \defc{Out-of-Bounds (OOB)} Zugriffen.
+   \item \textbf{Integer Overflow/Underflow:} Ein Wert überschreitet das Maximum (Wrap-around). Dies kann bei der Berechnung von Puffergrößen fatal sein.
+   \item \textbf{Off-By-One:} Ein Schleifendurchlauf zu viel oder zu wenig (oft bei String-Grenzen oder Array-Indizes).
+   \item \textbf{Pointer-Arithmetik:} In C ist \texttt{array[i]} äquivalent zu \texttt{*(array + i)}. Eine falsche Berechnung von \texttt{i} oder des Typs führt zu \defc{Out-of-Bounds (OOB)} Zugriffen.
 \end{itemize}
 
 \subsubsection{Buffer Overflows}
@@ -74,30 +74,30 @@ Programmiersprachen wie C prüfen Rechenoperationen nicht standardmäßig auf G�
 Tritt auf, wenn mehr Daten in einen lokalen Puffer geschrieben werden, als dieser fassen kann, ohne Längenüberprüfung (z.,B. durch \texttt{gets}, \texttt{strcpy}).
 
 \begin{itemize}
-  \item \textbf{Mechanismus:} Der Angreifer überschreibt lokale Variablen $\rightarrow$ Saved RBP $\rightarrow$ \defc{Return Address}.
-  \item \textbf{Folge:} Kontrolle über den \textit{Instruction Pointer (RIP)} und damit über den Programmfluss.
+   \item \textbf{Mechanismus:} Der Angreifer überschreibt lokale Variablen $\rightarrow$ Saved RBP $\rightarrow$ \defc{Return Address}.
+   \item \textbf{Folge:} Kontrolle über den \textit{Instruction Pointer (RIP)} und damit über den Programmfluss.
 \end{itemize}% [HIER DIAGRAMM EINFÜGEN: Stack Overflow, bei dem Daten über den Puffer hinaus die Return Address überschreiben]
 
 
 \subsubsection{Heap-Schwachstellen}
 
 \begin{itemize}
-  \item \textbf{Unzureichende Initialisierung:} Speicher wird reserviert (\texttt{malloc}), aber nicht geleert. Sensible Altdaten können ausgelesen werden.
-  \item \textbf{Double-Free:} Speicher wird zweimal freigegeben. Dies korrumpiert die Verwaltungsstrukturen des Allocators.
-  \item \textbf{Use-After-Free (Dangling Pointer):} Ein Zeiger wird weiterverwendet, nachdem der Speicher freigegeben (und ggf. neu vergeben) wurde.
+   \item \textbf{Unzureichende Initialisierung:} Speicher wird reserviert (\texttt{malloc}), aber nicht geleert. Sensible Altdaten können ausgelesen werden.
+   \item \textbf{Double-Free:} Speicher wird zweimal freigegeben. Dies korrumpiert die Verwaltungsstrukturen des Allocators.
+   \item \textbf{Use-After-Free (Dangling Pointer):} Ein Zeiger wird weiterverwendet, nachdem der Speicher freigegeben (und ggf. neu vergeben) wurde.
 \end{itemize}
 
 \subsubsection{Injections}
 
 \begin{itemize}
-  \item \textbf{Code Injection:} Einschleusen von Shellcode in ausführbare Segmente.
-  \item \textbf{Deserialization:} Unsicheres Laden von Objekten (z.,B. Python \texttt{pickle}), bei dem beim Wiederherstellen des Objekts beliebiger Code ausgeführt wird.
+   \item \textbf{Code Injection:} Einschleusen von Shellcode in ausführbare Segmente.
+   \item \textbf{Deserialization:} Unsicheres Laden von Objekten (z.,B. Python \texttt{pickle}), bei dem beim Wiederherstellen des Objekts beliebiger Code ausgeführt wird.
 \end{itemize}
 
 \subsubsection{Timing Angriffe \& Race Conditions}
 
 \begin{defbox}[TOCTTOU (Time Of Check To Time Of Use)]
-  Eine Schwachstelle, bei der sich der Systemzustand zwischen der Überprüfung einer Bedingung (Check) und der Nutzung der Ressource (Use) ändert.
+   Eine Schwachstelle, bei der sich der Systemzustand zwischen der Überprüfung einer Bedingung (Check) und der Nutzung der Ressource (Use) ändert.
 \end{defbox}
 
 \textbf{Beispiel:} Ein Programm prüft, ob der User Schreibrechte auf \texttt{/tmp/file} hat (Check). Der Angreifer tauscht \texttt{/tmp/file} schnell gegen einen Symlink auf \texttt{/etc/passwd} aus, bevor das Programm schreibt (Use).
@@ -106,9 +106,9 @@ Tritt auf, wenn mehr Daten in einen lokalen Puffer geschrieben werden, als diese
 Funktionen wie \texttt{printf} nutzen Format-Strings (\texttt{\%s}, \texttt{\%x}).
 
 \begin{itemize}
-  \item Wenn User-Input direkt als Format-String genutzt wird (\texttt{printf(user\_input)} statt \texttt{printf("\%s", user\_input)}):
-  \item \textbf{Read:} \texttt{\%x} liest Werte vom Stack (Information Leak).
-  \item \textbf{Write:} \texttt{\%n} schreibt die Anzahl der bisher ausgegebenen Bytes an eine Adresse auf dem Stack (Arbitrary Write).
+   \item Wenn User-Input direkt als Format-String genutzt wird (\texttt{printf(user\_input)} statt \texttt{printf(``\%s'', user\_input)}):
+   \item \textbf{Read:} \texttt{\%x} liest Werte vom Stack (Information Leak).
+   \item \textbf{Write:} \texttt{\%n} schreibt die Anzahl der bisher ausgegebenen Bytes an eine Adresse auf dem Stack (Arbitrary Write).
 \end{itemize}
 
 \subsection{Mitigierung und Hardening}
@@ -117,9 +117,9 @@ Funktionen wie \texttt{printf} nutzen Format-Strings (\texttt{\%s}, \texttt{\%x}
 Der beste Schutz ist die Vermeidung von Fehlern durch:
 
 \begin{itemize}
-  \item Verwendung von \textit{memory-safe languages} (z.,B. Rust, Java, Go).
-  \item Strenge Code-Reviews und hohe Testabdeckung.
-  \item Security Engineering Practices.
+   \item Verwendung von \textit{memory-safe languages} (z.,B. Rust, Java, Go).
+   \item Strenge Code-Reviews und hohe Testabdeckung.
+   \item Security Engineering Practices.
 \end{itemize}
 
 \subsubsection{Binary Hardening (Compiler \& Linker Flags)}
@@ -129,25 +129,25 @@ Diese Maßnahmen erschweren die Ausnutzung von Sicherheitslücken in C/C++ Progr
 Speicherseiten sind entweder beschreibbar (Write) ODER ausführbar (Execute), niemals beides gleichzeitig.
 
 \begin{itemize}
-  \item \textbf{Effekt:} Verhindert die Ausführung von Code auf dem Stack oder Heap (klassische Shellcode-Injection).
-  \item Auch bekannt als DEP (Data Execution Prevention).
+   \item \textbf{Effekt:} Verhindert die Ausführung von Code auf dem Stack oder Heap (klassische Shellcode-Injection).
+   \item Auch bekannt als DEP (Data Execution Prevention).
 \end{itemize}
 
 \paragraph{RELRO (Relocation Read-Only)}
 Schützt die \textit{Global Offset Table (GOT)}, die Funktionsadressen dynamischer Bibliotheken enthält.
 
 \begin{itemize}
-  \item \textbf{Partial RELRO:} GOT steht nach dem Linken fest, bleibt aber schreibbar.
-  \item \textbf{Full RELRO:} GOT wird beim Start komplett aufgelöst und danach auf \textit{Read-Only} gesetzt. Verhindert GOT-Overwrites.
+   \item \textbf{Partial RELRO:} GOT steht nach dem Linken fest, bleibt aber schreibbar.
+   \item \textbf{Full RELRO:} GOT wird beim Start komplett aufgelöst und danach auf \textit{Read-Only} gesetzt. Verhindert GOT-Overwrites.
 \end{itemize}
 
 \paragraph{Stack Canaries}
 Ein Zufallswert (``Kanarienvogel'') wird zwischen lokalen Puffer und Rücksprungadresse (Return Address) auf dem Stack platziert.
 
 \begin{itemize}
-  \item Vor dem \texttt{ret} prüft die Funktion, ob der Canary noch intakt ist.
-  \item Bei einem Buffer Overflow wird der Canary zwangsläufig mit überschrieben $\rightarrow$ Programmabbruch, bevor der Angreifer den Kontrollfluss umleiten kann.
-  \item \textbf{Limitierung:} Kann durch Info-Leaks oder Brute-Force (siehe Fork-Server) umgangen werden.
+   \item Vor dem \texttt{ret} prüft die Funktion, ob der Canary noch intakt ist.
+   \item Bei einem Buffer Overflow wird der Canary zwangsläufig mit überschrieben $\rightarrow$ Programmabbruch, bevor der Angreifer den Kontrollfluss umleiten kann.
+   \item \textbf{Limitierung:} Kann durch Info-Leaks oder Brute-Force (siehe Fork-Server) umgangen werden.
 \end{itemize}% [HIER DIAGRAMM EINFÜGEN: Stack Layout mit Canary zwischen Puffer und Return Address]
 
 
@@ -159,39 +159,39 @@ Ein Zufallswert (``Kanarienvogel'') wird zwischen lokalen Puffer und Rücksprung
 Randomisiert die Adressen von Stack, Heap und Bibliotheken bei jedem Programmstart.
 
 \begin{itemize}
-  \item Angreifer kennen die Adressen für Sprungziele oder Shellcode nicht.
-  \item \textbf{PIE (Position Independent Executable):} Nötig, damit auch das Hauptprogramm-Segment (Text-Segment) an zufällige Adressen geladen werden kann.
-  \item \textbf{Schwäche:} Ein einziges \textit{Information Leak} (Offenlegung einer Speicheradresse) kann ausreichen, um die Offsets zu berechnen und ASLR zu umgehen.
+   \item Angreifer kennen die Adressen für Sprungziele oder Shellcode nicht.
+   \item \textbf{PIE (Position Independent Executable):} Nötig, damit auch das Hauptprogramm-Segment (Text-Segment) an zufällige Adressen geladen werden kann.
+   \item \textbf{Schwäche:} Ein einziges \textit{Information Leak} (Offenlegung einer Speicheradresse) kann ausreichen, um die Offsets zu berechnen und ASLR zu umgehen.
 \end{itemize}
 
 \paragraph{Guard Pages}
 Nicht-zugreifbare Speicherseiten (\texttt{PROT\_NONE}) werden zwischen Speicherbereichen platziert. Ein Zugriff (Überlauf) löst einen \texttt{SIGSEGV} (Segfault) aus.
 
 \subsubsection{Obfuscation}
-Verschleierung des Codes, um Reverse Engineering zu erschweren (z.,B. Entfernen von Symboltabellen/Stripping, Umbenennen von Funktionen). Dies ist jedoch nur "Security by Obscurity".\subsection{Fortgeschrittene Angriffe}Wenn Code Injection durch NX verhindert wird, nutzen Angreifer \defc{Code Reuse Attacks}.
+Verschleierung des Codes, um Reverse Engineering zu erschweren (z.,B. Entfernen von Symboltabellen/Stripping, Umbenennen von Funktionen). Dies ist jedoch nur ``Security by Obscurity''.\subsection{Fortgeschrittene Angriffe}Wenn Code Injection durch NX verhindert wird, nutzen Angreifer \defc{Code Reuse Attacks}.
 
 \subsubsection{ROP (Return-Oriented Programming)}
 Statt eigenen Code einzuschleusen, nutzt der Angreifer vorhandene Code-Schnipsel (\textbf{Gadgets}) im Programm oder in Bibliotheken (libc).
 
 \begin{itemize}
-  \item \textbf{Gadget:} Eine kurze Instruktionsfolge, die mit \texttt{ret} endet (z.,B. \texttt{pop rdi; ret}).
-  \item \textbf{Funktionsweise:} Der Angreifer manipuliert den Stack so, dass er eine Kette von Rücksprungadressen legt. Jedes \texttt{ret} springt zum nächsten Gadget.
-  \item Damit lassen sich Register füllen und Systemaufrufe (z.,B. \texttt{execve("/bin/sh")}) konstruieren.
+   \item \textbf{Gadget:} Eine kurze Instruktionsfolge, die mit \texttt{ret} endet (z.,B. \texttt{pop rdi; ret}).
+   \item \textbf{Funktionsweise:} Der Angreifer manipuliert den Stack so, dass er eine Kette von Rücksprungadressen legt. Jedes \texttt{ret} springt zum nächsten Gadget.
+   \item Damit lassen sich Register füllen und Systemaufrufe (z.,B. \texttt{execve(``/bin/sh'')}) konstruieren.
 \end{itemize}
 
 \subsubsection{Fork-Server Brute-Force}
 Gegenmaßnahme gegen ASLR und Canaries bei Servern, die \texttt{fork()} nutzen.
 
 \begin{itemize}
-  \item \texttt{fork()} erzeugt eine exakte Kopie des Elternprozesses (identisches Speicherlayout, identischer Canary).
-  \item Der Angreifer kann den Canary Byte für Byte erraten:
+   \item \texttt{fork()} erzeugt eine exakte Kopie des Elternprozesses (identisches Speicherlayout, identischer Canary).
+   \item Der Angreifer kann den Canary Byte für Byte erraten:
 
-        \begin{enumerate}
-          \item Rate Byte 1.
-          \item Crash? $\rightarrow$ Falsch, neuer Fork, nächster Versuch.
-          \item Kein Crash? $\rightarrow$ Richtig, weiter zu Byte 2.
-        \end{enumerate}
-  \item Da der Canary bei einem Crash im Kindprozess nicht neu generiert wird (da der Elternprozess weiterläuft und neu forkt), ist Brute-Force möglich.
+         \begin{enumerate}
+            \item Rate Byte 1.
+            \item Crash? $\rightarrow$ Falsch, neuer Fork, nächster Versuch.
+            \item Kein Crash? $\rightarrow$ Richtig, weiter zu Byte 2.
+         \end{enumerate}
+   \item Da der Canary bei einem Crash im Kindprozess nicht neu generiert wird (da der Elternprozess weiterläuft und neu forkt), ist Brute-Force möglich.
 \end{itemize}
 
 \subsection{Hardware-gestützte Sicherheit (CFI)}
@@ -202,17 +202,17 @@ Gegenmaßnahme gegen ASLR und Canaries bei Servern, die \texttt{fork()} nutzen.
 Ein zweiter, isolierter Stack, der nur Rücksprungadressen speichert.
 
 \begin{itemize}
-  \item Bei \texttt{CALL}: Rücksprungadresse kommt auf den normalen Stack UND den Shadow Stack.
-  \item Bei \texttt{RET}: Der Prozessor vergleicht die Adressen von beiden Stacks.
-  \item Bei Ungleichheit (durch Buffer Overflow auf dem normalen Stack) wird das Programm gestoppt.
+   \item Bei \texttt{CALL}: Rücksprungadresse kommt auf den normalen Stack UND den Shadow Stack.
+   \item Bei \texttt{RET}: Der Prozessor vergleicht die Adressen von beiden Stacks.
+   \item Bei Ungleichheit (durch Buffer Overflow auf dem normalen Stack) wird das Programm gestoppt.
 \end{itemize}
 
 \subsubsection{Indirect Branch Tracking (IBT)}
 Schutz gegen ROP/JOP bei indirekten Sprüngen.
 
 \begin{itemize}
-  \item Compiler markiert valide Sprungziele mit einer speziellen Instruktion (\texttt{ENDBR}).
-  \item Ein indirekter Sprung muss auf einer \texttt{ENDBR}-Instruktion landen, sonst wirft die CPU eine Exception.
+   \item Compiler markiert valide Sprungziele mit einer speziellen Instruktion (\texttt{ENDBR}).
+   \item Ein indirekter Sprung muss auf einer \texttt{ENDBR}-Instruktion landen, sonst wirft die CPU eine Exception.
 \end{itemize}
 
 \subsection{Erkennung von Schwachstellen}
@@ -222,23 +222,23 @@ Schutz gegen ROP/JOP bei indirekten Sprüngen.
 Untersuchung des Quellcodes ohne Ausführung.
 
 \begin{itemize}
-  \item Findet Strukturfehler und bekannte Muster.
-  \item Probleme: Viele False-Positives, "State Explosion" bei komplexen Pfaden.
+   \item Findet Strukturfehler und bekannte Muster.
+   \item Probleme: Viele False-Positives, ``State Explosion'' bei komplexen Pfaden.
 \end{itemize}
 
 \subsubsection{Dynamische Analyse}
 Untersuchung während der Ausführung.
 
 \begin{itemize}
-  \item \textbf{Sanitizer (z.,B. ASan):} Kompilierzeit-Instrumentierung, die Speicherzugriffe zur Laufzeit prüft (erkennt OOB, Use-after-Free). Kostet Performance.
+   \item \textbf{Sanitizer (z.,B. ASan):} Kompilierzeit-Instrumentierung, die Speicherzugriffe zur Laufzeit prüft (erkennt OOB, Use-after-Free). Kostet Performance.
 \end{itemize}
 
 \subsubsection{Fuzzing}
 Automatisiertes Testen mit zufälligen oder mutierten Eingaben, um Crashes zu provozieren.
 
 \begin{itemize}
-  \item \textbf{Orakel:} Kriterium, um Fehler zu erkennen (z.,B. Crash, oder AddressSanitizer-Meldung).
-  \item \textbf{Coverage-guided Fuzzing:} Der Fuzzer bevorzugt Eingaben, die neue Code-Pfade erreichen, um die Testabdeckung zu maximieren.
+   \item \textbf{Orakel:} Kriterium, um Fehler zu erkennen (z.,B. Crash, oder AddressSanitizer-Meldung).
+   \item \textbf{Coverage-guided Fuzzing:} Der Fuzzer bevorzugt Eingaben, die neue Code-Pfade erreichen, um die Testabdeckung zu maximieren.
 \end{itemize}
 
 

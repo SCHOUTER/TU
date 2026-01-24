@@ -12,38 +12,38 @@
 Während reflexbasierte Agenten oder Suchalgorithmen oft nur über begrenztes Verständnis ihrer Umgebung verfügen, nutzen wissensbasierte Agenten explizite Repräsentationen von Wissen, um Schlussfolgerungen zu ziehen und neue Fakten abzuleiten.
 
 \begin{defbox}[Komponenten eines wissensbasierten Agenten]
-  Das Herzstück ist die \defc{Knowledge Base (KB)}: Eine Menge von Sätzen (Sentences) in einer formalen Sprache, die Fakten über die Welt repräsentieren.
-  \begin{itemize}
-    \item \textbf{TELL:} Operation zum Hinzufügen neuen Wissens zur KB.
-    \item \textbf{ASK:} Operation zum Abfragen von Wissen. Der Agent muss ableiten können, was aus der KB folgt.
-  \end{itemize}
+   Das Herzstück ist die \defc{Knowledge Base (KB)}: Eine Menge von Sätzen (Sentences) in einer formalen Sprache, die Fakten über die Welt repräsentieren.
+   \begin{itemize}
+      \item \textbf{TELL:} Operation zum Hinzufügen neuen Wissens zur KB.
+      \item \textbf{ASK:} Operation zum Abfragen von Wissen. Der Agent muss ableiten können, was aus der KB folgt.
+   \end{itemize}
 \end{defbox}
 
 \subsection{Die Wumpus-Welt}
 Die Wumpus-Welt ist eine Standardumgebung zur Illustration logischer Agenten.
 \begin{itemize}
-  \item \textbf{Umgebung:} $4\times4$ Gitter, Start bei [1,1].
-  \item \textbf{Elemente:} Wumpus (stinkt), Gruben (erzeugen Luftzug), Gold (glitzert).
-  \item \textbf{Wahrnehmungen (Percepts):} $[Stench, Breeze, Glitter, Bump, Scream]$.
-  \item \textbf{Eigenschaften:} Deterministisch, diskret, statisch, partiell beobachtbar.
+   \item \textbf{Umgebung:} $4\times4$ Gitter, Start bei [1,1].
+   \item \textbf{Elemente:} Wumpus (stinkt), Gruben (erzeugen Luftzug), Gold (glitzert).
+   \item \textbf{Wahrnehmungen (Percepts):} $[Stench, Breeze, Glitter, Bump, Scream]$.
+   \item \textbf{Eigenschaften:} Deterministisch, diskret, statisch, partiell beobachtbar.
 \end{itemize}
 
 \begin{center}
-  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-06_page_11_2.png}}
+   \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-06_page_11_2.png}}
 \end{center}
 
 \subsection{Logik: Syntax und Semantik}
 
 \begin{itemize}
-  \item \textbf{Syntax:} Definiert die zulässigen Sätze (Formeln) der Sprache.
-  \item \textbf{Semantik:} Definiert die "Wahrheit" von Sätzen in Bezug auf eine mögliche Welt.
-  \item \textbf{Modell ($m$):} Eine mathematische Abstraktion, die jedem Symbol einen Wahrheitswert zuweist.
+   \item \textbf{Syntax:} Definiert die zulässigen Sätze (Formeln) der Sprache.
+   \item \textbf{Semantik:} Definiert die ``Wahrheit'' von Sätzen in Bezug auf eine mögliche Welt.
+   \item \textbf{Modell ($m$):} Eine mathematische Abstraktion, die jedem Symbol einen Wahrheitswert zuweist.
 \end{itemize}
 
 \begin{defbox}[Entailment (Logische Folgerung)]
-  Ein Satz $\alpha$ folgt logisch aus der Wissensbasis $KB$ (geschrieben $KB \models \alpha$), wenn in \textit{jedem} Modell, in dem $KB$ wahr ist, auch $\alpha$ wahr ist.
-  \[M(KB) \subseteq M(\alpha)\]
-  (Die Menge der Modelle, die die KB erfüllen, ist eine Teilmenge der Modelle, die $\alpha$ erfüllen.)
+   Ein Satz $\alpha$ folgt logisch aus der Wissensbasis $KB$ (geschrieben $KB \models \alpha$), wenn in \textit{jedem} Modell, in dem $KB$ wahr ist, auch $\alpha$ wahr ist.
+   \[M(KB) \subseteq M(\alpha)\]
+   (Die Menge der Modelle, die die KB erfüllen, ist eine Teilmenge der Modelle, die $\alpha$ erfüllen.)
 \end{defbox}
 
 \subsection{Aussagenlogik (Propositional Logic)}
@@ -52,35 +52,35 @@ Die Aussagenlogik ist die einfachste Form der Logik, basierend auf Fakten, die w
 
 \subsubsection{Syntax der Aussagenlogik}
 \begin{itemize}
-  \item \textbf{Atomsätze:} Einzelne Symbole (z.B. $P, Q, W_{1,3}$), die für Propositionen stehen.
-  \item \textbf{Komplexe Sätze:} Werden durch logische Verknüpfungen gebildet.
+   \item \textbf{Atomsätze:} Einzelne Symbole (z.B. $P, Q, W_{1,3}$), die für Propositionen stehen.
+   \item \textbf{Komplexe Sätze:} Werden durch logische Verknüpfungen gebildet.
 \end{itemize}
 
 \textbf{Operatoren (nach absteigender Präzedenz):}
 \begin{enumerate}
-  \item $\neg$ (Negation / Nicht)
-  \item $\land$ (Konjunktion / Und)
-  \item $\lor$ (Disjunktion / Oder)
-  \item $\Rightarrow$ (Implikation / Wenn... dann)
-  \item $\Leftrightarrow$ (Bikonditional / Genau dann, wenn)
+   \item $\neg$ (Negation / Nicht)
+   \item $\land$ (Konjunktion / Und)
+   \item $\lor$ (Disjunktion / Oder)
+   \item $\Rightarrow$ (Implikation / Wenn... dann)
+   \item $\Leftrightarrow$ (Bikonditional / Genau dann, wenn)
 \end{enumerate}
 
 \subsubsection{Semantik: Wahrheitstabellen}
 Die Semantik wird durch Wahrheitstabellen definiert.
 
 \begin{table}[h!]
-  \centering
-  \begin{tabular}{|c|c||c|c|c|c|c|}
-    \hline
-    $P$   & $Q$   & $\neg P$ & $P \land Q$ & $P \lor Q$ & $P \Rightarrow Q$ & $P \Leftrightarrow Q$ \\
-    \hline
-    false & false & true     & false       & false      & \textbf{true}     & true                  \\
-    false & true  & true     & false       & true       & \textbf{true}     & false                 \\
-    true  & false & false    & false       & true       & \textbf{false}    & false                 \\
-    true  & true  & false    & true        & true       & true              & true                  \\
-    \hline
-  \end{tabular}
-  \caption{Wahrheitstabelle. \textbf{Wichtig:} Die Implikation $P \Rightarrow Q$ ist nur falsch, wenn die Prämisse $P$ wahr und die Konklusion $Q$ falsch ist.}
+   \centering
+   \begin{tabular}{|c|c||c|c|c|c|c|}
+      \hline
+      $P$   & $Q$   & $\neg P$ & $P \land Q$ & $P \lor Q$ & $P \Rightarrow Q$ & $P \Leftrightarrow Q$ \\
+      \hline
+      false & false & true     & false       & false      & \textbf{true}     & true                  \\
+      false & true  & true     & false       & true       & \textbf{true}     & false                 \\
+      true  & false & false    & false       & true       & \textbf{false}    & false                 \\
+      true  & true  & false    & true        & true       & true              & true                  \\
+      \hline
+   \end{tabular}
+   \caption{Wahrheitstabelle. \textbf{Wichtig:} Die Implikation $P \Rightarrow Q$ ist nur falsch, wenn die Prämisse $P$ wahr und die Konklusion $Q$ falsch ist.}
 \end{table}
 
 \subsection{Inferenz (Schlussfolgern)}
@@ -93,9 +93,9 @@ Dies ist \textit{sound} (korrekt) und \textit{complete} (vollständig), aber ine
 
 \subsubsection{Logische Eigenschaften}
 \begin{itemize}
-  \item \textbf{Gültigkeit (Tautologie):} Ein Satz ist in \textit{allen} Modellen wahr (z.B. $P \lor \neg P$).
-  \item \textbf{Erfüllbarkeit (Satisfiability):} Ein Satz ist in \textit{mindestens einem} Modell wahr.
-  \item \textbf{Unerfüllbarkeit (Contradiction):} Ein Satz ist in \textit{keinem} Modell wahr (z.B. $P \land \neg P$).
+   \item \textbf{Gültigkeit (Tautologie):} Ein Satz ist in \textit{allen} Modellen wahr (z.B. $P \lor \neg P$).
+   \item \textbf{Erfüllbarkeit (Satisfiability):} Ein Satz ist in \textit{mindestens einem} Modell wahr.
+   \item \textbf{Unerfüllbarkeit (Contradiction):} Ein Satz ist in \textit{keinem} Modell wahr (z.B. $P \land \neg P$).
 \end{itemize}
 
 \textbf{Wichtiger Zusammenhang (Beweis durch Widerspruch):}
@@ -105,10 +105,10 @@ Dies ist \textit{sound} (korrekt) und \textit{complete} (vollständig), aber ine
 Zwei Sätze sind äquivalent ($\alpha \equiv \beta$), wenn sie in denselben Modellen wahr sind.
 Wichtige Umformungen für die Prüfung:
 \begin{itemize}
-  \item \textbf{De Morgan:} $\neg(P \land Q) \equiv (\neg P \lor \neg Q)$ und $\neg(P \lor Q) \equiv (\neg P \land \neg Q)$
-  \item \textbf{Implikations-Eliminierung:} $P \Rightarrow Q \equiv \neg P \lor Q$
-  \item \textbf{Bikonditional-Eliminierung:} $P \Leftrightarrow Q \equiv (P \Rightarrow Q) \land (Q \Rightarrow P)$
-  \item \textbf{Distributivgesetze:} $(P \land (Q \lor R)) \equiv ((P \land Q) \lor (P \land R))$
+   \item \textbf{De Morgan:} $\neg(P \land Q) \equiv (\neg P \lor \neg Q)$ und $\neg(P \lor Q) \equiv (\neg P \land \neg Q)$
+   \item \textbf{Implikations-Eliminierung:} $P \Rightarrow Q \equiv \neg P \lor Q$
+   \item \textbf{Bikonditional-Eliminierung:} $P \Leftrightarrow Q \equiv (P \Rightarrow Q) \land (Q \Rightarrow P)$
+   \item \textbf{Distributivgesetze:} $(P \land (Q \lor R)) \equiv ((P \land Q) \lor (P \land R))$
 \end{itemize}
 
 \subsection{Resolution}
@@ -116,27 +116,32 @@ Wichtige Umformungen für die Prüfung:
 Die Resolution ist ein Inferenzverfahren, das Widersprüche aufdeckt. Es arbeitet auf Sätzen in der \defc{Konjunktiven Normalform (CNF)}.
 
 \begin{defbox}[CNF (Conjunctive Normal Form)]
-  Eine Konjunktion von Klauseln. Jede Klausel ist eine Disjunktion von Literalen.
-  Beispiel: $(A \lor \neg B) \land (B \lor C \lor \neg D)$
+   Eine Konjunktion von Klauseln. Jede Klausel ist eine Disjunktion von Literalen.
+   Beispiel: $(A \lor \neg B) \land (B \lor C \lor \neg D)$
 \end{defbox}
 
 \subsubsection{Umwandlung in CNF}
 Jeder aussagenlogische Satz kann in CNF umgewandelt werden:
-1. Eliminiere $\Leftrightarrow$.
-2. Eliminiere $\Rightarrow$ (ersetze $A \Rightarrow B$ durch $\neg A \lor B$).
-3. Verschiebe $\neg$ nach innen (De Morgan, doppelte Negation).
-4. Wende Distributivgesetz an ($\lor$ über $\land$).
+\begin{enumerate}
+   \item Eliminiere $\Leftrightarrow$.
+   \item Eliminiere $\Rightarrow$ (ersetze $A \Rightarrow B$ durch $\neg A \lor B$).
+   \item Verschiebe $\neg$ nach innen (De Morgan, doppelte Negation).
+   \item Wende Distributivgesetz an ($\lor$ über $\land$).
+\end{enumerate}
 
 \subsubsection{Resolutions-Algorithmus}
 Um zu zeigen, dass $KB \models \alpha$:
-1. Füge $\neg \alpha$ zur KB hinzu: $KB \land \neg \alpha$.
-2. Wandle alles in CNF um.
-3. Wende wiederholt die \defc{Resolutionsregel} an:
-\[ \frac{l_1 \lor \dots \lor l_k, \quad m_1 \lor \dots \lor m_n}{l_1 \lor \dots \lor l_{i-1} \lor l_{i+1} \lor \dots \lor l_k \lor m_1 \lor \dots \lor m_{j-1} \lor m_{j+1} \lor \dots \lor m_n} \]
-wobei $l_i$ und $m_j$ komplementäre Literale sind (z.B. $P$ und $\neg P$).
-4. Wenn die \textbf{leere Klausel} (Widerspruch) abgeleitet wird, ist $\alpha$ bewiesen.
+\begin{enumerate}
+   \item Füge $\neg \alpha$ zur KB hinzu: $KB \land \neg \alpha$.
+   \item Wandle alles in CNF um.
+   \item Wende wiederholt die \defc{Resolutionsregel} an:
+         \[ \frac{l_1 \lor \dots \lor l_k, \quad m_1 \lor \dots \lor m_n}{l_1 \lor \dots \lor l_{i-1} \lor l_{i+1} \lor \dots \lor l_k \lor m_1 \lor \dots \lor m_{j-1} \lor m_{j+1} \lor \dots \lor m_n} \]
+         wobei $l_i$ und $m_j$ komplementäre Literale sind (z.B. $P$ und $\neg P$).
+   \item Wenn die \textbf{leere Klausel} (Widerspruch) abgeleitet wird, ist $\alpha$ bewiesen.
+\end{enumerate}
+
 \begin{center}
-  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-06_page_44_1.png}}
+   \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-06_page_44_1.png}}
 \end{center}
 
 \subsection{Horn-Klauseln und Chaining}
@@ -144,22 +149,22 @@ wobei $l_i$ und $m_j$ komplementäre Literale sind (z.B. $P$ und $\neg P$).
 Resolution ist mächtig, aber NP-vollständig. Für eingeschränkte Formen gibt es effizientere Algorithmen (lineare Zeit).
 
 \begin{itemize}
-  \item \textbf{Definite Klausel:} Genau ein positives Literal. (Äquivalent zu einer Implikation: $(A \land B) \Rightarrow C$).
-  \item \textbf{Horn-Klausel:} Höchstens ein positives Literal.
+   \item \textbf{Definite Klausel:} Genau ein positives Literal. (Äquivalent zu einer Implikation: $(A \land B) \Rightarrow C$).
+   \item \textbf{Horn-Klausel:} Höchstens ein positives Literal.
 \end{itemize}
 
 \subsubsection{Algorithmen für Definite Klauseln}
 \begin{itemize}
-  \item \textbf{Forward Chaining:} Startet bei den bekannten Fakten in der KB und wendet Regeln an, um neue Fakten zu generieren, bis das Ziel (Query) erreicht ist. (Datengetrieben).
-  \item \textbf{Backward Chaining:} Startet beim Ziel (Query) und sucht rückwärts nach Regeln, die dieses Ziel beweisen können. (Zielgetrieben).
+   \item \textbf{Forward Chaining:} Startet bei den bekannten Fakten in der KB und wendet Regeln an, um neue Fakten zu generieren, bis das Ziel (Query) erreicht ist. (Datengetrieben).
+   \item \textbf{Backward Chaining:} Startet beim Ziel (Query) und sucht rückwärts nach Regeln, die dieses Ziel beweisen können. (Zielgetrieben).
 \end{itemize}
 Beide basieren auf der \textit{Modus Ponens} Regel: $\frac{\alpha \Rightarrow \beta, \alpha}{\beta}$.
 
 \subsection{Grenzen der Aussagenlogik}
 \begin{itemize}
-  \item \textbf{Mangelnde Ausdruckskraft:} Keine Objekte oder Relationen.
-  \item \textbf{Regel-Explosion:} Für jede Instanz muss eine eigene Regel geschrieben werden (z.B. $Breeze_{1,1} \Leftrightarrow ...$, $Breeze_{1,2} \Leftrightarrow ...$).
-  \item \textbf{Lösung:} Prädikatenlogik erster Stufe (First-Order Logic).
+   \item \textbf{Mangelnde Ausdruckskraft:} Keine Objekte oder Relationen.
+   \item \textbf{Regel-Explosion:} Für jede Instanz muss eine eigene Regel geschrieben werden (z.B. $Breeze_{1,1} \Leftrightarrow \cdots$, $Breeze_{1,2} \Leftrightarrow \cdots $).
+   \item \textbf{Lösung:} Prädikatenlogik erster Stufe (First-Order Logic).
 \end{itemize}
 
 \end{document}
