@@ -1,0 +1,107 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Encoding, Fonts, Typography
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% ---------------------------------------------------------
+% Language
+% ---------------------------------------------------------
+\usepackage[ngerman,english]{babel}
+
+% ---------------------------------------------------------
+% Math
+% ---------------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+
+% ---------------------------------------------------------
+% Tables
+% ---------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------------------------------------------------------
+% Figures & Graphics
+% ---------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+
+% ---------------------------------------------------------
+% Lists
+% ---------------------------------------------------------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------------------------------------------------------
+% Units & Numbers
+% ---------------------------------------------------------
+\usepackage{siunitx}
+
+% ---------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% ---------------------------------------------------------
+% Global layout improvements
+% ---------------------------------------------------------
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+
+% ---------------------------------------------------------
+% Title
+% ---------------------------------------------------------
+\title{Übung 10: Gruppe 28}
+\author{
+    Niclas Kusenbach, 360227 \and
+    Alicia Bayerl, 2633336
+}
+
+\begin{document}
+\maketitle
+
+\section*{Aufgabe 10.1: Szenengraphstruktur (3P)}
+
+\subsection*{a) Vier Eigenschaften eines Szenengraphen (2P)}
+
+\begin{enumerate}
+  \item \textbf{Gerichtet:} Die Kanten im Graphen haben eine definierte Richtung, typischerweise von einem Elternknoten zu einem oder mehreren Kindknoten.
+  \item \textbf{Azyklisch:} Der Graph darf keine geschlossenen Schleifen enthalten. Dies verhindert Endlosschleifen beim Rendering.
+  \item \textbf{Wurzelknoten:} Es existiert genau ein ausgezeichneter Startknoten (die Wurzel), von dem aus der gesamte Graph traversiert werden kann.
+  \item \textbf{Hierarchisch:} Der Graph organisiert Objekte in einer logischen oder räumlichen Struktur (z. B. „Rad ist Teil des Autos“). Transformationen von Elternknoten werden auf Kindknoten vererbt.
+\end{enumerate}
+
+\subsection*{b) Drei Vorteile des Szenengraph-Konzeptes (1P)}
+
+\begin{itemize}
+  \item \textbf{Semantische Gruppierung:} Komplexe Szenen lassen sich verwalten, indem zusammengehörige Objekte (z. B. alle Teile eines Motorrollers) gruppiert werden. Dadurch können sie referenziert werden und müssen nur einmal im Speicher liegen.
+  \item \textbf{Hierarchische Transformationen:} Bewegt man einen Elternknoten, bewegen sich alle Kindknoten automatisch mit. Dies erleichtert Animationen (z. B. dreht sich der Lenker, bewegt sich das Vorderrad mit).
+  \item \textbf{Wiederverwendung:} Ganze Äste des Baums können vom Rendering ausgeschlossen werden, wenn der Elternknoten nicht sichtbar ist (Culling). Zudem können Geometrien durch Instanziierung speicherschonend wiederverwendet werden.
+\end{itemize}
+
+\vspace{1cm}
+
+\section*{Aufgabe 10.2: Szenengraph (3P)}
+
+\vspace{0.5cm}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_HU_10_1.png}
+\end{center}
+
+\section*{Aufgabe 10.3: Anwendungsaufgabe (3P)}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_HU_10.png}
+\end{center}
+
+\end{document}

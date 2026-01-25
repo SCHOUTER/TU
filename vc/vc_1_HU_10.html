@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="http://www.x3dom.org/x3dom/release/x3dom.css"
+    />
+    <script
+      type="text/javascript"
+      src="http://www.x3dom.org/x3dom/release/x3dom.js"
+    ></script>
+  </head>
+  <body>
+    <x3d width="800px" height="600px">
+      <scene>
+        <transform translation="0 0 -1">
+          <shape>
+            <appearance>
+              <material diffuseColor="0 1 0"> </material>
+            </appearance>
+            <box size="10 0.2 10"></box>
+          </shape>
+        </transform>
+        <group DEF="Baum">
+          <transform translation="0 1 0">
+            <shape>
+              <appearance>
+                <material diffuseColor="0.5 0.25 0.05"></material>
+              </appearance>
+              <cylinder radius="0.3" height="2"></cylinder>
+            </shape>
+          </transform>
+          <transform translation="0 2.5 0">
+            <shape>
+              <appearance>
+                <material diffuseColor="0 0.5 0"></material>
+              </appearance>
+              <cone bottomRadius="1.2" height="2"></cone>
+            </shape>
+          </transform>
+        </group>
+
+        <transform translation="-3 0 0">
+          <group USE="Baum"></group>
+        </transform>
+        <transform translation="3 0 0" scale="0.5 0.5 0.5">
+          <group USE="Baum"></group>
+        </transform>
+
+        <transform translation="3 4.5 -3">
+          <shape>
+            <appearance>
+              <material diffuseColor="1 1 0" emissiveColor="1 1 0"></material>
+            </appearance>
+            <sphere radius="0.8"></sphere>
+          </shape>
+        </transform>
+
+        <viewpoint position="0 2 12" orientation="0 0 0 1"></viewpoint>
+      </scene>
+    </x3d>
+    <!-- Der DEF/USE-Mechanismus ist technisch notwendig, weil HTML und XML auf einer strengen Baumstruktur (Hierarchie) basieren, bei der jeder Knoten genau einen Elternknoten besitzt. Ein effizienter 3D-Szenengraph kann ein gerichteter azyklischer Graph (DAG) sein. Das bedeutet, dass ein Geometrie-Objekt (wie der Baum) im Speicher nur einmal existieren, aber an mehreren Stellen in der Szene gleichzeitig gerendert werden soll (Wiederverwendung). Da die XML-Syntax keine echten Mehrfach-Eltern erlaubt, wird dies über Referenzen gelöst: DEF definiert das Original, und USE erstellt eine Instanz (Referenz) darauf. So wird der logische DAG in den syntaktischen Baum abgebildet.-->
+  </body>
+</html>
