@@ -1,0 +1,167 @@
+ \documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics}}
+
+
+\begin{document}
+
+\section{Szenengraphen für interaktive 3D-Anwendungen am Beispiel X3DOM}
+
+\subsection{Einführung und Motivation}
+Die 3D-Computergrafik ist ein integraler Bestandteil moderner Anwendungen, von Spielen bis hin zu industriellen Visualisierungen. Bei der Entwicklung solcher Systeme stehen Entwickler vor mehreren technischen Herausforderungen:
+\begin{itemize}
+  \item \textbf{Effizienz:} Handhabung großer Datenvolumina und Echtzeit-Rendering.
+  \item \textbf{Portabilität:} Lauffähigkeit auf Desktop-PCs, Tablets und Mobilgeräten.
+  \item \textbf{Integration:} Nahtloses Einbetten von 3D-Inhalten in bestehende Anwendungen (z.B. Webseiten).
+\end{itemize}
+Ein zentraler Ansatz zur Bewältigung dieser Komplexität ist die Strukturierung der Daten mittels \defc{Szenengraphen}.
+
+\subsection{Strukturierung von 3D-Szenendaten}
+Um eine 3D-Szene rendern zu können, benötigt die Grafikpipeline vielfältige Informationen. Diese lassen sich nicht als unstrukturierte Liste verwalten, da komplexe Beziehungen zwischen den Elementen bestehen.
+
+\subsubsection{Notwendige Informationen für das Rendering}
+\begin{itemize}
+  \item \textbf{Objekt-Geometrie:} Form der Objekte (z.B. Vertices, Polygone).
+  \item \textbf{Transformationen:} Position, Rotation und Skalierung im Raum.
+  \item \textbf{Materialien:} Oberflächenbeschaffenheit, Farben, Texturen.
+  \item \textbf{Kameras:} Blickwinkel und Projektionsart.
+  \item \textbf{Lichter:} Lichtquellen (Punktlicht, Richtung, Spot) und deren Eigenschaften.
+  \item \textbf{Spezialeffekte:} Nebel, Schatten, Skyboxes.
+\end{itemize}
+
+\subsubsection{Beziehungen zwischen Daten}
+In einer Szene treten häufig Redundanzen und Hierarchien auf:
+\begin{itemize}
+  \item Mehrere Objekte teilen sich dasselbe Material (z.B. alle Reifen eines Autos sind schwarz).
+  \item Dasselbe geometrische Objekt wird mehrfach instanziiert (z.B. vier identische Räder an verschiedenen Positionen).
+  \item Objekte sind logisch gruppiert und bewegen sich gemeinsam (z.B. bewegt sich das Rad relativ zum Auto, das Auto relativ zur Welt).
+\end{itemize}
+
+\subsection{Das Konzept des Szenengraphen}
+Ein Szenengraph ist die fundamentale Datenstruktur zur Organisation dieser Informationen.
+
+\begin{defbox}[Szenengraph (Scene Graph)]
+  Ein Szenengraph ist ein \defc{gerichteter, azyklischer Graph} (Directed Acyclic Graph, DAG), der die logische und räumliche Struktur einer 3D-Szene beschreibt.
+  \begin{itemize}
+    \item \textbf{Gerichtet:} Kanten haben eine klare Richtung (Eltern $\to$ Kind).
+    \item \textbf{Azyklisch:} Es gibt keine geschlossenen Wege (Schleifen); eine Endlosschleife beim Rendern wird verhindert.
+    \item \textbf{Wurzelknoten:} Der Einstiegspunkt für die Traversierung.
+  \end{itemize}Im Gegensatz zu einem reinen Baum kann ein Knoten im DAG (außer der Wurzel) \textbf{mehrere Elternknoten} besitzen. Dies ermöglicht die Wiederverwendung von Ressourcen (Instanziierung).
+\end{defbox}
+
+\subsubsection{Knotentypen}
+Ein Szenengraph besteht üblicherweise aus drei abstrakten Kategorien von Knoten:
+\begin{enumerate}
+  \item \textbf{G (Gruppierung):} Organisiert Unterobjekte logisch (z.B. ``Auto''). Kann Bedingungen prüfen (z.B. Sichtbarkeit).
+  \item \textbf{T (Transformation):} Enthält geometrische Transformationen (Translation, Rotation, Skalierung).
+  \item \textbf{O (Objekt/Shape):} Die eigentlichen Blattknoten, die Geometrie und Material definieren (das, was gezeichnet wird).
+\end{enumerate}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_VC2025_10-X3DOM_page_10_1.png}
+\end{center}
+
+\subsubsection{Traversierung und Rendering}
+Der Prozess des Zeichnens wird als \defc{Traversierung} bezeichnet. Dabei wird der Graph rekursiv durchlaufen, beginnend bei der Wurzel.\textbf{Ablauf der Traversierung:}
+\begin{itemize}
+  \item Die Anwendung startet an der Wurzel.
+  \item Jeder Kindknoten wird rekursiv besucht (Tiefensuche).
+  \item Während des Abstiegs wird der globale Zustand aktualisiert, insbesondere die \defc{Current Transformation Matrix (CTM)}.
+\end{itemize}
+
+\textbf{Operationen während der Traversierung:}
+\begin{itemize}
+  \item \textbf{Bei Gruppierungsknoten:} Prüfe, ob die Gruppe aktiv ist. Falls ja, traversiere alle Kinder.
+  \item \textbf{Bei Transformationsknoten:} Multipliziere die aktuelle CTM mit der lokalen Transformationsmatrix $M$ des Knotens: \[CTM_{neu} = CTM_{alt} \cdot M\] Diese akkumulierte Matrix wird an die Kinder weitergegeben.
+  \item \textbf{Bei Objektknoten:} Zeichne das Objekt unter Verwendung der aktuellen CTM. Dadurch wird das Objekt an der korrekten, akkumulierten Weltposition dargestellt.
+\end{itemize}
+
+\subsubsection{Vorteile}
+\begin{itemize}
+  \item \textbf{Wiederverwendbarkeit:} Geometrien (z.B. ein Rad) müssen nur einmal im Speicher liegen und können mehrfach referenziert werden.
+  \item \textbf{Semantische Gruppierung:} Einfaches Ein-/Ausblenden ganzer Baugruppen.
+  \item \textbf{Transformationshierarchie:} Bewegt man einen Elternknoten (z.B. ``Auto''), bewegen sich alle Kindknoten (z.B. ``Räder'') automatisch mit.
+\end{itemize}
+
+\subsection{X3DOM: Szenengraphen im Web}
+X3DOM ist eine Technologie, die 3D-Szenengraphen direkt in HTML integriert.
+
+\begin{defbox}[X3DOM]
+  X3DOM ist eine Open-Source-Lösung, die den \defc{X3D}-Standard direkt im HTML-DOM verfügbar macht. Es benötigt keine Plugins, sondern nutzt WebGL via JavaScript (``Polyfill''-Layer), um 3D-Inhalte nativ im Browser zu rendern.
+\end{defbox}
+
+\subsubsection{Hintergrund: VRML und X3D}
+\begin{itemize}
+  \item \textbf{VRML (Virtual Reality Modeling Language, 1994/97):} Erster Standard für 3D im Web.
+  \item \textbf{X3D (Extensible 3D):} Der XML-basierte Nachfolger von VRML. Er ist modular (Profile) und unterstützt verschiedene Encodings (XML, Binary, VRML-Classic).
+\end{itemize}
+
+\subsubsection{Integration in HTML}
+X3DOM ermöglicht eine \defc{deklarative} Beschreibung der Szene. Das bedeutet, man beschreibt \emph{was} dargestellt werden soll (Struktur), nicht \emph{wie} es gezeichnet wird (Imperative Befehle wie in OpenGL/WebGL direkt).
+
+\textbf{Grundstruktur eines X3DOM-Dokuments:}
+\begin{minted}[breaklines, breakanywhere]{html}
+  <!DOCTYPE html><html><head><script src=``x3dom.js''></script><link rel=``stylesheet'' href=``x3dom.css''></head><body><x3d width='400px' height='400px'><scene><shape><appearance><material diffuseColor='1 0 0'></material></appearance><box></box></shape></scene></x3d></body></html>
+\end{minted}
+
+\subsection{Wichtige X3D-Knoten}
+Der Aufbau einer Szene in X3DOM folgt einer strikten Hierarchie:
+
+\subsubsection{Shape (Gestalt)}
+Der \texttt{<Shape>}-Knoten verbindet Geometrie mit Aussehen. Er enthält in der Regel zwei Kindknoten:
+\begin{enumerate}
+  \item \textbf{Geometry:} Die Form (z.B. \texttt{<Box>}, \texttt{<Sphere>}, \texttt{<Cone>}, \texttt{<IndexedTriangleSet>}).
+  \item \textbf{Appearance:} Das Aussehen.
+\end{enumerate}
+
+\subsubsection{Appearance und Material}
+Der \texttt{<Appearance>}-Knoten beinhaltet den \texttt{<Material>}-Knoten, der die optischen Eigenschaften nach dem \defc{Phong-Beleuchtungsmodell} definiert. Das Phong-Modell setzt sich zusammen aus: \[I_{out} = I_{ambient} + I_{diffuse} + I_{specular}\]
+Parameter im \texttt{<Material>}-Tag:
+\begin{itemize}
+  \item \texttt{diffuseColor}: Die eigentliche Farbe des Objekts unter direkter Beleuchtung.
+  \item \texttt{specularColor}: Farbe des Glanzlichts (meist weiß).
+  \item \texttt{shininess}: Größe des Glanzpunkts (Rauheit der Oberfläche).
+  \item \texttt{emissiveColor}: Selbstleuchten (unabhängig von Lichtquellen).
+  \item \texttt{transparency}: Durchsichtigkeit.
+\end{itemize}
+
+\subsubsection{Komplexe Geometrie: IndexedTriangleSet}
+Für beliebige Formen, die nicht durch Primitive (Box, Kugel) darstellbar sind, werden Polygonnetze verwendet.
+\begin{itemize}
+  \item \textbf{Coordinate Point:} Liste aller Eckpunkte (Vertices) im 3D-Raum (x y z).
+  \item \textbf{Index:} Definiert, welche Punkte zu einem Dreieck verbunden werden. Dies spart Speicher, da Punkte wiederverwendet werden können.
+  \item \textbf{Normal:} Normalenvektoren für die Lichtberechnung.
+\end{itemize}\textit{Hinweis:} Große Geometrien sollten aus Performancegründen in externe binäre Dateien ausgelagert werden (ähnlich wie Bilder via \texttt{src}).
+
+\subsubsection{Transformationen}
+Der \texttt{<Transform>}-Knoten manipuliert das Koordinatensystem für seine Kinder.
+\begin{itemize}
+  \item \texttt{translation='x y z'}: Verschiebung.
+  \item \texttt{rotation='x y z angle'}: Rotation um Achse (x,y,z) mit Winkel (Bogenmaß).
+  \item \texttt{scale='x y z'}: Skalierung.
+\end{itemize}
+Durch Verschachtelung von Transform-Knoten entstehen kinematische Ketten (z.B. Oberarm $\to$ Unterarm $\to$ Hand).
+
+\subsection{Instanziierung im DOM (DEF/USE)}
+Ein fundamentales Problem bei der Abbildung von Szenengraphen auf das HTML-DOM ist die Struktur:
+\begin{itemize}
+  \item \textbf{HTML-DOM:} Ist ein Baum. Jedes Element hat genau \emph{einen} Elternknoten.
+  \item \textbf{Szenengraph:} Ist ein DAG. Ein Geometrie-Knoten kann von mehreren Transform-Knoten referenziert werden (Instanziierung).
+\end{itemize}
+
+\subsubsection{Lösung: DEF und USE Mechanismus}
+X3D löst dies durch Referenzierung:
+\begin{enumerate}
+  \item \textbf{DEF (Definition):} Ein Knoten wird definiert und benannt. Er wird an dieser Stelle normal verarbeitet.\texttt{<Group DEF='AutoRad'> \ldots </Group>}
+  \item \textbf{USE (Verwendung):} An einer anderen Stelle im Baum wird eine Instanz eingefügt, die auf die Definition verweist.\texttt{<Group USE='AutoRad'></Group>}
+\end{enumerate}
+
+Dies ermöglicht es, komplexe Objekte (z.B. ``Suzanne mit Hut'') einmal zu definieren (Gruppierung von Affenkopf und Zylinder) und dann an verschiedenen Positionen mittels Transformationen mehrfach darzustellen, ohne die Geometriedaten zu duplizieren.
+
+
+\end{document}
