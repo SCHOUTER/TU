@@ -6,17 +6,17 @@
 
 \begin{document}
 
-\section{Reinforcement Learning and AlphaZero}
+\section{Reinforcement Learning und AlphaZero}
 
 \subsection{Grundlagen des Reinforcement Learning}
-Reinforcement Learning (RL) ist ein Ansatz des maschinellen Lernens, bei dem ein \defc{Agent} durch Interaktion mit einer \defc{Umgebung} lernt, eine Aufgabe zu lösen. Im Gegensatz zum Supervised Learning erhält der Agent keine korrekten Input-Output-Paare, sondern muss durch Ausprobieren (Trial-and-Error) und Feedback in Form von \defc{Rewards} (Belohnungen) lernen.
+Reinforcement Learning (RL) ist ein Teilgebiet des maschinellen Lernens, bei dem ein \defc{Agent} lernt, wie er sich in einer \defc{Umgebung} verhalten muss, um eine numerische Belohnung (\defc{Reward}) zu maximieren. Im Gegensatz zum Supervised Learning erhält der Agent keine direkten Anweisungen (Labels), welche Aktion die beste ist, sondern muss diese durch Interaktion (Trial-and-Error) herausfinden.
 
 \begin{defbox}[Der RL-Zyklus]
-  Der Agent und die Umgebung interagieren in diskreten Zeitschritten $t$:
+  Der Prozess läuft in diskreten Zeitschritten $t$ ab:
   \begin{enumerate}
     \item Der Agent beobachtet den aktuellen Zustand (State) $S_t$.
-    \item Basierend auf $S_t$ wählt der Agent eine Aktion (Action) $A_t$.
-    \item Die Umgebung geht in einen neuen Zustand $S_{t+1}$ über und gibt einen Reward $R_{t+1}$ zurück.
+    \item Basierend auf dieser Beobachtung wählt der Agent eine Aktion (Action) $A_t$.
+    \item Die Umgebung reagiert auf die Aktion, wechselt in einen neuen Zustand $S_{t+1}$ und gibt ein Reward-Signal $R_{t+1}$ zurück.
     \item Das Ziel des Agenten ist die Maximierung der kumulativen Belohnung über die Zeit (Return).
   \end{enumerate}
 \end{defbox}
@@ -26,145 +26,171 @@ Reinforcement Learning (RL) ist ein Ansatz des maschinellen Lernens, bei dem ein
 \end{center}
 
 \subsection{Markov Decision Processes (MDP)}
-Um RL-Probleme mathematisch zu formalisieren, werden \defc{Markov Decision Processes} (MDPs) verwendet.
-\begin{defbox}[Definition MDP]
-  Ein MDP ist ein Tupel $(S, A, T, R, \gamma)$:
-  \begin{itemize}
-    \item $S$: Menge aller möglichen Zustände.
-    \item $A$: Menge aller möglichen Aktionen.
-    \item $T$: Die \defc{Transition Function} (oder das Modell) $T(s, a, s') = P(s' | s, a)$. Sie gibt die Wahrscheinlichkeit an, von Zustand $s$ mit Aktion $a$ in den Zustand $s'$ zu gelangen.
-    \item $R$: Die \defc{Reward Function} $R(s, a, s')$. Die Belohnung für den Übergang von $s$ nach $s'$ mittels $a$.
-    \item $\gamma$: Der \defc{Discount Factor} (Diskontierungsfaktor) mit $0 \le \gamma \le 1$.
-  \end{itemize}
-\end{defbox}
+Um RL-Probleme mathematisch formal zu beschreiben, werden \defc{Markov Decision Processes} (MDPs) verwendet. Ein MDP ist definiert als ein Tupel $(S, A, T, R, \gamma)$:
 
-\subsubsection{Markov-Eigenschaft}
-Ein Prozess ist \defc{Markovian}, wenn der zukünftige Zustand nur vom aktuellen Zustand und der gewählten Aktion abhängt, nicht aber von der Vergangenheit (Gedächtnislosigkeit):
+\begin{itemize}
+  \item \textbf{$S$ (State Space):} Die Menge aller möglichen Zustände $s$.
+  \item \textbf{$A$ (Action Space):} Die Menge aller möglichen Aktionen $a$.
+  \item \textbf{$T$ (Transition Function):} Auch bekannt als das \textit{Modell} der Umgebung. Es beschreibt die Wahrscheinlichkeitsverteilung der Zustandsübergänge:
+        \[ T(s, a, s') = P(S_{t+1}=s' \mid S_t=s, A_t=a) \]
+        Dies ist die Wahrscheinlichkeit, im Zustand $s'$ zu landen, wenn man im Zustand $s$ die Aktion $a$ ausführt.
+  \item \textbf{$R$ (Reward Function):} Die Belohnungsfunktion $R(s, a, s')$. Sie definiert den unmittelbaren Reward, den der Agent für den Übergang von $s$ nach $s'$ mittels Aktion $a$ erhält.
+  \item \textbf{$\gamma$ (Discount Factor):} Der Diskontierungsfaktor mit $0 \le \gamma \le 1$. Er bestimmt, wie stark zukünftige Belohnungen im Vergleich zu sofortigen Belohnungen gewichtet werden (siehe unten).
+\end{itemize}
+
+\subsubsection{Die Markov-Eigenschaft}
+Ein Prozess heißt \defc{Markovian}, wenn die Wahrscheinlichkeit für den nächsten Zustand $S_{t+1}$ nur vom aktuellen Zustand $S_t$ und der Aktion $A_t$ abhängt, und nicht von der gesamten Historie der vorherigen Zustände und Aktionen. Das ``Gedächtnis'' des Systems ist also im aktuellen Zustand vollständig enthalten.
 \[P(S_{t+1} | S_t, A_t, S_{t-1}, A_{t-1}, \dots) = P(S_{t+1} | S_t, A_t)\]
 
-
 \subsubsection{Credit Assignment Problem}
-Eine zentrale Herausforderung im RL ist das \defc{Temporal Credit Assignment Problem}: Da Belohnungen oft verzögert auftreten (z.B. erst am Ende eines Spiels), muss der Algorithmus herausfinden, welche vergangenen Aktionen für den Erfolg (oder Misserfolg) verantwortlich waren.
+Eine der größten Herausforderungen im RL ist das \defc{Temporal Credit Assignment Problem}. Belohnungen treten oft verzögert auf (z.B. wird ein Schachspiel erst nach vielen Zügen gewonnen). Der Algorithmus muss bestimmen, welche der vergangenen Aktionen für den späteren Erfolg (oder Misserfolg) verantwortlich waren und den ``Credit'' (die Anerkennung) entsprechend zuweisen.
 
-\subsubsection{Discounted Rewards}
-Um unendliche Horizonte zu handhaben und sofortige Belohnungen gegenüber späteren zu bevorzugen, werden zukünftige Rewards mit $\gamma$ diskontiert. Der \defc{Return} $G_t$ ist die Summe der diskontierten Rewards:
-\[G_t = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1} = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \dots\]
-
+\subsubsection{Discounted Rewards (Return)}
+Der \defc{Return} $G_t$ ist die Summe der diskontierten Belohnungen ab Zeitpunkt $t$. Der Discount Factor $\gamma$ sorgt dafür, dass die Summe bei unendlichen Horizonten konvergiert und modelliert die Unsicherheit über die Zukunft:
+\[G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}\]
+\begin{itemize}
+  \item $\gamma \to 0$: Der Agent ist ``kurzsichtig'' und kümmert sich nur um sofortige Belohnungen.
+  \item $\gamma \to 1$: Der Agent ist ``weitsichtig'' und berücksichtigt zukünftige Belohnungen stark.
+\end{itemize}
 
 \subsection{Optimalität und Value Functions}
-Das Ziel ist es, eine \defc{Policy} (Strategie) $\pi$ zu finden, die den erwarteten Return maximiert.
+Das Ziel des Agenten ist es, eine \defc{Policy} (Strategie) $\pi$ zu finden, die den erwarteten Return maximiert.
 \begin{itemize}
-  \item \textbf{Deterministische Policy:} $a = \pi(s)$
-  \item \textbf{Stochastische Policy:} $\pi(a|s) = P(a|s)$
+  \item \textbf{Policy $\pi(s)$:} Eine Vorschrift, die jedem Zustand eine Aktion zuordnet (deterministisch $a=\pi(s)$ oder stochastisch $\pi(a|s)$).
 \end{itemize}
+
+Um Policies zu bewerten, nutzen wir Value Functions:
 \begin{defbox}[Value Functions]
   \begin{itemize}
-    \item \textbf{State-Value Function $V^\pi(s)$:} Der erwartete Return, wenn man in Zustand $s$ startet und danach der Policy $\pi$ folgt.
-    \item \textbf{Action-Value Function $Q^\pi(s, a)$:} Der erwartete Return, wenn man in Zustand $s$ startet, Aktion $a$ wählt und danach der Policy $\pi$ folgt.
+    \item \textbf{State-Value Function $V^\pi(s)$:} Der Wert eines Zustands. Er gibt den erwarteten Return an, wenn man in Zustand $s$ startet und danach immer der Policy $\pi$ folgt.
+    \item \textbf{Action-Value Function $Q^\pi(s, a)$:} Der Wert einer Handlung (Q-Wert). Er gibt den erwarteten Return an, wenn man in Zustand $s$ startet, \textit{einmalig} Aktion $a$ wählt und danach der Policy $\pi$ folgt.
   \end{itemize}
 \end{defbox}
 
-\subsubsection{Bellman-Gleichungen}
-Die Werte von Zuständen lassen sich rekursiv durch die Bellman-Gleichung beschreiben. Für die optimale Value Function $V^*$ gilt:
-\[V^*(s) = \max_{a} \sum_{s'} T(s, a, s') [R(s, a, s') + \gamma V^*(s')]\]
+\subsubsection{Bellman-Gleichung der Optimalität}
+Die optimale Value Function $V^*(s)$ ist der maximal mögliche erwartete Return, der in einem Zustand erreicht werden kann. Sie lässt sich rekursiv durch die Bellman-Gleichung beschreiben:
 
-Dies bedeutet: Der Wert eines Zustands ist die bestmögliche Aktion, die zum sofortigen Reward plus dem diskontierten Wert des Folgezustands führt.
+\[V^*(s) = \max_{a \in A} \sum_{s' \in S} T(s, a, s') \left[ R(s, a, s') + \gamma V^*(s') \right]\]
+
+\textbf{Erklärung der Terme:}
+\begin{itemize}
+  \item $\max_a$: Wir suchen die Aktion, die das beste Ergebnis liefert (Optimierung).
+  \item $\sum_{s'} T(\dots)$: Da die Umgebung stochastisch sein kann, bilden wir den Erwartungswert über alle möglichen Folgezustände $s'$, gewichtet mit ihrer Wahrscheinlichkeit $T$.
+  \item $R + \gamma V^*(s')$: Der Wert setzt sich zusammen aus dem sofortigen Reward $R$ und dem diskontierten Wert des nächsten Zustands $V^*(s')$.
+\end{itemize}
 
 \subsection{Lösen von MDPs: Value Iteration}
-Wenn das Modell ($T$ und $R$) bekannt ist, spricht man von \defc{Planning} (nicht Lernen). Ein klassischer Algorithmus hierfür ist die \defc{Value Iteration} (Dynamische Programmierung).
+Wenn das Modell der Umgebung ($T$ und $R$) \textit{bekannt} ist, spricht man nicht von Lernen, sondern von \defc{Planning}. Ein klassischer Algorithmus der Dynamischen Programmierung ist die \defc{Value Iteration}.
+
 \begin{defbox}[Value Iteration Algorithmus]
   \begin{enumerate}
-    \item Initialisiere $V_0(s) = 0$ für alle Zustände.
-    \item Wiederhole bis zur Konvergenz (Update-Regel):
+    \item Initialisiere $V_0(s) = 0$ für alle Zustände (oder zufällig).
+    \item Wiederhole in jeder Iteration $k$ für alle Zustände $s$ das Bellman-Update:
           \[V_{k+1}(s) \leftarrow \max_{a} \sum_{s'} T(s, a, s') [R(s, a, s') + \gamma V_k(s')]\]
-
+    \item Stoppe, wenn die Änderung der Werte klein genug ist (Konvergenz).
   \end{enumerate}
 \end{defbox}
+Die resultierenden Werte konvergieren gegen $V^*$. Die optimale Policy kann dann einfach abgeleitet werden, indem man in jedem Zustand die Aktion wählt, die den Term maximiert (Greedy-Policy).
 
 \begin{center}
   \vcentered{\includegraphics[width=0.5\textwidth]{eiki_1_AI101-12_page_18_1.png}}
 \end{center}
 
-\subsection{Reinforcement Learning Arten}
-Wenn das Modell ($T, R$) \textit{nicht} bekannt ist, muss der Agent durch Interaktion lernen.
+\subsection{Reinforcement Learning (Model-Free)}
+In echten RL-Szenarien sind $T(s, a, s')$ und $R(s, a, s')$ \textit{nicht} bekannt. Der Agent muss durch Interaktion lernen.
 
-\subsubsection{Model-Based vs. Model-Free}
+\subsubsection{Unterscheidung der Lernarten}
 \begin{itemize}
-  \item \textbf{Model-Based:} Der Agent lernt zunächst ein Modell der Umgebung ($T$ und $R$ schätzen durch Zählen von Übergängen) und nutzt dieses dann zur Planung (z.B. mittels Value Iteration).
-  \item \textbf{Model-Free:} Der Agent lernt direkt die Value Function oder die Policy, ohne die Übergangswahrscheinlichkeiten explizit zu modellieren.
+  \item \textbf{Model-Based RL:} Der Agent versucht zuerst, $T$ und $R$ zu schätzen (z.B. durch Zählen von Häufigkeiten) und plant dann (z.B. mit Value Iteration).
+  \item \textbf{Model-Free RL:} Der Agent lernt direkt die Value-Function ($V$ oder $Q$) oder die Policy, ohne die Dynamik der Welt explizit zu modellieren.
+  \item \textbf{Passive Learning:} Der Agent folgt einer fixen Policy $\pi$ und bewertet diese (Policy Evaluation).
+  \item \textbf{Active Learning:} Der Agent wählt Aktionen selbst, um die optimale Policy zu finden (Exploration nötig).
 \end{itemize}
-
-\subsubsection{Passive vs. Active Learning}
-\begin{itemize}
-  \item \textbf{Passive Learning:} Der Agent folgt einer festen Policy $\pi$ und lernt dabei die Nutzenwerte $V^\pi(s)$ (Policy Evaluation).
-  \item \textbf{Active Learning:} Der Agent muss selbst entscheiden, welche Aktionen er wählt, um die optimale Policy zu finden. Hier entsteht das \defc{Exploration vs. Exploitation} Dilemma.
-\end{itemize}
-
-\subsection{Model-Free Learning Methoden}
 
 \subsubsection{Temporal-Difference (TD) Learning}
-TD-Learning ist eine Methode für \textit{Passive Learning}. Anstatt bis zum Ende einer Episode zu warten (wie bei Monte Carlo), wird die Schätzung $V(s)$ nach jedem Schritt basierend auf dem beobachteten Reward und der Schätzung des nächsten Zustands $V(s')$ aktualisiert.Update-Regel (Running Average):
-\[V(s) \leftarrow (1-\alpha)V(s) + \alpha \underbrace{[R(s, a, s') + \gamma V(s')]}_{\text{Sample}}\]
+TD-Learning ist eine Methode für \textit{Passive Learning} (Model-Free). Anstatt bis zum Ende einer Episode zu warten (wie bei Monte-Carlo-Methoden), aktualisiert TD die Schätzung basierend auf dem nächsten Zeitschritt (\textit{Bootstrapping}).
 
-Oder umgeformt:
-\[V(s) \leftarrow V(s) + \alpha ( \underbrace{R + \gamma V(s') - V(s)}_{\text{TD Error}} )\]
+\textbf{Update-Regel für $V(s)$:}
+\[V(s) \leftarrow V(s) + \alpha \underbrace{\left( \overbrace{R + \gamma V(s')}^{\text{Target}} - V(s) \right)}_{\text{TD-Error}}\]
 
-Dabei ist $\alpha$ die Lernrate (Learning Rate).
+\begin{itemize}
+  \item \textbf{$\alpha$ (Learning Rate):} Bestimmt, wie stark neue Informationen alte überschreiben ($0 < \alpha \le 1$).
+  \item \textbf{Target:} Der geschätzte ``richtige'' Wert basierend auf dem erhaltenen Reward $R$ und der Schätzung des nächsten Zustands $V(s')$.
+\end{itemize}
 
 \subsubsection{Q-Learning}
-Q-Learning ist eine \textit{Active Learning} Methode. Da wir kein Modell $T$ haben, können wir aus $V(s)$ allein keine Policy ableiten. Daher lernen wir direkt $Q$-Werte (Q-Table).Q-Learning ist ein \defc{Off-Policy} Algorithmus: Der Agent lernt den Wert der optimalen Policy, auch wenn er sich beim Sammeln der Daten anders (z.B. explorativ) verhält.
-\begin{defbox}[Q-Learning Update]
+Q-Learning ist der wichtigste \defc{Off-Policy} Algorithmus für \textit{Active Learning}. Da wir kein Modell haben, lernen wir $Q(s,a)$-Werte anstelle von $V(s)$-Werten, da uns $Q$-Werte direkt sagen, welche Aktion die beste ist.
 
-  \[Q(s, a) \leftarrow (1-\alpha)Q(s, a) + \alpha [R + \gamma \max_{a'} Q(s', a')]\]
-
+\begin{defbox}[Q-Learning Update Regel]
+  \[Q(s, a) \leftarrow (1-\alpha)Q(s, a) + \alpha \left[ R(s, a, s') + \gamma \max_{a'} Q(s', a') \right]\]
 \end{defbox}
 
-Der Term $\max_{a'} Q(s', a')$ impliziert, dass wir vom Folgezustand aus die beste Aktion annehmen, unabhängig davon, welche Aktion der Agent tatsächlich als nächstes ausführt.
+\textbf{Detaillierte Analyse der Parameter:}
+\begin{itemize}
+  \item \textbf{Alter Wert $(1-\alpha)Q(s, a)$}: Wir behalten einen Teil des alten Wissens.
+  \item \textbf{Sample / Target $R + \gamma \max_{a'} Q(s', a')$}: Dies ist die neue Schätzung. Wichtig ist der Term $\max_{a'} Q(s', a')$. Er bedeutet, dass wir für das Update davon ausgehen, dass wir im \textit{nächsten} Zustand die bestmögliche Aktion wählen – selbst wenn der Agent dies in der Realität vielleicht gar nicht tut (deshalb ``Off-Policy'').
+  \item \textbf{Konvergenz:} Q-Learning konvergiert gegen $Q^*(s, a)$, sofern alle Zustands-Aktions-Paare unendlich oft besucht werden und $\alpha$ passend verringert wird.
+\end{itemize}
 
 \subsubsection{Exploration vs. Exploitation}
-Damit Q-Learning konvergiert, muss der Agent alle Zustands-Aktions-Paare ausreichend oft besuchen.
+Damit der Agent optimale Wege findet, muss er die Umgebung erkunden, anstatt immer nur das (bisher) Beste zu tun.
 \begin{itemize}
-  \item \textbf{Exploitation:} Wähle die Aktion mit dem höchsten bekannten Q-Wert (Greedy).
-  \item \textbf{Exploration:} Wähle eine zufällige Aktion, um neues Wissen zu sammeln.
-  \item \textbf{$\epsilon$-Greedy:} Mit Wahrscheinlichkeit $\epsilon$ wähle eine zufällige Aktion, sonst die beste bekannte ($1-\epsilon$). $\epsilon$ wird oft über die Zeit verringert.
+  \item \textbf{Exploitation (Ausbeutung):} Wähle Aktion mit höchstem $Q$-Wert: $a = \text{argmax}_a Q(s,a)$.
+  \item \textbf{Exploration (Erkundung):} Wähle eine zufällige Aktion, um neue Zustände zu entdecken.
+  \item \textbf{$\epsilon$-Greedy Strategie:}
+        \begin{itemize}
+          \item Mit Wahrscheinlichkeit $\epsilon$: Wähle zufällige Aktion (Exploration).
+          \item Mit Wahrscheinlichkeit $1-\epsilon$: Wähle beste Aktion (Exploitation).
+        \end{itemize}
+        Oft wird $\epsilon$ über die Zeit verringert (Decay), um zu Beginn viel zu lernen und später optimal zu handeln.
 \end{itemize}
 
-\subsection{Deep Reinforcement Learning}
-Klassisches Q-Learning speichert Werte in einer Tabelle. Bei komplexen Problemen (z.B. Bildschirminput) ist der Zustandsraum zu groß.
-\begin{itemize}
-  \item \textbf{Deep Q-Networks (DQN):} Ein neuronales Netz approximiert die Q-Funktion: $Q(s, a; \theta) \approx Q^*(s, a)$.
-  \item \textbf{Policy Search / Policy Gradients:} Anstatt Value-Funktionen zu lernen, wird die Policy $\pi_\theta(a|s)$ direkt parametrisiert und mittels Gradientenaufstieg auf den erwarteten Reward optimiert (z.B. REINFORCE).
-\end{itemize}
+\subsection{Deep Q-Networks (DQN)}
+In komplexen Umgebungen (z.B. Atari-Spiele mit Pixel-Input) ist eine Tabelle für alle $Q(s,a)$ zu groß. DQN nutzt ein \defc{Deep Neural Network} als Function Approximator: $Q(s, a; \theta) \approx Q^*(s, a)$, wobei $\theta$ die Gewichte des Netzes sind.
 
 \subsection{AlphaZero}
-AlphaZero kombiniert \defc{Monte-Carlo Tree Search (MCTS)} mit tiefen neuronalen Netzen und Self-Play. Es benötigt kein bereichsspezifisches Wissen (außer den Spielregeln).
+AlphaZero ist ein allgemeiner Algorithmus, der Spiele wie Schach, Shogi und Go meistert, ohne menschliches Vorwissen (außer den Spielregeln). Es kombiniert \defc{Monte-Carlo Tree Search (MCTS)} mit tiefen neuronalen Netzen und Self-Play.
 
 \subsubsection{Netzwerk-Architektur}
-Ein einzelnes tiefes neuronales Netz $f_\theta$ wird verwendet, das zwei Ausgaben liefert:
+AlphaZero verwendet ein einziges tiefes neuronales Netz $f_\theta$, das zwei Ausgabeköpfe (Heads) hat:
+\begin{enumerate}
+  \item \textbf{Policy Head $\mathbf{p}$:} Ein Vektor von Wahrscheinlichkeiten $p_a = P(a|s)$. Er schätzt ab, welche Züge gut sind (dient als Prior für die Suche).
+  \item \textbf{Value Head $v$:} Ein skalarer Wert $v \in [-1, 1]$. Er schätzt die Gewinnwahrscheinlichkeit des aktuellen Zustands ($+1$ Sieg, $-1$ Niederlage).
+\end{enumerate}
+
+\subsubsection{MCTS und der PUCT-Algorithmus}
+Anstatt Minimax mit Alpha-Beta-Pruning zu nutzen, führt AlphaZero eine MCTS-Suche durch. Um zu entscheiden, welcher Knoten im Suchbaum expandiert wird, nutzt es den \defc{PUCT-Algorithmus} (Predictor Upper Confidence Bounds for Trees).
+Die Auswahlregel für eine Aktion $a$ im Baum ist:
+\[ a_t = \text{argmax}_a (Q(s_t, a) + U(s_t, a)) \]
+
+Dabei ist $U$ der Explorationsterm:
+\[ U(s, a) = c_{\text{puct}} \cdot P(s, a) \cdot \frac{\sqrt{\sum_b N(s, b)}}{1 + N(s, a)} \]
+
+\textbf{Erklärung der Parameter:}
 \begin{itemize}
-  \item \textbf{Policy Head $\mathbf{p}$:} Eine Wahrscheinlichkeitsverteilung über mögliche Züge ($p_a \approx \pi(a|s)$).
-  \item \textbf{Value Head $v$:} Eine skalare Bewertung des Zustands ($v \approx V(s)$) im Intervall $[-1, 1]$ (Sieg/Niederlage).
+  \item \textbf{$Q(s, a)$ (Exploitation):} Der mittlere Wert (Value) der bisherigen Simulationen für diesen Zug.
+  \item \textbf{$P(s, a)$:} Die ``Prior''-Wahrscheinlichkeit für diesen Zug, die direkt vom \textit{Policy Head} des neuronalen Netzes kommt. Gute Züge werden also bevorzugt behandelt.
+  \item \textbf{$N(s, a)$:} Wie oft wurde dieser Zug im Baum bereits besucht?
+  \item \textbf{$\frac{\sqrt{\sum N}}{1+N}$:} Dieser Term sorgt für Exploration. Züge, die selten besucht wurden (kleines $N(s,a)$), erhalten einen Bonus, besonders wenn der Elternknoten oft besucht wurde.
+  \item \textbf{$c_{\text{puct}}$:} Eine Konstante, die die Balance zwischen Exploration (U) und Exploitation (Q) steuert.
 \end{itemize}
-
-\subsubsection{MCTS und PUCT}
-AlphaZero nutzt MCTS zur Planung. In jedem Schritt der Simulation wählt es Kanten basierend auf dem \defc{PUCT-Algorithmus} (Predictor Upper Confidence Bounds for Trees):
-\[a_t = \text{argmax}_a (Q(s, a) + U(s, a))\]
-
-\[U(s, a) = c_{\text{puct}} P(s, a) \frac{\sqrt{\sum_b N(s, b)}}{1 + N(s, a)}\]
-Hierbei dient $Q$ der Exploitation (Wertschätzung) und $U$ der Exploration (gesteuert durch die Prior-Wahrscheinlichkeit $P$ aus dem neuronalen Netz und der Besuchshäufigkeit $N$).
 \begin{center}
-  \vcentered{\includegraphics[width=0.5\textwidth]{eiki_1_AI101-12_page_50_1.png}}
+  \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-12_page_50_1.png}}
 \end{center}
 
 \subsubsection{Training und Loss-Funktion}
-Das Netzwerk lernt aus den durch MCTS verbesserten Politiken ($\pi_{\text{MCTS}}$) und den tatsächlichen Spielergebnissen ($z$). Das Training minimiert folgenden Loss:
-\[l = {(z - v)}^2 - \pi_{\text{MCTS}}^T \log \mathbf{p} + c ||\theta||^2\]
+Das neuronale Netz wird trainiert, um die Ergebnisse der MCTS-Suche vorherzusagen. Die MCTS-Suche liefert eine verbesserte Policy $\pi_{\text{MCTS}}$ (basierend auf den Besuchszahlen $N$) und am Ende des Spiels steht der tatsächliche Gewinner $z$ fest.
 
+Die Loss-Funktion (Fehlerfunktion), die minimiert wird, ist:
+\[ l = (z - v)^2 - \pi_{\text{MCTS}}^T \log \mathbf{p} + c ||\theta||^2 \]
+
+\textbf{Aufschlüsselung der Terme:}
 \begin{itemize}
-  \item ${(z-v)}^2$: Mean Squared Error für den Value Head (soll das echte Endergebnis vorhersagen).
-  \item $-\pi^T \log p$: Cross-Entropy für den Policy Head (das Netz soll die MCTS-Verteilung vorhersagen).
-  \item $c ||\theta||^2$: Regularisierungsterm.
+  \item \textbf{${(z - v)}^2$ (Mean Squared Error):} Der Value Head $v$ soll das tatsächliche Spielergebnis $z$ (Sieg/Niederlage) so genau wie möglich vorhersagen.
+  \item \textbf{$-\pi_{\text{MCTS}}^T \log \mathbf{p}$ (Cross-Entropy):} Der Policy Head $\mathbf{p}$ (die Vorhersage des Netzes) soll der durch MCTS verbesserten Suchverteilung $\pi_{\text{MCTS}}$ so ähnlich wie möglich sein. Das Netz lernt also, die langsame Baumsuche zu ``imitieren''.
+  \item \textbf{$c ||\theta||^2$ (L2-Regularisierung):} Verhindert Overfitting der Gewichte $\theta$.
 \end{itemize}
-Das System verbessert sich iterativ durch \defc{Self-Play}: Das aktuelle beste Netzwerk generiert Trainingsdaten, die genutzt werden, um eine neue Version des Netzwerks zu trainieren.
+
+Das System verbessert sich iterativ (``Self-Play''): Das Netz spielt gegen sich selbst, generiert Daten, wird darauf trainiert und wird dadurch stärker, was wiederum bessere Trainingsdaten für die nächste Iteration liefert.
 
 \end{document}
