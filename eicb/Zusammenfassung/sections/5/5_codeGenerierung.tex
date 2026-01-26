@@ -1,0 +1,203 @@
+\documentclass[
+../../eicb_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../eicb_summary}
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Code-Generierung}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{eicb_1_05-tamruntime-handout_page_2_1.png}
+\end{center}
+
+\subsection{Einführung und Herausforderungen}
+Die Code-Generierung ist der letzte Schritt im Compiler-Backend. Sie übersetzt den dekorierten Abstrakten Syntaxbaum (AST) in den Zielcode (hier: TAM-Maschinencode).
+
+\begin{itemize}
+  \item **Abhängigkeit:** Dieser Schritt hängt sowohl von der \defc{Semantik der Eingabesprache} als auch von der \defc{Zielmaschine} ab. Das macht eine allgemeingültige Formulierung schwierig.
+  \item **Semantik:** Erst in diesem Schritt erhält eine Zeichenkette (z.B. ``4.2'') ihre tatsächliche Bedeutung als Zahl (Integer 42) auf der Zielmaschine.
+  \item **Ziel:** Erzeugung einer Instruktionsfolge, die semantisch äquivalent zum Quellprogramm ist.
+\end{itemize}
+
+Das Gesamtproblem wird in drei Teilprobleme zerlegt:
+\begin{enumerate}
+  \item \textbf{Code-Selektion:} Abbildung von Phrasen des Quellprogramms auf Folgen von Maschineninstruktionen.
+  \item \textbf{Speicherallokation:} Zuweisung von Speicheradressen für Variablen und Verwaltung der Adressen (Buchführung).
+  \item \textbf{Registerallokation:} Verwaltung der Register für Variablen und Zwischenergebnisse (bei der TAM als Stackmaschine weitestgehend irrelevant, da alles auf dem Stack passiert).
+\end{enumerate}
+
+\subsection{Code-Selektion und Code-Funktionen}
+Die Übersetzung erfolgt \defc{induktiv}: Die Übersetzung des Gesamtprogramms wird aus den Übersetzungen der Einzelphrasen hergeleitet. Hierfür werden \textbf{Code-Funktionen} definiert, die durch \textbf{Code-Schablonen} (Templates) konkretisiert werden.
+
+\begin{defbox}[Code-Funktionen]
+  Eine Code-Funktion bildet eine Phrase (Teil des AST) auf eine Folge von Maschineninstruktionen ab.
+\end{defbox}
+
+Wichtige Code-Funktionen für Triangle/TAM:
+
+\begin{itemize}
+  \item $run[P]$: Führt das Programm $P$ aus und hält dann an. Startet und endet mit leerem Stack.
+  \item $execute[C]$: Führt das Kommando $C$ aus. Der Stack darf sich während der Ausführung ändern, muss aber am Ende wieder die gleiche Höhe haben (keine Netto-Stack-Änderung).
+  \item $evaluate[E]$: Wertet den Ausdruck $E$ aus und legt das Ergebnis oben auf den Stack (Push result).
+  \item $fetch[V]$: Legt den Wert der Variablen/Konstanten $V$ auf den Stack.
+  \item $assign[V]$: Nimmt einen Wert vom Stack und speichert ihn in die Variable $V$.
+  \item $elaborate[D]$: Verarbeitet eine Deklaration $D$. Reserviert Speicherplatz auf dem Stack für die deklarierten Variablen.
+\end{itemize}
+
+\subsubsection{Beispiele für Code-Schablonen}
+
+\textbf{1. Sequentielle Ausführung ($C_1; C_2$)}
+\[
+  execute [[ C_1; C_2 ]] = \begin{cases}
+    execute[[C_1]] \\
+    execute[[C_2]]
+  \end{cases}
+\]
+
+\textbf{2. Zuweisung ($V := E$)}
+\[
+  execute [[ V := E ]] = \begin{cases}
+    evaluate[[E]] & \text{(Berechnet Wert, legt auf Stack)} \\
+    assign[[V]]   & \text{(Speichert Wert vom Stack in V)}
+  \end{cases}
+\]
+
+\textbf{3. If-Anweisung ($if~E~then~C_1~else~C_2$)}
+Hier werden Labels und Sprungbefehle benötigt.
+\[
+  execute [[ if~E~then~C_1~else~C_2 ]] = \begin{cases}
+    evaluate[[E]]                                               \\
+    JUMPIF(0)~L_{else} & \text{(Springe zu Else, wenn false/0)} \\
+    execute[[C_1]]                                              \\
+    JUMP~L_{fi}        & \text{(Überspringe Else-Zweig)}        \\
+    L_{else}:                                                   \\
+    execute[[C_2]]                                              \\
+    L_{fi}:
+  \end{cases}
+\]
+
+\textbf{4. While-Schleife (Optimierung)}
+Eine naive Implementierung prüft die Bedingung am Anfang und springt am Ende zurück. Eine effizientere Variante (weniger Sprünge im ``Steady State'') nutzt folgenden Aufbau:
+
+\[
+  execute [[ while~E~do~C ]] = \begin{cases}
+    JUMP~L_{check}                                          \\
+    L_{loop}:                                               \\
+    execute[[C]]                                            \\
+    L_{check}:                                              \\
+    evaluate[[E]]                                           \\
+    JUMPIF(1)~L_{loop} & \text{(Springe zurück, wenn true)}
+  \end{cases}
+\]
+\textit{Anmerkung:} In der Vorlesung wurde auch die Standard-Variante mit $L_{while}$ am Anfang und $JUMPIF(0)$ zum Ende besprochen.
+
+\textbf{Sonderfallbehandlung (Optimierung):}
+Anstatt generische Schablonen zu nutzen, können spezielle Muster erkannt werden:
+\begin{itemize}
+  \item $i + 1$: Statt `LOAD i`, `LOADL 1`, `CALL add` $\rightarrow$ `LOAD i`, `CALL succ`.
+  \item \textbf{Constant Inlining:} Wenn der Wert einer Konstanten zur Kompilierzeit bekannt ist, muss kein Speicherzugriff (`LOAD`) erfolgen. Stattdessen wird der Wert direkt mit `LOADL` in den Code eingebettet.
+\end{itemize}
+
+\subsection{Implementierung mittels Visitor-Pattern}
+Der Code-Generator wird systematisch mit dem Visitor-Pattern implementiert. Verschiedene Encoder-Klassen (z.B. `CommandEncoder`, `ExpressionEncoder`) besuchen die entsprechenden AST-Knoten.
+
+\subsubsection{Backpatching (Rückwärts-Einsetzen von Adressen)}
+Ein Problem bei der Generierung von Kontrollstrukturen (wie `if` oder `while`) sind Vorwärtssprünge, da die Zieladresse des Sprungs zum Zeitpunkt der Generierung des Sprungbefehls noch nicht bekannt ist (der Code dazwischen wurde noch nicht erzeugt).
+
+\textbf{Lösung: Backpatching}
+\begin{enumerate}
+  \item Erzeuge Sprunginstruktion mit einer ``leeren'' Zieladresse (z.B. 0).
+  \item Merke die Adresse dieser unvollständigen Instruktion.
+  \item Generiere den Code für den Rumpf/Block.
+  \item Sobald die Zieladresse erreicht ist (aktuelle Code-Adresse), \defc{patche} die gemerkte Instruktion nachträglich mit der korrekten Adresse.
+\end{enumerate}
+
+\begin{lstlisting}[language=Java, title={Pseudocode Backpatching}]
+int jumpAddr = nextInstrAddr;
+emit(Machine.JUMPIFop, 0, Machine.CBr, 0); // Dummy Ziel 0
+// ... Generiere Code für Block ...
+int targetAddr = nextInstrAddr;
+patch(jumpAddr, targetAddr); // Trage echtes Ziel nach
+\end{lstlisting}
+
+\subsection{Speicherverwaltung und Adressierung}
+
+\subsubsection{Verwaltung im AST (Runtime Entities)}
+Der Code-Generator muss wissen, wo Variablen liegen oder welche Werte Konstanten haben. Diese Information wird in \textbf{Entitätsdeskriptoren} (`RuntimeEntity`) gespeichert und an die AST-Knoten gehängt.
+
+\begin{itemize}
+  \item \textbf{KnownValue:} Für Konstanten mit bekanntem Wert. Speichert den Wert direkt.
+  \item \textbf{KnownAddress:} Für Variablen/Konstanten mit bekannter Adresse. Speichert Größe und Adresse (Level, Displacement).
+  \item \textbf{UnknownValue:} Wert wird erst zur Laufzeit berechnet (z.B. `const c ~ x + 5`).
+  \item \textbf{UnknownAddress:} Für Referenzparameter (`var`-Parameter), deren Adresse erst zur Laufzeit bekannt ist.
+\end{itemize}
+
+\subsubsection{Adressvergabe}
+Der Compiler führt Buch über den belegten Speicherplatz. Dies geschieht oft über einen Parameter in den Visitor-Methoden (z.B. `gs` für Global Space oder `frame`).
+\begin{itemize}
+  \item \textbf{Eingabe-Parameter:} Aktueller Offset / erste freie Adresse.
+  \item \textbf{Rückgabewert:} Größe des durch die Deklaration zusätzlich belegten Speichers.
+\end{itemize}
+Vorteil der Rückgabe des Deltas: Beim Verlassen eines Blocks (Scope) muss keine globale Variable zurückgesetzt werden; die lokalen Änderungen ``verfallen'' automatisch.
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{eicb_1_05-tamruntime-handout_page_53_1.png}
+\end{center}
+
+\subsubsection{Adressierung in verschachtelten Blöcken (Triangle)}
+In Sprachen mit verschachtelten Prozeduren (wie Triangle, im Gegensatz zu Mini-Triangle) reicht eine einfache Adresse relativ zu `SB` (Stack Base) nicht aus.
+
+\begin{defbox}[Adress-Tupel]
+  Jede Variable wird durch ein Paar identifiziert: \defc{(Schachtelungstiefe, Displacement)}.
+\end{defbox}
+
+Der Zugriff erfolgt über \textbf{Display-Register} oder `LB` (Local Base) / `SB` (Stack Base):
+
+\textbf{Algorithmus zur Wahl des Basisregisters:}
+Sei $level_{decl}$ die Ebene, auf der die Variable deklariert wurde, und $level_{current}$ die aktuelle Ausführungsebene.
+
+\begin{itemize}
+  \item Wenn $level_{decl} == 0$: Benutze \textbf{SB} (Globale Variable).
+  \item Wenn $level_{decl} == level_{current}$: Benutze \textbf{LB} (Lokale Variable im aktuellen Frame).
+  \item Sonst: Benutze Display-Register oder Statische Verkettung, um den Frame zu finden.
+        \[ r = L(level_{current} - level_{decl}) \]
+        Oder über Display-Register direkt, sofern die Architektur diese unterstützt.
+\end{itemize}
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{eicb_1_05-tamruntime-handout_page_63_1.png}
+\end{center}
+
+\subsection{Prozeduren und Funktionen}
+
+\subsubsection{Deklaration}
+Da der Code linear im Speicher liegt, aber Prozeduren nur bei Aufruf ausgeführt werden sollen, muss der Kontrollfluss um den Prozedurrumpf herumgeleitet werden.
+
+Code-Schema für Deklaration `proc I() ~ C`:
+\begin{enumerate}
+  \item \textbf{JUMP g}: Überspringe den Prozedurcode.
+  \item \textbf{Label e}: Einstiegspunkt (Entry) der Prozedur.
+  \item \textbf{execute[C]}: Code des Rumpfes.
+  \item \textbf{RETURN}: Rückkehr zum Aufrufer.
+  \item \textbf{Label g}: Ziel des Sprungs von Schritt 1 (weiter im Hauptprogramm).
+\end{enumerate}
+
+\subsubsection{Aufruf (Call)}
+Beim Aufruf (`CALL`) muss die \defc{Statische Verkettung} (Static Link) korrekt gesetzt werden, damit die aufgerufene Prozedur auf Variablen der umgebenden Scopes zugreifen kann.
+
+\begin{itemize}
+  \item Die Adresse der Routine ist im Deskriptor gespeichert (`KnownRoutine`).
+  \item Der `CALL`-Befehl erhält das korrekte Basisregister (siehe Adressierung), welches als Static Link in den neuen Stack Frame geschrieben wird.
+\end{itemize}
+
+\subsubsection{Parameterübergabe}
+\begin{itemize}
+  \item \textbf{Aufrufer:} Legt die aktuellen Parameter (Argumente) auf den Stack.
+  \item \textbf{Aufgerufener:} Greift auf Parameter relativ zu `LB` mit \defc{negativen Offsets} zu (da sie vor dem Link-Data-Bereich auf dem Stack liegen).
+  \item \textbf{Var-Parameter:} Werden als `UnknownAddress` behandelt. Es wird nicht der Wert, sondern die Adresse übergeben und bei `fetch`/`assign` genutzt.
+\end{itemize}
+
+\end{document}
