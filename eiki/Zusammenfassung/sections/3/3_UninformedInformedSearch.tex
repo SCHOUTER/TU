@@ -37,8 +37,8 @@ Problemlösende Agenten sind zielbasierte Agenten, die atomare Repräsentationen
 
 Der Kern aller Suchalgorithmen ist die Expansion von Zuständen.
 \begin{itemize}
-   \item \textbf{Fringe (Open List):} Menge der generierten, aber noch nicht expandierten Knoten.
-   \item \textbf{Expansion:} Anwenden der Aktionen auf einen Zustand, um Kindknoten zu generieren.
+   \item \textbf{Fringe (Open List):} Menge der generierten (entdeckten), aber noch nicht expandierten (bearbeiteten) Knoten. Sie wartet darauf, vom Algorithmus besucht zu werden.
+   \item \textbf{Expansion:} Anwenden der Aktionen auf einen Zustand, um alle direkten Nachfolger (Kindknoten) zu generieren und zur Fringe hinzuzufügen.
 \end{itemize}
 
 \begin{center}
@@ -48,79 +48,130 @@ Der Kern aller Suchalgorithmen ist die Expansion von Zuständen.
 
 \begin{defbox}[Unterschied Tree vs. Graph Search]
    \begin{itemize}
-      \item \textbf{Tree Search:} Verfolgt nicht, welche Zustände bereits besucht wurden. Kann in Schleifen geraten und redundante Pfade mehrfach besuchen.
-      \item \textbf{Graph Search:} Speichert besuchte Zustände in einer \textit{Explored Set} (Closed List), um Redundanz und Schleifen zu vermeiden.
+      \item \textbf{Tree Search:} Verfolgt nicht, welche Zustände bereits besucht wurden. Es werden lediglich Knoten generiert. Dies kann dazu führen, dass redundante Pfade mehrfach besucht werden oder der Algorithmus in Zykeln (Schleifen) hängen bleibt.
+      \item \textbf{Graph Search:} Speichert besuchte Zustände in einer \textit{Explored Set} (Closed List). Bevor ein Knoten zur Fringe hinzugefügt wird, wird geprüft, ob der Zustand bereits bekannt ist. Dies vermeidet Redundanz und Endlosschleifen.
    \end{itemize}
 \end{defbox}
 
-\subsubsection{Bewertungskriterien für Suchstrategien}
-\begin{itemize}
-   \item \textbf{Completeness (Vollständigkeit):} Findet der Algorithmus garantiert eine Lösung, wenn eine existiert?
-   \item \textbf{Optimality (Optimalität):} Findet er die kostengünstigste Lösung?
-   \item \textbf{Time Complexity:} Wie lange dauert die Suche? (Anzahl generierter Knoten).
-   \item \textbf{Space Complexity:} Wie viel Speicher wird benötigt? (Maximale Anzahl Knoten im Speicher).
-\end{itemize}
+\subsubsection{Bewertungskriterien und Parameter}
+Um Suchstrategien zu vergleichen, werden folgende Metriken genutzt, die auf den Eigenschaften des Suchraums basieren:
 
 \textbf{Parameter der Komplexität:}
 \begin{itemize}
-   \item $b$: Verzweigungsfaktor (Branching factor) - max. Anzahl Nachfolger eines Knotens.
-   \item $d$: Tiefe des flachsten Zielknotens.
-   \item $m$: Maximale Tiefe des Suchraums (kann $\infty$ sein).
+   \item \textbf{$b$ (Branching factor):} Der Verzweigungsfaktor. Die maximale Anzahl an Nachfolgern, die ein Knoten haben kann.
+   \item \textbf{$d$ (Depth):} Die Tiefe des \textit{flachsten} (am wenigsten Schritte entfernten) Zielknotens.
+   \item \textbf{$m$ (Max Depth):} Die maximale Tiefe des Suchraums (Länge des längsten möglichen Pfades). Kann unendlich ($\infty$) sein.
+\end{itemize}
+
+\textbf{Kriterien:}
+\begin{itemize}
+   \item \textbf{Completeness (Vollständigkeit):} Findet der Algorithmus garantiert eine Lösung, wenn eine existiert?
+   \item \textbf{Optimality (Optimalität):} Findet er garantiert die kostengünstigste Lösung (minimale Pfadkosten)?
+   \item \textbf{Time Complexity:} Anzahl der generierten Knoten (Rechenzeit).
+   \item \textbf{Space Complexity:} Maximale Anzahl der Knoten, die gleichzeitig im Speicher gehalten werden müssen.
 \end{itemize}
 
 \subsection{Uninformierte Suche (Blind Search)}
 
-Uninformierte Strategien haben keine Information darüber, wie nah ein Zustand am Ziel ist. Sie unterscheiden sich nur in der Reihenfolge der Knotencxpansion.
+Uninformierte Strategien haben keine Information darüber, wie nah ein Zustand am Ziel ist. Sie unterscheiden sich nur in der Reihenfolge, in der sie Knoten aus der Fringe zur Expansion auswählen.
 
 \subsubsection{Breadth-First Search (BFS) - Breitensuche}
-Expandiert den flachsten Knoten in der Fringe zuerst (FIFO-Queue).
+Erkundet den Suchbaum schichtweise (Ebene für Ebene).
 \begin{itemize}
-   \item \defc{Vollständig}: Ja (wenn $b$ endlich).
-   \item \defc{Optimal}: Ja, aber nur wenn alle Schrittkosten gleich sind (z.B. 1). Sonst nicht.
-   \item \textbf{Zeit:} $O(b^d)$ (Exponentiell).
-   \item \textbf{Speicher:} $O(b^d)$ (Jeder generierte Knoten muss gespeichert werden).
+   \item \textbf{Algorithmus:} Verwendet eine \textbf{FIFO-Queue} (First-In-First-Out).
+         \begin{enumerate}
+            \item Wähle den \textit{ältesten} Knoten in der Fringe (geringste Tiefe).
+            \item Überprüfe auf Zielzustand.
+            \item Generiere alle Nachfolger und füge sie \textit{hinten} an die Fringe an.
+         \end{enumerate}
+   \item \defc{Vollständig}: Ja (solange $b$ endlich ist), da er irgendwann jede endliche Tiefe $d$ erreicht.
+   \item \defc{Optimal}: Ja, aber \textbf{nur} wenn alle Schrittkosten gleich sind (z.B. 1). Dann ist der flachste Pfad auch der kostengünstigste.
+   \item \textbf{Zeit:} $O(b^d)$ (Exponentiell). Alle Knoten bis Tiefe $d$ werden generiert.
+   \item \textbf{Speicher:} $O(b^d)$. Alle generierten Knoten der aktuellen Ebene müssen gespeichert werden.
 \end{itemize}
-\textit{Problem:} Speicherbedarf ist das größte Problem der BFS.
+\textit{Problem:} Speicherbedarf ist das größte Problem der BFS, da die Fringe exponentiell wächst.
 
 \subsubsection{Uniform-Cost Search (UCS)}
-Expandiert den Knoten mit den geringsten Pfadkosten $g(n)$ zuerst (Priority Queue).
+Erkundet den Suchbaum basierend auf Pfadkosten statt Tiefe. Verallgemeinerung von BFS für ungleiche Schrittkosten.
 \begin{itemize}
-   \item Äquivalent zu BFS, wenn alle Schrittkosten gleich sind.
-   \item \defc{Vollständig}: Ja (wenn Kosten $\epsilon > 0$).
-   \item \defc{Optimal}: Ja.
-   \item \textbf{Komplexität:} Hängt von den Kosten ab, kann schlechter als $b^d$ sein, wenn viele Schritte mit kleinen Kosten existieren.
+   \item \textbf{Algorithmus:} Verwendet eine \textbf{Priority Queue}, sortiert nach $g(n)$.
+         \begin{enumerate}
+            \item $g(n)$: Kumulierte Kosten vom Start bis zum Knoten $n$.
+            \item Wähle den Knoten mit dem \textit{geringsten} $g(n)$ aus der Fringe.
+            \item WICHTIG: Der Zieltest erfolgt erst bei der \textbf{Expansion} (Entnahme aus Fringe), nicht bei der Generierung, um sicherzustellen, dass kein billigerer Weg existiert.
+         \end{enumerate}
+   \item \defc{Vollständig}: Ja, wenn jede Schrittkosten $\ge \epsilon > 0$ ist (keine unendlich kleinen Schritte oder Nullkosten-Zyklen).
+   \item \defc{Optimal}: Ja, da billigere Pfade immer vor teureren expandiert werden.
+   \item \textbf{Komplexität:} $O(b^{1 + \lfloor C^*/\epsilon \rfloor})$.
+         \begin{itemize}
+            \item $C^*$: Kosten der optimalen Lösung.
+            \item $\epsilon$: Minimale Kosten eines Einzelschritts.
+            \item Kann schlechter als $b^d$ sein, wenn viele kleine Schritte möglich sind.
+         \end{itemize}
 \end{itemize}
 
-\subsubsection{Depth-First Search (DFS) - Tiefensuche}
-Expandiert den tiefsten Knoten in der Fringe zuerst (LIFO-Queue / Stack).
+\subsubsection{Dijkstra-Algorithmus}
+Der Dijkstra-Algorithmus ist die \textbf{Graph-Search-Variante} der Uniform-Cost Search. Er erweitert UCS um eine Speicherkomponente für bereits besuchte Zustände.
 \begin{itemize}
-   \item \defc{Vollständig}: Nein (kann in unendlichen Pfaden oder Schleifen hängen bleiben, außer bei Graph Search in endlichen Räumen).
-   \item \defc{Optimal}: Nein (findet irgendeinen Pfad, nicht zwingend den kürzesten).
-   \item \textbf{Zeit:} $O(b^m)$. Schlecht, wenn $m \gg d$.
-   \item \textbf{Speicher:} $O(b \cdot m)$ (Linear!). Nur der aktuelle Pfad und Geschwisterknoten werden gespeichert.
+   \item \textbf{Unterschied zu UCS:} Während UCS (als Tree Search) redundante Pfade mehrfach berechnen und in Zyklen geraten kann, verhindert Dijkstra dies durch das Speichern besuchter Knoten.
+         \begin{enumerate}
+            \item Initialisiere Fringe mit Startzustand und setze \textit{Explored Set} auf leer.
+            \item Solange Fringe nicht leer ist:
+            \item Wähle Knoten mit kleinstem $g(n)$ und entferne ihn aus der Fringe.
+            \item Wenn Zielzustand: Rückgabe Lösung.
+            \item Füge Knoten zum \textit{Explored Set} hinzu.
+            \item Expandiere Knoten: Füge Nachfolger nur zur Fringe hinzu, wenn sie weder in der Fringe noch im \textit{Explored Set} sind.
+         \end{enumerate}
+   \item \textbf{Eigenschaften:} Erbt Vollständigkeit und Optimalität von UCS (bei nicht-negativen Kantenkosten), ist aber effizienter in Graphen mit vielen Pfaden zum gleichen Zustand.
+\end{itemize}
+
+
+[Image of Dijkstra algorithm flowchart]
+
+\subsubsection{Depth-First Search (DFS) - Tiefensuche}
+Erkundet Pfade bis in die Tiefe, bevor zurückgegangen wird (Backtracking).
+\begin{itemize}
+   \item \textbf{Algorithmus:} Verwendet eine \textbf{LIFO-Queue / Stack} (Last-In-First-Out).
+         \begin{enumerate}
+            \item Wähle den \textit{neuesten} Knoten in der Fringe (tiefste Ebene).
+            \item Generiere Nachfolger und lege sie \textit{vorne} auf den Stack.
+            \item Wenn ein Blattknoten (oder Sackgasse) erreicht wird, wird dieser verworfen und der nächste Knoten vom Stack (Geschwisterknoten) bearbeitet.
+         \end{enumerate}
+   \item \defc{Vollständig}: Nein. Kann in unendlichen Pfaden ($m=\infty$) oder Schleifen (ohne Graph Search) hängen bleiben, selbst wenn das Ziel flach liegt.
+   \item \defc{Optimal}: Nein. Findet den ersten Pfad (oft links im Baum), nicht zwingend den kürzesten.
+   \item \textbf{Zeit:} $O(b^m)$. Schlecht, wenn die maximale Tiefe $m$ viel größer ist als die Zieltife $d$ ($m \gg d$).
+   \item \textbf{Speicher:} $O(b \cdot m)$ (Linear!). Nur der aktuelle Pfad (Tiefe $m$) und die Geschwister auf jeder Ebene ($b$) müssen gespeichert werden. Sehr effizient.
 \end{itemize}
 
 \subsubsection{Depth-Limited Search (DLS)}
-DFS mit einem vordefinierten Tiefenlimit $l$.
+Eine DFS, die künstlich beschränkt wird, um Endlos-Pfade zu vermeiden.
 \begin{itemize}
+   \item \textbf{Algorithmus:} Wie DFS, aber Knoten in Tiefe $l$ (Limit) werden behandelt, als hätten sie keine Nachfolger.
+   \item \textbf{Parameter:} $l$ (Tiefenlimit).
    \item Löst das Endlos-Pfad-Problem der DFS.
-   \item Unvollständig, wenn Lösung tiefer als $l$ ($d > l$).
-   \item Nicht optimal.
+   \item \defc{Unvollständig}: Wenn die Lösung tiefer liegt als das Limit ($d > l$).
+   \item \defc{Nicht optimal}: Wie DFS.
 \end{itemize}
 
 \subsubsection{Iterative Deepening Search (IDS)}
-Kombiniert die Vorteile von BFS (Vollständigkeit) und DFS (Speichereffizienz). Führt DLS mit Limit $l=0, 1, 2, \dots$ nacheinander aus.
+Kombiniert die Vorteile von BFS (Vollständigkeit/Optimalität) und DFS (Speichereffizienz).
 \begin{itemize}
-   \item \defc{Vollständig}: Ja.
-   \item \defc{Optimal}: Ja (bei gleichen Schrittkosten).
-   \item \textbf{Zeit:} $O(b^d)$. Knoten werden mehrfach generiert, aber da die unterste Ebene die Mehrheit ausmacht, ist der Overhead gering (ca. 11\% mehr Aufwand bei $b=10$).
-   \item \textbf{Speicher:} $O(b \cdot d)$ (Linear).
+   \item \textbf{Algorithmus:} Führt DLS wiederholt mit steigendem Limit aus.
+         \begin{enumerate}
+            \item Starte DLS mit Limit $l=0$.
+            \item Wenn kein Ziel gefunden: Verwerfe kompletten Suchbaum.
+            \item Erhöhe Limit $l = l + 1$ und starte DLS von vorn.
+         \end{enumerate}
+   \item \defc{Vollständig}: Ja, wie BFS.
+   \item \defc{Optimal}: Ja, wie BFS (bei gleichen Schrittkosten), da das Ziel auf der flachstmöglichen Ebene zuerst gefunden wird.
+   \item \textbf{Zeit:} $O(b^d)$. Knoten werden mehrfach generiert (Knoten auf Level 1 werden $d$-mal generiert, auf Level $d$ nur 1-mal). Da die Blätterzahl bei exponentiellem Wachstum dominiert, ist der Overhead gering (ca. 11\% bei $b=10$).
+   \item \textbf{Speicher:} $O(b \cdot d)$ (Linear). Verhält sich bzgl. Speicher wie DFS.
 \end{itemize}
-\textbf{Fazit:} IDS ist oft die bevorzugte uninformierte Suchmethode für große Suchräume mit unbekannter Tiefe.
+\textbf{Fazit:} IDS ist oft die bevorzugte uninformierte Suchmethode für große Suchräume, wenn die Zieltife unbekannt ist.
 
 \subsection{Informierte Suche (Heuristische Suche)}
 
-Nutzt problem spezifisches Wissen in Form einer \textbf{Heuristikfunktion} $h(n)$, um die Suche zu lenken.
+Nutzt problemspezifisches Wissen in Form einer \textbf{Heuristikfunktion} $h(n)$, um die Suche effizienter Richtung Ziel zu lenken.
 
 \begin{defbox}[Heuristik $h(n)$]
    $h(n) = $ geschätzte Kosten vom Knoten $n$ zum Ziel.
@@ -131,51 +182,64 @@ Nutzt problem spezifisches Wissen in Form einer \textbf{Heuristikfunktion} $h(n)
 \end{defbox}
 
 \subsubsection{Greedy Best-First Search}
-Expandiert den Knoten, der dem Ziel am nächsten scheint.
+Versucht, den Knoten zu expandieren, der dem Ziel am nächsten zu sein \textit{scheint}.
 \begin{itemize}
-   \item \textbf{Bewertungsfunktion:} $f(n) = h(n)$.
-   \item \defc{Vollständig}: Nein (wie DFS, kann in Schleifen geraten).
+   \item \textbf{Algorithmus:} Priority Queue sortiert nach $h(n)$.
+         \begin{enumerate}
+            \item Bewertungsfunktion $f(n) = h(n)$.
+            \item Wähle Knoten mit \textit{kleinstem} $h(n)$.
+         \end{enumerate}
+   \item Ignoriert die bereits zurückgelegten Kosten ($g(n)$).
+   \item \defc{Vollständig}: Nein (wie DFS, kann in Schleifen geraten oder Sackgassen folgen).
    \item \defc{Optimal}: Nein.
-   \item \textbf{Zeit/Speicher:} $O(b^m)$ im schlechtesten Fall. Gute Heuristiken können dies drastisch verbessern.
+   \item \textbf{Zeit/Speicher:} $O(b^m)$ im schlechtesten Fall. Mit guten Heuristiken oft drastisch schneller.
 \end{itemize}
 
 \subsubsection{A* Search (A-Star)}
-Kombiniert UCS und Greedy. Minimiert die geschätzten Gesamtkosten des Pfades durch $n$.
+Kombiniert UCS (Vermeidung langer Pfade) und Greedy (Fokus auf Ziel).
 \begin{itemize}
-   \item \textbf{Bewertungsfunktion:} $f(n) = g(n) + h(n)$
-   \item $g(n)$: Tatsächliche Kosten vom Start bis $n$ -> Vergangenheit.
-   \item $h(n)$: Geschätzte Kosten von $n$ bis zum Ziel -> Zukunft.
-   \item $f(n)$: Geschätzte Gesamtkosten des Pfades durch $n$.
+   \item \textbf{Algorithmus:} Priority Queue sortiert nach $f(n)$.
+         \begin{enumerate}
+            \item \textbf{Bewertungsfunktion:} $f(n) = g(n) + h(n)$
+            \item $g(n)$: Tatsächliche Kosten vom Start bis $n$ (Vergangenheit).
+            \item $h(n)$: Geschätzte Kosten von $n$ bis zum Ziel (Zukunft).
+            \item $f(n)$: Geschätzte \textbf{Gesamtkosten} des Pfades durch $n$.
+            \item Expandiere Knoten mit minimalem $f(n)$.
+         \end{enumerate}
+   \item Verhält sich wie UCS, wenn $h(n)=0$.
 \end{itemize}
 
 \subsection{Heuristiken für A*}
 
-Damit A* optimal ist, muss die Heuristik bestimmte Eigenschaften erfüllen.
+Damit A* optimal ist, muss die Heuristik je nach Suchart (Tree oder Graph Search) bestimmte mathematische Eigenschaften erfüllen.
 
 \subsubsection{Admissibility (Zulässigkeit)}
-Eine Heuristik $h(n)$ ist \textbf{admissible}, wenn sie die Kosten zum Ziel \textit{niemals überschätzt}.
+Eine Heuristik $h(n)$ ist \textbf{admissible}, wenn sie die Kosten zum Ziel \textit{niemals überschätzt}. Sie ist optimistisch.
 \[0 \le h(n) \le h^*(n)\]
 (wobei $h^*(n)$ die wahren Kosten zum Ziel sind).
 \begin{itemize}
+   \item \textbf{Bedeutung:} Wenn A* eine Lösung mit Kosten $C$ findet, garantiert die Zulässigkeit, dass es keinen übersehenen Pfad mit Kosten $< C$ geben kann, da dieser eine optimistische Schätzung $< C$ gehabt hätte und zuerst expandiert worden wäre.
    \item Notwendig für Optimalität bei \textbf{Tree Search}.
    \item Beispiel Luftlinie: Die direkte Distanz ist immer kürzer oder gleich der Straßenentfernung.
 \end{itemize}
 
 \subsubsection{Consistency (Konsistenz / Monotonie)}
-Eine Heuristik $h(n)$ ist \textbf{consistent}, wenn für jeden Knoten $n$ und jeden Nachfolger $n'$ gilt:
+Eine Heuristik $h(n)$ ist \textbf{consistent}, wenn die geschätzten Kosten entlang eines Pfades nicht sinken. Für jeden Knoten $n$ und jeden Nachfolger $n'$ gilt:
 \[h(n) \le c(n, a, n') + h(n')\]
-(Dreiecksungleichung). $a$ ist die angewandte Aktion ($c(n, a, n')$: die Kosten genau dieses Schritts vom Zustand $n$ nach $n'$ unter Verwendung der Aktion $a$)
+(Dreiecksungleichung).
 \begin{itemize}
+   \item Die Kostenreduktion der Heuristik ($h(n) - h(n')$) darf nicht größer sein als die tatsächlichen Schrittkosten $c(n, a, n')$.
+   \item \textbf{Folge:} Die $f(n)$-Werte ($g+h$) entlang eines Pfades steigen monoton an.
    \item Notwendig für Optimalität bei \textbf{Graph Search}.
    \item Konsistenz impliziert Admissibility.
-   \item Bei konsistenten Heuristiken steigen die $f(n)$-Werte entlang eines Pfades monoton an (oder bleiben gleich).
+   \item Bei konsistenten Heuristiken ist der erste gefundene Pfad zu einem Knoten garantiert der optimale.
 \end{itemize}
 
 \subsubsection{Dominanz von Heuristiken}
-Wenn $h_2(n) \ge h_1(n)$ für alle $n$ (und beide zulässig sind), dann \textbf{dominiert} $h_2$ die Heuristik $h_1$.
+Wenn zwei Heuristiken $h_1$ und $h_2$ zulässig sind und $h_2(n) \ge h_1(n)$ für alle $n$ gilt, dann \textbf{dominiert} $h_2$ die Heuristik $h_1$.
 \begin{itemize}
-   \item $h_2$ ist näher an den wahren Kosten ($h^*$).
-   \item A* mit $h_2$ expandiert weniger Knoten als mit $h_1$ und ist effizienter.
+   \item $h_2$ ist ``näher'' an den wahren Kosten ($h^*$) und damit genauer.
+   \item \textbf{Effekt:} A* mit $h_2$ muss weniger Knoten expandieren als mit $h_1$, da Knoten mit $f(n) > C^*$ früher erkannt und abgeschnitten werden.
 \end{itemize}
 \begin{center}
    \vcentered{\includegraphics[width=0.7\textwidth]{eiki_1_AI101-03_page_55_1.png}}
@@ -187,6 +251,6 @@ Wenn $h_2(n) \ge h_1(n)$ für alle $n$ (und beide zulässig sind), dann \textbf{
    \item $h_{MIS}(n)$: Anzahl der falsch platzierten Kacheln (Misplaced Tiles).
    \item $h_{MAN}(n)$: Summe der Manhattan-Distanzen aller Kacheln zu ihrer Zielposition.
 \end{itemize}
-Es gilt: $h_{MAN}(n) \ge h_{MIS}(n)$. Daher dominiert die Manhattan-Distanz die ``Misplaced Tiles''-Heuristik und ist für A* besser geeignet.
+Es gilt: $h_{MAN}(n) \ge h_{MIS}(n) \ge 0$. Daher dominiert die Manhattan-Distanz die ``Misplaced Tiles''-Heuristik. Da sie näher an den echten Kosten ist, macht sie A* effizienter.
 
 \end{document}
