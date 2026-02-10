@@ -1,0 +1,143 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Encoding, Fonts, Typography
+% ---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{float}
+
+% ---------------------------------------------------------
+% Language
+% ---------------------------------------------------------
+\usepackage[ngerman,english]{babel}
+
+% ---------------------------------------------------------
+% Math
+% ---------------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+
+% ---------------------------------------------------------
+% Tables
+% ---------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------------------------------------------------------
+% Figures & Graphics
+% ---------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+
+% ---------------------------------------------------------
+% Lists
+% ---------------------------------------------------------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------------------------------------------------------
+% Units & Numbers
+% ---------------------------------------------------------
+\usepackage{siunitx}
+
+% ---------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% ---------------------------------------------------------
+% Global layout improvements
+% ---------------------------------------------------------
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+
+% ---------------------------------------------------------
+% Title
+% ---------------------------------------------------------
+\title{\"Ubung 11: Gruppe 28}
+\author{
+    Niclas Kusenbach, 360227 \and
+    Alicia Bayerl, 2633336
+}
+
+\begin{document}
+\maketitle
+\section*{Aufgabe 11.1: Informationsvisualisierung + Informationsdesign}
+
+\subsection*{a) Definition Informationsvisualisierung}
+[Quelle: Folie 24]
+
+Informationsvisualisierung ist die Nutzung computergestützter, interaktiver visueller Darstellungen abstrakter Daten mit dem Ziel, menschliches Denken/Kognition zu unterstützen und zu verbessern.
+
+\subsection*{b) Referenzmodell Informationsvisualisierung Card et al. (1999)}
+[Quelle: Folie 30-37, \href{https://www.imis.uni-luebeck.de/sites/default/files/2023-03/10.1515_9783110769043-025.pdf}{Uni Lübeck}]
+
+Im ersten Schritt, der Data Transformation, werden die Rohdaten in strukturierte und analysierbare Daten überführt (Raw Data → Data Tables). Dabei werden sie beispielsweise gefiltert, sortiert, aggregiert oder normalisiert, um sie für die weitere Verarbeitung vorzubereiten.
+Anschließend erfolgt das Visual Mapping. In diesem Schritt werden die aufbereiteten Daten visuellen Strukturen zugeordnet, indem sie grafischen Eigenschaften wie Position, Farbe, Größe oder Form zugewiesen werden. Dadurch werden die Daten visuell kodiert.
+Im letzten Schritt, der View Transformation, werden diese visuellen Strukturen schließlich in konkrete Darstellungen (Views) überführt und für den Nutzer sichtbar gemacht. Durch Interaktionen wie Zoom, Rotation oder Animation kann die Ansicht angepasst und die Exploration der Daten unterstützt werden.
+
+
+\subsection*{c) Charakteristika gute Visualisierungen}
+[Quelle: Folie 62]
+
+Gute Visualisierungen sollten:
+\begin{enumerate}
+    \item Daten nicht verzerren und Dateninformationen behalten
+    \item nicht falsch oder irreführend skaliert sein
+    \item nicht verzerren oder unproportionale Größenverhältnisse oder Farben verwenden
+    \item keine zu volle Darstellung der Daten haben
+    \item eine Legende beinhalten
+\end{enumerate}
+
+\section*{Aufgabe 11.2: Visualisierungstechniken}
+
+\subsection*{a) Visualisierungstechniken 1D-Daten}
+[Quelle: Folie 68-71]
+\begin{enumerate}
+    \item Kuchendiagramm zur Darstellung von Anteiledaten
+    \item Balkendiagramm zur Abbildung von Werten und Vergleichen dieser
+\end{enumerate}
+
+\subsection*{b) Visualisierungstechniken Hierarchien}
+[Quelle: Folie 97-110]
+\begin{enumerate}
+    \item Node-Link Diagramme durch Knoten und Eltern-Kind Beziehungen als Linien
+    \item Treemap durch rekursive Aufteilung eines Rechtecks anhand der Baumstruktur
+\end{enumerate}
+
+\subsection*{c) Scatterplot Unternehmensportfolio}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{vc_1_HU_11.png}
+    \caption{Enter Caption}
+    \label{fig:enter-label}
+\end{figure}
+
+\section*{Aufgabe 11.3: Interaktionstechniken}
+
+\subsection*{a) Interaktion Referenzmodell Card et al. (1999)}
+[Quelle: Folie 127-139]
+
+
+\begin{enumerate}
+    \item \textbf{Data Transformation:} Hier kann der Nutzer Daten hinzufügen, filtrieren, die Datennormalisierung ändern oder Daten editieren
+    \item \textbf{Visual Mapping:} Der Nutzer kann durch Änderungen des Farbschemas oder Auswahl bestimmter Daten für die Abbildung interagieren.
+    \item \textbf{View Transformation:} Hierbei kann der Nutzer mit der Visualisierung durch Zooming, Panning, Reorganisieren von Objekten, Highlighting auf dem Bildschirm mit der Visualisierung interagieren.
+\end{enumerate}
+
+\subsection*{b) Vorteile Interaktion Referenzmodell Card et al. (1999)}
+[Quelle: Folie 139]
+Interaktive Informationsvisualisierung erlaubt es dem Nutzer, aktiv in die Darstellung einzugreifen und Daten aus verschiedenen Perspektiven zu sehen, wodurch das Verständnis verbessert wird und Erkenntnisse aus den Daten besser gewonnen werden können.
+
+\subsection*{c) Beisel Datenfiltrierung Beispiel}
+[Quelle: \href{https://www.youtube.com/watch?v=VWx1TMcrb74}{Youtube}]
+
+Die Datenfiltrierung erfolgt über interaktive Timeboxes, mit denen der Nutzer Zeiträume direkt im Zeitdiagramm markiert. Dadurch werden nur die Aktien angezeigt, deren Kursverläufe innerhalb dieses Zeitfensters liegen, z.B. alle Aktien, die im Februar steigen. Mehrere Timeboxes, das Invertieren der Auswahl (durch Flipper) sowie das Anpassen der Boxgröße ermöglichen eine flexible Filterung der Daten.
+\end{document}
+

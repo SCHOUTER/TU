@@ -1,0 +1,149 @@
+\documentclass[11pt,a4paper]{article}
+
+% ---------------------------------------------------------
+% Encoding, Fonts, Typography
+% ---------------------------------------------------------
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1]{fontenc}
+  \usepackage{lmodern}
+\else
+  \usepackage{fontspec}
+\fi
+\usepackage{microtype}
+
+% ---------------------------------------------------------
+% Language
+% ---------------------------------------------------------
+\usepackage[english,ngerman]{babel}
+
+% ---------------------------------------------------------
+% Math
+% ---------------------------------------------------------
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{mathtools}
+
+% ---------------------------------------------------------
+% Tables
+% ---------------------------------------------------------
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+% ---------------------------------------------------------
+% Figures & Graphics
+% ---------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+
+
+% ---------------------------------------------------------
+% Lists
+% ---------------------------------------------------------
+\usepackage{enumitem}
+\setlist{nosep}
+
+% ---------------------------------------------------------
+% Units & Numbers
+% ---------------------------------------------------------
+\usepackage{siunitx}
+
+% ---------------------------------------------------------
+% Hyperlinks
+% ---------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+\usepackage{xurl}
+
+% ---------------------------------------------------------
+% Global layout improvements
+% ---------------------------------------------------------
+\clubpenalty=10000
+\widowpenalty=10000
+\emergencystretch=3em
+
+% ---------------------------------------------------------
+% Title
+% ---------------------------------------------------------
+\title{Übung 10: Gruppe 28}
+\author{
+    Niclas Kusenbach, 360227 \and
+    Alicia Bayerl, 2633336
+}
+
+\begin{document}
+\maketitle
+
+\section*{Aufgabe 12.1: Farbattribute [Slide: 21--24]}
+
+\subsection*{a) Die 5 Farbattribute}
+Die fünf Farbattribute der menschlichen Wahrnehmung sind:
+\begin{enumerate}
+  \item \textbf{Helligkeit (Brightness):} Dies ist das Attribut der Farbwahrnehmung, nach dem eine Fläche mehr oder weniger Licht abzustrahlen scheint.
+  \item \textbf{Relative Helligkeit (Lightness):} Dies beschreibt die Helligkeit einer Fläche relativ zur Helligkeit einer gleich beleuchteten Fläche, die weiß erscheint (gilt nur für bezogene Farben).
+  \item \textbf{Farbton (Hue):} Das Attribut, nach dem eine Fläche einer der Farben Rot, Gelb, Grün, Blau oder einer Kombination aus zwei von ihnen gleicht.
+  \item \textbf{Farbigkeit (Colorfulness):} Das Attribut, nach dem eine Fläche als mehr oder weniger farbig empfunden wird.
+  \item \textbf{Buntheit (Chroma):} Die Farbigkeit einer Fläche relativ zur Helligkeit einer gleich beleuchteten Fläche, die weiß erscheint (gilt nur für bezogene Farben).
+\end{enumerate}
+
+\subsection*{b) Zusammenhang und Formeln}
+Die Attribute stehen in einem hierarchischen Zusammenhang, wobei sich relative Werte auf die Helligkeit des Weißpunkts beziehen. Zwei zentrale Formeln sind:
+\begin{itemize}
+  \item $\text{Buntheit} = \frac{\text{Farbigkeit}}{\text{Helligkeit (Weiß)}}$
+  \item $\text{Relative Helligkeit} = \frac{\text{Helligkeit}}{\text{Helligkeit (Weiß)}}$
+\end{itemize}
+
+\subsection*{c) Sättigung}
+Die Sättigung (Saturation) beschreibt die Farbigkeit einer Fläche relativ zu ihrer eigenen Helligkeit. Sie lässt sich aus den Attributen wie folgt berechnen (visualisiert als Verhältnis):
+\[ \text{Sättigung} = \frac{\text{Farbigkeit}}{\text{Helligkeit}} \]
+Alternativ kann sie als Verhältnis von Buntheit zu relativer Helligkeit betrachtet werden.
+
+\section*{Aufgabe 12.2: Farbräume [Slide: 40, 49, 51--53]}
+
+\subsection*{a) Einsatzbereiche von YCbCr und HSI}
+\begin{itemize}
+  \item \textbf{YCbCr:} Wird typischerweise für Bildkompression (z.\,B. JPEG) verwendet, da es die Luminanz von den Chrominanz-Kanälen trennt.
+  \item \textbf{HSI (HSV/HSL):} Findet Verwendung zur intuitiven Auswahl und Manipulation von Farben in Grafikprogrammen, da die Achsen den wahrgenommenen Attributen (Farbton, Sättigung, Intensität) nachempfunden sind.
+\end{itemize}
+
+\subsection*{b) MacAdam-Ellipsen}
+MacAdam-Ellipsen zeigen im CIE-xy-Diagramm die Bereiche für \textbf{gerade noch wahrnehmbare Farbabstände} (Just Noticeable Differences).
+
+\subsection*{c) Buchstabe K im CMYK-Farbraum}
+Der Buchstabe K steht für \textbf{Black} (Schwarz) bzw. „Key“.
+
+\subsection*{d) Technische vs.\ wahrnehmungsbasierte Farbräume}
+\begin{itemize}
+  \item \textbf{Technische Farbräume (RGB, YCbCr):} Diese sind geräteabhängig (definieren Ansteuerungswerte) oder auf effiziente Speicherung/Übertragung ausgelegt. Sie haben keinen eindeutigen, linearen Bezug zum menschlichen visuellen System.
+  \item \textbf{Wahrnehmungsbasierte Farbräume (CIELAB):} Diese modellieren das menschliche visuelle System (z.\,B. Gegenfarbentheorie, Nichtlinearitäten) und sind darauf ausgelegt, wahrnehmungsgleichabständig zu sein (der euklidische Abstand entspricht dem empfundenen Farbunterschied).
+\end{itemize}
+
+\section*{Aufgabe 12.3: Farbwahrnehmungsmodelle [Slide: 65--66]}
+
+\subsection*{a) Notwendigkeit von Farbwahrnehmungsmodellen}
+Farbwahrnehmungsmodelle (Color Appearance Models, CAM) werden benötigt, um Farbreize so anzupassen, dass sie unter unterschiedlichen Betrachtungsbedingungen (z.\,B. Beleuchtung, Hintergrund, Umgebungshelligkeit) gleich wahrgenommen werden (Farbabgleich). Sie berücksichtigen Phänomene wie chromatische Adaptation und Kontrasteffekte, die das einfache CIEXYZ-Modell nicht abdeckt.
+
+\subsection*{(b) Eingabeparameter des CIECAM02-Modells}
+\begin{itemize}
+  \item \textbf{a) $Y_b$:} Die relative Leuchtdichte des Hintergrunds (Background Luminance).
+  \item \textbf{b) $(X, Y, Z)$:} Der Farbreiz des zu untersuchenden Objekts (Stimulus).
+  \item \textbf{c) $L_A$:} Die Leuchtdichte des Adaptationsfeldes (Adapting Field Luminance), die den Adaptationszustand des Auges bestimmt.
+  \item \textbf{d) $(X_w, Y_w, Z_w)$:} Die Farbvalenz des Weißpunkts (Referenzweiß) unter den gegebenen Betrachtungsbedingungen.
+\end{itemize}
+
+\section*{Aufgabe 12.4: Farbwahrnehmungsphänomene [Slide: 60--64]}
+
+\subsection*{a) Hintergrundwahl für minimale Graustufendifferenzen}
+Man wählt einen Hintergrund, der eine \textbf{ähnliche Helligkeit (Graustufe)} wie die darzustellenden Graustufen hat.
+\textbf{Grund:} Dies nutzt den \textbf{Crispening-Effekt}, bei dem der wahrgenommene Farbunterschied zweier Farbreize vergrößert wird, wenn der Hintergrund den Reizen ähnlich ist.
+
+\subsection*{(b) Roter Kreis Phänomene}
+\begin{itemize}
+  \item Dass der Kreis auf sehr hellem Hintergrund weniger gesättigt/dunkler wirkt, erklärt der \textbf{Simultankontrast} (heller Hintergrund induziert dunklere Wahrnehmung).
+  \item Dass der Kreis bei hoher Raumhelligkeit kräftiger (farbiger) erscheint, erklärt der \textbf{Hunt-Effekt} (Farbigkeit steigt mit der Leuchtdichte).
+\end{itemize}
+
+\subsection*{c) Objekt sticht aus Hintergrund heraus}
+Dies wird am besten durch den \textbf{Simultankontrast} erklärt. Der Hintergrund induziert die Gegenfarbe bzw.\ einen Helligkeitskontrast im Objekt, wodurch sich die wahrgenommene Farbe des Objekts stärker vom Hintergrund abhebt (Farbverschiebung zur Erhöhung des Unterschieds). Alternativ trägt bei hohen Leuchtdichten der \textbf{Stevens-Effekt} dazu bei, da der Helligkeitskontrast mit der Leuchtdichte steigt.
+
+\end{document}
