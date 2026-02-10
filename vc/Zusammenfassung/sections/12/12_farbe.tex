@@ -1,0 +1,106 @@
+ \documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+
+\begin{document}
+
+\section{Visual Computing - Farbe}
+\subsection{Einführung und Grundbegriffe}
+Farbe ist eine Gesichtsempfindung, die es ermöglicht, zwei angrenzende, strukturlose Teile des Gesichtsfeldes bei einäugiger Beobachtung mit unbewegtem Auge zu unterscheiden (nach DIN 5033). Für die technische Verarbeitung sind Modelle des menschlichen visuellen Systems (\defc{Human Visual System - HVS}), der Aufnahmegeräte und der Wiedergabegeräte essenziell.
+
+\begin{defbox}[Farbattribute (Wahrnehmungskorrelate)]
+  Die Farbwahrnehmung hat 5 Dimensionen:
+  \begin{enumerate}
+    \item \defc{Helligkeit (Brightness)}: Ausgestrahlte Lichtmenge einer Fläche.
+    \item \defc{Relative Helligkeit (Lightness)}: Helligkeit relativ zu einer als weiß erscheinenden Fläche.
+    \item \defc{Farbton (Hue)}: Beschreibung als Rot, Gelb, Grün, Blau (oder Kombinationen).
+    \item \defc{Farbigkeit (Colorfulness)}: Empfundene Intensität der Farbe.
+    \item \defc{Buntheit (Chroma)}: Farbigkeit relativ zur Helligkeit einer weißen Fläche.
+  \end{enumerate}
+\end{defbox}
+
+\textbf{Sättigung (Saturation):} Beschreibt die Farbigkeit einer Fläche relativ zu ihrer eigenen Helligkeit.%
+
+\subsection{Physiologie des Auges}
+Das Auge wandelt Farbreize (Spektren) in Nervensignale (Farbvalenzen) um.
+
+\begin{itemize}
+  \item \textbf{Retina:} Enthält Photorezeptoren. Die höchste Dichte an Zapfen befindet sich in der \defc{Fovea}.
+  \item \textbf{Stäbchen (Rods):} Verantwortlich für das skotopische Sehen (Nachtsehen, niedrige Luminanz).
+  \item \textbf{Zapfen (Cones):} Verantwortlich für das photopische Sehen (Tagsehen). Es gibt drei Typen: \textbf{L} (Long), \textbf{M} (Medium) und \textbf{S} (Short).
+  \item \textbf{Mesopisches Sehen:} Übergangsbereich, in dem sowohl Stäbchen als auch Zapfen aktiv sind.
+\end{itemize}
+
+\subsection{Spektrale Charakterisierung und Farbabgleich}
+Ein Farbreiz $x(\lambda)$ wird durch die spektrale Empfindlichkeit $s_i(\lambda)$ der Rezeptoren in eine Farbvalenz $y_i$ überführt:
+\[ y_i = \int_{\Lambda} x(\lambda) s_i(\lambda) d\lambda \quad \text{bzw. diskret: } y = Sx \]
+
+\begin{defbox}[Metamerie]
+  Zwei unterschiedliche Spektren $f$ und $g$ heißen \defc{metamer}, wenn sie die gleiche Zapfenantwort (Farbvalenz) auslösen: $Sf = Sg$.
+  \begin{itemize}
+    \item \textbf{Beleuchtungsmetamerie:} Objekte sehen unter Lichtart A gleich aus, unter Lichtart B unterschiedlich.
+    \item \textbf{Beobachtermetamerie:} Zwei Reize wirken für Person 1 gleich, für Person 2 unterschiedlich (aufgrund individueller CMFs).
+  \end{itemize}
+\end{defbox}
+
+\textbf{Spektralwertfunktionen (Color Matching Functions -- CMFs):} Durch Farbabgleichsexperimente mit drei Primärlichtarten $P$ wird die Spektralwertmatrix $A$ bestimmt. Jede Zeile von $A$ ist eine CMF.
+
+\begin{itemize}
+  \item \textbf{CIE 1931 RGB:} Verwendet monochromatische Primärvalenzen (700nm, 546.1nm, 435.8nm). Nachteil: Teilweise negative Werte (für den Abgleich muss Licht zur Testquelle addiert werden).
+  \item \textbf{CIE 1931 XYZ:} Lineare Transformation von RGB zu rein positiven Funktionen. $\bar{y}(\lambda)$ entspricht der Hellempfindlichkeitsfunktion $V(\lambda)$.
+\end{itemize}
+
+\subsection{Farbräume}
+\subsubsection{CIEXYZ und Normfarbtafel}
+Der XYZ-Farbraum ist die Basis für die geräteunabhängige Farbbeschreibung. Zur Trennung von Helligkeit und Farbart werden die \defc{Chromaticity-Koordinaten} genutzt:
+\[ x = \frac{X}{X+Y+Z}, \quad y = \frac{Y}{X+Y+Z}, \quad z = \frac{Z}{X+Y+Z} \]
+Die Darstellung in der $x,y$-Ebene ergibt die \defc{Normfarbtafel}.
+\textbf{Limitierung:} Der XYZ-Raum ist nicht \defc{wahrnehmungsgleichabständig} (siehe MacAdam-Ellipsen).
+
+\subsubsection{CIELAB (Lab*)}
+Ein Gegenfarbenraum, der Nichtlinearitäten des HVS (Stevenssche Potenzfunktion) modelliert und nahezu wahrnehmungsgleichabständig ist.
+\[ L^* = 116 f(Y/Y_n) - 16 \]
+\[ a^* = 500 [f(X/X_n) - f(Y/Y_n)] \]
+\[ b^* = 200 [f(Y/Y_n) - f(Z/Z_n)] \]
+Dabei ist $(X_n, Y_n, Z_n)$ der Weißpunkt. Der Farbabstand wird als Euklidische Distanz berechnet: \[\Delta E_{ab}^* = \sqrt{(\Delta L^*)^{2} + (\Delta a^*)^{2} + (\Delta b^*)^{2}}.\]
+
+\subsubsection{Technische Farbräume}
+\begin{itemize}
+  \item \textbf{sRGB / Adobe RGB:} Standard-RGB-Räume mit definiertem Bezug zu XYZ.
+  \item \textbf{YCbCr:} Trennung in Luminanz ($Y$) und Chrominanz ($Cb, Cr$). Häufig in der Videokompression (JPEG).
+  \item \textbf{HSI / HSV / HSL:} Intuitive Farbwahl (Hue, Saturation, Intensity/Value), aber oft ohne exakten Bezug zur physikalischen Wahrnehmung (Kreuzkontamination).
+  \item \textbf{CMYK:} Subtraktives Modell für den Druck (Cyan, Magenta, Yellow, Key/Black).
+\end{itemize}
+\subsection{Chromatische Adaptation}Das visuelle System passt sich an die Farbe der Umgebungsbeleuchtung an (Weißabgleich).
+
+\begin{defbox}[Von Kries Modell]
+  Jeder Zapfentyp ($L, M, S$) wird individuell durch einen Skalierungsfaktor adaptiert:
+  \[ L_{adapt} = L / L_{weiß}, \quad M_{adapt} = M / M_{weiß}, \quad S_{adapt} = S / S_{weiß} \]
+  Die Transformation zwischen zwei Lichtarten erfolgt über die \defc{Von Kries Transformation} unter Nutzung der \defc{Hunt-Pointer-Estevez (HPE)} Matrix $K$.
+\end{defbox}
+
+\subsection{Wahrnehmungsphänomene und Modelle}
+\begin{itemize}
+  \item \textbf{Simultankontrast:} Ein Hintergrund beeinflusst die Wahrnehmung eines Reizes (Gegenfarben-Induktion).
+  \item \textbf{Crispening-Effekt:} Unterschiede werden deutlicher wahrgenommen, wenn der Hintergrund den Objekten ähnlich ist.
+  \item \textbf{Stevens-Effekt:} Der Kontrast steigt mit der Leuchtdichte (Dunkles wirkt dunkler, Helles heller).
+  \item \textbf{Hunt-Effekt:} Die Buntheit steigt mit der Leuchtdichte.
+\end{itemize}
+
+\textbf{CIECAM02:} Ein komplexes Farbwahrnehmungsmodell, das diese Effekte (Umgebung, Adaptation, Leuchtdichte) berücksichtigt, um einen konsistenten Bildeindruck unter verschiedenen Bedingungen zu ermöglichen.
+
+\subsection{Kontrastsensitivität und S-CIELAB}
+Die Empfindlichkeit des Auges hängt von der \defc{Ortsfrequenz} (Cycles per Degree) ab.
+\begin{itemize}
+  \item \textbf{Achromatischer Kanal:} Bandpass-Charakteristik (höchste Sensitivität bei ca. 2--4 cpd).
+  \item \textbf{Chromatische Kanäle (Rot-Grün, Blau-Gelb):} Tiefpass-Charakteristik (geringere Auflösung für feine Farbdetails).
+\end{itemize}
+
+\textbf{S-CIELAB:} Erweitert CIELAB um eine räumliche Vorfilterung basierend auf der Kontrastsensitivität. Dies ist wichtig für die Bewertung von \defc{Halftoning} oder Bildkompression, da Artefakte bei hoher Frequenz oft unsichtbar sind.
+
+
+\end{document}

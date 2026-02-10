@@ -5,7 +5,7 @@
 
 \externaldocument[ext:]{../../vc_summary}
 % Set Graphics Path, so pictures load correctly
-\graphicspath{{../../pics}}
+
 
 \begin{document}
 
@@ -13,9 +13,9 @@
 
 Ein digitales Bild entsteht durch die Diskretisierung einer kontinuierlichen Szene.
 \begin{itemize}
-   \item \textbf{Lochkameramodell:} Projektion der 3D-Welt auf eine 2D-Ebene.
-   \item \textbf{Rasterisierung:} Umwandlung des kontinuierlichen Signals in ein digitales Gitter (Pixel).
-   \item \textbf{Repräsentation:} Ein Bild wird als Matrix von Intensitätswerten (Grauwerten oder Farbkanälen) dargestellt.
+  \item \textbf{Lochkameramodell:} Projektion der 3D-Welt auf eine 2D-Ebene.
+  \item \textbf{Rasterisierung:} Umwandlung des kontinuierlichen Signals in ein digitales Gitter (Pixel).
+  \item \textbf{Repräsentation:} Ein Bild wird als Matrix von Intensitätswerten (Grauwerten oder Farbkanälen) dargestellt.
 \end{itemize}
 
 \subsection{Digitale Bildverarbeitung im Ortsraum}
@@ -26,28 +26,28 @@ Im Ortsraum (Spatial Domain) werden Operationen direkt auf den Pixelwerten des B
 Pixeloperationen manipulieren einen Pixelwert unabhängig von seiner Nachbarschaft (globaler Kontext, aber lokale Anwendung).
 
 \begin{defbox}[Grauwert-Abbildung (Mapping)]
-   Die Transformation eines Pixels an der Stelle $(m,n)$ wird beschrieben durch:
-   \[ g[m,n] = T(f[m,n]) \]
-   wobei $f$ das Eingabebild, $g$ das Ausgabebild und $T$ die Transformationsfunktion ist.
+  Die Transformation eines Pixels an der Stelle $(m,n)$ wird beschrieben durch:
+  \[ g[m,n] = T(f[m,n]) \]
+  wobei $f$ das Eingabebild, $g$ das Ausgabebild und $T$ die Transformationsfunktion ist.
 \end{defbox}
 
 \textbf{Wichtige Pixeloperationen:}
 \begin{itemize}
-   \item \textbf{Negativ:} $g[m,n] = f_{max} - f[m,n]$ (Invertierung der Helligkeit).
-   \item \textbf{Binärisierung (Thresholding):}
-         \[ g[m,n] = \begin{cases} f_{max} & \text{falls } f[m,n] > \tau \\ f_{min} & \text{falls } f[m,n] \le \tau \end{cases} \]
-         Dient zur Trennung von Vorder- und Hintergrund.
-   \item \textbf{Grauwertfensterung:} Hervorheben eines bestimmten Intensitätsintervalls (z.B. in der Medizintechnik/CT).
-   \item \textbf{Kontrastspreizung:} Abbildung des genutzten Grauwertbereichs auf die volle Skala (z.B. 0-255), um den visuellen Kontrast zu erhöhen.
-   \item \textbf{Mittelung:} Unterdrückung von unkorreliertem Rauschen durch Mittelung über mehrere Aufnahmen derselben Szene ($g = \frac{1}{k}\sum f_i$).
+  \item \textbf{Negativ:} $g[m,n] = f_{max} - f[m,n]$ (Invertierung der Helligkeit).
+  \item \textbf{Binärisierung (Thresholding):}
+        \[ g[m,n] = \begin{cases} f_{max} & \text{falls } f[m,n] > \tau \\ f_{min} & \text{falls } f[m,n] \le \tau \end{cases} \]
+        Dient zur Trennung von Vorder- und Hintergrund.
+  \item \textbf{Grauwertfensterung:} Hervorheben eines bestimmten Intensitätsintervalls (z.B. in der Medizintechnik/CT).
+  \item \textbf{Kontrastspreizung:} Abbildung des genutzten Grauwertbereichs auf die volle Skala (z.B. 0-255), um den visuellen Kontrast zu erhöhen.
+  \item \textbf{Mittelung:} Unterdrückung von unkorreliertem Rauschen durch Mittelung über mehrere Aufnahmen derselben Szene ($g = \frac{1}{k}\sum f_i$).
 \end{itemize}
 
 \subsubsection{Histogramme}
 Ein Histogramm ist die graphische Darstellung der Häufigkeitsverteilung der Grauwerte in einem Bild.
 
 \begin{itemize}
-   \item \textbf{Bildhelligkeit:} Entspricht dem Mittelwert aller Grauwerte.
-   \item \textbf{Bildkontrast:} Entspricht der Varianz aller Grauwerte.
+  \item \textbf{Bildhelligkeit:} Entspricht dem Mittelwert aller Grauwerte.
+  \item \textbf{Bildkontrast:} Entspricht der Varianz aller Grauwerte.
 \end{itemize}
 
 % [HIER GRAFIK EINFÜGEN: Beispiele für Histogramme (dunkel, hell, kontrastarm, kontrastreich)]
@@ -61,48 +61,48 @@ Dies ist eine verlustbehaftete Operation und nicht umkehrbar.
 Hierbei wird der neue Wert eines Pixels unter Berücksichtigung seiner Nachbarschaft berechnet (lokaler Kontext).
 
 \begin{defbox}[Faltung (Convolution)]
-   Die Faltung eines Bildes $f$ mit einer Filtermaske $w$ (Kernel) ist definiert als:
-   \[ (f * w)(m,n) = \sum_{i=-k/2}^{k/2} \sum_{j=-l/2}^{l/2} w(i,j) \cdot f(m+i, n+j) \]
+  Die Faltung eines Bildes $f$ mit einer Filtermaske $w$ (Kernel) ist definiert als:
+  \[ (f * w)(m,n) = \sum_{i=-k/2}^{k/2} \sum_{j=-l/2}^{l/2} w(i,j) \cdot f(m+i, n+j) \]
 \end{defbox}
 
 \paragraph{Tiefpass-Filter (Glättung)}
 Dienen der Rauschunterdrückung und Weichzeichnung (Blurring).
 \begin{itemize}
-   \item \textbf{Eigenschaften:} Koeffizienten sind positiv und summieren sich meist zu 1 (Normalisierung), um die Helligkeit zu erhalten.
-   \item \textbf{Box-Filter (Mittelwert):} Alle Koeffizienten sind gleich (z.B. alle $\frac{1}{9}$ bei einer $3\times3$ Matrix). Nachteil: Erzeugt Artefakte (rechteckige Unschärfe).
-   \item \textbf{Gauß-Filter:} Approximation der Gauß-Glocke.
-         \[ G(x,y) = \frac{1}{2\pi\sigma^2} e^{-\frac{x^2+y^2}{2\sigma^2}} \]
-         Gewichtet zentrale Pixel stärker als äußere. Besser als Box-Filter, da natürliche Glättung. Kann durch Binomialfilter approximiert werden.
+  \item \textbf{Eigenschaften:} Koeffizienten sind positiv und summieren sich meist zu 1 (Normalisierung), um die Helligkeit zu erhalten.
+  \item \textbf{Box-Filter (Mittelwert):} Alle Koeffizienten sind gleich (z.B. alle $\frac{1}{9}$ bei einer $3\times3$ Matrix). Nachteil: Erzeugt Artefakte (rechteckige Unschärfe).
+  \item \textbf{Gauß-Filter:} Approximation der Gauß-Glocke.
+        \[ G(x,y) = \frac{1}{2\pi\sigma^2} e^{-\frac{x^2+y^2}{2\sigma^2}} \]
+        Gewichtet zentrale Pixel stärker als äußere. Besser als Box-Filter, da natürliche Glättung. Kann durch Binomialfilter approximiert werden.
 \end{itemize}
 
 \paragraph{Nicht-Lineare Filter}
 \begin{itemize}
-   \item \textbf{Median-Filter:} Ersetzt den Pixelwert durch den \defc{Median} der Nachbarschaft.
-   \item \textbf{Vorteil:} Entfernt ``Salt-and-Pepper''-Rauschen (Ausreißer) extrem effektiv und \defc{erhält Kanten} (im Gegensatz zu Tiefpassfiltern, die Kanten verschmieren).
+  \item \textbf{Median-Filter:} Ersetzt den Pixelwert durch den \defc{Median} der Nachbarschaft.
+  \item \textbf{Vorteil:} Entfernt ``Salt-and-Pepper''-Rauschen (Ausreißer) extrem effektiv und \defc{erhält Kanten} (im Gegensatz zu Tiefpassfiltern, die Kanten verschmieren).
 \end{itemize}
 
 \paragraph{Hochpass-Filter (Kantenextraktion)}
 Dienen dem Finden von Kanten (Hervorhebung von hohen Frequenzen/Änderungen).
 \begin{itemize}
-   \item \textbf{Eigenschaften:} Koeffizienten sind positiv und negativ, Summe ist meist 0. Ergebnis kann negative Werte enthalten.
-   \item \textbf{Gradienten (1. Ableitung):} Reagieren auf Rampen und Stufen (Kanten).
-   \item \textbf{Laplace-Filter (2. Ableitung):} Isotrop (richtungsunabhängig).
-         \[ \nabla^2 f(x,y) = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2} \]
-         Reagiert stark auf feine Details und Rauschen (``Double Response'' an Kanten: Nulldurchgang).
-   \item \textbf{Laplacian of Gaussian (LoG):} Auch ``Mexican Hat'' oder Sombrero-Filter. Kombination aus Glättung (Gauß) zur Rauschunterdrückung und Laplace zur Kantenfindung.
+  \item \textbf{Eigenschaften:} Koeffizienten sind positiv und negativ, Summe ist meist 0. Ergebnis kann negative Werte enthalten.
+  \item \textbf{Gradienten (1. Ableitung):} Reagieren auf Rampen und Stufen (Kanten).
+  \item \textbf{Laplace-Filter (2. Ableitung):} Isotrop (richtungsunabhängig).
+        \[ \nabla^2 f(x,y) = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2} \]
+        Reagiert stark auf feine Details und Rauschen (``Double Response'' an Kanten: Nulldurchgang).
+  \item \textbf{Laplacian of Gaussian (LoG):} Auch ``Mexican Hat'' oder Sombrero-Filter. Kombination aus Glättung (Gauß) zur Rauschunterdrückung und Laplace zur Kantenfindung.
 \end{itemize}
 
 \subsection{Digitale Bildverarbeitung im Frequenzraum}
 
 Bilder können durch Transformationen (z.B. Fourier) in Frequenzanteile zerlegt werden.
 \begin{itemize}
-   \item \textbf{Tiefe Frequenzen:} Grobe Strukturen, Flächen, homogener Hintergrund. (Im Zentrum des Spektrums).
-   \item \textbf{Hohe Frequenzen:} Feine Details, Kanten, Rauschen. (Außen im Spektrum).
+  \item \textbf{Tiefe Frequenzen:} Grobe Strukturen, Flächen, homogener Hintergrund. (Im Zentrum des Spektrums).
+  \item \textbf{Hohe Frequenzen:} Feine Details, Kanten, Rauschen. (Außen im Spektrum).
 \end{itemize}
 
 \begin{defbox}[Faltungssatz]
-   Eine Faltung im Ortsraum entspricht einer Multiplikation im Frequenzraum (und umgekehrt).
-   \[ f * h = F^{-1}( F(f) \cdot F(h) ) \]
+  Eine Faltung im Ortsraum entspricht einer Multiplikation im Frequenzraum (und umgekehrt).
+  \[ f * h = F^{-1}( F(f) \cdot F(h) ) \]
 \end{defbox}
 
 \subsubsection{Ablauf der Frequenzfilterung}
@@ -112,9 +112,9 @@ Bilder können durch Transformationen (z.B. Fourier) in Frequenzanteile zerlegt 
 
 \subsubsection{Filtertypen im Frequenzraum}
 \begin{itemize}
-   \item \textbf{Idealer Tiefpass:} Schneidet alle Frequenzen oberhalb $D_0$ ab (Rechteckfunktion). Führt im Ortsraum zu \defc{Ringing-Artefakten} (Wellen um Kanten), da die FT einer Rechteckfunktion eine Sinc-Funktion ist.
-   \item \textbf{Gauß-Tiefpass:} Weicher Übergang. Kein Ringing, da FT einer Gauß-Funktion wieder eine Gauß-Funktion ist.\[G(\omega )=e^{-\frac{\sigma^2\omega^2}{2}}\]
-   \item \textbf{Hochpass:} Kehrt das Prinzip um (Zentrum wird auf 0 gesetzt, hohe Frequenzen bleiben).
+  \item \textbf{Idealer Tiefpass:} Schneidet alle Frequenzen oberhalb $D_0$ ab (Rechteckfunktion). Führt im Ortsraum zu \defc{Ringing-Artefakten} (Wellen um Kanten), da die FT einer Rechteckfunktion eine Sinc-Funktion ist.
+  \item \textbf{Gauß-Tiefpass:} Weicher Übergang. Kein Ringing, da FT einer Gauß-Funktion wieder eine Gauß-Funktion ist.\[G(\omega )=e^{-\frac{\sigma^2\omega^2}{2}}\]
+  \item \textbf{Hochpass:} Kehrt das Prinzip um (Zentrum wird auf 0 gesetzt, hohe Frequenzen bleiben).
 \end{itemize}
 
 \textbf{Aliasing:} Tritt auf, wenn Abtastrate zu gering (Unterabtastung) oder im Frequenzraum Frequenzen abgeschnitten werden (``Leakage'').
@@ -125,8 +125,8 @@ Ziel: Reduktion der Datenmenge durch Eliminierung von Redundanzen (räumlich, ze
 
 \subsubsection{Klassifikation}
 \begin{itemize}
-   \item \textbf{Verlustfrei (Lossless):} Original kann exakt wiederhergestellt werden. (z.B. Huffman, RLE, LZW $\to$ PNG, GIF, TIFF).
-   \item \textbf{Verlustbehaftet (Lossy):} Informationen gehen verloren, höhere Kompressionsraten. Nutzt Wahrnehmungsmodelle des Menschen (z.B. JPEG, MPEG).
+  \item \textbf{Verlustfrei (Lossless):} Original kann exakt wiederhergestellt werden. (z.B. Huffman, RLE, LZW $\to$ PNG, GIF, TIFF).
+  \item \textbf{Verlustbehaftet (Lossy):} Informationen gehen verloren, höhere Kompressionsraten. Nutzt Wahrnehmungsmodelle des Menschen (z.B. JPEG, MPEG).
 \end{itemize}
 
 \subsubsection{JPEG (Joint Photographic Experts Group)}
@@ -135,37 +135,37 @@ Ein Standard für verlustbehaftete Kompression, optimiert für natürliche Fotos
 \textbf{Die 5 Schritte des JPEG-Baseline-Codecs:}
 
 \begin{enumerate}
-   \item \textbf{Farbraum-Transformation:}
-         Umwandlung von RGB in $YC_bC_r$.
-         \begin{itemize}
-            \item $Y$: Luminanz (Helligkeit).
-            \item $C_b, C_r$: Chrominanz (Farbdifferenzen Blau/Rot).
-         \end{itemize}
+  \item \textbf{Farbraum-Transformation:}
+        Umwandlung von RGB in $YC_bC_r$.
+        \begin{itemize}
+          \item $Y$: Luminanz (Helligkeit).
+          \item $C_b, C_r$: Chrominanz (Farbdifferenzen Blau/Rot).
+        \end{itemize}
 
-   \item \textbf{Farb-Subsampling (Downsampling):}
-         Da das menschliche Auge Helligkeit besser auflöst als Farbe, werden $C_b$ und $C_r$ räumlich reduziert (z.B. 4:2:0 oder 2x2 Mittelung). $Y$ bleibt voll erhalten.
+  \item \textbf{Farb-Subsampling (Downsampling):}
+        Da das menschliche Auge Helligkeit besser auflöst als Farbe, werden $C_b$ und $C_r$ räumlich reduziert (z.B. 4:2:0 oder 2x2 Mittelung). $Y$ bleibt voll erhalten.
 
-   \item \textbf{Block-Aufteilung \& DCT (Diskrete Kosinustransformation):}
-         Das Bild wird in $8\times8$ Blöcke unterteilt. Jeder Block wird mittels DCT in den Frequenzraum transformiert.
-         \begin{itemize}
-            \item Ergebnis: 1 DC-Koeffizient (Gleichanteil/Grundhelligkeit) und 63 AC-Koeffizienten (Wechselanteile).
-            \item Energiekonzentration: Meist sind nur wenige Koeffizienten (niedrige Frequenzen) signifikant groß.
-         \end{itemize}
+  \item \textbf{Block-Aufteilung \& DCT (Diskrete Kosinustransformation):}
+        Das Bild wird in $8\times8$ Blöcke unterteilt. Jeder Block wird mittels DCT in den Frequenzraum transformiert.
+        \begin{itemize}
+          \item Ergebnis: 1 DC-Koeffizient (Gleichanteil/Grundhelligkeit) und 63 AC-Koeffizienten (Wechselanteile).
+          \item Energiekonzentration: Meist sind nur wenige Koeffizienten (niedrige Frequenzen) signifikant groß.
+        \end{itemize}
 
-   \item \textbf{Quantisierung (Der eigentliche Verlust):}
-         \[ F^Q = \text{Round}( F_{ij} / Q_{ij} ) \]
-         Die DCT-Koeffizienten werden durch eine Quantisierungsmatrix $Q$ geteilt und gerundet.
-         \begin{itemize}
-            \item Hohe Frequenzen werden stark quantisiert (durch große Werte in $Q$), oft zu Null.
-            \item Steuert die Qualität vs. Kompressionsrate.
-         \end{itemize}
+  \item \textbf{Quantisierung (Der eigentliche Verlust):}
+        \[ F^Q = \text{Round}( F_{ij} / Q_{ij} ) \]
+        Die DCT-Koeffizienten werden durch eine Quantisierungsmatrix $Q$ geteilt und gerundet.
+        \begin{itemize}
+          \item Hohe Frequenzen werden stark quantisiert (durch große Werte in $Q$), oft zu Null.
+          \item Steuert die Qualität vs. Kompressionsrate.
+        \end{itemize}
 
-   \item \textbf{Kodierung (Entropy Coding):}
-         \begin{itemize}
-            \item \defc{Zig-Zag-Scan}: Sortiert die Koeffizienten von niedrigen zu hohen Frequenzen, um lange Ketten von Nullen zu erzeugen.
-            \item \textbf{RLE (Run-Length Encoding):} Kodiert die Nullen-Ketten effizient.
-            \item \textbf{Huffman-Kodierung:} Weist häufigen Werten kurze Bitfolgen zu.
-         \end{itemize}
+  \item \textbf{Kodierung (Entropy Coding):}
+        \begin{itemize}
+          \item \defc{Zig-Zag-Scan}: Sortiert die Koeffizienten von niedrigen zu hohen Frequenzen, um lange Ketten von Nullen zu erzeugen.
+          \item \textbf{RLE (Run-Length Encoding):} Kodiert die Nullen-Ketten effizient.
+          \item \textbf{Huffman-Kodierung:} Weist häufigen Werten kurze Bitfolgen zu.
+        \end{itemize}
 \end{enumerate}
 
 \end{document}

@@ -1,0 +1,108 @@
+ \documentclass[
+../../vc_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../vc_summary}
+% Set Graphics Path, so pictures load correctly
+
+\begin{document}
+
+\section{Informationsvisualisierung}
+
+\subsection{Einführung und Definitionen}
+
+Die Informationsvisualisierung befasst sich mit der Darstellung abstrakter Daten, um dem Menschen das Verständnis und die Analyse dieser Daten zu erleichtern.
+
+\begin{defbox}[Informationsvisualisierung]
+  Informationsvisualisierung ist die Nutzung computergestützter, interaktiver, visueller Repräsentationen von \defc{abstrakten Daten}, um die \defc{Kognition zu verstärken} (amplify cognition).
+\end{defbox}
+
+\begin{itemize}
+  \item \textbf{Abstrakte Daten}: Daten ohne inhärente räumliche Struktur (z. B. Finanzdaten, Textsammlungen, Software-Strukturen). Es gibt keine direkte Abbildung auf eine Geometrie, weshalb künstliche visuelle Strukturen geschaffen werden müssen.
+  \item \textbf{Ziel}: Daten „enthüllen“ (To reveal data). Visualisierung hilft dabei, Muster, Trends und Ausreißer zu erkennen, die in rein numerischen Tabellen verborgen bleiben.
+\end{itemize}
+
+\subsection{Das Referenzmodell (Visualization Pipeline)}
+
+Das Referenzmodell nach Card et al. (1999) beschreibt den Prozess der Umwandlung von Rohdaten in eine visuelle Form, die vom Benutzer interpretiert werden kann.
+
+\begin{defbox}[Pipeline-Schritte]
+  \begin{enumerate}
+    \item \textbf{Raw Data (Rohdaten)}: Daten in ihrem ursprünglichen, oft proprietären Format.
+    \item \textbf{Data Tables (Datentabellen)}: Strukturierte Relationen (Fälle × Variablen) inklusive Metadaten.
+    \item \textbf{Visual Structures (Visuelle Strukturen)}: Räumliche Substrate, grafische Symbole (Marks) und deren Eigenschaften (Farbe, Größe).
+    \item \textbf{Views (Ansichten)}: Spezifische grafische Darstellungen mit Parametern wie Zoom, Ausschnitt (Clipping) oder Skalierung.
+  \end{enumerate}
+\end{defbox}
+
+\subsubsection{Transformationen im Referenzmodell}
+\begin{itemize}
+  \item \textbf{Data Transformations}: Aufbereitung der Rohdaten (Filtern, Normalisieren, Aggregieren).
+  \item \textbf{Visual Mappings}: Abbildung der strukturierten Daten auf visuelle Kanäle (z. B. ein Wert wird auf die x-Position abgebildet).
+  \item \textbf{View Transformations}: Interaktive Modifikation der Ansicht (z. B. Rotation im 3D-Raum oder Zoom).
+\end{itemize}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{vc_1_VC2025_11_infovis_page_30_1.png}
+\end{center}
+
+\subsection{Daten- und Visualisierungstypen}
+
+Unterschiedliche Datentypen erfordern spezialisierte Visualisierungstechniken:
+
+\begin{itemize}
+  \item \textbf{Zeitliche Daten}: Darstellung von Trends über die Zeit (z. B. Linien- oder Flächendiagramme).
+  \item \textbf{Geographische Daten}: Daten mit Ortsbezug (z. B. Choroplethenkarten für Inzidenzwerte).
+  \item \textbf{Multivariate Daten}: Daten mit vielen Attributen pro Datensatz (z. B. Scatterplot-Matrizen oder Parallele Koordinaten).
+  \item \textbf{Hierarchien und Netzwerke}: Darstellung von Beziehungen (z. B. Baumdiagramme, Node-Link-Diagramme).
+\end{itemize}
+
+\subsection{Interaktionstechniken}
+
+Interaktion ist essenziell, um große Datenmengen explorativ zu untersuchen. Sie greift in verschiedene Schritte der Visualisierungspipeline ein:
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Pipelineschritt} & \textbf{Interaktionstechnik}                    \\
+    \hline
+    View                     & Zoom, Pan (Verschieben), Highlight              \\
+    \hline
+    Visuelle Abbildung       & Farbschemaänderung, Datenauswahl für Abbildung  \\
+    \hline
+    Datentransformation      & Änderung der Normalisierung, Filtern, Editieren \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Gutes Informationsdesign und Fehlerquellen}
+
+Effektive Visualisierungen vermeiden Verzerrungen und Fehlinterpretationen. Häufige Probleme in der Praxis sind:
+
+\begin{itemize}
+  \item \textbf{Skalierungsfehler}: Unregelmäßige Zeitabstände auf Achsen suggerieren falsche Trends (z. B. bei der Darstellung von Schuldenwachstum).
+  \item \textbf{Perspektivische Verzerrung}: 3D-Effekte erschweren den Vergleich von Größen (z. B. 3D-Tortendiagramme oder perspektivische Balken).
+  \item \textbf{Visuelle Überladung (Clutter)}: Zu viele Kanten in Netzwerkdiagrammen führen zu unleserlichen „Hairballs“.
+  \item \textbf{Größenverhältnisse}: Flächen müssen proportional zu den Datenwerten wachsen ($A\alpha r^{2}$). Wenn nur der Radius proportional zum Wert skaliert wird, wirkt die Fläche quadratisch vergrößert.
+\end{itemize}
+
+\begin{defbox}[Anscombe's Quartet]
+  Ein klassisches Beispiel dafür, warum Visualisierung wichtig ist: Vier Datensätze mit identischen statistischen Kennwerten (Mittelwert, Varianz, Korrelation), die aber völlig unterschiedliche Verteilungen aufweisen, wenn sie grafisch dargestellt werden.
+\end{defbox}
+
+\subsection{Wichtige Formeln und Konzepte}
+
+In der Prüfungsvorbereitung ist insbesondere die korrekte Abbildung von Datenwerten auf visuelle Kanäle relevant:
+
+\begin{itemize}
+  \item \textbf{Lie Factor (Lügenfaktor)}: Das Verhältnis der im Bild dargestellten Änderung zur tatsächlichen Änderung in den Daten.
+        \[
+          \text{Lie Factor} = \frac{\text{Größe des Effekts in der Grafik}}{\text{Größe des Effekts in den Daten}}
+        \]
+  \item Ein idealer Wert ist 1. Werte $>1.05$ oder $<0.95$ deuten auf eine erhebliche Verzerrung hin.
+\end{itemize}
+
+
+\end{document}
