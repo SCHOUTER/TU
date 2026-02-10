@@ -1,0 +1,153 @@
+\documentclass[
+../../eicb_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../eicb_summary}
+
+\begin{document}
+
+\section{Lexer/Parser-Generierung mit ANTLR}
+
+\subsection{Einführung und Grundlagen}
+
+ANTLR (Another Tool for Language Recognition) ist ein Generator für Lexer und Parser. In der aktuellen Version 4 setzt es auf einen adaptiven $LL(*)$-Algorithmus (auch $ALL(*)$ genannt).
+
+\begin{defbox}[ANTLR v4 Eigenschaften]
+  \begin{itemize}
+    \item \textbf{Adaptive $LL(*)$:} Die Grammatik wird zur Laufzeit analysiert. Der Parser nutzt Heuristiken, um Konflikte und Mehrdeutigkeiten automatisch aufzulösen.
+    \item \textbf{Direkte Linksrekursion:} Wird im Gegensatz zu klassischen LL-Parsern unterstützt (wird intern transformiert). Indirekte Linksrekursion ist weiterhin nicht erlaubt.
+    \item \textbf{Trennung von Grammatik und Code:} Semantische Aktionen (eingebetteter Java-Code) werden vermieden. Stattdessen werden Parse-Trees automatisch erstellt und über \textit{Listener} oder \textit{Visitor} traversiert.
+  \end{itemize}
+\end{defbox}
+
+\subsection{Struktur einer Grammatik}
+
+Eine ANTLR-Grammatikdatei (Endung `.g4`) definiert Lexer- und Parser-Regeln.
+
+\begin{itemize}
+  \item \textbf{Parser-Regeln:} Beginnen mit einem \textbf{Kleinbuchstaben} (z.B. \texttt{stat}, \texttt{expr}). Sie definieren die syntaktische Struktur.
+  \item \textbf{Lexer-Regeln (Token):} Beginnen mit einem \textbf{Großbuchstaben} (z.B. \texttt{ID}, \texttt{INT}). Sie definieren die lexikalischen Einheiten (Zeichenfolgen).
+\end{itemize}
+
+\subsubsection{Operatoren und Syntax}
+Die Notation orientiert sich an EBNF (Extended Backus-Naur Form).
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|c|l|}
+    \hline
+    \textbf{Operator}             & \textbf{Bedeutung}                                                                       \\ \hline
+    \texttt{x y}                  & Konkatenation (x gefolgt von y)                                                          \\ \hline
+    \texttt{x | y}                & Alternative (x oder y)                                                                   \\ \hline
+    \texttt{x*}                   & 0 oder mehr Wiederholungen (Kleene-Stern)                                                \\ \hline
+    \texttt{x+}                   & 1 oder mehr Wiederholungen                                                               \\ \hline
+    \texttt{x?}                   & 0 oder 1 Mal (optional)                                                                  \\ \hline
+    \texttt{\textasciitilde[a-z]} & Negation (alle Zeichen außer a-z)                                                        \\ \hline
+    \texttt{.*?}                  & \textbf{Non-Greedy Match}: Matcht so wenig Zeichen wie möglich (wichtig für Kommentare!) \\ \hline
+  \end{tabular}
+\end{table}
+
+\begin{defbox}[Non-Greedy Beispiel]
+  Um beispielsweise `/* ... */` Kommentare korrekt zu parsen, darf der `*`-Operator nicht gierig (greedy) sein, da er sonst bis zum allerletzten `*/` der Datei lesen würde.
+  \newline
+  Lösung: \texttt{'/*' .*? '*/'} (stoppt beim ersten Vorkommen von `*/`).
+\end{defbox}
+
+\subsection{Generierte Artefakte und Parse-Trees}
+
+ANTLR erzeugt aus der Grammatik Java-Klassen (oder andere Zielsprachen), die den Input in einen abstrakten Parse-Tree (AST) verwandeln.
+
+\textbf{Wichtige Klassen:}
+\begin{itemize}
+  \item \texttt{Parser}: Überprüft die syntaktische Struktur.
+  \item \texttt{Lexer}: Zerlegt den Input-Stream in Tokens.
+  \item \texttt{ParserRuleContext}: Repräsentiert innere Knoten im Baum (Regeln). Speichert Start-/End-Tokens und Referenzen auf Kinder.
+  \item \texttt{TerminalNode}: Repräsentiert Blätter im Baum (Tokens/Literale).
+\end{itemize}
+
+% 
+\subsection{Traversierung: Listener vs. Visitor}
+
+ANTLR v4 bietet zwei Mechanismen, um den Parse-Tree zu verarbeiten.
+
+\subsubsection{1. Listener Pattern}
+Der Listener ist der Standardmechanismus. ANTLR generiert einen \texttt{ParseTreeWalker}, der den Baum mittels Tiefensuche (DFS) automatisch traversiert.
+
+\begin{itemize}
+  \item \textbf{Funktionsweise:} Der Listener reagiert auf Ereignisse. Beim Betreten eines Knotens wird \texttt{enterX()} aufgerufen, beim Verlassen \texttt{exitX()}.
+  \item \textbf{Vorteil:} Vollautomatisch, kein Boilerplate-Code für die Traversierung nötig.
+  \item \textbf{Nachteil:} Keine Kontrolle über den Ablauf (Reihenfolge ist fix), keine Rückgabewerte aus Methoden, Kommunikation zwischen Knoten schwierig (oft über Instanzvariablen oder einen Stack).
+\end{itemize}
+
+\subsubsection{2. Visitor Pattern}
+Muss explizit mit \texttt{-visitor} generiert werden. Hier steuert der Entwickler die Traversierung selbst.
+
+\begin{itemize}
+  \item \textbf{Funktionsweise:} Man implementiert \texttt{visitX(Context ctx)}. Um Kinder zu besuchen, muss man explizit \texttt{visit(ctx.child)} aufrufen.
+  \item \textbf{Vorteil:} Volle Kontrolle (Überspringen von Zweigen, geänderte Reihenfolge), Methoden können Werte zurückgeben (z.B. \texttt{Integer} für einen Taschenrechner).
+  \item \textbf{Nachteil:} Man muss die Traversierung (den Aufruf von \texttt{visit} für Kinder) selbst schreiben.
+\end{itemize}
+
+\begin{defbox}[Vergleich für die Prüfung]
+  Nutzen Sie \textbf{Listener}, wenn Sie den gesamten Baum standardmäßig abarbeiten wollen (z.B. Code-Formatierung, einfache Übersetzung).
+  \newline
+  Nutzen Sie \textbf{Visitor}, wenn Sie Ergebnisse berechnen (Interpreter), den Kontrollfluss steuern oder kontextabhängig traversieren müssen.
+\end{defbox}
+
+\subsubsection{Labeling von Alternativen}
+Damit der Visitor/Listener spezifische Methoden für Alternativen generiert (statt einer riesigen Methode mit `if/else`), können Alternativen mit `\#` benannt werden.
+
+\textbf{Beispiel:}
+\begin{verbatim}
+expr : expr '*' expr  # MulDiv
+     | expr '+' expr  # AddSub
+     | INT            # Int
+     ;
+\end{verbatim}
+Erzeugt Methoden: \texttt{visitMulDiv}, \texttt{visitAddSub}, \texttt{visitInt}.
+
+\subsection{Fortgeschrittene Themen}
+
+\subsubsection{Assoziativität und Präzedenz}
+In ANTLR v4 wird Operator-Präzedenz implizit durch die Reihenfolge der Alternativen bestimmt.
+
+\begin{itemize}
+  \item \textbf{Präzedenz:} Regeln, die weiter oben stehen, binden stärker (haben höhere Priorität). Beispiel: `*` vor `+` definieren.
+  \item \textbf{Assoziativität:} Standard ist links-assoziativ ($1+2+3 \rightarrow (1+2)+3$). Rechts-Assoziativität (z.B. für Exponenten $2^{3^4}$) wird mit \texttt{<assoc=right>} annotiert.
+\end{itemize}
+
+\subsubsection{Dangling Else Problem}
+Das Problem der Mehrdeutigkeit bei `if expr then if expr then stat else stat`: Gehört das `else` zum ersten oder zweiten `if`?
+\newline
+\textbf{Lösung in ANTLR:} ANTLR parst \textbf{greedy} (gierig). Es bindet das `else` an das nächstmögliche (innerste) offene `if`. Dies entspricht dem Standardverhalten der meisten Programmiersprachen.
+
+% 
+\subsubsection{Semantische Prädikate}
+Manchmal reicht die Grammatik allein nicht aus (z.B. wenn Parsing von Laufzeitdaten abhängt).
+\newline
+\textbf{Syntax:} \texttt{\{Bedingung\}?}
+\newline
+Dies ist ein boolescher Ausdruck in der Zielsprache (Java).
+\begin{itemize}
+  \item Ist die Bedingung \texttt{true}, wird die Alternative/Regel aktiviert.
+  \item Ist sie \texttt{false}, wird die Alternative ignoriert (als ob sie nicht in der Grammatik stünde) und der Parser versucht eine andere Möglichkeit.
+\end{itemize}
+
+\textbf{Beispiel (Datenabhängiges Parsen):}
+Eine Zahl $n$ gibt an, wie viele folgende Zahlen gelesen werden sollen.
+\begin{verbatim}
+sequence[int n] locals [int i = 1;]
+   : ( {$i <= $n}? INT {$i++;} )* ;
+\end{verbatim}
+Hier deaktiviert das Prädikat die Schleife, sobald $i > n$ ist.
+
+\subsection{Fehlerbehandlung}
+ANTLR generiert Parser mit eingebauter Fehlerbehandlung.
+\begin{itemize}
+  \item \textbf{Token ignorieren:} Wenn ein Token unerwartet ist, aber das darauf folgende passt.
+  \item \textbf{Token einfügen:} Wenn ein Token fehlt, fügt der Parser ein fiktives Token ein, um weiterzumachen (Single Token Insertion).
+  \item Ziel ist es, möglichst viele Fehler in einem Durchlauf zu finden (Error Recovery), statt beim ersten Fehler abzubrechen.
+\end{itemize}
+
+\end{document}

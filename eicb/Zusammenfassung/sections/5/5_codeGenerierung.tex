@@ -118,7 +118,7 @@ Ein Problem bei der Generierung von Kontrollstrukturen (wie `if` oder `while`) s
 \begin{lstlisting}[language=Java, title={Pseudocode Backpatching}]
 int jumpAddr = nextInstrAddr;
 emit(Machine.JUMPIFop, 0, Machine.CBr, 0); // Dummy Ziel 0
-// ... Generiere Code für Block ...
+// ... Generiere Code fuer Block ...
 int targetAddr = nextInstrAddr;
 patch(jumpAddr, targetAddr); // Trage echtes Ziel nach
 \end{lstlisting}
