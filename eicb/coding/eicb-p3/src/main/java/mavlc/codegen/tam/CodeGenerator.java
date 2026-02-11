@@ -231,8 +231,6 @@ public class CodeGenerator extends AstNodeBaseVisitor<Instruction, Void> {
 			}
 		}
 
-		String name = recordLhsIdentifier.name + "@" + recordLhsIdentifier.elementName;
-
 		int finalOffset = base + fieldOffset;
 		assembler.loadAddress(Register.LB, finalOffset).addName(recordLhsIdentifier.elementName)
 				.addComment("Address of field: " + recordLhsIdentifier.elementName);
