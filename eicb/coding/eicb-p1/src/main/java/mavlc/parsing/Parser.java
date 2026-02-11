@@ -652,6 +652,8 @@ public final class Parser {
 	}
 
 	private Expression parseCompare() {
+		SourceLocation location = currentToken.sourceLocation;
+
 		Expression left = parseAddSub();
 
 		// TODO extend method (task 3.2)
@@ -685,7 +687,7 @@ public final class Parser {
 				default:
 					throw new RuntimeException("Unexpected token type for comparison: " + op.type);
 			}
-			left = new Compare(op.sourceLocation, left, right, comp);
+			left = new Compare(location, left, right, comp);
 		}
 		return left;
 	}
