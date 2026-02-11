@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="mavlc.testing.ErrorCompareTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-12-13T15:22:47" hostname="MacBook-Pro-von-Niclas.local" time="0.076">
+<testsuite name="mavlc.testing.ErrorCompareTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-12-01T22:49:29" hostname="x1231.vpn.hrz.tu-darmstadt.de" time="0.073">
   <properties/>
   <testcase name="test[p2_public/task_6/call_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.011"/>
-  <testcase name="test[p2_public/task_1/compound_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
+  <testcase name="test[p2_public/task_1/compound_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.008"/>
   <testcase name="test[p2_public/task_4/matrix_err_4]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_4/matrix_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.012"/>
+  <testcase name="test[p2_public/task_4/matrix_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.01"/>
   <testcase name="test[p2_public/task_2/assign_err_1]" classname="mavlc.testing.ErrorCompareTest" time="0.008"/>
   <testcase name="test[p2_public/task_2/assign_err_5]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_2/assign_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
+  <testcase name="test[p2_public/task_2/assign_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.008"/>
   <testcase name="test[p2_public/task_5/for_loop_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
   <system-out><![CDATA[=== Running test case p2_public/task_6/call_err_3 ===
 
