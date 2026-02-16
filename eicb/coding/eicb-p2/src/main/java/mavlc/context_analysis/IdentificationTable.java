@@ -19,7 +19,7 @@ import mavlc.syntax.statement.Declaration;
  * A table for identifiers used inside a function.
  */
 public class IdentificationTable {
-	protected Scope currentScope = null;
+	
 	/**
 	 * Declares the given identifier in the current scope.
 	 *
@@ -27,8 +27,8 @@ public class IdentificationTable {
 	 * @param declaration the reference to the identifier's declaration site
 	 */
 	public void addIdentifier(String name, Declaration declaration) {
-
-		currentScope.addIdentifier(name, declaration);
+		// TODO implement (task 6.1)
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -38,20 +38,23 @@ public class IdentificationTable {
 	 * @return the identifier's innermost declaration site
 	 */
 	public Declaration getDeclaration(String name) {
-		return currentScope.getDeclaration(name);
+		// TODO implement (task 6.1)
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
 	 * Opens a new scope.
 	 */
 	public void openNewScope() {
-		currentScope = new Scope(currentScope);
+		// TODO implement (task 6.1)
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
 	 * Closes the current scope.
 	 */
 	public void closeCurrentScope() {
-		currentScope = currentScope.parentScope;
+		// TODO implement (task 6.1)
+		throw new UnsupportedOperationException();
 	}
 }

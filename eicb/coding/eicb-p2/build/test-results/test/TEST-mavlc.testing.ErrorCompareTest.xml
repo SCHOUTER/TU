@@ -1,53 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="mavlc.testing.ErrorCompareTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-12-01T22:49:29" hostname="x1231.vpn.hrz.tu-darmstadt.de" time="0.073">
+<testsuite name="mavlc.testing.ErrorCompareTest" tests="8" skipped="0" failures="8" errors="0" timestamp="2025-12-01T22:30:17" hostname="x1231.vpn.hrz.tu-darmstadt.de" time="0.037">
   <properties/>
-  <testcase name="test[p2_public/task_6/call_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.011"/>
-  <testcase name="test[p2_public/task_1/compound_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.008"/>
-  <testcase name="test[p2_public/task_4/matrix_err_4]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_4/matrix_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.01"/>
-  <testcase name="test[p2_public/task_2/assign_err_1]" classname="mavlc.testing.ErrorCompareTest" time="0.008"/>
-  <testcase name="test[p2_public/task_2/assign_err_5]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_2/assign_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.008"/>
-  <testcase name="test[p2_public/task_5/for_loop_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.009"/>
+  <testcase name="test[p2_public/task_6/call_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.005">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_1/compound_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.005">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_4/matrix_err_4]" classname="mavlc.testing.ErrorCompareTest" time="0.004">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_4/matrix_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.005">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_2/assign_err_1]" classname="mavlc.testing.ErrorCompareTest" time="0.004">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_2/assign_err_5]" classname="mavlc.testing.ErrorCompareTest" time="0.004">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_2/assign_err_2]" classname="mavlc.testing.ErrorCompareTest" time="0.004">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_5/for_loop_err_3]" classname="mavlc.testing.ErrorCompareTest" time="0.005">
+    <failure message="java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null" type="java.lang.NullPointerException">java.lang.NullPointerException: Cannot invoke &quot;String.replace(java.lang.CharSequence, java.lang.CharSequence)&quot; because the return value of &quot;java.lang.Exception.getMessage()&quot; is null
+	at mavlc.testing.ErrorCompareTest.run(ErrorCompareTest.java:59)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
   <system-out><![CDATA[=== Running test case p2_public/task_6/call_err_3 ===
-
-
-=== Test case p2_public/task_6/call_err_3 finished successfully ===
 
 === Running test case p2_public/task_1/compound_err_2 ===
 
-
-=== Test case p2_public/task_1/compound_err_2 finished successfully ===
-
 === Running test case p2_public/task_4/matrix_err_4 ===
-
-
-=== Test case p2_public/task_4/matrix_err_4 finished successfully ===
 
 === Running test case p2_public/task_4/matrix_err_3 ===
 
-
-=== Test case p2_public/task_4/matrix_err_3 finished successfully ===
-
 === Running test case p2_public/task_2/assign_err_1 ===
-
-
-=== Test case p2_public/task_2/assign_err_1 finished successfully ===
 
 === Running test case p2_public/task_2/assign_err_5 ===
 
-
-=== Test case p2_public/task_2/assign_err_5 finished successfully ===
-
 === Running test case p2_public/task_2/assign_err_2 ===
 
-
-=== Test case p2_public/task_2/assign_err_2 finished successfully ===
-
 === Running test case p2_public/task_5/for_loop_err_3 ===
-
-
-=== Test case p2_public/task_5/for_loop_err_3 finished successfully ===
 
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>

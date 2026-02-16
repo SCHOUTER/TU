@@ -1,77 +1,401 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="mavlc.testing.AstCompareTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2025-12-01T22:49:29" hostname="x1231.vpn.hrz.tu-darmstadt.de" time="0.203">
+<testsuite name="mavlc.testing.AstCompareTest" tests="12" skipped="0" failures="12" errors="0" timestamp="2025-12-01T22:30:17" hostname="x1231.vpn.hrz.tu-darmstadt.de" time="0.151">
   <properties/>
-  <testcase name="test[p2_public/task_6/call_1]" classname="mavlc.testing.AstCompareTest" time="0.092"/>
-  <testcase name="test[p2_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.013"/>
-  <testcase name="test[p2_public/task_1/compound_2]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
-  <testcase name="test[p2_public/task_1/compound_4]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
-  <testcase name="test[p2_public/task_4/transpose_3]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
-  <testcase name="test[p2_public/task_3/const_expr_2]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_3/const_expr_3]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_2/assign_6]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_2/assign_5]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p2_public/task_2/assign_2]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
-  <testcase name="test[p2_public/task_5/for_loop_5]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
-  <testcase name="test[p2_public/task_5/for_loop_6]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
+  <testcase name="test[p2_public/task_6/call_1]" classname="mavlc.testing.AstCompareTest" time="0.084">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.01">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_1/compound_2]" classname="mavlc.testing.AstCompareTest" time="0.006">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_1/compound_4]" classname="mavlc.testing.AstCompareTest" time="0.007">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_4/transpose_3]" classname="mavlc.testing.AstCompareTest" time="0.006">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_3/const_expr_2]" classname="mavlc.testing.AstCompareTest" time="0.005">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_3/const_expr_3]" classname="mavlc.testing.AstCompareTest" time="0.005">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_2/assign_6]" classname="mavlc.testing.AstCompareTest" time="0.005">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_2/assign_5]" classname="mavlc.testing.AstCompareTest" time="0.005">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_2/assign_2]" classname="mavlc.testing.AstCompareTest" time="0.006">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_5/for_loop_5]" classname="mavlc.testing.AstCompareTest" time="0.006">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
+  <testcase name="test[p2_public/task_5/for_loop_6]" classname="mavlc.testing.AstCompareTest" time="0.005">
+    <failure message="java.lang.UnsupportedOperationException" type="java.lang.UnsupportedOperationException">java.lang.UnsupportedOperationException
+	at mavlc.context_analysis.IdentificationTable.openNewScope(IdentificationTable.java:50)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:137)
+	at mavlc.context_analysis.ContextualAnalysis.visitFunction(ContextualAnalysis.java:34)
+	at mavlc.syntax.function.Function.accept(Function.java:134)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:118)
+	at mavlc.context_analysis.ContextualAnalysis.visitModule(ContextualAnalysis.java:34)
+	at mavlc.syntax.module.Module.accept(Module.java:45)
+	at mavlc.syntax.AstNode.accept(AstNode.java:46)
+	at mavlc.Pipeline.lambda$analyzeProgramImpl$1(Pipeline.java:231)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at mavlc.Pipeline.analyzeProgramImpl(Pipeline.java:229)
+	at mavlc.Pipeline.analyzeProgram(Pipeline.java:120)
+	at mavlc.testing.AstCompareTest.run(AstCompareTest.java:39)
+	at mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:298)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:292)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+  </testcase>
   <system-out><![CDATA[=== Running test case p2_public/task_6/call_1 ===
-
-
-=== Test case p2_public/task_6/call_1 finished successfully ===
 
 === Running test case p2_public/task_6/call_2 ===
 
-
-=== Test case p2_public/task_6/call_2 finished successfully ===
-
 === Running test case p2_public/task_1/compound_2 ===
-
-
-=== Test case p2_public/task_1/compound_2 finished successfully ===
 
 === Running test case p2_public/task_1/compound_4 ===
 
-
-=== Test case p2_public/task_1/compound_4 finished successfully ===
-
 === Running test case p2_public/task_4/transpose_3 ===
-
-
-=== Test case p2_public/task_4/transpose_3 finished successfully ===
 
 === Running test case p2_public/task_3/const_expr_2 ===
 
-
-=== Test case p2_public/task_3/const_expr_2 finished successfully ===
-
 === Running test case p2_public/task_3/const_expr_3 ===
-
-
-=== Test case p2_public/task_3/const_expr_3 finished successfully ===
 
 === Running test case p2_public/task_2/assign_6 ===
 
-
-=== Test case p2_public/task_2/assign_6 finished successfully ===
-
 === Running test case p2_public/task_2/assign_5 ===
-
-
-=== Test case p2_public/task_2/assign_5 finished successfully ===
 
 === Running test case p2_public/task_2/assign_2 ===
 
-
-=== Test case p2_public/task_2/assign_2 finished successfully ===
-
 === Running test case p2_public/task_5/for_loop_5 ===
 
-
-=== Test case p2_public/task_5/for_loop_5 finished successfully ===
-
 === Running test case p2_public/task_5/for_loop_6 ===
-
-
-=== Test case p2_public/task_5/for_loop_6 finished successfully ===
 
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
