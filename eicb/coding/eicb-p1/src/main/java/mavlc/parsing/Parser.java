@@ -88,6 +88,7 @@ import mavlc.syntax.expression.Compare;
 import mavlc.syntax.expression.Division;
 import mavlc.syntax.expression.DotProduct;
 import mavlc.syntax.expression.ElementSelect;
+import mavlc.syntax.expression.Exponentiation;
 import mavlc.syntax.expression.Expression;
 import mavlc.syntax.expression.FloatValue;
 import mavlc.syntax.expression.IdentifierReference;
@@ -548,7 +549,7 @@ public final class Parser {
 		accept(SWITCH);
 		accept(LPAREN);
 		Expression condition = parseExpr();
-		accept(LPAREN);
+		accept(RPAREN);
 		accept(LBRACE);
 		while (currentToken.type != RBRACE) {
 			if (currentToken.type == CASE) {
@@ -661,22 +662,28 @@ public final class Parser {
 			switch (currentToken.type) {
 				case RANGLE:
 					acceptIt();
-					return new Compare(location, x, parseAddSub(), GREATER);
+					x = new Compare(location, x, parseAddSub(), GREATER);
+					break;
 				case LANGLE:
 					acceptIt();
-					return new Compare(location, x, parseAddSub(), LESS);
+					x = new Compare(location, x, parseAddSub(), LESS);
+					break;
 				case CMPLE:
 					acceptIt();
-					return new Compare(location, x, parseAddSub(), LESS_EQUAL);
+					x = new Compare(location, x, parseAddSub(), LESS_EQUAL);
+					break;
 				case CMPGE:
 					acceptIt();
-					return new Compare(location, x, parseAddSub(), GREATER_EQUAL);
+					x = new Compare(location, x, parseAddSub(), GREATER_EQUAL);
+					break;
 				case CMPEQ:
 					acceptIt();
-					return new Compare(location, x, parseAddSub(), EQUAL);
+					x = new Compare(location, x, parseAddSub(), EQUAL);
+					break;
 				case CMPNE:
 					acceptIt();
-					return new Compare(location, x, parseAddSub(), NOT_EQUAL);
+					x = new Compare(location, x, parseAddSub(), NOT_EQUAL);
+					break;
 				default:
 			}
 		}
@@ -693,10 +700,12 @@ public final class Parser {
 			switch (currentToken.type) {
 				case ADD:
 					acceptIt();
-					return new Addition(location, x, parseMulDiv());
+					x = new Addition(location, x, parseMulDiv());
+					break;
 				case SUB:
 					acceptIt();
-					return new Subtraction(location, x, parseMulDiv());
+					x = new Subtraction(location, x, parseMulDiv());
+					break;
 				default:
 			}
 		}
@@ -713,10 +722,12 @@ public final class Parser {
 			switch (currentToken.type) {
 				case MULT:
 					acceptIt();
-					return new Multiplication(location, x, parseUnaryMinus());
+					x = new Multiplication(location, x, parseUnaryMinus());
+					break;
 				case DIV:
 					acceptIt();
-					return new Division(location, x, parseUnaryMinus());
+					x = new Division(location, x, parseUnaryMinus());
+					break;
 				default:
 			}
 		}
@@ -741,7 +752,7 @@ public final class Parser {
 		while (currentToken.type == EXP) {
 			acceptIt();
 			Expression right = parseExponentiation();
-			return new DotProduct(location, left, right);
+			return new Exponentiation(location, left, right);
 		}
 		return left;
 	}

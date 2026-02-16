@@ -29,7 +29,7 @@
 </td>
 <td>
 <div class="infoBox" id="failures">
-<div class="counter">9</div>
+<div class="counter">0</div>
 <p>failures</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.216s</div>
+<div class="counter">0.231s</div>
 <p>duration</p>
 </div>
 </td>
@@ -50,8 +50,8 @@
 </div>
 </td>
 <td>
-<div class="infoBox failures" id="successRate">
-<div class="percent">47%</div>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
 <p>successful</p>
 </div>
 </td>
@@ -61,315 +61,13 @@
 <div id="tabs">
 <ul class="tabLinks">
 <li>
-<a href="#tab0">Failed tests</a>
+<a href="#tab0">Tests</a>
 </li>
 <li>
-<a href="#tab1">Tests</a>
-</li>
-<li>
-<a href="#tab2">Standard output</a>
+<a href="#tab1">Standard output</a>
 </li>
 </ul>
 <div id="tab0" class="tab">
-<h2>Failed tests</h2>
-<div class="test">
-<a name="test[p1_public/task_2/arith_1]"></a>
-<h3 class="failures">test[p1_public/task_2/arith_1]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 18:
-&gt; Got token &lt;mult '*'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_2/exp_1]"></a>
-<h3 class="failures">test[p1_public/task_2/exp_1]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 17:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_2/not_1]"></a>
-<h3 class="failures">test[p1_public/task_2/not_1]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 16:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_4/bool_1]"></a>
-<h3 class="failures">test[p1_public/task_4/bool_1]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 16:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_5/select_1]"></a>
-<h3 class="failures">test[p1_public/task_5/select_1]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 19:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_5/select_2]"></a>
-<h3 class="failures">test[p1_public/task_5/select_2]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 31:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_6/call_2]"></a>
-<h3 class="failures">test[p1_public/task_6/call_2]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 18:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_7/rec_atom_1]"></a>
-<h3 class="failures">test[p1_public/task_7/rec_atom_1]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 19:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-<div class="test">
-<a name="test[p1_public/task_7/rec_sel_1]"></a>
-<h3 class="failures">test[p1_public/task_7/rec_sel_1]</h3>
-<span class="code">
-<pre>
-Syntax error in line 2, column 20:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</pre>
-</span>
-</div>
-</div>
-<div id="tab1" class="tab">
 <h2>Tests</h2>
 <table>
 <thead>
@@ -391,23 +89,23 @@ Syntax error in line 2, column 20:
 </tr>
 <tr>
 <td class="success">test[p1_public/task_1/var_1]</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">test[p1_public/task_2/arith_1]</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">test[p1_public/task_2/exp_1]</td>
 <td class="success">0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">test[p1_public/task_2/arith_1]</td>
-<td class="failures">0.005s</td>
-<td class="failures">failed</td>
-</tr>
-<tr>
-<td class="failures">test[p1_public/task_2/exp_1]</td>
-<td class="failures">0.005s</td>
-<td class="failures">failed</td>
-</tr>
-<tr>
-<td class="failures">test[p1_public/task_2/not_1]</td>
-<td class="failures">0.005s</td>
-<td class="failures">failed</td>
+<td class="success">test[p1_public/task_2/not_1]</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">test[p1_public/task_3/if_1]</td>
@@ -420,19 +118,19 @@ Syntax error in line 2, column 20:
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">test[p1_public/task_4/bool_1]</td>
-<td class="failures">0.005s</td>
-<td class="failures">failed</td>
+<td class="success">test[p1_public/task_4/bool_1]</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">test[p1_public/task_5/select_1]</td>
-<td class="failures">0.005s</td>
-<td class="failures">failed</td>
+<td class="success">test[p1_public/task_5/select_1]</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">test[p1_public/task_5/select_2]</td>
-<td class="failures">0.006s</td>
-<td class="failures">failed</td>
+<td class="success">test[p1_public/task_5/select_2]</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">test[p1_public/task_6/call_1]</td>
@@ -440,38 +138,44 @@ Syntax error in line 2, column 20:
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">test[p1_public/task_6/call_2]</td>
-<td class="failures">0.004s</td>
-<td class="failures">failed</td>
-</tr>
-<tr>
-<td class="success">test[p1_public/task_6/return_1]</td>
+<td class="success">test[p1_public/task_6/call_2]</td>
 <td class="success">0.009s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">test[p1_public/task_7/rec_atom_1]</td>
-<td class="failures">0.006s</td>
-<td class="failures">failed</td>
-</tr>
-<tr>
-<td class="success">test[p1_public/task_7/rec_dec_1]</td>
-<td class="success">0.011s</td>
+<td class="success">test[p1_public/task_6/return_1]</td>
+<td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="failures">test[p1_public/task_7/rec_sel_1]</td>
-<td class="failures">0.102s</td>
-<td class="failures">failed</td>
+<td class="success">test[p1_public/task_7/rec_atom_1]</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">test[p1_public/task_7/rec_dec_1]</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">test[p1_public/task_7/rec_sel_1]</td>
+<td class="success">0.088s</td>
+<td class="success">passed</td>
 </tr>
 </table>
 </div>
-<div id="tab2" class="tab">
+<div id="tab1" class="tab">
 <h2>Standard output</h2>
 <span class="code">
 <pre>=== Running test case p1_public/task_7/rec_sel_1 ===
 
+
+=== Test case p1_public/task_7/rec_sel_1 finished successfully ===
+
 === Running test case p1_public/task_7/rec_atom_1 ===
+
+
+=== Test case p1_public/task_7/rec_atom_1 finished successfully ===
 
 === Running test case p1_public/task_7/rec_dec_1 ===
 
@@ -490,6 +194,9 @@ Syntax error in line 2, column 20:
 
 === Running test case p1_public/task_6/call_2 ===
 
+
+=== Test case p1_public/task_6/call_2 finished successfully ===
+
 === Running test case p1_public/task_1/assign_1 ===
 
 
@@ -507,6 +214,9 @@ Syntax error in line 2, column 20:
 
 === Running test case p1_public/task_4/bool_1 ===
 
+
+=== Test case p1_public/task_4/bool_1 finished successfully ===
+
 === Running test case p1_public/task_3/if_1 ===
 
 
@@ -519,13 +229,28 @@ Syntax error in line 2, column 20:
 
 === Running test case p1_public/task_2/not_1 ===
 
+
+=== Test case p1_public/task_2/not_1 finished successfully ===
+
 === Running test case p1_public/task_2/arith_1 ===
+
+
+=== Test case p1_public/task_2/arith_1 finished successfully ===
 
 === Running test case p1_public/task_2/exp_1 ===
 
+
+=== Test case p1_public/task_2/exp_1 finished successfully ===
+
 === Running test case p1_public/task_5/select_2 ===
 
+
+=== Test case p1_public/task_5/select_2 finished successfully ===
+
 === Running test case p1_public/task_5/select_1 ===
+
+
+=== Test case p1_public/task_5/select_1 finished successfully ===
 
 </pre>
 </span>
@@ -538,7 +263,7 @@ Syntax error in line 2, column 20:
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 7.5.1</a> at 15.02.2026, 18:36:09</p>
+<a href="http://www.gradle.org">Gradle 7.5.1</a> at 16.02.2026, 10:34:47</p>
 </div>
 </div>
 </body>

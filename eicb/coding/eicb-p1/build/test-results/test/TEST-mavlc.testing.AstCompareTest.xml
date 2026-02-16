@@ -1,277 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="mavlc.testing.AstCompareTest" tests="17" skipped="0" failures="9" errors="0" timestamp="2026-02-15T17:36:09" hostname="MacBook-Pro-von-Niclas.local" time="0.221">
+<testsuite name="mavlc.testing.AstCompareTest" tests="17" skipped="0" failures="0" errors="0" timestamp="2026-02-16T09:34:47" hostname="MacBook-Pro-von-Niclas.local" time="0.233">
   <properties/>
-  <testcase name="test[p1_public/task_7/rec_sel_1]" classname="mavlc.testing.AstCompareTest" time="0.102">
-    <failure message="&#10;Syntax error in line 2, column 20:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 20:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
-  <testcase name="test[p1_public/task_7/rec_atom_1]" classname="mavlc.testing.AstCompareTest" time="0.006">
-    <failure message="&#10;Syntax error in line 2, column 19:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 19:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
-  <testcase name="test[p1_public/task_7/rec_dec_1]" classname="mavlc.testing.AstCompareTest" time="0.011"/>
+  <testcase name="test[p1_public/task_7/rec_sel_1]" classname="mavlc.testing.AstCompareTest" time="0.088"/>
+  <testcase name="test[p1_public/task_7/rec_atom_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
+  <testcase name="test[p1_public/task_7/rec_dec_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
   <testcase name="test[p1_public/task_6/call_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_6/return_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.004">
-    <failure message="&#10;Syntax error in line 2, column 18:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 18:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
+  <testcase name="test[p1_public/task_6/return_1]" classname="mavlc.testing.AstCompareTest" time="0.008"/>
+  <testcase name="test[p1_public/task_6/call_2]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
   <testcase name="test[p1_public/task_1/assign_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
   <testcase name="test[p1_public/task_1/val_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_1/var_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
-  <testcase name="test[p1_public/task_4/bool_1]" classname="mavlc.testing.AstCompareTest" time="0.005">
-    <failure message="&#10;Syntax error in line 2, column 16:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 16:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
+  <testcase name="test[p1_public/task_1/var_1]" classname="mavlc.testing.AstCompareTest" time="0.008"/>
+  <testcase name="test[p1_public/task_4/bool_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
   <testcase name="test[p1_public/task_3/if_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
   <testcase name="test[p1_public/task_3/if_2]" classname="mavlc.testing.AstCompareTest" time="0.008"/>
-  <testcase name="test[p1_public/task_2/not_1]" classname="mavlc.testing.AstCompareTest" time="0.005">
-    <failure message="&#10;Syntax error in line 2, column 16:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 16:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
-  <testcase name="test[p1_public/task_2/arith_1]" classname="mavlc.testing.AstCompareTest" time="0.005">
-    <failure message="&#10;Syntax error in line 2, column 18:&#10;&gt; Got token &lt;mult '*'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 18:
-&gt; Got token &lt;mult '*'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
-  <testcase name="test[p1_public/task_2/exp_1]" classname="mavlc.testing.AstCompareTest" time="0.005">
-    <failure message="&#10;Syntax error in line 2, column 17:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 17:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
-  <testcase name="test[p1_public/task_5/select_2]" classname="mavlc.testing.AstCompareTest" time="0.006">
-    <failure message="&#10;Syntax error in line 2, column 31:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 31:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base@17.0.18/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
-  <testcase name="test[p1_public/task_5/select_1]" classname="mavlc.testing.AstCompareTest" time="0.005">
-    <failure message="&#10;Syntax error in line 2, column 19:&#10;&gt; Got token &lt;rparen ')'&gt; but expected lparen." type="mavlc.errors.SyntaxError">
-Syntax error in line 2, column 19:
-&gt; Got token &lt;rparen ')'&gt; but expected lparen.
-	at app//mavlc.parsing.Parser.accept(Parser.java:190)
-	at app//mavlc.parsing.Parser.parseSwitch(Parser.java:551)
-	at app//mavlc.parsing.Parser.parseStatement(Parser.java:381)
-	at app//mavlc.parsing.Parser.parseFunction(Parser.java:223)
-	at app//mavlc.parsing.Parser.parse(Parser.java:175)
-	at app//mavlc.Pipeline.lambda$parseProgramImpl$0(Pipeline.java:215)
-	at java.base@17.0.18/java.security.AccessController.doPrivileged(AccessController.java:399)
-	at app//mavlc.Pipeline.parseProgramImpl(Pipeline.java:213)
-	at app//mavlc.Pipeline.parseProgram(Pipeline.java:90)
-	at app//mavlc.testing.AstCompareTest.run(AstCompareTest.java:38)
-	at app//mavlc.testing.BaseCompareTest.test(BaseCompareTest.java:56)
-	at jdk.internal.reflect.GeneratedMethodAccessor2.invoke(Unknown Source)
-	at java.base@17.0.18/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base@17.0.18/java.lang.reflect.Method.invoke(Method.java:569)
-	at app//org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at app//org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at app//org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at app//org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
-	at app//org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
-	at java.base@17.0.18/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-	at java.base@17.0.18/java.lang.Thread.run(Thread.java:840)
-</failure>
-  </testcase>
+  <testcase name="test[p1_public/task_2/not_1]" classname="mavlc.testing.AstCompareTest" time="0.008"/>
+  <testcase name="test[p1_public/task_2/arith_1]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p1_public/task_2/exp_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
+  <testcase name="test[p1_public/task_5/select_2]" classname="mavlc.testing.AstCompareTest" time="0.01"/>
+  <testcase name="test[p1_public/task_5/select_1]" classname="mavlc.testing.AstCompareTest" time="0.009"/>
   <system-out><![CDATA[=== Running test case p1_public/task_7/rec_sel_1 ===
 
+
+=== Test case p1_public/task_7/rec_sel_1 finished successfully ===
+
 === Running test case p1_public/task_7/rec_atom_1 ===
+
+
+=== Test case p1_public/task_7/rec_atom_1 finished successfully ===
 
 === Running test case p1_public/task_7/rec_dec_1 ===
 
@@ -290,6 +45,9 @@ Syntax error in line 2, column 19:
 
 === Running test case p1_public/task_6/call_2 ===
 
+
+=== Test case p1_public/task_6/call_2 finished successfully ===
+
 === Running test case p1_public/task_1/assign_1 ===
 
 
@@ -307,6 +65,9 @@ Syntax error in line 2, column 19:
 
 === Running test case p1_public/task_4/bool_1 ===
 
+
+=== Test case p1_public/task_4/bool_1 finished successfully ===
+
 === Running test case p1_public/task_3/if_1 ===
 
 
@@ -319,13 +80,28 @@ Syntax error in line 2, column 19:
 
 === Running test case p1_public/task_2/not_1 ===
 
+
+=== Test case p1_public/task_2/not_1 finished successfully ===
+
 === Running test case p1_public/task_2/arith_1 ===
+
+
+=== Test case p1_public/task_2/arith_1 finished successfully ===
 
 === Running test case p1_public/task_2/exp_1 ===
 
+
+=== Test case p1_public/task_2/exp_1 finished successfully ===
+
 === Running test case p1_public/task_5/select_2 ===
 
+
+=== Test case p1_public/task_5/select_2 finished successfully ===
+
 === Running test case p1_public/task_5/select_1 ===
+
+
+=== Test case p1_public/task_5/select_1 finished successfully ===
 
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
