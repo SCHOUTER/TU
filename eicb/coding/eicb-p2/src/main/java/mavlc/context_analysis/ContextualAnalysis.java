@@ -462,11 +462,11 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 	public Type visitCompoundStatement(CompoundStatement compoundStatement, Void __) {
 		// DONE implement (task 6.1)
 
+		table.openNewScope();
 		for (Statement stmt : compoundStatement.statements) {
-			table.openNewScope();
 			stmt.accept(this);
-			table.closeCurrentScope();
 		}
+		table.closeCurrentScope();
 
 		return null;
 	}
