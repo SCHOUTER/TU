@@ -13,24 +13,23 @@ package mavlc.context_analysis;
 
 import mavlc.syntax.statement.Declaration;
 
-
-
 /**
  * A table for identifiers used inside a function.
  */
 public class IdentificationTable {
-	
+	protected Scope currentScope = null;
+
 	/**
 	 * Declares the given identifier in the current scope.
 	 *
-	 * @param name the identifier to declare
+	 * @param name        the identifier to declare
 	 * @param declaration the reference to the identifier's declaration site
 	 */
 	public void addIdentifier(String name, Declaration declaration) {
-		// TODO implement (task 6.1)
-		throw new UnsupportedOperationException();
+
+		currentScope.addIdentifier(name, declaration);
 	}
-	
+
 	/**
 	 * Looks up the innermost declaration of the given identifier.
 	 *
@@ -38,23 +37,20 @@ public class IdentificationTable {
 	 * @return the identifier's innermost declaration site
 	 */
 	public Declaration getDeclaration(String name) {
-		// TODO implement (task 6.1)
-		throw new UnsupportedOperationException();
+		return currentScope.getDeclaration(name);
 	}
-	
+
 	/**
 	 * Opens a new scope.
 	 */
 	public void openNewScope() {
-		// TODO implement (task 6.1)
-		throw new UnsupportedOperationException();
+		currentScope = new Scope(currentScope);
 	}
-	
+
 	/**
 	 * Closes the current scope.
 	 */
 	public void closeCurrentScope() {
-		// TODO implement (task 6.1)
-		throw new UnsupportedOperationException();
+		currentScope = currentScope.parentScope;
 	}
 }
