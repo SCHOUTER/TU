@@ -307,7 +307,7 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 			throw new ConstantAssignmentError(leftHandIdentifier, decl);
 		}
 		leftHandIdentifier.setDeclaration(decl);
-		return null;
+		return decl.getType();
 	}
 
 	@Override
@@ -848,8 +848,18 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 
 	@Override
 	public Type visitRecordInit(RecordInit recordInit, Void __) {
-		// TODO implement (task 6.3)
-		throw new UnsupportedOperationException();
+		// DONE implement (task 6.3)
+		RecordTypeDeclaration decl = env.getRecordTypeDeclaration(recordInit.typeName);
+		recordInit.setType(decl.accept(this));
+		if (recordInit.elements.size() != decl.elements.size()) {
+			throw new StructureDimensionError(recordInit, recordInit.elements.size(), decl.elements.size());
+		}
+		for (int i = 0; i < recordInit.elements.size(); i++) {
+			Type elemType = recordInit.elements.get(i).accept(this);
+			Type declType = decl.elements.get(i).getType();
+			checkType(recordInit, elemType, declType);
+		}
+		return recordInit.getType();
 	}
 
 	@Override
