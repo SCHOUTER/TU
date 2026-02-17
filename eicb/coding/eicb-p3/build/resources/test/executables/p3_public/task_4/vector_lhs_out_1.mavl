@@ -1,5 +1,0 @@
-function void main(){
-    var vector<float>[3] vec;
-    vec[-1] = 4.04;
-    printFloat(vec[-1]);
-}

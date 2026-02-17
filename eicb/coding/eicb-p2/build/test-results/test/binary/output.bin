@@ -1,42 +1,0 @@
-2=== Running test case p2_public/task_6/call_1 ===
-
-2=== Running test case p2_public/task_6/call_2 ===
-
-6=== Running test case p2_public/task_1/compound_2 ===
-
-6=== Running test case p2_public/task_1/compound_4 ===
-
-7=== Running test case p2_public/task_4/transpose_3 ===
-
-8=== Running test case p2_public/task_3/const_expr_2 ===
-
-8=== Running test case p2_public/task_3/const_expr_3 ===
-
-	4=== Running test case p2_public/task_2/assign_6 ===
-	
-
-4=== Running test case p2_public/task_2/assign_5 ===
-
-
-4=== Running test case p2_public/task_2/assign_2 ===
-
-6=== Running test case p2_public/task_5/for_loop_5 ===
-
-6=== Running test case p2_public/task_5/for_loop_6 ===
-
-6=== Running test case p2_public/task_6/call_err_3 ===
-
-:=== Running test case p2_public/task_1/compound_err_2 ===
-
-8=== Running test case p2_public/task_4/matrix_err_4 ===
-
-8=== Running test case p2_public/task_4/matrix_err_3 ===
-
-8=== Running test case p2_public/task_2/assign_err_1 ===
-
-8=== Running test case p2_public/task_2/assign_err_5 ===
-
-8=== Running test case p2_public/task_2/assign_err_2 ===
-
-:=== Running test case p2_public/task_5/for_loop_err_3 ===
-

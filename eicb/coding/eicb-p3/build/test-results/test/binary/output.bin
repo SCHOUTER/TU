@@ -1,42 +1,0 @@
-:=== Running test case p3_public/task_7/elem_sel_out_4 ===
-
-:=== Running test case p3_public/task_7/elem_sel_out_3 ===
-
-:=== Running test case p3_public/task_7/elem_sel_out_6 ===
-
-:=== Running test case p3_public/task_7/elem_sel_out_7 ===
-
-?=== Running test case p3_public/task_6/record_select_out_5 ===
-
-?=== Running test case p3_public/task_6/record_select_out_4 ===
-
-?=== Running test case p3_public/task_6/record_select_out_2 ===
-
-	/=== Running test case p3_public/task_1/gcd ===
-	
-
-5=== Running test case p3_public/task_1/fibonacci ===
-
-
-<=== Running test case p3_public/task_4/record_lhs_out_2 ===
-
-<=== Running test case p3_public/task_4/matrix_lhs_out_2 ===
-
-5=== Running test case p3_public/task_4/lhs_out_3 ===
-
-5=== Running test case p3_public/task_4/lhs_out_4 ===
-
-<=== Running test case p3_public/task_4/vector_lhs_out_1 ===
-
-:=== Running test case p3_public/task_3/compound_out_1 ===
-
-:=== Running test case p3_public/task_3/compound_out_3 ===
-
-<=== Running test case p3_public/task_2/matrix_mul_out_1 ===
-
-9=== Running test case p3_public/task_5/foreach_out_3 ===
-
-9=== Running test case p3_public/task_5/foreach_out_6 ===
-
-9=== Running test case p3_public/task_5/foreach_out_7 ===
-
