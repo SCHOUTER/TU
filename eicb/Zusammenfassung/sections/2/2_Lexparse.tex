@@ -150,6 +150,34 @@ Eine Grammatik ist LL(1), wenn für jede Produktion mit Alternativen $A \rightar
         $starters[[\beta]] \cap follow[[A]] = \emptyset$
 \end{itemize}
 
+\subsubsection{Bottom-Up Parsing (Shift \& Reduce)}
+Beim Bottom-Up Parsing (z.B. LR-Parser) wird die Eingabe von links gelesen und versucht, sie auf das Startsymbol zu reduzieren.
+
+\textbf{Operationen:}
+\begin{itemize}
+  \item \textbf{Shift:} Schiebe das nächste Eingabe-Symbol auf den Stack.
+  \item \textbf{Reduce:} Ersetze eine Symbolfolge oben auf dem Stack durch das entsprechende Nichtterminal (gemäß Grammatikregel).
+\end{itemize}
+
+\textbf{Beispiel-Trace (aus Übung):}
+Grammatik: $S \rightarrow Ac$, $A \rightarrow aA \mid b$. Eingabe: $aabc$
+
+\begin{center}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Stack} & \textbf{Eingabe} & \textbf{Aktion}             \\ \hline
+    $\epsilon$     & $aabc$           & Shift $a$                   \\ \hline
+    $a$            & $abc$            & Shift $a$                   \\ \hline
+    $aa$           & $bc$             & Shift $b$                   \\ \hline
+    $aab$          & $c$              & Reduce ($A \rightarrow b$)  \\ \hline
+    $aaA$          & $c$              & Reduce ($A \rightarrow aA$) \\ \hline
+    $aA$           & $c$              & Reduce ($A \rightarrow aA$) \\ \hline
+    $A$            & $c$              & Shift $c$                   \\ \hline
+    $Ac$           & $\epsilon$       & Reduce ($S \rightarrow Ac$) \\ \hline
+    $S$            & $\epsilon$       & \textbf{Akzeptiert}         \\ \hline
+  \end{tabular}
+\end{center}
+
 \subsection{AST (Abstract Syntax Tree)}
 \begin{itemize}
   \item Strukturierte Repräsentation des Programms
