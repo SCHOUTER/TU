@@ -5,193 +5,191 @@
 
 \externaldocument[ext:]{../../eicb_summary}
 
+
+
 \begin{document}
 
-\section{Einführung}
+\section{Einführung in den Compilerbau}
 
-\begin{defbox}[Was ist ein Compiler?]
-  Ein \textbf{Compiler} ist die \defc{Schnittstelle zwischen Programmiersprache und Maschine}.
-  Er übersetzt menschenlesbaren Quellcode in maschinennahe Instruktionen.
+\subsection{Grundlagen und Motivation}
+Ein \defc{Compiler} agiert als essentielle Schnittstelle zwischen der für Menschen lesbaren Programmiersprache und der hardwarenahen Maschinensprache.
+
+\begin{defbox}[Rolle des Compilers]
+  Der Compiler übersetzt ein in einer Hochsprache (z. B. Java, C++, Smalltalk) verfasstes Programm in eine Sprache, die von der Maschine ausgeführt werden kann.
+
   \begin{itemize}
-    \item \textbf{Programmiersprachen:} gut handhabbar für Menschen (z.B. Java, C++)
-    \item \textbf{Maschine:} optimiert auf Geschwindigkeit, Energieeffizienz, Fläche
+    \item \textbf{Programmiersprache:} Optimiert auf menschliche Handhabung (Lesbarkeit, Abstraktion).
+    \item \textbf{Maschine:} Optimiert auf Ausführungsgeschwindigkeit, Chip-Fläche und Energieverbrauch.
   \end{itemize}
 \end{defbox}
 
-\subsubsection{Wirkung und Bedeutung}
-\begin{itemize}
-  \item Compiler beeinflussen direkt die \defc{effektive Rechenleistung}.
-  \item Beispiel: Unterschiedliche Compiler erzeugen unterschiedlich effizienten Code.
-  \item Spezialisierte Prozessoren erfordern angepasste Compiler (DSPs, GPUs, FPGAs).
-\end{itemize}
+Moderne Hardware-Architekturen (z. B. VLIW, Multi-Core, Heterogene Systeme wie Cell Prozessoren oder GPUs) sind extrem komplex und schwer manuell effizient zu programmieren. Der Compiler überbrückt diese Lücke durch verschiedene Abstraktionsebenen.
 
-\begin{defbox}[Paralleles Rechnen]
-  Trend von Ein-Prozessor-Systemen hin zu \defc{Mehrkern- und heterogenen Systemen}.
-  \begin{itemize}
-    \item OpenMP – Mehrkern-CPUs
-    \item CUDA – GPUs
-    \item OpenCL – Kombination aus CPUs und GPUs
-  \end{itemize}
-\end{defbox}
+\subsubsection{Abstraktionsebenen}
+Die Übersetzung erfolgt schrittweise über mehrere Ebenen, wobei Details (wie Registerzuweisung oder spezifische Maschineninstruktionen) durch Synthese hinzugefügt werden.
 
-\subsubsection{Motivation}
-\begin{itemize}
-  \item Compilerbau kombiniert Theorie, Architektur und Softwaretechnik.
-  \item Zentrale Themen: Parsing, Codegenerierung, Optimierung.
-\end{itemize}
+\begin{enumerate}
+  \item \textbf{Hohe Ebene:} Hochsprachen (Java, C++).
+  \item \textbf{Mittlere Ebene:} Assembler (symbolische Maschinenbefehle).
+  \item \textbf{Niedrige Ebene:} Maschinensprache (Binärcode, z. B. \texttt{0110...}).
+\end{enumerate}
 
-%--------------------------------------------------
 \subsection{Aufbau eines Compilers}
+Die Verarbeitung eines Programms erfolgt in mehreren Phasen, die den Informationsaustausch über \defc{Zwischendarstellungen} (Intermediate Representations, IR) organisieren.
 
-\begin{defbox}[Compilerphasen]
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{eicb_1_01-intro-handout_page_16_1.png}
+\end{center}
+
+\subsubsection{Das Phasen-Modell}
+
+\begin{enumerate}
+  \item \textbf{Syntactic Analysis (Syntaxanalyse):} Überprüfung der grammatikalischen Korrektheit und Erstellung eines Abstrakten Syntaxbaums (AST).
+  \item \textbf{Contextual Analysis (Kontextanalyse):} Überprüfung von Geltungsbereichen und Datentypen. Das Ergebnis ist ein dekorierter AST (DAST).
+  \item \textbf{Code Generation (Code-Erzeugung):} Übersetzung des DAST in den Zielcode (Maschinensprache, Assembler oder C).
+\end{enumerate}
+
+\subsubsection{Architektur-Gliederung}
+Ein Compiler wird typischerweise in drei Hauptkomponenten unterteilt:
+
+\begin{defbox}[Compiler-Komponenten]
+
+  \begin{itemize}
+    \item \textbf{Front-End:} Zuständig für die Analyse (syntaktisch und kontextuell). Es ist abhängig von der Quellsprache, aber weitgehend unabhängig von der Zielmaschine.
+    \item \textbf{Middle-End:} Zuständig für die Transformation und Optimierung von Zwischendarstellungen (IR). Hier finden maschinenunabhängige Optimierungen statt.
+    \item \textbf{Back-End:} Zuständig für die Code-Erzeugung. Es ist stark abhängig von der Zielarchitektur (Instruktionssatz, Registeranzahl).
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Optimierung}
+Ein \defc{optimierender Compiler} versucht, den Code hinsichtlich bestimmter Gütekriterien (Laufzeit, Speicherbedarf, Energie) zu verbessern. Beispiele für Optimierungstechniken:
+
+\begin{itemize}
+  \item \textbf{Constant Folding:} Berechnung konstanter Ausdrücke zur Compile-Zeit. \[x = (2+3)*y \implies x = 5*y \]
+  \item \textbf{Common-Subexpression Elimination:} Vermeidung wiederholter Berechnungen gleicher Teilausdrücke.$$ x = 5*a+b; \quad y = 5*a+c \implies t = 5*a; \quad x = t+b; \quad y = t+c $$
+  \item \textbf{Strength Reduction:} Ersetzen teurer Operationen durch günstigere (z. B. Multiplikation durch Addition in Schleifen).
+  \item \textbf{Loop-invariant Code Motion:} Verschieben von Berechnungen, die sich innerhalb einer Schleife nicht ändern, vor die Schleife.
+\end{itemize}
+
+\subsection{Sprachbeschreibung}
+Die Definition einer Programmiersprache ruht auf drei Säulen:
+
+\begin{enumerate}
+  \item \textbf{Syntax:} Welche Zeichenfolgen bilden ein korrektes Programm? (Struktur, Grammatik).
+  \item \textbf{Kontextuelle Einschränkungen:} Welche Regeln gelten für Gültigkeitsbereiche und Typen? (z. B. „Variablen müssen vor Gebrauch deklariert werden“).
+  \item \textbf{Semantik:} Was bedeutet das Programm? (Verhalten zur Laufzeit).
+\end{enumerate}Diese Aspekte können entweder \textit{informal} (natürliche Sprache) oder \textit{formal} (mathematische Notation, Grammatiken) spezifiziert werden.
+
+\subsection{Syntaxspezifikation}
+Eine Sprache ist formal definiert als eine Menge von Zeichenketten aus einem Alphabet. Da Programmiersprachen meist unendlich viele gültige Programme erlauben, ist eine Aufzählung unmöglich.
+
+\subsubsection{Reguläre Ausdrücke (Regular Expressions, RE)}
+Reguläre Ausdrücke erweitern Zeichenketten um Operatoren zur Musterbeschreibung.
+
+\begin{itemize}
+  \item $|$ (Alternative): $a|b$ (a oder b).
+  \item $*$ (Kleene-Stern): Beliebige Wiederholung (0 oder mehr).
+  \item $\epsilon$ (Epsilon): Das leere Wort.
+\end{itemize}
+
+\textbf{Grenzen:} Reguläre Ausdrücke sind nicht mächtig genug, um die geschachtelte Struktur (z. B. Klammerungsebenen) komplexer Programmiersprachen vollständig zu beschreiben. Sie werden jedoch häufig für den \defc{Scanner} (lexikalische Analyse) verwendet.
+
+\subsubsection{Kontextfreie Grammatiken (CFG)}
+Zur Beschreibung der Syntax von Programmiersprachen werden kontextfreie Grammatiken verwendet.
+
+\begin{defbox}[Bestandteile einer CFG]
+
+  \begin{itemize}
+    \item \textbf{Terminalsymbole (T):} Die eigentlichen Zeichen/Token des Alphabets.
+    \item \textbf{Nicht-Terminalsymbole (N):} Platzhalter für syntaktische Strukturen.
+    \item \textbf{Startsymbol (S):} Ein Element aus $N$.
+    \item \textbf{Produktionen (P):} Regeln, wie Nicht-Terminale durch eine Folge von Terminalen und Nicht-Terminalen ersetzt werden können.
+  \end{itemize}
+\end{defbox}
+
+\textbf{Notationen:}
+
+\begin{itemize}
+  \item \textbf{BNF (Backus-Naur-Form):} $N ::= \text{Zeichenkette aus } T \text{ und } N$.
+  \item \textbf{EBNF (Extended BNF):} Erlaubt reguläre Ausdrücke auf der rechten Seite der Produktion (kompakter).
+\end{itemize}
+
+\subsubsection{Ableitung und Mehrdeutigkeit}
+Ein Satz (gültiges Programm) wird durch wiederholtes Anwenden der Produktionen ausgehend vom Startsymbol hergeleitet.Eine Grammatik ist \defc{mehrdeutig} (ambiguous), wenn es für eine Zeichenkette mehr als einen möglichen Ableitungsbaum gibt.
+
+\begin{itemize}
+  \item \textit{Beispiel:} $S ::= S + S \mid x$.
+  \item Der Ausdruck $x + x + x$ kann unterschiedlich geklammert interpretiert werden: $(x+x)+x$ oder $x+(x+x)$.
+  \item Für Compiler muss die Grammatik \textbf{eindeutig} sein (z. B. durch Festlegung von Vorrangregeln oder Umstrukturierung der Grammatik).
+\end{itemize}
+
+\subsection{Syntaxbäume}
+
+\subsubsection{Konkreter Syntaxbaum}
+Ein Syntaxbaum (Parse Tree) repräsentiert die grammatikalische Struktur gemäss der CFG.
+
+\begin{itemize}
+  \item \textbf{Blätter:} Terminalsymbole.
+  \item \textbf{Innere Knoten:} Nicht-Terminalsymbole.
+  \item Die Kinder eines Knotens entsprechen der rechten Seite der angewendeten Produktion.
+\end{itemize}
+
+\subsubsection{Abstrakte Syntax (AST)}
+Die konkrete Syntax enthält Details, die für das Verständnis des Programms irrelevant sind (z. B. Schlüsselwörter wie \texttt{begin}, \texttt{end}, Semikolons). Der \defc{Abstrakte Syntaxbaum} (AST) reduziert die Darstellung auf die essentielle Information.
+
+\begin{defbox}[Unterschied CST vs. AST]
+
+  \begin{itemize}
+    \item \textbf{Konkrete Syntax (CST):} Wichtig für das Parsen und das Erstellen korrekter Quelltexte. Enthält „Syntaxzucker“.
+    \item \textbf{Abstrakte Syntax (AST):} Modelliert die logische Struktur (Subphrasen). Dient als interne Zwischendarstellung (High-Level IR) für Analysen und Code-Erzeugung.
+  \end{itemize}
+\end{defbox}
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{eicb_1_01-intro-handout_page_62_1.png}
+\end{center}
+
+\subsection{Kontextuelle Analyse}
+Nach der Syntaxanalyse folgt die Prüfung der kontextuellen Korrektheit. Dies geschieht oft auf dem AST.
+
+\subsubsection{Geltungsbereiche (Scope)}
+Hierbei wird die Sichtbarkeit von Bezeichnern (Identifiern) geprüft.
+
+\begin{itemize}
+  \item \textbf{Bindendes Auftreten:} Die Deklaration einer Variable.
+  \item \textbf{Verwendendes Auftreten:} Die Benutzung der Variable im Code.
+  \item \textbf{Aufgabe:} Jede Verwendung muss eindeutig einer gültigen Deklaration zugeordnet werden (Identifikation).
+\end{itemize}
+
+\subsubsection{Typisierung}
+Überprüfung der Verträglichkeit von Operationen und Datenwerten.
+
+\begin{itemize}
+  \item \textbf{Statische Typisierung:} Typen werden zur Compile-Zeit geprüft (Thema dieser Vorlesung).
+  \item \textbf{Typregeln:} Definieren Anforderungen (z. B. „Bedingung in \texttt{if} muss \texttt{boolean} sein“) und Ergebnistypen (z. B. „\texttt{int} + \texttt{int} ergibt \texttt{int}“).
+\end{itemize}
+
+\subsection{Semantik}
+Die Semantik beschreibt die Bedeutung des Programms bei der Ausführung.
+
+\begin{itemize}
+  \item \textbf{Operationelle Semantik:} Beschreibt die Schritte, die auf einer abstrakten Maschine ausgeführt werden.
+  \item \textbf{Denotationale Semantik:} Bildet Eingaben mathematisch auf Ausgaben ab.
+\end{itemize}In der Vorlesung wird zwischen verschiedenen semantischen Aktionen unterschieden:
+
+\begin{enumerate}
+  \item \textbf{Anweisungen (Commands):} Werden \textit{ausgeführt} (executed). Sie haben meist Seiteneffekte (z. B. Zustandsänderung von Variablen, I/O).
+  \item \textbf{Ausdrücke (Expressions):} Werden \textit{evaluiert} (evaluated), um einen Wert zu liefern.
+  \item \textbf{Deklarationen:} Werden \textit{elaboriert} (elaborated), um Bindungen zu erzeugen und Speicherplatz bereitzustellen.
+\end{enumerate}
+
+\begin{defbox}[Beispiel Semantik einer Zuweisung $V := E$]
+
   \begin{enumerate}
-    \item \textbf{Front-End:} Lexikalische, syntaktische und kontextuelle Analyse
-    \item \textbf{Middle-End:} Optimierung der Zwischendarstellung (IR)
-    \item \textbf{Back-End:} Codeerzeugung für Zielarchitektur
+    \item Der Ausdruck $E$ wird evaluiert, um einen Wert $v$ zu erhalten.
+    \item Der Wert $v$ wird der Variable $V$ zugewiesen (in den Speicher geschrieben).
   \end{enumerate}
 \end{defbox}
 
-\subsubsection{Syntaxanalyse}
-\begin{itemize}
-  \item Überprüfung der Syntaxregeln $\Rightarrow$ \defc{Abstrakter Syntaxbaum (AST)}
-\end{itemize}
-
-\subsubsection{Kontextanalyse}
-\begin{itemize}
-  \item Variablenbindung, Typprüfung, Scope-Überprüfung
-  \item Ergebnis: \defc{Dekorierter AST (DAST)}
-\end{itemize}
-
-\subsubsection{Codeerzeugung}
-\begin{itemize}
-  \item Zuweisung von Speicher, Übersetzung von AST zu Maschinencode
-\end{itemize}
-
-\subsubsection{Optimierung}
-\begin{itemize}
-  \item Ziel: effizienterer Code bei gleicher Semantik
-  \item Beispiele:
-        \begin{itemize}
-          \item \textbf{Constant Folding:} $x = (2+3)*y \Rightarrow x=5*y$
-          \item \textbf{Common Subexpression Elimination}
-          \item \textbf{Strength Reduction}
-          \item \textbf{Loop-Invariant Code Motion}
-        \end{itemize}
-\end{itemize}
-
-%--------------------------------------------------
-\subsection{Syntax und Grammatik}
-
-\begin{defbox}[Syntax]
-  Beschreibt die \defc{Struktur korrekter Programme}.
-\end{defbox}
-
-\begin{defbox}[Formalisierungsmethoden]
-  \begin{itemize}
-    \item \textbf{Reguläre Ausdrücke (RE)} – beschreiben Tokens, aber nicht Programmsyntax.
-    \item \textbf{Kontextfreie Grammatiken (CFG)} – Basis für Programmiersprachen.
-    \item \textbf{BNF / EBNF} – Notation zur Beschreibung von CFGs.
-  \end{itemize}
-\end{defbox}
-
-\subsubsection{Begrifflichkeiten}
-\begin{itemize}
-  \item \textbf{Terminale:} konkrete Symbole
-  \item \textbf{Nichtterminale:} syntaktische Kategorien
-  \item \textbf{Produktionen:} Regeln der Grammatik
-  \item \textbf{Startsymbol:} Ausgangspunkt der Herleitung
-\end{itemize}
-
-\begin{defbox}[Mehrdeutigkeit]
-  Eine Grammatik ist \defc{mehrdeutig}, wenn ein Satz mehrere Ableitungsbäume hat.
-  Für Compiler sind nur eindeutige CFGs sinnvoll.
-\end{defbox}
-
-%--------------------------------------------------
-\subsection{(Mini-)Triangle}
-
-\begin{defbox}[Mini-Triangle]
-  \begin{itemize}
-    \item Pascal-artige Beispiel-Sprache
-    \item Enthält Variablen, Konstanten, Schleifen, Bedingungen
-    \item Keine Unterprogramme
-    \item Beispielhafte CFG-Definitionen für:
-          \begin{itemize}
-            \item \textbf{Command}, \textbf{Expression}, \textbf{Declaration}, \textbf{Type-denoter}
-          \end{itemize}
-  \end{itemize}
-\end{defbox}
-
-\subsubsection{Syntaxbäume}
-\begin{itemize}
-  \item \textbf{Konkrete Syntax:} enthält alle syntaktischen Details
-  \item \textbf{Abstrakte Syntax:} reduziert auf semantisch relevante Struktur (AST)
-\end{itemize}
-
-\begin{defbox}[AST als IR]
-  \begin{itemize}
-    \item \textbf{Vorteile:} maschinenunabhängig, gut für Analysen
-    \item \textbf{Nachteile:} weniger geeignet für hardwarenahe Optimierungen
-  \end{itemize}
-\end{defbox}
-
-%--------------------------------------------------
-\subsection{Kontextuelle Einschränkungen}
-
-\begin{defbox}[Geltungsbereiche (Scopes)]
-  \begin{itemize}
-    \item Jede Variable muss \defc{vor ihrer Verwendung} deklariert sein.
-    \item Deklaration = \textit{bindendes Auftreten}, Verwendung = \textit{verwendendes Auftreten}.
-  \end{itemize}
-\end{defbox}
-
-\begin{defbox}[Typprüfung]
-  \begin{itemize}
-    \item Jede Operation verlangt passende Operandentypen.
-    \item Beispielregeln:
-          \begin{align*}
-            E_1 > E_2    & : \text{liefert bool, wenn } E_1,E_2:int    \\
-            V := E       & : \text{nur erlaubt, wenn Typen äquivalent} \\
-            while~E~do~C & : \text{nur erlaubt, wenn } E:bool
-          \end{align*}
-  \end{itemize}
-\end{defbox}
-
-%--------------------------------------------------
-\subsection{Semantik}
-
-\begin{defbox}[Semantik]
-  Beschreibt die \defc{Bedeutung von Programmen zur Laufzeit}.
-\end{defbox}
-
-\subsubsection{Operationelle Sicht}
-\begin{itemize}
-  \item \textbf{Anweisungen:} verändern Zustand (z.B. Variablen, I/O)
-  \item \textbf{Ausdrücke:} werden evaluiert und liefern Werte
-  \item \textbf{Deklarationen:} binden Namen an Speicherbereiche
-\end{itemize}
-
-\subsubsection{Beispiele}
-\begin{itemize}
-  \item \textbf{AssignCmd:} $V := E$
-        \begin{enumerate}
-          \item Evaluiere $E \Rightarrow v$
-          \item Weise $v$ an Variable $V$ zu
-        \end{enumerate}
-  \item \textbf{BinaryExp:} $E_1~op~E_2$
-        \begin{enumerate}
-          \item Evaluiere $E_1,E_2 \Rightarrow v_1,v_2$
-          \item Führe Operation $op(v_1,v_2)$ aus
-        \end{enumerate}
-\end{itemize}
-
-%--------------------------------------------------
-\subsection{Zusammenfassung}
-\begin{itemize}
-  \item Compiler übersetzen Hochsprache $\rightarrow$ Maschinencode.
-  \item Bestehen aus: Front-End, Middle-End, Back-End.
-  \item Zentrale Themen: Syntax, Semantik, Typen, Optimierung.
-  \item Mini-Triangle dient als Lehrsprache zur Umsetzung der Konzepte.
-\end{itemize}
 
 \end{document}

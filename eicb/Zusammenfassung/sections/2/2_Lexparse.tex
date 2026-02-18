@@ -7,207 +7,236 @@
 
 \begin{document}
 
-\section{Syntaktische Analyse/Lexparse}
+\section{Syntaktische Analyse}
 
-\begin{defbox}[Übersetzung und Phasen]
+Diese Sektion behandelt den Prozess der Übersetzung von Quellcode in Maschinencode, mit besonderem Fokus auf die Phasen der syntaktischen Analyse (Scanner und Parser), Grammatiktransformationen und die Implementierung von Parsern mittels rekursivem Abstieg.
+
+\subsection{Einordnung und Struktur von Compilern}
+
+Die Übersetzung erfolgt in mehreren Phasen, die logisch voneinander getrennt sind. Physikalisch können diese in einem oder mehreren Durchgängen (Passes) organisiert sein.
+
+\begin{defbox}[Terminologie]
   \begin{itemize}
-    \item \defc{Syntaxanalyse} → Struktur des Programms (AST)
-    \item \defc{Kontextanalyse} → Bedeutungsprüfung (Typen, Gültigkeit)
-    \item \defc{Codegenerierung} → Übersetzung in Zielcode
+    \item \textbf{Phase:} Ein logischer Schritt im Übersetzungsprozess (z.B. Syntaxanalyse, Codegenerierung).
+    \item \textbf{Pass (Durchgang):} Ein kompletter Durchlauf über den Quelltext oder eine Zwischenrepräsentation (Intermediate Representation, IR). Ein Pass kann mehrere Phasen beinhalten.
   \end{itemize}
 \end{defbox}
 
-\subsection{Compilerstruktur}
-\textbf{Ein-Pass-Compiler:}
-\begin{itemize}
-  \item Führt alle Phasen gleichzeitig aus
-  \item Keine echte Zwischendarstellung (IR)
-  \item Typisch für kleine Sprachen (z. B. Pascal)
-\end{itemize}
+\subsubsection{Vergleich: Ein-Pass vs. Multi-Pass Compiler}
 
-\textbf{Multi-Pass-Compiler:}
-\begin{itemize}
-  \item Arbeitet mit mehreren Durchgängen über Quelltext/IR
-  \item Datenweitergabe über IR (AST)
-  \item Bessere Modularität und Optimierung
-\end{itemize}
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|p{6cm}|p{6cm}|}
+    \hline
+    \textbf{Kriterium}    & \textbf{Ein-Pass Compiler}                                                               & \textbf{Multi-Pass Compiler}                                                             \\ \hline
+    \textbf{Arbeitsweise} & Führt Syntaxanalyse, Kontextanalyse und Codegenerierung verschränkt aus. Keine echte IR. & Mehrere Durchläufe. Datenübergabe zwischen Passes erfolgt über IR (z.B. AST).            \\ \hline
+    \textbf{Laufzeit}     & \textbf{+} Schnell (weniger I/O-Overhead).                                               & \textbf{-} Langsamer durch mehrfaches Lesen/Schreiben der IR.                            \\ \hline
+    \textbf{Speicher}     & \textbf{+} Geringer Speicherbedarf (gut für große Programme bei wenig RAM).              & \textbf{+} Besser für kleine Programme; bei großen Programmen speicherintensiv durch IR. \\ \hline
+    \textbf{Modularität}  & \textbf{--} Schlecht trennbar, "Spaghetti-Code".                                         & \textbf{+} Klare Trennung der Belange.                                                   \\ \hline
+    \textbf{Flexibilität} & \textbf{-} Starr.                                                                        & \textbf{+} Austauschbare Backends/Frontends möglich.                                     \\ \hline
+    \textbf{Optimierung}  & \textbf{--} Nur lokale Optimierungen möglich.                                            & \textbf{+} Globale Optimierungen auf IR möglich.                                         \\ \hline
+    \textbf{Kontext}      & Definitionen müssen oft \emph{vor} der Verwendung stehen (z.B. Pascal).                  & Auflösung von Vorwärtsreferenzen (z.B. Java) problemlos möglich.                         \\ \hline
+  \end{tabular}
+\end{table}
 
-\subsection{Syntaxanalyse – Überblick}
-\begin{itemize}
-  \item \textbf{Scanner (Lexer)}: Wandelt Zeichenfolge → Tokenfolge
-  \item \textbf{Parser}: Wandelt Tokenfolge → Abstract Syntax Tree (AST)
-  \item Token = atomares Symbol des Quellprogramms
-\end{itemize}
+\subsection{Ablauf der Syntaxanalyse}
 
-\begin{defbox}[Kontextfreie Grammatik (CFG)]
-  Eine CFG ist ein 4-Tupel $(N, T, P, S)$ mit:
+Die Syntaxanalyse ist der Kern des Frontends und transformiert den linearen Zeichenstrom in eine strukturierte Repräsentation.
+
+% Grafik: Ablauf Source -> Scanner -> Token Stream -> Parser -> AST
+% (Entspricht Folie 12)
+
+\begin{enumerate}
+  \item \textbf{Scanner (Lexikalische Analyse):}
+        \begin{itemize}
+          \item Eingabe: Zeichenfolge (Source Code).
+          \item Aufgabe: Gruppierung von Zeichen zu \defc{Tokens} (atomare Symbole wie Schlüsselwörter, Bezeichner, Literale).
+          \item Filterung: Entfernt Whitespace und Kommentare.
+        \end{itemize}
+
+  \item \textbf{Parser (Syntaktische Analyse):}
+        \begin{itemize}
+          \item Eingabe: Token-Stream.
+          \item Aufgabe: Überprüfung der grammatikalischen Struktur gemäß einer kontextfreien Grammatik (CFG).
+          \item Ausgabe: Abstract Syntax Tree (AST) oder Fehlermeldungen.
+        \end{itemize}
+\end{enumerate}
+
+\begin{defbox}[Token]
+  Ein Token ist ein Tupel bestehend aus:
   \begin{itemize}
-    \item $N$: Nichtterminale
-    \item $T$: Terminale
-    \item $P$: Produktionen
-    \item $S$: Startsymbol
+    \item \textbf{Kind:} Die Art des Tokens (z.B. \texttt{IDENTIFIER}, \texttt{INTLITERAL}, \texttt{IF}, \texttt{PLUS}).
+    \item \textbf{Spelling:} Der tatsächliche Textinhalt (z.B. "x", "42", "if", "+").
+    \item \textbf{Position:} Zeile und Spalte im Quelltext (für Fehlermeldungen).
   \end{itemize}
 \end{defbox}
 
-\subsection{BNF und EBNF}
+\subsection{Grammatiken und Transformationen}
+
+Die Syntax von Programmiersprachen wird meist durch kontextfreie Grammatiken (CFG) spezifiziert.
+
+\subsubsection{Notation}
 \begin{itemize}
-  \item \textbf{BNF:} Grundform zur Definition von Grammatiken
-  \item \textbf{EBNF:} Erweiterung mit regulären Ausdrücken, optionalen und wiederholten Konstrukten
-  \item Beispiel:
-        \[
-          \text{Expression} ::= \text{primary-Expression (operator primary-Expression)*}
-        \]
+  \item \textbf{BNF (Backus-Naur-Form):} Klassische Notation.
+  \item \textbf{EBNF (Extended BNF):} Erlaubt reguläre Ausdrücke auf der rechten Seite für kompaktere Schreibweise.
+        \begin{itemize}
+          \item \texttt{(\ldots)}: Gruppierung
+          \item \texttt{|}: Alternative
+          \item \texttt{[\ldots]} oder \texttt{?}: Optional (0 oder 1 Mal)
+          \item \texttt{\char123\ldots\char125} oder \texttt{*}: Wiederholung (0 bis n Mal)
+        \end{itemize}
 \end{itemize}
 
-\subsection{Grammatiktransformationen}
-\begin{itemize}
-  \item \defc{Gruppierung}: Zusammenfassen gleicher LHS
-  \item \defc{Linksausklammern}: Gemeinsame Präfixe auslagern
-  \item \defc{Linksrekursion beseitigen}: $N ::= X | N Y \Rightarrow N ::= X (Y)^*$
-  \item \defc{Ersetzung von Nicht-Terminalen}: falls nur eine Regel existiert
-\end{itemize}
+\subsubsection{Notwendige Grammatik-Transformationen für Parser}
+Für bestimmte Parsing-Techniken (insbesondere Top-Down / Recursive Descent) muss die Grammatik angepasst werden, ohne die definierte Sprache zu ändern.
 
-\subsection{Parsing-Grundlagen}
-\begin{defbox}[Parsing]
-  Entscheidung, ob Eingabe zur Grammatik gehört und Aufbau des Syntaxbaumes.
-\end{defbox}
-\begin{itemize}
-  \item \textbf{Top-Down (z. B. rekursiver Abstieg):} Von Startsymbol zu Terminalen
-  \item \textbf{Bottom-Up (z. B. Shift/Reduce):} Von Terminalen zur Wurzel
-\end{itemize}
+\paragraph{1. Linksausklammern (Left Factoring)}
+Problem: Der Parser kann sich nicht entscheiden, welche Produktion er wählen soll, da mehrere mit demselben Symbol beginnen.
+\\
+\textbf{Regel:} $X ::= \alpha \beta \mid \alpha \gamma \quad \Rightarrow \quad X ::= \alpha (\beta \mid \gamma)$
+\\
+\textit{Beispiel:}
+\begin{align*}
+  Cmd & ::= \texttt{if} \; E \; \texttt{then} \; C                        \\
+      & \mid \texttt{if} \; E \; \texttt{then} \; C \; \texttt{else} \; C
+\end{align*}
+wird zu:
+\[Cmd ::= \texttt{if} \; E \; \texttt{then} \; C \; (\epsilon \mid \texttt{else} \; C)\]
 
-\subsection{Top-Down Parsing}
-\begin{itemize}
-  \item Aufbau des Syntaxbaums von oben nach unten
-  \item Expandiere jeweils das linke Nichtterminal
-  \item LL(k): Grammatik, bei der mit $k$ Lookahead-Tokens eindeutig entschieden werden kann
-  \item \defc{LL(1)} → wichtigster Fall für rekursiven Abstieg
-\end{itemize}
+\paragraph{2. Beseitigung von Linksrekursion}
+Problem: Ein Top-Down-Parser gerät in eine Endlosschleife, wenn ein Nicht-Terminal sich selbst als erstes Symbol aufruft ($N \Rightarrow N\alpha$).
 
-\subsection{Rekursiver Abstieg}
-\begin{defbox}[Rekursiver Abstieg]
-  Jedes Nichtterminal erhält eine Prozedur \texttt{parseN()}, deren Aufrufstruktur dem Parsebaum entspricht.
-\end{defbox}
-\begin{itemize}
-  \item \textbf{accept(t)} prüft aktuelles Token
-  \item \textbf{acceptIt()} akzeptiert aktuelles Token ohne Prüfung
-  \item \textbf{currentToken}: vom Scanner geliefert
-\end{itemize}
+\textbf{Direkte Linksrekursion:} $N ::= N \alpha \mid \beta$
 
-\subsection{Starter- und Folgemengen}
+\textbf{Lösung (Transformation in Rechtsrekursion oder Iteration):}
+$$ N ::= \beta (\alpha)^* $$
+bzw. formal in BNF:
+\begin{align*}
+  N  & ::= \beta N'                \\
+  N' & ::= \alpha N' \mid \epsilon
+\end{align*}
 
-% Definition der Mengenarten für den Kontext
-\begin{itemize}
-  \item $T$: Menge der Terminale (Tokens, z.B. \texttt{id}, \texttt{+})
-  \item $N$: Menge der Nichtterminale (Variablen, z.B. \texttt{Expression})
-  \item $\varepsilon$: Das leere Wort (Epsilon)
-  \item $\$$: End-of-File Marker (eof)
-\end{itemize}
+\subsection{Parsing-Strategien}
 
-% WICHTIG: Die geschweiften Klammern { ... } um den Titel verhindern, 
-% dass LaTeX bei den inneren eckigen Klammern [[ ]] abstürzt.
+Man unterscheidet zwei grundlegende Herangehensweisen, um den Ableitungsbaum (Parse Tree) zu konstruieren.
 
-\begin{defbox}[{$\text{starters}[[X]]$ (First-Menge)}]
-  Menge aller Terminale, mit denen ein aus $X$ abgeleiteter String beginnen kann.
+\begin{table}[h]
+  \centering
+  \small
+  \begin{tabular}{|l|p{4.5cm}|p{4.5cm}|}
+    \hline
+                       & \textbf{Top-Down (z.B. LL)}                                & \textbf{Bottom-Up (z.B. LR)}                                                    \\ \hline
+    \textbf{Richtung}  & Wurzel $\to$ Blätter                                       & Blätter $\to$ Wurzel                                                            \\ \hline
+    \textbf{Vorgehen}  & Expandiert das am weitesten links stehende Nicht-Terminal. & "Shift" (Einlesen) und "Reduce" (Ersetzen der rechten Seite durch linke Seite). \\ \hline
+    \textbf{Lookahead} & Wählt Produktion anhand der nächsten $k$ Token.            & Entscheidungen basieren auf Stack-Zustand und Lookahead.                        \\ \hline
+    \textbf{Eignung}   & Intuitive Implementierung von Hand (Rekursiver Abstieg).   & Mächtiger, handhabt Linksrekursion, meist generiert (Yacc, Bison).              \\ \hline
+  \end{tabular}
+\end{table}
 
-  \textbf{Berechnung:}
-  \begin{itemize}
-    \item \textbf{Ist $X \in T$ (Terminal):} \\
-          $starters[[X]] = \{X\}$
-    \item \textbf{Ist $X \in N$ (Nichtterminal) mit $X \rightarrow Y_1 Y_2 \dots$:}
-          \begin{itemize}
-            \item Füge $starters[[Y_1]] \setminus \{\varepsilon\}$ hinzu.
-            \item Falls $\varepsilon \in starters[[Y_1]]$, füge auch $starters[[Y_2]]$ hinzu (usw.).
-          \end{itemize}
-    \item \textbf{Epsilon:} Falls $X \rightarrow \varepsilon$ existiert, ist $\varepsilon \in starters[[X]]$.
-  \end{itemize}
+\begin{defbox}[LL(k)]
+  Eine Grammatik ist $LL(k)$, wenn der Parser beim Lesen von links nach rechts (\textbf{L}) und beim Konstruieren einer Linksanleitung (\textbf{L}) mit $k$ Symbolen Vorausschau (Lookahead) immer eindeutig die nächste Produktion bestimmen kann.
 \end{defbox}
 
-\begin{defbox}[{$\text{follow}[[A]]$ (Folgemenge)}]
-  Menge aller Terminale, die in einer Satzform unmittelbar rechts von einem Nichtterminal $A$ stehen können.
+\subsection{Rekursiver Abstieg (Recursive Descent)}
 
-  \textbf{Regeln:}
-  \begin{enumerate}
-    \item \textbf{Startsymbol $S$:} Enthält immer das Ende-Zeichen ($\$$).
-    \item \textbf{Rechter Nachbar ($B \rightarrow \alpha A \beta$):} \\
-          Alles aus $starters[[\beta]]$ (außer $\varepsilon$) kommt zu $follow[[A]]$.
-    \item \textbf{Eltern-Vererbung ($B \rightarrow \alpha A$ oder $\beta \Rightarrow^* \varepsilon$):} \\
-          Wenn $A$ am Ende steht (oder $\beta$ wegfallen kann), erbt $A$ alles aus $follow[[B]]$.
-  \end{enumerate}
-  \textit{Hinweis: Folgemengen enthalten niemals $\varepsilon$, können aber $\$$ enthalten.}
-\end{defbox}
-
-\subsubsection*{LL(1)-Konfliktfreiheit}
-Eine Grammatik ist LL(1), wenn für jede Produktion mit Alternativen $A \rightarrow \alpha \mid \beta$ gilt:
-
+Dies ist eine direkte Implementierung eines Top-Down-Parsers.
 \begin{itemize}
-  \item \textbf{Disjunkte Starter (Auswahl-Konflikt):} \\
-        Die Alternativen dürfen nicht mit demselben Terminal beginnen. \\
-        $starters[[\alpha]] \cap starters[[\beta]] = \emptyset$
-
-  \item \textbf{Disjunkte Folge bei Epsilon (Nullable-Konflikt):} \\
-        Falls $\alpha \Rightarrow^* \varepsilon$ (d.h. $\alpha$ kann verschwinden), darf die Folgemenge von $A$ keinen gemeinsamen Start mit $\beta$ haben. \\
-        $starters[[\beta]] \cap follow[[A]] = \emptyset$
+  \item Jedes Nicht-Terminal der Grammatik wird zu einer Methode (z.B. \texttt{parseStatement()}).
+  \item Die rechte Seite der Produktion bestimmt den Rumpf der Methode.
+  \item Terminale werden mit dem aktuellen Token verglichen (\texttt{accept}).
+  \item Nicht-Terminale führen zu rekursiven Aufrufen der entsprechenden Methoden.
 \end{itemize}
 
-\subsection{AST (Abstract Syntax Tree)}
+\textbf{Struktur einer Parse-Methode:}
+\begin{verbatim}
+void parseN() {
+  if (currentToken in Starters[Alternative1]) {
+    parseAlternative1();
+  } else if (currentToken in Starters[Alternative2]) {
+    parseAlternative2();
+  } else {
+    error("Syntax Error");
+  }
+}
+\end{verbatim}
+
+\subsection{LL(1)-Analyse und Entscheidungsmengen}
+
+Damit ein rekursiver Abstieg deterministisch funktioniert (ohne Backtracking), muss die Grammatik die LL(1)-Eigenschaft erfüllen. Dazu werden Hilfsmengen berechnet.
+
+\subsubsection{Starters (First) Menge}
+$Starters[[X]]$ ist die Menge aller Terminalsymbole, mit denen ein aus $X$ ableitbarer Satz beginnen kann.
 \begin{itemize}
-  \item Strukturierte Repräsentation des Programms
-  \item Parser erzeugt AST-Knoten beim rekursiven Abstieg
-  \item Jede Grammatikregel entspricht einer AST-Unterklasse
+  \item $Starters[[t]] = \{t\}$ (für Terminal $t$)
+  \item $Starters[[\epsilon]] = \emptyset$ (Achtung: $\epsilon$ wird oft separat behandelt)
+  \item $Starters[[XY]] = Starters[[X]]$, falls $X$ nicht zu $\epsilon$ werden kann. Sonst $Starters[[X]] \cup Starters[[Y]]$.
+  \item $Starters[[X|Y]] = Starters[[X]] \cup Starters[[Y]]$
 \end{itemize}
 
-\begin{defbox}[AST-Aufbau]
-  \begin{itemize}
-    \item \textbf{Abstrakte Basisklasse:} \texttt{AST}
-    \item \textbf{Subklassen:} \texttt{Command}, \texttt{Expression}, \texttt{Declaration}, \texttt{TypeDenoter}
-    \item Terminalknoten (z. B. Identifier, Operator) speichern tatsächlichen Text
-  \end{itemize}
-\end{defbox}
-
-\subsection{Scanner (Lexikalische Analyse)}
-\begin{defbox}[Scanner]
-  Wandelt Zeichen → Tokens anhand regulärer Ausdrücke (REs).
-\end{defbox}
-
-\textbf{Aufgaben:}
+\subsubsection{Follow Menge}
+$Follow[[N]]$ ist die Menge aller Terminalsymbole, die in irgendeiner Satzform direkt \emph{nach} dem Nicht-Terminal $N$ stehen können.
 \begin{itemize}
-  \item Entfernt Whitespace, Kommentare
-  \item Liefert \texttt{Token(kind, spelling, position)}
-  \item Nutzt endlichen Automaten oder rekursiven Abstieg
+  \item Wird benötigt, wenn eine Produktion zu $\epsilon$ (leer) abgeleitet werden kann.
+  \item Regel: Wenn $A ::= \alpha B \beta$, dann ist alles in $Starters[[\beta]]$ auch in $Follow[[B]]$.
+  \item Wenn $\beta \to \epsilon$ (oder $B$ am Ende steht: $A ::= \alpha B$), dann ist alles in $Follow[[A]]$ auch in $Follow[[B]]$.
 \end{itemize}
 
-\textbf{Beispiel EBNF Mini-Triangle:}
-\[
-  \begin{aligned}
-    \text{Identifier}      & ::= \text{Letter (Letter | Digit)*} \\
-    \text{Integer-Literal} & ::= \text{Digit Digit*}             \\
-    \text{Operator}        & ::= + | - | * | / | < | > | =       \\
-  \end{aligned}
-\]
+\subsubsection{Director Sets (Entscheidungsmengen) und LL(1)-Bedingungen}
+Um zwischen Alternativen $A ::= \alpha \mid \beta$ zu wählen, nutzen wir das \defc{Director Set} $Dir$.
 
-\subsection{Automatisierung}
+$$ Dir[[\alpha]] = \begin{cases} Starters[[\alpha]] & \text{falls } \epsilon \notin Starters[[\alpha]] \\ Starters[[\alpha]] \cup Follow[[A]] & \text{falls } \epsilon \in Starters[[\alpha]] \end{cases} $$
+
+\textbf{Bedingung für LL(1):}
+Für alle Produktionen $A ::= \alpha_1 \mid \alpha_2 \mid \dots \mid \alpha_n$ muss gelten:
+$$ Dir[[\alpha_i]] \cap Dir[[\alpha_j]] = \emptyset \quad \text{für alle } i \neq j $$
+Das bedeutet:
 \begin{itemize}
-  \item Scanner-Generatoren: \textbf{JLex}, \textbf{JFlex}
-  \item Parser-Generatoren: \textbf{ANTLR (LL*)}, \textbf{JavaCC (LL(k))}
+  \item Die Anfangssymbole der Alternativen müssen disjunkt sein.
+  \item Falls eine Alternative leer sein kann ($\epsilon$), darf keines der Symbole, die \emph{nach} dem Nicht-Terminal folgen können, in den Anfangsmengen der anderen Alternativen enthalten sein.
 \end{itemize}
 
-\subsection{Typische Fehler}
+\subsection{Abstract Syntax Tree (AST)}
+
+Der AST ist eine komprimierte Version des Parse Trees. Er enthält keine unnötigen Details der konkreten Syntax (wie Klammern, Semikolons oder Hilfs-Nicht-Terminale aus der Grammatiktransformation), sondern repräsentiert die logische Struktur des Programms.
+
+\textbf{Implementierung:}
 \begin{itemize}
-  \item Linksrekursion nicht entfernt
-  \item Linksausklammern vergessen
-  \item Anfangs-/Folgemengen überschneiden sich → nicht LL(1)
-  \item Schlüsselwörter nicht vom Identifier getrennt
+  \item Eine abstrakte Basisklasse \texttt{AST}.
+  \item Unterklassen für Sprachkonstrukte (z.B. \texttt{Command}, \texttt{Expression}, \texttt{Declaration}).
+  \item Konkrete Klassen für Varianten (z.B. \texttt{IfCmd}, \texttt{WhileCmd}, \texttt{BinaryExpr}).
+  \item \textbf{Aufbau:} Die Parse-Methoden werden von \texttt{void} auf den Rückgabetyp \texttt{AST} geändert. Sie erzeugen Knoten und geben diese an den Aufrufer zurück ("bottom-up" Aufbau während der Rekursion).
 \end{itemize}
 
-\subsection{Zusammenfassung – Wichtigste Punkte}
+% Grafik: AST Strukturbeispiel (Folie 68/73)
+% Zeigt, wie z.B. eine Sequenz von Befehlen als geschachtelte Objekte (SeqCmd) repräsentiert wird.
+
+\subsection{Lexikalische Analyse (Scanner-Implementierung)}
+
+Der Scanner (Lexer) ist oft als endlicher Automat (Finite State Machine) realisiert oder wird manuell implementiert.
+
+\subsubsection{Aufgaben}
+\begin{enumerate}
+  \item Lesen der Eingabezeichen.
+  \item Überlesen von "Whitespace" (Leerzeichen, Tabs, Newlines) und Kommentaren.
+  \item Erkennen des längstmöglichen passenden Tokens (Longest Match).
+  \item Unterscheidung zwischen Bezeichnern (Identifiers) und Schlüsselwörtern (Keywords).
+\end{enumerate}
+
+\subsubsection{Behandlung von Schlüsselwörtern}
+Da Schlüsselwörter (z.B. \texttt{if}, \texttt{while}) lexikalisch oft wie Bezeichner aussehen, werden sie zunächst als \texttt{IDENTIFIER} gescannt.
+\\
+\textbf{Best Practice:}
 \begin{itemize}
-  \item CFG-Grundlagen (BNF/EBNF)
-  \item Transformationen: Gruppierung, Linksausklammern, Rekursionsbeseitigung
-  \item LL(1)-Parsing und Bedingungen
-  \item Rekursiver Abstieg: Struktur und Methoden
-  \item AST-Struktur: Klassenhierarchie, Terminal- und Nichtterminalknoten
-  \item Scanner: REs, endliche Automaten, Schlüsselworterkennung
+  \item Scanne das Wort als Identifier.
+  \item Prüfe in einer Hash-Map/Tabelle, ob der Text ein reserviertes Wort ist.
+  \item Wenn ja: Ändere die Token-Art (z.B. von \texttt{IDENTIFIER} zu \texttt{IF}).
+\end{itemize}
+
+\subsubsection{Schnittstelle zum Parser}
+\begin{itemize}
+  \item \texttt{scan()}: Liefert das nächste Token.
+  \item \texttt{currentKind}: Art des aktuellen Tokens.
+  \item \texttt{currentSpelling}: Textinhalt des aktuellen Tokens.
 \end{itemize}
 
 \end{document}
