@@ -18,25 +18,26 @@ import mavlc.syntax.SourceLocation;
  * AST node representing the comparison of two values, yielding a boolean value.
  */
 public class Compare extends BinaryExpression {
-	
+
 	public final Comparison comparator;
-	
+
 	/**
 	 * @param sourceLocation Location of the node within the containing source file.
-	 * @param leftOperand The left operand of the comparison.
-	 * @param rightOperand The right operand of the comparison.
-	 * @param comparator The comparator of the comparison.
+	 * @param leftOperand    The left operand of the comparison.
+	 * @param rightOperand   The right operand of the comparison.
+	 * @param comparator     The comparator of the comparison.
 	 */
-	public Compare(SourceLocation sourceLocation, Expression leftOperand, Expression rightOperand, Comparison comparator) {
+	public Compare(SourceLocation sourceLocation, Expression leftOperand, Expression rightOperand,
+			Comparison comparator) {
 		super(sourceLocation, leftOperand, rightOperand);
 		this.comparator = comparator;
 	}
-	
+
 	@Override
 	public <RetTy, ArgTy> RetTy accept(AstNodeVisitor<? extends RetTy, ArgTy> visitor, ArgTy obj) {
 		return visitor.visitCompare(this, obj);
 	}
-	
+
 	/** Possible comparators for comparisons. */
 	public enum Comparison {
 		LESS("<"),
@@ -45,9 +46,9 @@ public class Compare extends BinaryExpression {
 		GREATER_EQUAL(">="),
 		NOT_EQUAL("!="),
 		EQUAL("==");
-		
+
 		public final String operator;
-		
+
 		Comparison(String operator) {
 			this.operator = operator;
 		}

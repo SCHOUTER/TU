@@ -17,36 +17,38 @@ import mavlc.syntax.SourceLocation;
  * Token representation.
  */
 public final class Token {
-	
+
 	/** The token's {@link Token.TokenType type}, e.g., INTLIT or LBRACE. */
 	public final TokenType type;
-	
+
 	/** The token's spelling, e.g., "foobar_42" for an ID token. */
 	public final String spelling;
-	
+
 	public final SourceLocation sourceLocation;
-	
+
 	/**
-	 * @param type The token's {@link Token.TokenType type}, e.g., INTLIT or LBRACE.
+	 * @param type     The token's {@link Token.TokenType type}, e.g., INTLIT or
+	 *                 LBRACE.
 	 * @param spelling The token's spelling, e.g., "foobar_42" for an ID token.
-	 * @param line The line number in the source file where this token was found.
-	 * @param column The column in the line where this token starts.
+	 * @param line     The line number in the source file where this token was
+	 *                 found.
+	 * @param column   The column in the line where this token starts.
 	 */
 	public Token(TokenType type, String spelling, int line, int column) {
 		this.type = type;
 		this.spelling = spelling;
 		this.sourceLocation = new SourceLocation(line, column);
 	}
-	
+
 	public String toString() {
 		return String.format("<%s %s>", type.name(), spelling);
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof Token && type.equals(((Token) obj).type) && spelling.equals(((Token) obj).spelling);
 	}
-	
+
 	/**
 	 * Enumerates token types used in MAVL.
 	 */
@@ -109,10 +111,10 @@ public final class Token {
 		OR("|"),
 		EOF("<eof>"),
 		ERROR("<error>");
-		
+
 		// internal use only
 		final String pattern;
-		
+
 		TokenType(String pattern) {
 			this.pattern = pattern;
 		}
