@@ -1,0 +1,210 @@
+\documentclass[
+../../eicb_summary.tex,
+]
+{subfiles}
+
+\externaldocument[ext:]{../../eicb_summary}
+
+\begin{document}
+
+\section{Java Virtual Machine}
+
+Die \defc{Java Virtual Machine (JVM)} ist das Herzstück der Java-Plattform. Sie fungiert als abstrakte Rechenmaschine, die eine Laufzeitumgebung zur Ausführung von Bytecode bereitstellt, unabhängig von der zugrunde liegenden Hardware oder dem Betriebssystem.
+
+\subsection{Architektur und Konzept}
+
+Die Java-Plattform besteht aus zwei Hauptkomponenten:
+\begin{itemize}
+  \item \textbf{Java API:} Standardbibliothek für Zugriff auf Ressourcen (IO, Netzwerk, etc.).
+  \item \textbf{Java Virtual Machine (JVM):} Lädt Klassen, führt Programme aus und verwaltet den Speicher (Garbage Collection).
+\end{itemize}
+
+\begin{defbox}[Konzept der Virtuellen Maschine]
+  Eine \defc{Virtuelle Maschine} ist eine "Maschine auf der Maschine". Sie definiert eine Spezifikation für die Ausführung von Programmen. Solange eine Implementierung (z.B. HotSpot) die Spezifikation erfüllt, ist das Verhalten des Programms auf jeder physischen Maschine identisch.
+\end{defbox}
+
+\subsubsection{Bytecode und Kompilierung}
+Java-Code wird nicht direkt in Maschinencode, sondern in \defc{Bytecode} übersetzt (.class Dateien). Dieser Ansatz ist ein Hybrid:
+\begin{itemize}
+  \item \textbf{Interpretiert:} Bytecode kann direkt interpretiert werden (langsamer).
+  \item \textbf{JIT-Kompilierung (Just-In-Time):} Häufig ausgeführte Code-Pfade ("Hotspots") werden zur Laufzeit in nativen Maschinencode übersetzt. Dies ermöglicht eine Leistung nahe an nativ kompilierten Sprachen (C++), bei gleichzeitiger Portabilität.
+\end{itemize}
+
+\textbf{Portabilität:}
+Da die JVM über das Betriebssystem abstrahiert, sind Datentypen (z.B. die Bitbreite von \texttt{int}) auf allen Plattformen identisch. Ein Programm muss nur einmal zu Bytecode kompiliert werden und läuft überall, wo eine JVM installiert ist ("Write Once, Run Anywhere").
+
+\begin{center}
+  \includegraphics[width=0.7\textwidth]{eicb_1_07-jvm-handout_page_16_1.png}
+\end{center}
+
+\subsection{Interner Aufbau der JVM}
+
+Das \textbf{Java Runtime System} besteht aus mehreren Subsystemen:
+
+\subsubsection{Class Loader Subsystem}
+Der Class Loader ist für das dynamische Laden, Linken und Initialisieren von Klassen zuständig. Der Prozess läuft in folgenden Phasen ab:
+
+\begin{enumerate}
+  \item \textbf{Loading:} Laden des binären Class Files.
+  \item \textbf{Linking:} Überführung in JVM-interne Strukturen.
+        \begin{itemize}
+          \item \textit{Verification:} Prüfung der Struktur und Sicherheit (Bytecode Verifier).
+          \item \textit{Preparation:} Speicherreservierung für statische Felder (Standardwerte).
+          \item \textit{Resolution:} Auflösen symbolischer Referenzen im Constant Pool (kann verzögert geschehen).
+        \end{itemize}
+  \item \textbf{Initialization:} Ausführung statischer Initialisierer (z.B. \texttt{<clinit>}).
+\end{enumerate}
+
+\subsubsection{Speicherbereiche (Runtime Data Areas)}
+Die JVM verwaltet den Speicher in verschiedenen Bereichen:
+\begin{itemize}
+  \item \textbf{Method Area:} Speichert Klassendefinitionen, Konstanten, statische Variablen und Code.
+  \item \textbf{Heap:} Hier werden alle \defc{Objekte} und \defc{Arrays} zur Laufzeit angelegt. Der Speicher wird durch den \defc{Garbage Collector} automatisch bereinigt.
+  \item \textbf{Java Stack:} Speichert Stack Frames (lokale Variablen, Operandenstack) für jeden Methodenaufruf. Jeder Thread hat seinen eigenen Stack.
+  \item \textbf{PC Register:} Zeigt auf die aktuelle Instruktion.
+  \item \textbf{Native Method Stack:} Für Aufrufe von nativem Code (via JNI, z.B. C++ Bibliotheken).
+\end{itemize}
+
+\subsection{Class File Format und Typen}
+
+Ein Class File enthält alle Informationen einer Klasse in einem binären Format (Big-Endian). Wichtige Komponenten sind:
+\begin{itemize}
+  \item \textbf{Constant Pool:} Eine Tabelle, die Literale (Strings, Zahlen) und symbolische Referenzen (Klassen-, Methoden-, Feldnamen) enthält. Der Bytecode referenziert Werte oft über einen Index in diesen Pool, was das dynamische Linken ermöglicht.
+  \item \textbf{Methods Table:} Enthält den Bytecode der Methoden.
+  \item \textbf{Fields Table:} Beschreibt die Variablen der Klasse.
+\end{itemize}
+
+\subsubsection{Type Descriptors}
+Die JVM verwendet kompakte Strings, um Typen zu beschreiben. Dies ist essentiell für das Verständnis von Methodensignaturen im Bytecode.
+
+\begin{center}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Deskriptor} & \textbf{Datentyp} & \textbf{Bemerkung}                                 \\ \hline
+    \texttt{B}          & \texttt{byte}     & Vorzeichenbehaftet (8 Bit)                         \\ \hline
+    \texttt{C}          & \texttt{char}     & Unicode Character (16 Bit)                         \\ \hline
+    \texttt{D}          & \texttt{double}   & 64-Bit Gleitkomma                                  \\ \hline
+    \texttt{F}          & \texttt{float}    & 32-Bit Gleitkomma                                  \\ \hline
+    \texttt{I}          & \texttt{int}      & 32-Bit Integer                                     \\ \hline
+    \texttt{J}          & \texttt{long}     & 64-Bit Integer                                     \\ \hline
+    \texttt{S}          & \texttt{short}    & Vorzeichenbehaftet (16 Bit)                        \\ \hline
+    \texttt{Z}          & \texttt{boolean}  & true/false                                         \\ \hline
+    \texttt{V}          & \texttt{void}     & Nur als Rückgabetyp                                \\ \hline
+    \texttt{L<Klasse>;} & Object            & z.B. \texttt{Ljava/lang/String;}                   \\ \hline
+    \texttt{[}          & Array             & z.B. \texttt{[I} (int[]), \texttt{[[F} (float[][]) \\ \hline
+  \end{tabular}
+\end{center}
+
+\textbf{Beispiel Methodensignatur:} \
+Java: \texttt{public int foo(char c, float f, String s)} \
+JVM-Deskriptor: \texttt{(CFLjava/lang/String;)I}
+
+\subsection{Ausführungsmodell: Stack Frames}
+
+Die JVM ist eine \defc{stack-basierte Maschine}. Es gibt keine allgemeinen Register zur Berechnung. Operationen finden auf dem Operandenstack statt.
+Bei jedem Methodenaufruf wird ein neuer \textbf{Stack Frame} erzeugt, der enthält:
+
+\begin{defbox}[Bestandteile eines Stack Frames]
+  \begin{itemize}
+    \item \textbf{Local Variables:} Ein Array von lokalen Variablen (inkl. Methodenparameter). Index 0 ist bei Instanzmethoden \texttt{this}.
+    \item \textbf{Operand Stack:} Ein LIFO-Speicher für Zwischenergebnisse. Operationen (z.B. \texttt{iadd}) nehmen Werte vom Stack und legen das Ergebnis zurück.
+    \item \textbf{Frame Data:} Referenzen auf den Constant Pool, Return-Adressen etc.
+  \end{itemize}
+\end{defbox}
+
+\textbf{Wichtig:} Die JVM arbeitet intern mit 32-Bit Slots ("Wörtern").
+\begin{itemize}
+  \item \texttt{long} und \texttt{double} belegen \textbf{zwei} Slots (sowohl im Stack als auch in den Local Variables).
+  \item Typen wie \texttt{short}, \texttt{byte}, \texttt{char} werden für Berechnungen implizit in \texttt{int} umgewandelt (sind sogenannte \textit{Storage Types}).
+\end{itemize}
+
+\subsection{Bytecode Instruktionen}
+
+Bytecode-Instruktionen (Opcodes) sind meist typisiert. Der erste Buchstabe (Präfix) gibt den Typ an:
+\begin{itemize}
+  \item \texttt{i}: int (auch byte, char, short, boolean)
+  \item \texttt{l}: long
+  \item \texttt{f}: float
+  \item \texttt{d}: double
+  \item \texttt{a}: reference (Objekte, Arrays)
+\end{itemize}
+
+\subsubsection{Daten laden und speichern}
+\begin{itemize}
+  \item \textbf{Konstanten laden:}
+        \begin{itemize}
+          \item \texttt{iconst\_<n>}: Lädt kleine Integers (-1 bis 5) effizient.
+          \item \texttt{bipush / sipush}: Lädt Byte/Short Konstanten.
+          \item \texttt{ldc}: Lädt Konstanten (Strings, große Zahlen) aus dem Constant Pool.
+        \end{itemize}
+  \item \textbf{Lokale Variablen:}
+        \begin{itemize}
+          \item \texttt{<p>load <index>}: Lädt Wert aus lokaler Variable auf den Stack.
+          \item \texttt{<p>store <index>}: Speichert Wert vom Stack in lokale Variable.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Stack-Manipulation}
+Da man Register nicht direkt adressieren kann, muss der Stack oft manipuliert werden:
+\begin{itemize}
+  \item \texttt{pop / pop2}: Löscht oberstes Element (1 oder 2 Wörter).
+  \item \texttt{dup / dup2}: Dupliziert oberstes Element.
+  \item \texttt{swap}: Vertauscht die obersten zwei Elemente.
+\end{itemize}
+
+\subsubsection{Arrays}
+Arrays sind Objekte auf dem Heap. Zugriff erfolgt in drei Schritten:
+\begin{enumerate}
+  \item Referenz auf das Array laden.
+  \item Index laden.
+  \item Operation ausführen (Wert wird geladen/gespeichert).
+\end{enumerate}
+
+\textbf{Instruktionen:}
+\begin{itemize}
+  \item \texttt{newarray}: Erstellt Array primitiver Typen.
+  \item \texttt{anewarray}: Erstellt Array von Referenzen.
+  \item \texttt{<p>aload}: Lädt Wert aus Array auf Stack (\texttt{ArrRef, Index -> Value}).
+  \item \texttt{<p>astore}: Speichert Wert in Array (\texttt{ArrRef, Index, Value -> \_}).
+\end{itemize}
+
+\subsubsection{Arithmetik und Logik}
+Arithmetische Operationen konsumieren Operanden vom Stack und legen das Ergebnis ab.
+\begin{itemize}
+  \item \texttt{<p>add, <sub>, <mul>, <div>, <rem>, <neg>}
+  \item Logisch (nur int/long): \texttt{shl, shr, ushr, and, or, xor}.
+\end{itemize}
+Es gibt keine implizite Typumwandlung. Explizite Konversion nötig: \texttt{i2f} (int zu float), \texttt{l2i}, etc.
+
+\subsubsection{Kontrollfluss}
+Die JVM bietet Sprungbefehle (\texttt{goto}) und bedingte Sprünge.
+
+\textbf{1. Integer-Vergleiche:}
+\begin{itemize}
+  \item Unär (vergleicht Stack-Top mit 0): \texttt{ifeq} (==0), \texttt{iflt} (<0), etc.
+  \item Binär (vergleicht zwei oberste Werte): \texttt{if\_icmpeq}, \texttt{if\_icmpge}, etc.
+\end{itemize}
+
+\textbf{2. Float/Double/Long Vergleiche (Wichtig!):}
+Die JVM hat keine direkten Sprungbefehle für diese Typen (außer Vergleich gegen 0). Der Vergleich erfolgt über einen "Umweg" in zwei Schritten:
+\begin{enumerate}
+  \item Eine Vergleichsoperation (\texttt{lcmp}, \texttt{fcmpl}, \texttt{dcmpg}) vergleicht zwei Werte und legt das Ergebnis als \texttt{int} (-1, 0, 1) auf den Stack.
+  \item Ein Standard-Integer-Branch (z.B. \texttt{ifge}) wertet dieses Ergebnis aus.
+\end{enumerate}
+
+\subsubsection{Methodenaufrufe}
+\begin{itemize}
+  \item \texttt{invokestatic}: Aufruf statischer Methoden.
+  \item \texttt{invokevirtual}: Aufruf von Instanzmethoden (dynamischer Dispatch).
+\end{itemize}
+\textbf{Protokoll:} Argumente werden auf den Stack gelegt. Die aufgerufene Methode findet diese in ihren lokalen Variablen. Der Rückgabewert (falls vorhanden) liegt nach Rückkehr auf dem Stack des Aufrufers.
+
+\subsection{ASM Framework}
+Für die Code-Generierung im Compilerbau wird oft das ASM-Framework genutzt. Es abstrahiert die binäre Erzeugung des Class Files.
+\begin{itemize}
+  \item Arbeitet Event-basiert (Visitor Pattern) oder Tree-basiert.
+  \item Nimmt dem Entwickler die Berechnung von Sprung-Offsets und Constant Pool Indizes ab.
+  \item Beispiel: \texttt{currentGenerator.push(5)} erzeugt automatisch \texttt{iconst\_5}.
+\end{itemize}
+
+\end{document}
