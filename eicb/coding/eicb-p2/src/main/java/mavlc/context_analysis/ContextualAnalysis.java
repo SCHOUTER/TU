@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mavlc.errors.ArgumentCountError;
 import mavlc.errors.ConstantAssignmentError;
 import mavlc.errors.DuplicateCaseError;
 import mavlc.errors.InapplicableOperationError;
@@ -449,8 +450,9 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 
 	@Override
 	public Type visitCallStatement(CallStatement callStatement, Void __) {
-		// TODO implement (task 6.4)
-		throw new UnsupportedOperationException();
+		// DONE implement (task 6.4)
+		callStatement.callExpression.accept(this);
+		return null;
 	}
 
 	@Override
@@ -518,8 +520,29 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 
 	@Override
 	public Type visitMatrixMultiplication(MatrixMultiplication matrixMultiplication, Void __) {
-		// TODO implement (task 6.3)
-		throw new UnsupportedOperationException();
+		// DONE implement (task 6.3)
+		Type leftOp = matrixMultiplication.leftOperand.accept(this);
+		Type rightOp = matrixMultiplication.rightOperand.accept(this);
+
+		if (!(leftOp instanceof MatrixType)) {
+			throw new InapplicableOperationError(matrixMultiplication, leftOp, MatrixType.class);
+		}
+		if (!(rightOp instanceof MatrixType)) {
+			throw new InapplicableOperationError(matrixMultiplication, rightOp, MatrixType.class);
+		}
+
+		MatrixType lMat = (MatrixType) leftOp;
+		MatrixType rMat = (MatrixType) rightOp;
+
+		checkType(matrixMultiplication, lMat.elementType, rMat.elementType);
+		NumericType etype = lMat.elementType;
+
+		if (lMat.cols != rMat.rows) {
+			throw new StructureDimensionError(matrixMultiplication, lMat.cols, rMat.rows);
+		}
+
+		matrixMultiplication.setType(etype);
+		return etype;
 	}
 
 	@Override
@@ -623,8 +646,20 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 
 	@Override
 	public Type visitCompare(Compare compare, Void __) {
-		// TODO implement (task 6.3)
-		throw new UnsupportedOperationException();
+		// DONE implement (task 6.3)
+		Type lOp = compare.leftOperand.accept(this);
+		Type rOp = compare.rightOperand.accept(this);
+
+		if (!lOp.isNumericType()) {
+			throw new InapplicableOperationError(compare, lOp, IntType.class, FloatType.class);
+		}
+		if (!rOp.isNumericType()) {
+			throw new InapplicableOperationError(compare, rOp, IntType.class, FloatType.class);
+		}
+
+		checkType(compare, lOp, rOp);
+		compare.setType(BoolType.instance);
+		return BoolType.instance;
 	}
 
 	@Override
@@ -652,8 +687,17 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 
 	@Override
 	public Type visitMatrixTranspose(MatrixTranspose matrixTranspose, Void __) {
-		// TODO implement (task 6.3)
-		throw new UnsupportedOperationException();
+		// DONE implement (task 6.3)
+		Type opType = matrixTranspose.operand.accept(this);
+
+		if (!(opType instanceof MatrixType)) {
+			throw new InapplicableOperationError(matrixTranspose, opType, MatrixType.class);
+		}
+		MatrixType matType = (MatrixType) opType;
+		MatrixType resType = new MatrixType(matType.elementType, matType.cols, matType.rows);
+
+		matrixTranspose.setType(resType);
+		return resType;
 	}
 
 	@Override
@@ -702,8 +746,40 @@ public class ContextualAnalysis extends AstNodeBaseVisitor<Type, Void> {
 
 	@Override
 	public Type visitCallExpression(CallExpression callExpression, Void __) {
-		// TODO implement (task 6.4)
-		throw new UnsupportedOperationException();
+		// DONE implement (task 6.4)
+		Function callee = env.getFunctionDeclaration(callExpression.functionName);
+
+		List<FormalParameter> formalParameters = callee.parameters;
+		List<Expression> actualParameters = callExpression.actualParameters;
+
+		int formalCount = callee.parameters.size();
+		int actualCount = callExpression.actualParameters.size();
+
+		if (actualCount != formalCount)
+			throw new ArgumentCountError(callExpression, callee, formalCount, actualCount);
+
+		for (int i = 0; i < actualCount; i++) {
+			Expression param = actualParameters.get(i);
+			FormalParameter formalParameter = formalParameters.get(i);
+
+			// visit the parameter if the callee hasn't been visited yet
+			if (!formalParameter.isTypeSet()) {
+				formalParameter.setType(formalParameter.typeSpecifier.accept(this));
+			}
+
+			Type formalType = formalParameter.getType();
+			Type actualType = param.accept(this);
+			checkType(callExpression, actualType, formalType);
+		}
+
+		// visit the return type specifier if the callee hasn't been visited yet
+		if (!callee.isReturnTypeSet()) {
+			callee.setReturnType(callee.returnTypeSpecifier.accept(this));
+		}
+
+		callExpression.setCalleeDefinition(callee);
+		callExpression.setType(callee.getReturnType());
+		return callee.getReturnType();
 	}
 
 	@Override
