@@ -1,3 +1,0 @@
-15
-
-The program has finished successfully.

@@ -1,105 +1,0 @@
-2=== Running test case p2_public/task_6/call_1 ===
-
-
-@=== Test case p2_public/task_6/call_1 finished successfully ===
-
-2=== Running test case p2_public/task_6/call_2 ===
-
-
-@=== Test case p2_public/task_6/call_2 finished successfully ===
-
-6=== Running test case p2_public/task_1/compound_2 ===
-
-
-D=== Test case p2_public/task_1/compound_2 finished successfully ===
-
-6=== Running test case p2_public/task_1/compound_4 ===
-
-
-D=== Test case p2_public/task_1/compound_4 finished successfully ===
-
-7=== Running test case p2_public/task_4/transpose_3 ===
-
-
-E=== Test case p2_public/task_4/transpose_3 finished successfully ===
-
-8=== Running test case p2_public/task_3/const_expr_2 ===
-
-
-F=== Test case p2_public/task_3/const_expr_2 finished successfully ===
-
-8=== Running test case p2_public/task_3/const_expr_3 ===
-
-
-F=== Test case p2_public/task_3/const_expr_3 finished successfully ===
-
-	4=== Running test case p2_public/task_2/assign_6 ===
-	
-	
-	B=== Test case p2_public/task_2/assign_6 finished successfully ===
-	
-
-4=== Running test case p2_public/task_2/assign_5 ===
-
-
-
-
-
-B=== Test case p2_public/task_2/assign_5 finished successfully ===
-
-
-4=== Running test case p2_public/task_2/assign_2 ===
-
-
-B=== Test case p2_public/task_2/assign_2 finished successfully ===
-
-6=== Running test case p2_public/task_5/for_loop_5 ===
-
-
-D=== Test case p2_public/task_5/for_loop_5 finished successfully ===
-
-6=== Running test case p2_public/task_5/for_loop_6 ===
-
-
-D=== Test case p2_public/task_5/for_loop_6 finished successfully ===
-
-6=== Running test case p2_public/task_6/call_err_3 ===
-
-
-D=== Test case p2_public/task_6/call_err_3 finished successfully ===
-
-:=== Running test case p2_public/task_1/compound_err_2 ===
-
-
-H=== Test case p2_public/task_1/compound_err_2 finished successfully ===
-
-8=== Running test case p2_public/task_4/matrix_err_4 ===
-
-
-F=== Test case p2_public/task_4/matrix_err_4 finished successfully ===
-
-8=== Running test case p2_public/task_4/matrix_err_3 ===
-
-
-F=== Test case p2_public/task_4/matrix_err_3 finished successfully ===
-
-8=== Running test case p2_public/task_2/assign_err_1 ===
-
-
-F=== Test case p2_public/task_2/assign_err_1 finished successfully ===
-
-8=== Running test case p2_public/task_2/assign_err_5 ===
-
-
-F=== Test case p2_public/task_2/assign_err_5 finished successfully ===
-
-8=== Running test case p2_public/task_2/assign_err_2 ===
-
-
-F=== Test case p2_public/task_2/assign_err_2 finished successfully ===
-
-:=== Running test case p2_public/task_5/for_loop_err_3 ===
-
-
-H=== Test case p2_public/task_5/for_loop_err_3 finished successfully ===
-

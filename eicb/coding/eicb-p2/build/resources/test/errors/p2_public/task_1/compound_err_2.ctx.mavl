@@ -1,9 +1,0 @@
-function void main(){
-    var float x;
-    x = 10.0;
-    
-    {
-      val int x = 5;
-      var vector<int>[999] x;
-    }
-}
