@@ -72,6 +72,10 @@ Die Vigenère-Chiffre erweitert die Shift-Chiffre zu einem \defc{polyalphabetisc
    \end{itemize}
 \end{defbox}
 
+\begin{center}
+   \includegraphics[width=200px]{css_1_vignerechifre.png}
+\end{center}
+
 \textbf{Eigenschaften \& Sicherheit:}
 Gleiche Klartextbuchstaben werden je nach Position im Text unterschiedlich verschlüsselt. Dies verschleiert einfache Häufigkeitsmuster.
 Dennoch ist sie \textbf{nicht perfekt sicher}. Da das Schlüsselwort wiederholt wird, entsteht eine \defc{Periodizität}. Ein Angreifer kann die Schlüssellänge ermitteln (Kasiski-Test) und den Text dann in entsprechende Spalten aufteilen. Jede Spalte entspricht dann wieder einer einfachen Shift-Chiffre und kann per Häufigkeitsanalyse gebrochen werden. \textit{Fazit:} Je länger das Schlüsselwort (und je weniger Wiederholungen), desto sicherer das Verfahren.
