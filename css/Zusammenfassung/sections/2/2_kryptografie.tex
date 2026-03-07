@@ -8,6 +8,144 @@
 \graphicspath{{../}}
 
 \begin{document}
+
+\section{Grundlagen der Kryptographie}
+
+% Hier Grafik einfügen: Kommunikationsmodell mit Alice, Bob und Angreifer Eve
+\subsection{Ziele und Grundlagen der Kryptographie}
+Kryptographie ist die Wissenschaft vom Schutz von Informationen. Die Disziplin lässt sich historisch und methodisch in zwei Phasen unterteilen:
+
+\begin{itemize}
+   \item \textbf{Klassische Kryptographie (bis ca. 1970):} Das primäre Ziel war die \defc{Vertraulichkeit}. Algorithmen basierten auf manuellen oder mechanischen Verfahren ohne mathematische Sicherheitsbegründung (\textit{Security by Obscurity}). Sie sind anfällig für Brute-Force- und Häufigkeitsanalysen.
+   \item \textbf{Moderne Kryptographie (ab ca. 1970):} Basiert auf schwer lösbaren mathematischen Problemen. Die Algorithmen sind öffentlich bekannt, nur der Schlüssel bleibt geheim.
+\end{itemize}
+
+\begin{defbox}[Ziele der modernen Kryptographie]
+   \begin{itemize}
+      \item \defc{Vertraulichkeit (Confidentiality):} Nur autorisierte Empfänger können die Nachricht lesen.
+      \item \defc{Integrität (Integrity):} Nachrichten können nicht unbemerkt verändert werden.
+      \item \defc{Authentizität (Authenticity):} Die Identität des Absenders ist zweifelsfrei prüfbar.
+      \item \defc{Nicht-Abstreitbarkeit (Non-Repudiation):} Der Absender kann das Senden einer Nachricht nicht leugnen.
+   \end{itemize}
+\end{defbox}
+
+\textbf{Motivation zur Verschlüsselung -- Das Schlüsselverteilungsproblem:}
+Sollen zwei Parteien (Alice und Bob) sicher über einen unsicheren Kanal kommunizieren, müssen sie sich auf einen geheimen Schlüssel einigen, ohne dass ein Angreifer (Eve) diesen abfängt. Dies ist das zentrale Problem der symmetrischen Kryptographie. % Hier Grafik einfügen: Zwei-Schlösser-Analogie zur Veranschaulichung des Schlüsselaustauschs
+
+\subsection{Klassische Verschlüsselungsverfahren}
+
+Ein formales Verschlüsselungsschema besteht stets aus Klartext ($m$), Chiffretext ($c$), einem geheimen Schlüssel ($k$) sowie Ver- und Entschlüsselungsfunktionen ($E$ und $D$).
+Es gilt die \textbf{Korrektheitsbedingung}: \[ D_k(E_k(m)) = m \]
+
+\subsubsection{Caesar- und Shift-Chiffre}
+Die Shift-Chiffre ist eine \defc{monoalphabetische Substitution}, bei der jeder Buchstabe des Alphabets um einen festen Wert $k$ verschoben wird. Die Caesar-Chiffre ist ein Spezialfall mit $k=3$.
+
+\begin{defbox}[Mathematische Formulierung der Shift-Chiffre]
+   Buchstaben werden als Zahlen kodiert ($A=0, B=1, \dots, Z=25$). Die Operation erfolgt im Modulo $n$ (Alphabetgröße, hier $n=26$).
+   \begin{itemize}
+      \item Verschlüsselung: $E_k(x) = (x + k) \pmod{26}$
+      \item Entschlüsselung: $D_k(y) = (y - k) \pmod{26}$
+   \end{itemize}
+\end{defbox}
+% Hier Grafik einfügen: Modulo-Uhr (Alphabet im Kreis angeordnet)
+
+\textbf{Angreifbarkeit:} Sehr leicht brechbar.
+\begin{itemize}
+   \item \textbf{Brute-Force:} Da es nur 25 sinnvolle Schlüssel gibt, können alle systematisch durchprobiert werden.
+   \item \textbf{Häufigkeitsanalyse:} Typische Buchstabenverteilungen einer Sprache (z.\,B. das 'E' im Deutschen) bleiben im Chiffretext erhalten.
+   \item \textbf{Known-Plaintext:} Kennt man einen Teil des Klartextes (z.\,B. eine Grußformel), lässt sich die Verschiebung $k$ mit einer einfachen Subtraktion sofort berechnen.
+\end{itemize}
+
+\subsubsection{Substitutionschiffre}
+Jeder Buchstabe wird durch einen anderen festen Buchstaben ersetzt (Permutation des Alphabets).
+Obwohl der Schlüsselraum mit ca. $4 \cdot 10^{26}$ (bei 26 Buchstaben) sehr groß ist, ist das Verfahren unsicher.
+\textit{Warum?} Die Zuordnung ist statisch. Gleiche Buchstaben im Klartext erzeugen gleiche Buchstaben im Chiffretext. Die Methode ist daher extrem anfällig für \defc{Häufigkeitsanalysen}. Eine große Anzahl an Schlüsseln bedeutet nicht automatisch Sicherheit.
+
+\subsubsection{Vigenère-Chiffre}
+Die Vigenère-Chiffre erweitert die Shift-Chiffre zu einem \defc{polyalphabetischen} Verfahren. Es werden mehrere verschiedene Verschiebungen verwendet, abhängig von einem Schlüsselwort, das solange wiederholt wird, bis es die Länge des Klartextes erreicht.
+
+\begin{defbox}[Mathematische Formulierung der Vigenère-Chiffre]
+   Für jeden Buchstaben an der Position $i$ im Text und den korrespondierenden Schlüsselbuchstaben $k_i$:
+   \begin{itemize}
+      \item Verschlüsselung: $E_{k_i}(x_i) = (x_i + k_i) \pmod{26}$
+      \item Entschlüsselung: $D_{k_i}(y_i) = (y_i - k_i) \pmod{26}$
+   \end{itemize}
+\end{defbox}
+
+\textbf{Eigenschaften \& Sicherheit:}
+Gleiche Klartextbuchstaben werden je nach Position im Text unterschiedlich verschlüsselt. Dies verschleiert einfache Häufigkeitsmuster.
+Dennoch ist sie \textbf{nicht perfekt sicher}. Da das Schlüsselwort wiederholt wird, entsteht eine \defc{Periodizität}. Ein Angreifer kann die Schlüssellänge ermitteln (Kasiski-Test) und den Text dann in entsprechende Spalten aufteilen. Jede Spalte entspricht dann wieder einer einfachen Shift-Chiffre und kann per Häufigkeitsanalyse gebrochen werden. \textit{Fazit:} Je länger das Schlüsselwort (und je weniger Wiederholungen), desto sicherer das Verfahren.
+
+\subsection{One-Time Pad (OTP)}
+Das One-Time Pad ist der Grenzfall der Vigenère-Chiffre, bei dem das Schlüsselwort exakt so lang ist wie die Nachricht und \textbf{streng zufällig} gewählt wird.
+
+\begin{defbox}[One-Time Pad (OTP)]
+   Jede Nachricht $m$ der Länge $n$ wird mit einem zufälligen Schlüssel $k \in \{0,1\}^n$ verschlüsselt, wobei das logische \defc{Exklusive ODER (XOR, $\oplus$)} verwendet wird.
+   \begin{itemize}
+      \item KeyGen: Wähle $k$ zufällig und gleichverteilt aus $\{0,1\}^n$
+      \item Verschlüsselung: $c = m \oplus k$
+      \item Entschlüsselung: $m = c \oplus k$
+   \end{itemize}
+   Verifikation der Korrektheit (da $k \oplus k = 0$): $D_k(E_k(m)) = (m \oplus k) \oplus k = m \oplus (k \oplus k) = m \oplus 0 = m$.
+\end{defbox}
+
+\textbf{Perfekte Sicherheit (Theoretisch unknackbar):}
+Ein Kryptosystem ist \defc{perfekt sicher}, wenn der Chiffretext keinerlei Informationen über den Klartext preisgibt. Formal bedeutet das: \[ P(M|C) = P(M) \]
+\textit{Beweisskizze:} Da $K$ komplett zufällig ist, ist die Wahrscheinlichkeit, dass ein spezifischer Chiffretext $C$ aus einem Klartext $M$ entsteht, genau die Wahrscheinlichkeit, dass $K = C \oplus M$ gewählt wurde ($P = 1/|K|$). Nach dem Satz von Bayes gilt $P(M|C) = \frac{P(C|M) \cdot P(M)}{P(C)}$. Da $P(C|M)$ konstant und unabhängig von $M$ ist, folgt $P(M|C) = P(M)$. Ein Brute-Force-Angriff ist nutzlos, da jeder Entschlüsselungsversuch einen anderen validen Klartext erzeugt.
+
+\textbf{Probleme und Voraussetzungen des OTP:}
+\begin{enumerate}
+   \item \textbf{Schlüssellänge:} Der Schlüssel muss mindestens so lang sein wie die Nachricht, was für große Datenmengen ineffizient ist.
+   \item \textbf{Zufälligkeit:} Der Schlüssel muss echten Zufall aufweisen, nicht nur Pseudozufall.
+   \item \textbf{Einmaligkeit (Wiederverwendungsverbot):} Der Schlüssel darf \textbf{niemals} für eine zweite Nachricht verwendet werden!
+\end{enumerate}
+\textit{Erklärung zum Wiederverwendungsverbot (Two-Time Pad Attack):}
+Werden $m_0$ und $m_1$ mit demselben $k$ verschlüsselt ($c_0 = m_0 \oplus k, c_1 = m_1 \oplus k$), kann der Angreifer beide Chiffretexte XOR-verknüpfen:
+\[ c_0 \oplus c_1 = (m_0 \oplus k) \oplus (m_1 \oplus k) = m_0 \oplus m_1 \oplus (k \oplus k) = m_0 \oplus m_1 \]
+Das Ergebnis verrät direkt die Unterschiede zwischen den beiden Klartexten. Wenn Teile von $m_0$ bekannt oder erratbar sind, lässt sich $m_1$ problemlos rekonstruieren.
+
+\subsection{Moderne Kryptographie und Formale Modelle}
+
+\begin{defbox}[Das Kerckhoffs-Prinzip (1883)]
+   Ein Kryptosystem muss auch dann sicher bleiben, wenn alle Details des Algorithmus öffentlich bekannt sind. Das einzige Geheimnis des Systems darf der \defc{Schlüssel} sein.
+\end{defbox}
+Dies verhindert \textit{Security by Obscurity}, fördert wissenschaftliche Überprüfbarkeit (offene Standards wie AES, RSA) und reduziert das Sicherheitsproblem auf ein isoliertes \defc{Schlüsselmanagement}.
+
+\textbf{Kryptographische Primitive vs. Konstruktionen:}
+Primitive sind grundlegende mathematische Bausteine (z.\,B. Blockchiffren, Hash-Funktionen). Konstruktionen kombinieren diese Primitive zu anwendbaren Protokollen (z.\,B. AES-CBC, HMAC, RSA-Signaturen). Sicherheit wird über formale Beweise erbracht: \textit{Wenn das Primitiv sicher ist, ist auch die Konstruktion sicher.}
+
+\subsubsection{Formale Sicherheitsdefinitionen (Angreifermodelle)}
+Um Sicherheit mathematisch zu beweisen, definiert man \defc{Spiele} zwischen einem Angreifer (Adversary) und einem Herausforderer (Challenger). Der Angreifer wählt in der Regel zwei gleich lange Nachrichten $m_0$ und $m_1$. Der Challenger wirft eine verdeckte Münze $b \in \{0,1\}$ und gibt dem Angreifer den Chiffretext $c = E_k(m_b)$ zurück (den "Challenge-Ciphertext"). Der Angreifer muss nun raten ($b'$), ob $m_0$ oder $m_1$ verschlüsselt wurde.
+Das Schema ist sicher, wenn die Gewinnwahrscheinlichkeit des Angreifers signifikant nicht besser ist als Raten:
+\[ \Pr[b' = b] \le \frac{1}{2} + \text{negl}(n) \]
+
+% Hier Grafik einfügen: Darstellung des IND-CPA Spiels (Angreifer kommuniziert mit dem Orakel)
+
+Je nach Fähigkeiten des Angreifers unterscheidet man verschiedene Modelle:
+\begin{itemize}
+   \item \textbf{IND-COA (Ciphertext-Only Attack):} Der Angreifer sieht ausschließlich Chiffretexte und muss daraus den Klartext oder Schlüssel ableiten (Standardangriff auf klassische Chiffren).
+   \item \textbf{IND-KPA (Known-Plaintext Attack):} Der Angreifer kennt einige (Klartext, Chiffretext)-Paare und versucht daraus Muster oder den Schlüssel abzuleiten (z.\,B. bekannte Header-Formate wie "HTTP/1.1").
+   \item \textbf{IND-CPA (Chosen-Plaintext Attack):} Der stärkste Angriff in der passiven Kategorie. Der Angreifer hat Zugriff auf ein \defc{Verschlüsselungs-Orakel}. Er darf beliebige Klartexte seiner Wahl zur Verschlüsselung einreichen und analysieren, bevor und nachdem er den Challenge-Ciphertext erhält.
+   \item \textbf{IND-CCA (Chosen-Ciphertext Attack):} Der Angreifer hat zusätzlich Zugriff auf ein \defc{Entschlüsselungs-Orakel}. Er darf beliebige Chiffretexte zur Entschlüsselung einreichen, mit der einzigen Ausnahme, dass er nicht den Challenge-Ciphertext $c$ selbst anfragen darf. Viele klassische Implementierungen (wie altes RSA-Padding) scheiterten an CCA-Angriffen (z.\,B. Bleichenbacher-Angriff).
+\end{itemize}
+
+\begin{defbox}[Vernachlässigbare Funktion (\text{negl})]
+   Eine Funktion $f: \mathbb{N} \to \mathbb{R}_{\ge 0}$ heißt \defc{vernachlässigbar}, wenn sie für genügend große $n$ schneller gegen null geht als der Kehrwert jedes beliebigen positiven Polynoms $p(n)$.
+   Formal: Für jedes Polynom $p(n)$ existiert ein $n_0$, sodass für alle $n > n_0$ gilt:
+   \[ f(n) < \frac{1}{p(n)} \]
+   Dies bedeutet in der Praxis: Ein polynomiell beschränkter Angreifer (Rechenleistung z.\,B. begrenzt auf $O(n^3)$) hat eine Erfolgswahrscheinlichkeit, die quasi null ist. Funktionen wie $2^{-n}$ sind vernachlässigbar, Funktionen wie $1/n^2$ sind es nicht.
+\end{defbox}
+
+\textbf{Praktische Angriffsvektoren trotz Verschlüsselung:}
+Verschlüsselung allein garantiert keine Sicherheit. Typische reale Schwachstellen sind:
+\begin{itemize}
+   \item Schwache Primitive (z.\,B. MD5)
+   \item Implementierungsfehler (Buffer Overflows, z.\,B. Heartbleed in OpenSSL)
+   \item Seitenkanalangriffe (Timing-Angriffe auf Rechenzeiten)
+   \item Schlüsselmanagementfehler (z.\,B. versehentliches Veröffentlichen privater Schlüssel auf GitHub)
+   \item Veraltete Protokolle (z.\,B. WEP bei WLAN)
+\end{itemize}
+
 \section{Kryptografie}
 Die Kryptografie wird in drei Hauptkategorien unterteilt:
 \begin{enumerate}
