@@ -1,0 +1,179 @@
+\documentclass[
+../../css_summary.tex,
+]{subfiles}
+
+\externaldocument[ext:]
+{../../css_summary}
+% Set Graphics Path, so pictures load correctly
+\graphicspath{{../../pics/}}
+
+\begin{document}
+
+\section{Vorlesung IT-Forensik 2026}
+
+\subsection{Einführung und Grundlagen}
+
+\begin{defbox}[Definition: IT-Forensik]
+  Die IT-Forensik umfasst die Anwendung wissenschaftlicher Methoden zur Identifizierung, Sammlung, Untersuchung und Analyse digitaler Daten. Dabei steht die Wahrung der \defc{Integrität} der Informationen sowie die lückenlose Aufrechterhaltung der \defc{Chain of Custody} (Beweismittelkette) im Vordergrund. Ziel ist die methodisch stringente Datenanalyse zur Aufklärung von Vorfällen.
+\end{defbox}
+
+\subsubsection{Zielsetzungen}
+\begin{itemize}
+  \item \textbf{Primäres Ziel (Aufklärung):} Untersuchung post-mortem nach Eintritt eines Vorfalls. Auffinden von Indizien für illegale oder unerwünschte Handlungen, Beweissicherung und Wiederherstellung gelöschter Dateien (Datenrettung).
+  \item \textbf{Sekundäres Ziel (Vorsorge):} Prävention gegen zukünftige Vorfälle, kontinuierlicher Verbesserungsprozess der IT-Sicherheit (z.B. nach ISO 27000) und Generalprävention in der Strafverfolgung.
+\end{itemize}
+
+\subsubsection{Herausforderungen der IT-Forensik}
+\begin{itemize}
+  \item \textbf{Enorme Datenmengen:} Speichermedien werden immer größer und günstiger (z.B. Festplatten mit Kapazitäten $> 20$ TB oder riesige RAID-Verbünde). Das Verlängert die Zeiten für die Datensicherung drastisch.
+  \item \textbf{Zeitfaktor:} Bis zur Entdeckung eines Vorfalls vergehen oftmals Monate. Flüchtige oder überschriebene Daten sind dann meist unwiederbringlich verloren.
+\end{itemize}
+
+\subsubsection{Vorgehensmodell}
+Das methodische Vorgehen (angelehnt an das BSI-Vorgehensmodell) gliedert sich in folgende Phasen:
+\begin{enumerate}
+  \item Strategische Vorbereitung
+  \item Operationale Vorbereitung
+  \item Datensammlung / Bergung
+  \item Datenanalyse und Untersuchung
+  \item Dokumentation und Abschlussbericht
+\end{enumerate}
+
+Zentrale Anforderungen an die Methodik sind \defc{Akzeptanz} (in der Fachwelt anerkannte Methoden), \defc{Glaubwürdigkeit}, \defc{Wiederholbarkeit} (Reproduzierbarkeit der Ergebnisse durch Dritte), Wahrung der \defc{Integrität} der Spuren sowie eine detaillierte \defc{Dokumentation}.
+
+\subsection{Vorbereitungsphasen}
+
+\subsubsection{Strategische Vorbereitung (Forensic Readiness)}
+Dies umfasst alle Maßnahmen, die \textit{vor} dem Eintreten eines konkreten Vorfalls getroffen werden, um jederzeit reaktionsfähig zu sein:
+\begin{itemize}
+  \item \textbf{Organisatorisch:} Prozesse für Untersuchungen definieren, Verantwortliche benennen und notwendige Budgets bereitstellen.
+  \item \textbf{Fachkompetenz:} Know-how intern aufbauen oder externe Dienstleister qualifizieren.
+  \item \textbf{Infrastruktur:} Bereitstellung von Hard- und Software (Workstations, Writeblocker, ausreichender Speicher) sowie physisch gesicherten Räumlichkeiten (Zutrittskontrollen, Tresore, \defc{Faraday Bags} zur Abschirmung von Funkverbindungen bei Mobilgeräten).
+\end{itemize}
+
+\subsubsection{Operationale Vorbereitung}
+Maßnahmen, die eingeleitet werden, sobald ein konkreter Vorfall bekannt ist:
+\begin{itemize}
+  \item Festlegung des genauen Untersuchungsziels: Welche Informationen werden gesucht?
+  \item Identifikation der Datenquellen: Welche Datenträger (Desktop-PCs, Server, Mobilgeräte, Cloud) und welche Daten (Anwenderdaten, Metadaten, Konfigurations- oder Prozessdaten) sind relevant?
+  \item % Hier Grafik einfügen: Beispielhafte Arbeitsumgebung mit verschiedenen zu sichernden Geräten
+\end{itemize}
+
+\subsection{Datenträger-Forensik}
+
+\subsubsection{Grundbegriffe der Datenspeicherung}
+Um digitale Spuren korrekt zu deuten, muss die hierarchische Abstraktion verstanden werden: Physisches Gerät $\rightarrow$ Speichermedium $\rightarrow$ Partition $\rightarrow$ Dateisystem $\rightarrow$ Dateien.
+
+\begin{defbox}[Speichereinheiten]
+  \begin{itemize}
+    \item \textbf{Sektor:} Die kleinste \defc{physische} adressierbare Speichereinheit eines Datenträgers (historisch meist 512 Bytes, modern 4096 Bytes).
+    \item \textbf{Cluster:} Die kleinste \defc{logische} Speichereinheit eines Dateisystems. Auch eine Datei mit $0$ Bytes belegt im Dateisystem mindestens einen vollen Cluster. Der ungenutzte Speicherplatz innerhalb eines Clusters wird \defc{Slack Space} genannt und ist forensisch hochrelevant, da sich dort Fragmente alter, gelöschter Dateien verbergen können.
+    \item \textbf{Block:} Eine Byte-Sequenz fester Länge, oft kontextabhängig als Synonym für Sektor oder Cluster verwendet.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Datensammlung und Bergung}
+Bei der Sicherung digitaler Spuren hat die Unverfälschtheit der Originaldaten oberste Priorität.
+\begin{itemize}
+  \item \textbf{Forensische Kopie (Image):} Es wird ein bitgenaues Duplikat des Datenträgers angefertigt, auf dem im Anschluss die Analyse stattfindet.
+  \item \textbf{Writeblocker (Schreibblocker):} Hardware- oder Softwarelösungen, die zwischen das Untersuchungsgerät und den Originaldatenträger geschaltet werden. Sie filtern Schreibbefehle heraus und lassen nur Lesezugriffe zu. Dies verhindert versehentliche Modifikationen und sichert die Beweiskette.
+        % Hier Grafik einfügen: Hardware-Writeblocker und Imaging-Device
+  \item \textbf{Integritätssicherung:} Vor und nach dem Kopiervorgang werden kryptografische Prüfsummen (Hashes wie SHA-256) gebildet. Stimmen diese überein, ist bewiesen, dass die Kopie exakt dem Original entspricht.
+\end{itemize}
+
+\textbf{Herausforderungen bei der Datensicherung:}
+\begin{itemize}
+  \item \textbf{Keine Standardanschlüsse:} Bei verlöteten Speichern (eMMC in Smartphones oder Routern) müssen Chips im Elektronik-Labor ausgelötet oder über Diagnose-Ports (JTAG, UART) ausgelesen werden. % Hier Grafik einfügen: Auslöten eines eMMC-Speichers
+  \item \textbf{Verschlüsselung:} Laufwerke (BitLocker, LUKS) oder SEDs (Self-Encrypting Drives) blockieren den Zugriff. Lösungswege sind das Auffinden von Passwörtern, die Ausnutzung unsicherer Implementierungen (z.B. schwache Zufallszahlengeneratoren für Krypto-Schlüssel) oder rotes Brute-Force.
+\end{itemize}
+
+\begin{defbox}[Besonderheiten bei Solid State Drives (SSDs)]
+  Im Gegensatz zu Magnetfestplatten (HDDs) besitzen SSDs einen internen Controller, der Speicherblöcke zur Lebensdauerverlängerung eigenmächtig verwaltet.
+  \begin{itemize}
+    \item \textbf{Wear Leveling:} Der Controller verschiebt Daten physisch, um die Abnutzung der Flash-Zellen auszugleichen. Logische Adressen entsprechen nicht festen physischen Blöcken. Dadurch können alte Daten in nicht mehr zugewiesenen Sektoren erhalten bleiben.
+    \item \textbf{Garbage Collection \& TRIM-Befehl:} Das Betriebssystem teilt der SSD mittels TRIM mit, welche Blöcke logisch gelöscht wurden. Die \defc{Garbage Collection} der SSD löscht diese Blöcke daraufhin physisch im Hintergrund, um sie für neue Schreibvorgänge vorzubereiten.
+    \item \textbf{Forensisches Problem:} Da die Garbage Collection autonom durch den SSD-Controller erfolgt, kann sich der Inhalt einer SSD verändern, \textit{selbst wenn} sie an einen Writeblocker angeschlossen ist. Gelöschte Daten verschwinden meist sehr schnell und unwiederbringlich.
+  \end{itemize}
+\end{defbox}
+
+\subsubsection{Untersuchung und Analyse}
+
+\paragraph{Wiederherstellung von Partitionstabellen}
+Sind Master Boot Record (MBR) oder GUID Partition Table (GPT) beschädigt, kann das Betriebssystem die Dateisysteme nicht mehr finden. Tools können jedoch den Datenträger nach typischen Bootsektoren und Dateisystem-Headern scannen, um die Partitionsgrenzen manuell zu rekonstruieren und per virtuellem \texttt{Offset} wieder einzubinden.
+
+\paragraph{Dateisystemanalyse am Beispiel FAT32}
+Ein FAT32-Dateisystem ist strukturiert in reservierte Bereiche, die primäre File Allocation Table (FAT1), ein Backup (FAT2) und den eigentlichen Datenbereich.
+\begin{itemize}
+  \item \textbf{Kapazitätsgrenzen:} Die maximale Dateigröße beträgt exakt $4 \text{ GiB} - 1 \text{ Byte}$, da die Dateigröße in einem 32-Bit-Feld gespeichert wird. Die maximale Anzahl adressierbarer Cluster liegt bei ca. $2^{28} \approx 268 \text{ Millionen}$.
+  \item \textbf{Metadaten:} Zu jeder Datei speichert FAT Dateinamen, Start-Cluster, Attribute, Größe und MAC-Times (Modified, Accessed, Created).
+\end{itemize}
+
+\begin{defbox}[Löschvorgang und File Carving]
+  Wird eine Datei im FAT-Dateisystem "gelöscht", passiert folgendes:
+  \begin{enumerate}
+    \item Das erste Byte des Dateinamens im Verzeichniseintrag wird mit einem speziellen Zeichen überschrieben (Datei gilt als gelöscht).
+    \item In der \texttt{FAT} werden die von der Datei belegten Cluster wieder als "frei" (\texttt{0}) markiert.
+    \item \defc{Die eigentlichen Nutzdaten in den Clustern bleiben unangetastet.}
+  \end{enumerate}
+
+  \textbf{File Carving:} Ist das Dateisystem komplett beschädigt oder überschrieben, sucht man den rohen Datenstrom nach bekannten, formattpyischen Bytekombinationen ab.
+  \begin{itemize}
+    \item Beispiel JPEG: Das Werkzeug sucht nach der charakteristischen Header-Signatur (\texttt{FF D8}). Wird diese gefunden, liest das Tool weiter, bis es die Footer-Signatur (\texttt{FF D9}) entdeckt. Alles dazwischen wird als Bilddatei ausgeschnitten ("gecarvt").
+    \item \textit{Grenze:} Dieses Verfahren scheitert oder liefert korrupte Dateien, wenn die Datei stark fragmentiert über die Festplatte verteilt war.
+  \end{itemize}
+\end{defbox}
+
+\paragraph{Analysen auf Datei- und Formatebene}
+Forensiker müssen oft Rohdaten entschlüsseln. Probleme bereiten hier:
+\begin{itemize}
+  \item \textbf{Kodierungen:} Text kann in ASCII, UTF-8 oder verdeckt als Base64 kodiert vorliegen.
+  \item \textbf{Fragmentierung in Containern:} MP4-Dateien nutzen "Multiplexing", was bedeutet, dass Videospuren (z.B. AVC) und Audiospuren (z.B. AAC) in winzigen Chunks abwechselnd gespeichert werden.
+  \item \textbf{Versteckte Metadaten:} EXIF-Daten in Bildern (Geodaten, Zeitstempel, Kameramodell) oder ID3-Tags in MP3-Dateien (welche oft sogar Cover-Bilder enthalten, die nicht \textit{cluster-aligned} sind).
+\end{itemize}
+
+\paragraph{Cloud und Social Media}
+Wenn Daten im Internet liegen, sucht der Forensiker lokal nach Spuren der Synchronisation: Logdateien von Cloud-Diensten, zwischengespeicherte Passwörter im Browser oder Cache-Ordner von Instant-Messengern.
+
+\subsubsection{Software-Werkzeuge}
+Je nach Einsatzgebiet werden unterschiedliche Tools verwendet:
+\begin{itemize}
+  \item \textbf{Imaging (Kopieren):} \texttt{dd}, \texttt{ddrescue}, \texttt{dcfldd}.
+  \item \textbf{Analyse-Frameworks:} \texttt{The Sleuth Kit / Autopsy} (Open Source), \texttt{X-Ways Forensics}, \texttt{EnCase}, \texttt{AccessData FTK} (Kommerziell). % Hier Grafik einfügen: Benutzeroberfläche von X-Ways Forensics
+  \item \textbf{Datenrettung:} \texttt{TestDisk}, \texttt{PhotoRec}.
+  \item \textbf{Linux-Forensik-Distributionen:} Speziell gehärtete und präparierte Betriebssysteme wie \texttt{Kali}, \texttt{Grml}, \texttt{CAINE} oder \texttt{Parrot}.
+\end{itemize}
+
+\subsection{Multimedia-Forensik}
+Multimedia-Daten verlangen spezielles Wissen über Kompressionsverfahren (verlustfrei vs. verlustbehaftet) sowie die genaue Spezifikation von \defc{Codecs} (z.B. H.264, AAC) und System Streams/Container-Formaten (z.B. MP4, MKV).
+
+\subsubsection{Sichtung und Automatisierung}
+Bei zehntausenden sichergestellten Bildern (z.B. in der Strafverfolgung) ist manuelle Auswertung unmöglich.
+\begin{itemize}
+  \item \textbf{Robuste Bild-Hashes:} Im Gegensatz zu kryptografischen Hashes (MD5), die bei jedem veränderten Bit einen völlig anderen Wert liefern, bleiben robuste Hashes bei leichten Bildmodifikationen (z.B. Skalierung) nahezu identisch. Sie eignen sich zum Auffinden bekannter illegaler Inhalte.
+  \item \textbf{Maschinelles Lernen:} Einsatz von KI-Bildklassifikation (z.B. Google Vision API) zur Vorselektion nach Objekten, Personen oder Szenen.
+\end{itemize}
+
+\subsubsection{Echtheitsprüfung von Medien}
+Es wird ermittelt, ob Medien manipuliert wurden:
+\begin{itemize}
+  \item \textbf{Copy and Move:} Kopieren und Einfügen von Bereichen \textit{innerhalb} desselben Bildes.
+  \item \textbf{Splicing:} Zusammenfügen von Elementen aus \textit{unterschiedlichen} Dateien.
+  \item \textbf{Skalierungs-Detektion:} Mittels mathematischer Verfahren, wie \textit{Expectation-Maximization (EM)}, wird die Wahrscheinlichkeit berechnet, dass Pixel künstlich durch Interpolation entstanden sind. Regelmäßige Muster in der generierten \textit{Probability Map (PM)} deuten auf Bildvergrößerungen hin.
+\end{itemize}
+
+\begin{defbox}[Steganografie und Steganalyse]
+  \textbf{Steganografie} ist die Kunst, Zusatzinformationen so in "harmlosen" Trägermedien (Cover) einzubetten, dass die \defc{bloße Existenz} der Kommunikation geheim bleibt (z.B. durch leichtes Verändern von Farbwerten).
+  \\
+  Die \textbf{Steganalyse} hat zum Ziel, das Vorhandensein solcher versteckter Nachrichten aufzudecken, beispielsweise durch das Erkennen von Rauschanomalien im Differenzbild.
+\end{defbox}
+
+\subsubsection{Neue Herausforderungen durch KI-Synthese}
+Die rapide Entwicklung generativer KI stellt die Forensik vor neue Aufgaben:
+\begin{itemize}
+  \item \textbf{Deepfakes:} Automatisiertes Austauschen von Gesichtern in Videos.
+  \item \textbf{Inpainting:} KI-gestütztes, nahtloses Auffüllen retuschierter Bildbereiche.
+  \item \textbf{Text-to-Image:} Vollständig synthetische Generierung von fotorealistischem Material (Stable Diffusion, DALL-E).
+\end{itemize}
+Die IT-Forensik reagiert hierauf, indem sie selbst \defc{ML-basierte Verfahren} trainiert, die in der Lage sind, unsichtbare Artefakte der KI-Generatoren zuverlässig zu detektieren.
+
+\end{document}

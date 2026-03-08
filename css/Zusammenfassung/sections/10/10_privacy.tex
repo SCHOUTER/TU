@@ -13,36 +13,36 @@
 
 \subsection{Einführung in Internetzensur}
 
-Internetzensur beschränkt, welche Informationen im Internet veröffentlicht oder abgerufen werden können. Sie wird von Regierungen und Organisationen eingesetzt.
+Internetzensur beschränkt, welche Informationen im Internet veröffentlicht oder abgerufen werden können[cite: 40]. Sie wird von Regierungen und Organisationen eingesetzt[cite: 41].
 
 \begin{defbox}[Ziele der Zensur]
   \begin{itemize}
-    \item \textbf{Schutz von Rechten:} Blockierung urheberrechtlich geschützter Inhalte.
-    \item \textbf{Sicherheit:} Schutz vor schädlichen oder sensiblen Inhalten (z. B. Malware, illegale Pornografie).
-    \item \textbf{Politische Kontrolle:} Einsatz als Propagandamethode zur Förderung spezifischer religiöser oder politischer Agenden.
+    \item \textbf{Schutz von Rechten:} Blockierung urheberrechtlich geschützter Inhalte[cite: 41].
+    \item \textbf{Sicherheit:} Schutz vor schädlichen oder sensiblen Inhalten (z. B. Malware, illegale Pornografie)[cite: 41].
+    \item \textbf{Politische Kontrolle:} Einsatz als Propagandamethode zur Förderung spezifischer religiöser oder politischer Agenden[cite: 42].
   \end{itemize}
 \end{defbox}
 
 Die Umsetzung erfolgt in vier Hauptkategorien:
 \begin{enumerate}
-  \item \textbf{Drosselung (Throttling):} Verlangsamung des Datenverkehrs.
-  \item \textbf{Blockierung:} Verhindern des Zugriffs auf spezifische Ressourcen.
-  \item \textbf{Entfernung:} Löschung von Inhalten an der Quelle.
-  \item \textbf{Abschaltung:} Vollständiges Kappen des Internets (Internet Shutdown).
+  \item \textbf{Drosselung (Throttling):} Verlangsamung des Datenverkehrs[cite: 44].
+  \item \textbf{Blockierung:} Verhindern des Zugriffs auf spezifische Verbindungen[cite: 44].
+  \item \textbf{Entfernung:} Löschung von Inhalten[cite: 44].
+  \item \textbf{Abschaltung:} Vollständige Abschaltung des Internets[cite: 45].
 \end{enumerate}
 
-% Hier Grafik einfügen: 
 \subsection{Drosselung des Datenverkehrs (Throttling)}
 
-Die Drosselung reduziert die Bandbreite für spezifischen Netzwerkverkehr. Sie ist diskreter als eine vollständige Blockierung und oft schwerer als absichtliche Zensur zu erkennen (könnte wie eine schlechte Verbindung wirken). Sie kann geografisch oder anwendungsbasiert (z. B. Verlangsamung von YouTube) erfolgen.
+Die Drosselung reduziert die dem Netzwerkverkehr zugewiesene Bandbreite[cite: 52]. Sie ist diskreter als eine vollständige Blockierung und oft schwerer als absichtliche Zensur zu erkennen, da sie zufällig oder absichtlich wirken kann[cite: 52, 53]. Sie kann geografisch oder App-basiert gezielt eingesetzt werden[cite: 52].
 
 Es gibt zwei technische Hauptmethoden zur Durchsetzung von Ratenlimits:
 
 \begin{itemize}
-  \item \defc{Traffic Shaping}: Hierbei werden Pakete, die das Ratenlimit überschreiten, \textbf{verzögert}. Sie werden in einem Puffer zwischengespeichert und später gesendet. Dies glättet den Datenstrom, verursacht aber Latenz.
-  \item \defc{Traffic Policing}: Hierbei werden Pakete, die das Ratenlimit überschreiten, rigoros \textbf{verworfen} (dropped). Dies führt zu Paketverlusten und zwingt das TCP-Protokoll, die Übertragungsrate drastisch zu senken.
+  \item \defc{Traffic Shaping}: Verzögert Pakete, die das zugewiesene Ratenlimit überschreiten[cite: 75, 76].
+  \item \defc{Traffic Policing}: Verwirft Pakete (dropped), die das Ratenlimit überschreiten[cite: 76].
 \end{itemize}
 
+% Grafik: Shaping vs Policing
 \begin{center}
   \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_7_1.png}
   \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_7_2.png}
@@ -50,25 +50,16 @@ Es gibt zwei technische Hauptmethoden zur Durchsetzung von Ratenlimits:
 
 \subsection{Blockierung von Verbindungen}
 
-Behörden nutzen verschiedene Techniken, um den Zugriff auf Ressourcen zu unterbinden:
-
 \subsubsection{Domain-Entfernung}
-Behörden zwingen Registrare oder Nameserver, Domains aus ihren Verzeichnissen zu löschen. Die Seite existiert technisch noch, ist aber über ihren Namen nicht mehr auffindbar.
+Behörden können Nameserver dazu zwingen, Domains aus ihren Verzeichnissen zu entfernen[cite: 102].
 
 \subsubsection{DNS-Manipulation}
-Da Browser IP-Adressen benötigen, ist das Domain Name System (DNS) ein häufiger Angriffspunkt.
-
 \begin{itemize}
-  \item \textbf{DNS Injection (via Man-on-the-Side):} Dies ist eine Variante des \textit{Man-on-the-Side} (MotS) Angriffs.
-        \begin{enumerate}
-          \item Der Zensor liest den Verkehr mit, befindet sich aber nicht zwingend direkt im Pfad (``on-path'').
-          \item Erkennt der Zensor eine DNS-Anfrage für eine verbotene Domain, sendet er sofort eine gefälschte Antwort (Spoofed Response) mit einer falschen IP-Adresse zurück.
-          \item \textit{Race Condition:} Da die gefälschte Antwort meist schneller beim Client ankommt als die legitime Antwort des echten DNS-Servers, akzeptiert der Client die falsche IP. Die echte Antwort wird später verworfen.
-        \end{enumerate}
-  \item \textbf{DNS Filtering:}
-        Hier steht der DNS-Server selbst unter der Kontrolle des Zensors (z. B. beim ISP). Er liefert direkt die falsche IP-Adresse oder einen Fehlercode (NXDOMAIN) zurück. Keine Race Condition erforderlich.
+  \item \textbf{DNS Injection (via Man-on-the-Side):} Zielt auf das DNS-Protokoll ab[cite: 125]. Der Zensor fängt DNS-Anfragen für verbotene Domains ab und schleust eigene Antworten (mit falschen IP-Adressen) ein[cite: 103, 125].
+  \item \textbf{DNS Filtering:} Der DNS-Nameserver selbst steht unter der Kontrolle des Zensors[cite: 138]. Es ist kein Abfangen und Injizieren erforderlich, da der Server direkt die falsche IP-Adresse liefert[cite: 138].
 \end{itemize}
 
+% Grafik: DNS Manipulation
 \begin{figure}
   \center
   \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_10_1.png}
@@ -79,100 +70,137 @@ Da Browser IP-Adressen benötigen, ist das Domain Name System (DNS) ein häufige
 \end{figure}
 
 \subsubsection{Man-on-the-Side (MotS) für HTTP}
-MotS kann auch für direkte Webzugriffe genutzt werden, nicht nur für DNS.
 \begin{defbox}[Ablauf eines MotS-Angriffs]
   \begin{enumerate}
-    \item Client sendet legitime HTTP-Anfrage (GET).
-    \item Zensor (liest mit) erkennt verbotenen Inhalt/URL.
-    \item Zensor injiziert ein TCP-RST (Reset) Paket oder ein injiziertes Redirect-Paket, das so aussieht, als käme es vom Server.
-    \item Der Client bricht die Verbindung ab oder wird auf eine Warnseite/Malware-Seite umgeleitet.
-    \item Die echte Antwort des Webservers kommt zu spät an und wird vom Client verworfen.
+    \item Der Client initiiert eine legitime HTTP-Anfrage[cite: 110].
+    \item Der Zensor (hat Zugriff auf den Kanal, kann aber Pakete nicht ändern/löschen [cite: 108]) fängt die Verbindung ab und injiziert ein TCP-Segment, um den Client umzuleiten[cite: 110].
+    \item Dieses injizierte Paket erreicht den Client vor der legitimen Antwort des Webservers, welche daraufhin verworfen wird[cite: 110].
+    \item Der Client landet auf einem bösartigen Webserver[cite: 111].
   \end{enumerate}
 \end{defbox}
 
 \subsubsection{BGP Hijacking}
-Das Border Gateway Protocol (BGP) steuert das Routing im Internet. Behörden können den Verkehr für bestimmte IP-Präfixe umleiten oder in ein ``schwarzes Loch'' führen.
-
-\textbf{Beispiel Pakistan/YouTube (2008):} Pakistan Telecom wollte YouTube (IP-Bereich z. B. \texttt{208.65.152.0/22}) blockieren. Sie kündigten jedoch versehentlich eine spezifischere Route an (\texttt{208.65.152.0/24}). \textit{Erklärung:} Im Internet-Routing gewinnt immer die spezifischere Route (``Longest Prefix Match''). Da \texttt{/24} genauer ist als \texttt{/22}, leitete das gesamte Internet den YouTube-Verkehr nach Pakistan, wo er verworfen wurde. Dies führte zu einem weltweiten YouTube-Ausfall.
-
-\begin{center}
-  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_12_1.png}
-\end{center}
+Behörden leiten den Internetverkehr für bestimmte Ziel-Präfixe oder autonome Systeme um oder blockieren ihn[cite: 104].
+\textbf{Beispiel:} Pakistan versuchte 2008 YouTube durch eine "False Origin Announcement" (falsche Präfix-Ankündigung) zu blockieren, was den globalen Traffic umlenkte[cite: 149, 159, 160].
 
 \subsubsection{IP-Blocking}
-Direktes Blockieren von IP-Adressen durch Firewalls beim ISP oder auf dem Endgerät.
-\begin{itemize}
-  \item \textbf{Problem:} Viele Websites teilen sich dieselbe IP-Adresse (z. B. durch CDNs wie Cloudflare oder Virtual Hosting). IP-Blocking führt oft zu \textit{Overblocking}, bei dem auch unschuldige Dienste blockiert werden.
-\end{itemize}
+Behörden weisen Internetanbieter (ISPs) an, den Zugriff auf bestimmte IP-Adressen zu blockieren[cite: 105, 175]. Dies kann auch auf dem Endgerät oder durch einen MotS-Angreifer geschehen[cite: 173, 176].
 
 \subsection{Entfernung von Inhalten}
-
-Anstatt den Zugang zu blockieren, fordern Regierungen Plattformen (wie Google, Facebook) auf, Inhalte zu löschen.
-\begin{itemize}
-  \item \textbf{Gründe:} Nationale Sicherheit, Urheberrecht, Privatsphäre, Diffamierung.
-  \item \textbf{Requesters:} Gerichte (Judicial), Exekutive, Polizei.
-  \item \textbf{Trend:} Die Anzahl der Anfragen steigt weltweit kontinuierlich an (siehe Google Transparency Reports).
-\end{itemize}
+Inhalte können auf Anfrage von Regierungsbehörden (Gerichte, Exekutive, Polizei) aus dem Internet entfernt werden[cite: 215, 221, 224, 287]. Häufige Gründe umfassen nationale Sicherheit, Urheberrecht, Verleumdung und Privatsphäre[cite: 189, 190, 191, 193].
 
 \subsection{Zensur-Werkzeuge und Technologien}
 
 \subsubsection{Deep Packet Inspection (DPI)}
-DPI ist eine fortgeschrittene Methode zur Filterung, die nicht nur den Header (IP/Port), sondern auch den \textbf{Payload} (Inhalt) des Pakets analysiert. DPI-Systeme befinden sich meist direkt im Datenpfad (``on-path'').
-
-\begin{defbox}[Funktionsweise von DPI]
-  \begin{itemize}
-    \item Sucht nach Signaturen, Mustern und Schlüsselwörtern.
-    \item Kann Protokolle identifizieren, auch wenn sie nicht auf Standard-Ports laufen.
-    \item Ermöglicht granulare Steuerung (z. B. ``Skype blockieren, aber HTTPS erlauben'').
-  \end{itemize}
+\begin{defbox}[Deep Packet Inspection (DPI)]
+  DPI ist im Datenpfad ("on-path") positioniert[cite: 304]. Es hat vollen Zugriff auf Paket-Header, nutzt Quell-/Zielports sowie IP-Adressen und kann den Paket-Payload analysieren[cite: 299, 300, 301]. Es sucht nach Mustern, Fingerabdrücken und verbotenen Schlüsselwörtern[cite: 302].
 \end{defbox}
 
-\textbf{DPI und Verschlüsselung (TLS/SSL):} DPI kann verschlüsselte Inhalte (Payload) ohne den privaten Schlüssel nicht lesen. Dennoch ist eine Zensur möglich durch:
+\textbf{DPI und Verschlüsselung:} DPI kann verschlüsselte Payloads nicht ohne die richtigen Schlüssel entschlüsseln[cite: 317]. Durch KI und ML kann DPI jedoch:
 \begin{itemize}
-  \item \textbf{SNI (Server Name Indication):} Der angefragte Hostname wird im TLS-Handshake oft unverschlüsselt übertragen (Client Hello).
-  \item \textbf{Metadaten-Analyse:} Timing, Paketgrößen und Flow-Statistiken verraten oft die Art der Anwendung.
-  \item \textbf{Fingerprinting (z. B. JA4+):} Analyse der TLS-Handshake-Parameter (Cipher Suites, Extensions), um den verwendeten Client (z. B. Tor-Browser vs. Chrome) zu identifizieren.
+  \item Verkehrsverbindungen über Metadaten und Handshake-Muster analysieren[cite: 318].
+  \item Netzwerkfluss-Statistiken auswerten (z. B. Erkennung von Botnetzen)[cite: 320, 321].
+  \item Verschleierungstechniken wie Tor oder VPN erkennen[cite: 322].
+  \item Fingerprinting (z. B. JA4/JA4+) für SSL/TLS-Verbindungen nutzen[cite: 322, 323].
 \end{itemize}
+\textbf{Nachteile:} Rechenintensiv, zeitaufwendig und abhängig von vortrainierten KI/ML-Modellen (unzuverlässig bei unbekannten Angriffen)[cite: 334, 335, 336].
 
-\textbf{Nachteile von DPI:} Rechenintensiv, zeitaufwendig (Latenz), fehleranfällig bei unbekannten Angriffsmustern.
-
-\subsubsection{Zwangsfilterung (Mandatory Filtering)}
-Dies bezieht sich auf gesetzlich oder technisch erzwungene Filtermaßnahmen:
-\begin{itemize}
-  \item \textbf{Infrastruktur:} Filterung durch ISPs oder DNS-Server.
-  \item \textbf{Geräte:} Vorinstallierte Software (Spyware/Filter) auf Smartphones/PCs.
-  \item \textbf{Anwendungen:} ``SafeSearch''-Zwang in Suchmaschinen.
-  \item \textbf{EU-Regulierung:}
-        \begin{itemize}
-          \item \textit{Urheberrechtsrichtlinie (Art. 17):} Plattformen müssen proaktiv Copyright-Verstöße verhindern (Upload-Filter).
-          \item \textit{Digital Services Act (DSA):} Reguliert illegale Inhalte und Transparenz auf Online-Plattformen.
-        \end{itemize}
-\end{itemize}
+\subsubsection{Zwangsfilterung}
+Kann auf Infrastrukturebene (ISP, DNS, BGP) geschehen oder durch zwangsweise installierte Software auf Endgeräten[cite: 339, 340]. Regularien in der EU umfassen die Urheberrechtsrichtlinie (Art. 17) und den Digital Services Act (DSA)[cite: 349, 350].
 
 \subsection{Fallstudie: China}
 
-China betreibt das weltweit komplexeste Zensursystem.
-
-\subsubsection{Great Firewall of China (GFW)} Das primäre \textbf{defensive} System. Es kontrolliert den Datenverkehr an den Internet-Gateways zwischen China und der Welt.
+\subsubsection{Great Firewall of China (GFW)}
+Befindet sich im Datenpfad zwischen China und dem globalen Internet[cite: 378]. Untersucht den Inhalt ausgehender Pakete[cite: 379].
 \begin{itemize}
-  \item \textbf{Methoden:} DNS Hijacking, IP Blocking, Keyword Filtering, RST-Injection (Abbruch von TCP-Verbindungen bei Erkennung verbotener Muster).
-  \item \textbf{Anti-Umgehung:} Die GFW nutzt Machine Learning und ``Active Probing'' (aktives Verbinden zu verdächtigen Servern), um VPN- und Tor-Server zu erkennen und zu blockieren.
+  \item Bei erkannten illegalen Inhalten in TCP-Verbindungen wird ein \textbf{RST-Paket} gesendet (Verbindungsabbruch)[cite: 381].
+  \item Nutzt IP-Blocking und DPI-Heuristiken zur Analyse verschlüsselten Verkehrs[cite: 382, 383].
 \end{itemize}
-
-\begin{center}
-  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_26_1.png}
-\end{center}
 
 \subsubsection{Great Cannon (GC)}
-Ein \textbf{offensives} Werkzeug, das sich von der GFW unterscheidet.
+Ein In-Path-System mit vollständigen MitM-Fähigkeiten (Man-in-the-Middle)[cite: 405].
 \begin{itemize}
-  \item \textbf{Funktion:} Man-in-the-Middle (MitM) Angriffssystem.
-  \item \textbf{Vorgehensweise:} Es fängt den Datenverkehr unbeteiligter Nutzer ab, die chinesische Webseiten (z. B. Baidu) aufrufen. Es injiziert bösartigen JavaScript-Code in die Antworten dieser legitimen Seiten.
-  \item \textbf{Ziel:} Der Browser des unschuldigen Nutzers führt das Skript aus und nimmt (ohne Wissen des Nutzers) an einem DDoS-Angriff gegen Zensurgegner teil (z. B. Angriff auf GitHub 2015).
+  \item Es bewaffnet den Datenverkehr unbeteiligter externer Nutzer, die chinesische Websites besuchen[cite: 409].
+  \item Injiziert bösartigen Code (JavaScript), um DDoS-Angriffe gegen Zensur-Kritiker (z. B. GitHub) zu starten[cite: 408].
 \end{itemize}
 
-\begin{center}
-  \includegraphics[width=0.48\textwidth]{css_1_12_Privacy1_page_27_1.png}
-\end{center}
+\subsection{Privacy: Grundlagen}
+
+\begin{defbox}[Privacy]
+  Laut NIST: Die Zusicherung, dass die Vertraulichkeit von und der Zugang zu bestimmten Informationen über eine Entität geschützt ist[cite: 460, 463]. Anwendungsbereiche umfassen Networking (z. B. VPN, Tor), Datenbanken (Federated Learning) und Kryptographie[cite: 470, 471, 472].
+\end{defbox}
+
+\subsection{Networking: The Onion Routing (TOR)}
+
+TOR bietet stark gegen Überwachung und Verkehrsflussanalyse geschützte, anonyme Verbindungen[cite: 637].
+
+\begin{defbox}[Funktionsweise des Onion Routing Protokolls]
+  \begin{enumerate}
+    \item Der Tor-Client bezieht eine Liste von Knoten (Nodes) von einem Directory Server[cite: 670, 671].
+    \item Der Client wählt einen zufälligen Pfad durch das Netzwerk[cite: 689]. Der Verkehr wird über einen \textbf{Entry Guard}, ein \textbf{Middle Relay} und ein \textbf{Exit Relay} geleitet[cite: 802, 803, 821].
+    \item Pakete werden mehrlagig (wie eine Zwiebel) mit den Schlüsseln der Knoten verschlüsselt[cite: 788]. Jeder Knoten entschlüsselt eine Schicht.
+  \end{enumerate}
+\end{defbox}
+% Grafik: Onion Diagramm (Schichten der Verschlüsselung)
+% 
+
+\textbf{Wissensverteilung im Pfad:}
+\begin{itemize}
+  \item \textbf{Entry Guard:} Kennt die IP des Nutzers, aber nicht den Zielserver[cite: 868].
+  \item \textbf{Middle Relay:} Kennt nur Entry und Exit Relay (weder Nutzer noch Ziel)[cite: 868].
+  \item \textbf{Exit Relay:} Kennt den Zielserver (Web Server) und entschlüsselt die letzte Schicht (kann Daten lesen, falls kein HTTPS genutzt wird), kennt aber den Nutzer nicht[cite: 868].
+\end{itemize}
+
+\textbf{Tor-Bridges:} Wenn öffentliche Entry Guards blockiert sind, können Nutzer \defc{Bridges} (nicht öffentlich gelistete IP-Adressen) verwenden[cite: 727, 728]. Diese werden über alternative Kanäle wie Telegram verteilt und in nicht überschneidenden Buckets mit Ratenbegrenzung vergeben[cite: 745, 770].
+
+\subsubsection{TOR Services (Hidden Services)}
+Ermöglichen es, Websites (.onion-Adressen) anonym anzubieten. Weder Inhalt noch Identität/Standort des Servers sind sichtbar[cite: 875].
+
+\begin{itemize}
+  \item \textbf{Intro Points:} Der Hidden Server verbindet sich über Tor-Relays mit sogenannten \defc{Intro Points}[cite: 880, 881]. Eine signierte Liste dieser Intro Points wird im Directory veröffentlicht[cite: 897].
+  \item \textbf{.onion-Adresse:} Die Adresse enthält (seit Version 3) den vollständig Base32-enkodierten öffentlichen Schlüssel des Servers, eine Versionsnummer und eine Checksumme[cite: 953, 954]. Die Checksumme schützt vor Tippfehlern[cite: 965].
+  \item \textbf{Verbindungsaufbau:} Der Client bestimmt einen \defc{Rendezvous Point} und teilt diesem ein Einmal-Geheimnis (Secret String) mit[cite: 972, 975]. Der Client sendet diese Infos über die Intro Points an den Service[cite: 988]. Der Service verbindet sich mit dem Rendezvous Point und sendet den Secret String[cite: 1003, 1004]. Bei Übereinstimmung sind beide Parteien doppelt anonym über Tor verbunden[cite: 1005, 1023, 1024].
+\end{itemize}
+
+\textbf{Anonymitätsgrenzen in TOR:}
+TOR bietet keine perfekte Anonymität[cite: 1044].
+\begin{itemize}
+  \item \textbf{Website Fingerprinting:} Ein lokaler Angreifer (z. B. lokaler ISP) analysiert Verkehrsmuster, um die besuchte Website zu erraten[cite: 1050].
+  \item \textbf{Sybill/Eclipse Angriff:} Wenn ein Angreifer eine große Menge von Eingangs- und Ausgangsknoten kontrolliert, können Datenströme korreliert werden[cite: 1045].
+  \item \textbf{Self-Deanonymization:} Nutzer deanonymisieren sich selbst durch Metadaten (Browserversion) oder ihr Verhalten[cite: 1046, 1047].
+\end{itemize}
+
+\subsection{Datenschutz in Datenbanken: Federated Learning}
+
+Das Zentralisieren großer Datenmengen (z. B. Gesundheitsdaten) verstößt oft gegen Datenschutzgesetze[cite: 1145, 1160]. Lokales Training von Machine Learning (ML) Modellen ist jedoch problematisch, da kleine Datensätze verzerrt sind und Modelle schlecht generalisieren[cite: 1151, 1152].
+
+\begin{defbox}[Federated Learning]
+  Ein dezentrales ML-Framework[cite: 1164]. Clients (z. B. Krankenhäuser) trainieren Modelle auf ihren \textbf{lokalen Daten}[cite: 1165]. Es werden \textbf{nur die Modellgewichte} (Updates) an einen zentralen Server gesendet[cite: 1165]. Der Server aggregiert diese zu einem globalen Modell[cite: 1165]. Die Rohdaten verlassen nie die lokale Umgebung[cite: 1164].
+\end{defbox}
+
+\textbf{Sicherheitsprobleme:}
+Modellupdates können sensible Informationen preisgeben[cite: 1198]. Ein Insider (z. B. ein ehrlicher, aber neugieriger Client) kann in sequenziellen Trainingszyklen \defc{Membership-Inference Angriffe} durchführen, um festzustellen, ob bestimmte Datenpunkte Teil des Trainingsdatensatzes einer anderen Partei waren[cite: 1200, 1201].
+
+\textbf{Gegenmaßnahme - Differential Privacy (DP):}
+\begin{itemize}
+  \item Begrenzt mathematisch den Einfluss einzelner Personen auf das Endergebnis, indem \textbf{Rauschen} hinzugefügt wird[cite: 1247, 1248].
+  \item \textit{Data Suppression:} Löscht bestimmte Eigenschaften (schützt Personen, die im Datensatz sind)[cite: 1250, 1251].
+  \item \textit{Data Perturbation:} Fügt Rauschen hinzu oder ersetzt Werte (schützt sowohl Personen im Datensatz als auch außerhalb)[cite: 1252, 1253].
+\end{itemize}
+
+\subsection{Kryptographie: Homomorphe Verschlüsselung}
+
+\begin{defbox}[Homomorphic Encryption]
+  Ermöglicht es, Berechnungen \textbf{direkt auf verschlüsselten Daten (Chiffretext)} durchzuführen, ohne sie vorher zu entschlüsseln[cite: 1259, 1260]. Das Ergebnis der Berechnung entspricht nach dem Entschlüsseln dem Ergebnis, das bei einer Berechnung auf Klartextdaten entstanden wäre[cite: 1260].
+\end{defbox}
+% Grafik: Homomorphic Encryption Cloud Computation
+% 
+
+\textbf{Arten der homomorphen Verschlüsselung:}
+\begin{itemize}
+  \item \defc{Full homomorphic Encryption (FHE):} Unterstützt unbegrenzte Additions- und Multiplikationsoperationen[cite: 1291]. Erlaubt beliebige Berechnungen, ist aber derzeit extrem ressourcenintensiv[cite: 1291, 1292].
+  \item \defc{Somewhat homomorphic Encryption (SHE):} Unterstützt Addition und Multiplikation nur für eine begrenzte Anzahl von Operationen[cite: 1293]. Ist schneller, wird aber durch die Akkumulation von Rauschen im Chiffretext limitiert[cite: 1294].
+  \item \defc{Partially homomorphic Encryption (PHE):} Unterstützt unbegrenzt \textbf{nur eine} Art von Operation (entweder Addition oder Multiplikation)[cite: 1295].
+\end{itemize}
 
 \end{document}

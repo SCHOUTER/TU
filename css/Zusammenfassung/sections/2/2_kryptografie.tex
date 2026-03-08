@@ -5,7 +5,7 @@
 
 \externaldocument[ext:]{../../css_summary}
 % Set Graphics Path, so pictures load correctly
-\graphicspath{{../}}
+\graphicspath{{../../pics}}
 
 \begin{document}
 
@@ -474,49 +474,35 @@ Bei einem asymmetrischem Kryptosystem gibt es verschiedene Schlüssel.
    \item $p$ und $q$ sollten groß und ähnlich groß sein (gleiche Bitlänge)
 \end{itemize}
 
-\subsection{ElGamal-Kryptosystem}
+\subsection*{Das ElGamal-Kryptosystem}
+ElGamal basiert auf der Mathematik zyklischer Gruppen und dem Diskreten Logarithmus.
 
-\begin{defbox}[ElGamal Schlüsselerzeugung (Alice)]
+\begin{defbox}[ElGamal Algorithmus]
+   Gegeben ist eine zyklische Gruppe $\mathcal{G} = (G, \circ, e)$ mit einem Erzeuger $g$ (häufig verwendet man $\mathbb{Z}_p^{\times}$ oder elliptische Kurven).
+
+   \textbf{Schlüsselerzeugung (Alice):}
+   Wähle zufällig $a \in \{2, \dots, \text{ord}(\mathcal{G})-1\}$ und berechne $A = g^a$.
    \begin{itemize}
-      \item Wähle eine \textbf{zyklische Gruppe} $G = (\mathbb{G}, \circ, e)$ mit großem Primzahlmodulus (z.\,B. $\mathbb{Z}_p^\times$) und einem \textbf{Erzeuger} $g$
-      \item Wähle einen privaten Exponenten $a \in \{1, \dots, \text{ord}(g)-1\}$ und berechne $A = g^a \bmod p$
-      \item \textbf{Privater Schlüssel:} $a$
-      \item \textbf{Öffentlicher Schlüssel:} $(G, g, A)$
+      \item \defc{Privater Schlüssel:} $(G, g, a)$
+      \item \defc{Öffentlicher Schlüssel:} $(G, g, A)$
    \end{itemize}
+
+   \textbf{Verschlüsselung an Alice (durch Bob mit Nachricht $m$):}
+   \begin{enumerate}
+      \item Bob wählt ein zufälliges $r \in \{2, \dots, \text{ord}(G)-1\}$ und setzt $R = g^r$.
+      \item Er berechnet den gemeinsamen Schlüssel $K = A^r = (g^a)^r = g^{ar}$ und verschlüsselt die Nachricht zu $C = m \circ K$.
+      \item Bob sendet das Chiffrat-Tupel $(R, C)$ an Alice.
+   \end{enumerate}
+
+   \textbf{Entschlüsselung (durch Alice):}
+   \begin{enumerate}
+      \item Alice berechnet $K = R^a = (g^r)^a = g^{ar}$ mithilfe ihres privaten Schlüssels $a$.
+      \item Sie bestimmt das Inverse $K^{-1}$ in der Gruppe $G$.
+      \item Sie stellt die Nachricht wieder her: $m = C \circ K^{-1}$.
+   \end{enumerate}
 \end{defbox}
 
-\noindent\textbf{Verschlüsselung (an Alice):}
-\begin{itemize}
-   \item Wähle zufällig $r \in \{1, \dots, \text{ord}(g)-1\}$
-   \item Berechne $R = g^r \bmod p$
-   \item Berechne gemeinsamen Schlüssel $K = A^r = (g^a)^r = g^{ar} \bmod p$
-   \item Berechne $C = (R,\, m \cdot K \bmod p)$ und sende $C$
-\end{itemize}
-
-\noindent\textbf{Entschlüsselung (Alice):}
-\begin{itemize}
-   \item Berechne $K = R^a = (g^r)^a = g^{ra} \bmod p$
-   \item Berechne das Inverse $K^{-1} \bmod p$
-   \item Entschlüssele $m = C_2 \cdot K^{-1} \bmod p$
-\end{itemize}
-
-\noindent\textbf{Sicherheit von ElGamal:}
-\begin{itemize}
-   \item Sicherheit basiert auf dem \defc{Diskreten Logarithmusproblem (DLP)}: gegeben $(g, g^a)$ ist $a$ schwer zu bestimmen
-   \item Angreifbar durch Quantencomputer (Shor-Algorithmus)
-   \item \defc{Probabilistisches Verfahren} durch Zufallswert $r$ $\rightarrow$ semantisch sicher, wenn das \textbf{Decisional Diffie-Hellman-Problem (DDH)} schwer ist
-   \item Aus einem gültigen Chiffrat $(c_1, c_2)$ lässt sich leicht $(c_1,\, g \cdot c_2)$ für beliebiges $g \in G$ konstruieren — \textbf{nicht deterministisch}, daher keine Wiederverwendung von $r$
-\end{itemize}
-
-\noindent\textbf{Hinweis:} Bei allen Potenzoperationen und Multiplikationen muss stets das \textbf{Modulus $p$} angewendet werden. Der in der Vorlesung gezeigte Fehler (fehlendes $\bmod p$ bei $K$) wurde hier korrigiert.
-
-\begin{itemize}
-   \item Kombination von asymmetrischer und symmetrischer Kryptographie
-   \item Nachricht wird mit \defc{symmetrischem Verfahren} verschlüsselt (schnell, effizient)
-   \item Symmetrischer Schlüssel wird mit \defc{asymmetrischem Verfahren} verschlüsselt (sicherer Schlüsselaustausch)
-   \item Vorteile: Effizienz + Sicherheit, einfaches Teilen mit mehreren Empfängern
-   \item Nachteil: Sicherheit von beiden Systemen abhängig
-\end{itemize}
+\textbf{Sicherheit und Eigenschaften:} ElGamal ist ein probabilistisches Verfahren (aufgrund des zufälligen $r$), weshalb es semantisch sicher ist, sofern das \defc{Decisional-Diffie-Hellman-Problem (DDH)} in der verwendeten Gruppe schwer zu lösen ist. Ist der diskrete Logarithmus einfach (etwa auf einem Quantencomputer mit Shors Algorithmus), bricht das System zusammen. Eine Eigenschaft ist die Malleability: Aus einem Chiffrat $(c_1, c_2)$ lässt sich leicht das Chiffrat $(c_1, g \circ c_2)$ erzeugen.
 
 \subsection*{5. Digitale Signaturen}
 
