@@ -1,4 +1,0 @@
-Start!
-a: 42
-
-The program has finished successfully.
