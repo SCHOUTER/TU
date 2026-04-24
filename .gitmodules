@@ -13,3 +13,6 @@
 [submodule "css"]
 	path = css
 	url = git@github.com:SCHOUTER/css.git
+[submodule "cipr"]
+	path = cipr
+	url = git@github.com:SCHOUTER/cipr.git
