@@ -1,3 +1,15 @@
 [submodule "se"]
 	path = se
 	url = https://github.com/david-fop/se
+[submodule "eicb"]
+	path = eicb
+	url = git@github.com:SCHOUTER/eicb.git
+[submodule "eiki"]
+	path = eiki
+	url = git@github.com:SCHOUTER/eiki.git
+[submodule "vc"]
+	path = vc
+	url = git@github.com:SCHOUTER/vc.git
+[submodule "css"]
+	path = css
+	url = git@github.com:SCHOUTER/css.git
