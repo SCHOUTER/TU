@@ -19,3 +19,7 @@
 [submodule "rl"]
 	path = rl
 	url = https://github.com/SCHOUTER/rl.git
+[submodule "e4nlp"]
+	path = e4nlp
+	url = git@github.com:SCHOUTER/e4nlp.git
+	branch = main
