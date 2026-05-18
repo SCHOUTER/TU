@@ -16,3 +16,6 @@
 [submodule "cipr"]
 	path = cipr
 	url = git@github.com:SCHOUTER/cipr.git
+[submodule "rl"]
+	path = rl
+	url = https://github.com/SCHOUTER/rl.git
