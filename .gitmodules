@@ -23,3 +23,6 @@
 	path = e4nlp
 	url = git@github.com:SCHOUTER/e4nlp.git
 	branch = main
+[submodule "hc"]
+	path = hc
+	url = git@github.com:SCHOUTER/hc.git
