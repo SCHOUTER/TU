@@ -26,3 +26,6 @@
 [submodule "hc"]
 	path = hc
 	url = git@github.com:SCHOUTER/hc.git
+[submodule "sg"]
+	path = sg
+	url = https://github.com/SCHOUTER/sg
