@@ -29,3 +29,6 @@
 [submodule "sg"]
 	path = sg
 	url = https://github.com/SCHOUTER/sg
+[submodule "paacm"]
+	path = paacm
+	url = git@github.com:SCHOUTER/paacm.git
